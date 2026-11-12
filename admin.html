@@ -35,7 +35,8 @@
         </div>
         <div class="field"><label for="imageUrl">رابط الصورة (اختياري)</label><input id="imageUrl" type="text" placeholder="اتركه فارغًا إذا سترفع صورة من جهازك"></div>
         <div class="field"><label for="imageFile">أو اختر صورة من الجهاز</label><input id="imageFile" type="file" accept="image/*"><img id="imagePreview" class="image-preview hidden" alt="معاينة صورة المنتج"><small class="muted">سيتم تصغير الصورة تلقائيًا قبل حفظها.</small></div>
-        <div class="field"><label for="desc">الوصف والمواصفات</label><textarea id="desc" rows="3" placeholder="الماركة، المقاس، عدد القطع، الاستخدام..."></textarea></div>
+        <div class="field"><label for="desc">وصف المنتج</label><textarea id="desc" rows="3" placeholder="اكتب وصفًا واضحًا للمنتج واستخدامه..."></textarea></div>
+        <div class="field"><label for="specs">المواصفات الفنية (كل مواصفة في سطر)</label><textarea id="specs" rows="5" placeholder="بلد المنشأ: ألمانيا&#10;رقم الموديل: ...&#10;المقاس: ...&#10;عدد القطع: ...&#10;الخامة: ..."></textarea><small class="muted">اكتب كل سطر بهذا الشكل: اسم المواصفة: القيمة. اتركه فارغًا إذا لم تتوفر المعلومة.</small></div>
         <div class="field"><label for="tasks">الاستخدامات المناسبة للمساعد الفني</label><select id="tasks" multiple size="5"><option value="drill">تخريم</option><option value="screw">فك وربط</option><option value="cut">قطع وتجليخ</option><option value="wood">نجارة</option><option value="clean">تنظيف وصنفرة</option><option value="other">استخدامات أخرى</option></select></div>
         <div class="actions form-actions"><button class="red" id="saveBtn" type="submit">حفظ المنتج</button><button class="light" id="resetBtn" type="button">منتج جديد</button></div>
       </form>
@@ -145,6 +146,7 @@ async function importProducts(file) {
       brand:String(item.brand || ""),
       cat:String(item.cat || "عدد يدوية"),
       desc:String(item.desc || ""),
+      specs:String(item.specs || ""),
       icon:String(item.icon || "🔧"),
       price:String(item.price || "السعر عند الاستفسار"),
       image:image,
@@ -207,6 +209,7 @@ async function editProduct(id) {
   $("imageUrl").value = product.image || "";
   $("imageFile").value = "";
   $("desc").value = product.desc || "";
+  $("specs").value = product.specs || "";
   Array.from($("tasks").options).forEach(function (option) { option.selected = (product.tasks || []).includes(option.value); });
   $("saveBtn").textContent = "حفظ التعديل";
   if (product.imageId) {
@@ -280,6 +283,7 @@ $("productForm").addEventListener("submit", async function (event) {
       brand:$("brand").value.trim(),
       cat:$("cat").value,
       desc:$("desc").value.trim(),
+      specs:$("specs").value.trim(),
       price:$("price").value.trim() || "السعر عند الاستفسار",
       icon:$("icon").value.trim() || "🔧",
       image:image,
