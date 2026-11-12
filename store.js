@@ -12,6 +12,11 @@
   let activeBrand = (new URLSearchParams(window.location.search).get("brand") || "").trim();
   let query = "";
   let cart = [];
+  try {
+    const savedCart = JSON.parse(localStorage.getItem('dawly_cart_v1') || '[]');
+    if (Array.isArray(savedCart)) cart = savedCart.filter(function (line) { return line && line.id != null && Number.isInteger(Number(line.qty)) && Number(line.qty) > 0; }).map(function (line) { return {id:line.id, qty:Math.min(99,Number(line.qty))}; });
+  } catch (error) { cart = []; }
+  function persistCart() { try { localStorage.setItem('dawly_cart_v1', JSON.stringify(cart)); } catch (error) {} }
   let cloudImageObserver = null;
 
   function showProductImageFallback(image) {
@@ -221,6 +226,7 @@
     if (subtitle) subtitle.textContent = "المنتجات المسجلة لماركة " + activeBrand;
   }
   function renderCart() {
+    persistCart();
     const count = cart.reduce(function (sum, line) { return sum + line.qty; }, 0);
     cartCount.textContent = String(count);
     checkout.disabled = count === 0;
