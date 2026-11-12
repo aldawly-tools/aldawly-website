@@ -167,7 +167,7 @@ $("ordersList").addEventListener("change",async function(e){
  try{await updateDoc(doc(db,"orders",id),{status:statusValue,updatedAt:serverTimestamp()});const found=orders.find(o=>o.id===id);if(found)found.status=statusValue;renderOrders();$("ordersStatus").textContent="تم تحديث حالة الطلب.";}
  catch(err){$("ordersStatus").textContent="تعذر تحديث الحالة. تحقق من صلاحيات حساب الإدارة.";el.disabled=false;}
 });
-\nfunction exportProducts() {
+function exportProducts() {
   const content = "window.DAWLY_PRODUCTS = " + JSON.stringify(products, null, 2) + ";\n";
   const url = URL.createObjectURL(new Blob([content], {type:"text/javascript;charset=utf-8"}));
   const link = document.createElement("a");
