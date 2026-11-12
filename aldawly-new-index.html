@@ -13,7 +13,7 @@ body{margin:0;color:var(--ink);font-family:Cairo,Tahoma,Arial,sans-serif;backgro
 a{text-decoration:none;color:inherit}.wrap{width:min(1160px,92%);margin:auto}
 .top{background:#111;color:#eee;padding:8px 4%;font-size:12px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
 header{display:flex;align-items:center;justify-content:space-between;gap:15px;padding:15px 0}
-.brand{display:flex;align-items:center;gap:10px;font-size:19px;font-weight:900}.logo{background:var(--red);color:#fff;width:48px;height:48px;border-radius:14px;display:grid;place-items:center;font-size:25px}
+.brand{display:flex;align-items:center;gap:10px;font-size:19px;font-weight:900}.brand-copy{display:flex;flex-direction:column;line-height:1.1}.brand-name{font-size:18px;color:#000;white-space:nowrap}.brand-tag{font-size:21px;font-weight:1000;color:var(--red);white-space:nowrap}.logo{background:var(--red);color:#fff;width:48px;height:48px;border-radius:14px;display:grid;place-items:center;font-size:25px}
 nav{display:flex;gap:20px;font-size:14px;font-weight:800}nav a:hover{color:var(--red)}
 .btn{display:inline-block;background:var(--red);color:white;padding:11px 18px;border-radius:9px;font-weight:900}
 .hero{background:linear-gradient(115deg,#171717,#353535);color:white}.hero-in{min-height:350px;display:grid;grid-template-columns:1.2fr .8fr;gap:30px;align-items:center;padding-top:30px;padding-bottom:30px}
@@ -32,13 +32,13 @@ section.content{padding:42px 0}.heading{margin-bottom:20px}.heading h2{font-size
 .features{grid-template-columns:repeat(3,1fr)}.feature b{display:block;margin:7px 0}
 footer{background:#151515;color:#fff;padding:30px 0}footer p{color:#bbb;line-height:1.9}.foot{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}.footlinks{display:flex;gap:15px;flex-wrap:wrap;color:#ddd}
 @media(max-width:760px){nav{display:none}.hero-in{grid-template-columns:1fr}.toolart{height:155px;font-size:75px}.cats,.products,.brands{grid-template-columns:repeat(2,1fr)}.features{grid-template-columns:1fr}.advisor{display:block}.advisor .btn{margin-top:14px}.content{padding:32px 0}}
-@media(max-width:390px){.product{padding:9px}.product img,.placeholder{height:120px}.brand{font-size:16px}}
+@media(max-width:390px){header{flex-wrap:wrap}.product{padding:9px}.product img,.placeholder{height:120px}.brand{font-size:16px}.brand-name{font-size:15px}.brand-tag{font-size:17px;white-space:normal}}
 </style>
 </head>
 <body>
 <div class="top"><span>📍 طنطا – الغربية | العدد الأصلية والمستوردة</span><span>☎ <a href="tel:01024787222" dir="ltr">01024787222</a></span></div>
 <header class="wrap">
-<a class="brand" href="index.html"><span class="logo">ع</span><span>الدولي للعدد<br><small style="font-size:11px;color:#777">الأصلية والمستوردة</small></span></a>
+<a class="brand" href="index.html"><span class="logo">ع</span><span class="brand-copy"><span class="brand-name">الدولي للعدد</span><span class="brand-tag">العدد الأصلية والمستوردة</span></span></a>
 <nav><a href="#categories">الأقسام</a><a href="products.html">المنتجات</a><a href="advisor.html">مساعد اختيار العدد</a><a href="#contact">تواصل معنا</a></nav>
 <a class="btn" href="products.html">تصفح المنتجات</a>
 </header>
