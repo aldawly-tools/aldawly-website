@@ -35,7 +35,7 @@
           <div class="field"><label for="icon">رمز بديل</label><input id="icon" value="🔧"></div>
         </div>
         <div class="field"><label for="imageUrl">رابط الصورة (اختياري)</label><input id="imageUrl" type="text" placeholder="اتركه فارغًا إذا سترفع صورة من جهازك"></div>
-        <div class="field"><label for="imageFile">أو اختر صورة من الجهاز</label><input id="imageFile" type="file" accept=".jpg,.jpeg,.png,.webp,.gif,.bmp,.avif,image/jpeg,image/png,image/webp,image/gif,image/bmp,image/avif"><img id="imagePreview" class="image-preview hidden" alt="معاينة صورة المنتج"><small class="muted">الصيغ المدعومة: JPG وJPEG وPNG وWEBP وGIF وBMP وAVIF. سيتم تحويل الصورة تلقائيًا إلى JPG مضغوط قبل الحفظ.</small></div>
+        <div class="field"><label for="imageFile">أو اختر صورة من الجهاز</label><input id="imageFile" type="file" accept=".jpg,.jpeg,.png,.webp,.gif,.bmp,.avif,image/jpeg,image/png,image/webp,image/gif,image/bmp,image/avif"><img id="imagePreview" class="image-preview hidden" alt="معاينة صورة المنتج"><button class="light" id="removeImageBtn" type="button">مسح الصورة المختارة</button><small class="muted">الصيغ المدعومة: JPG وJPEG وPNG وWEBP وGIF وBMP وAVIF. سيتم تحويل الصورة تلقائيًا إلى JPG مضغوط قبل الحفظ.</small></div>
         <div class="field"><label for="desc">وصف المنتج</label><textarea id="desc" rows="3" placeholder="اكتب وصفًا واضحًا للمنتج واستخدامه..."></textarea></div>
         <div class="field"><label for="specs">المواصفات الفنية (كل مواصفة في سطر)</label><textarea id="specs" rows="5" placeholder="بلد المنشأ: ألمانيا&#10;رقم الموديل: ...&#10;المقاس: ...&#10;عدد القطع: ...&#10;الخامة: ..."></textarea><small class="muted">اكتب كل سطر بهذا الشكل: اسم المواصفة: القيمة. اتركه فارغًا إذا لم تتوفر المعلومة.</small></div>
         <div class="field"><label for="tasks">الاستخدامات المناسبة للمساعد الفني</label><select id="tasks" multiple size="5"><option value="drill">تخريم</option><option value="screw">فك وربط</option><option value="cut">قطع وتجليخ</option><option value="wood">نجارة</option><option value="clean">تنظيف وصنفرة</option><option value="other">استخدامات أخرى</option></select></div>
@@ -63,6 +63,7 @@ let db = null;
 let auth = null;
 let products = [];
 let previewObjectUrl = "";
+let imageRemoved = false;
 
 function message(target, text) { target.textContent = text || ""; }
 function escapeHtml(value) {
@@ -75,6 +76,7 @@ function readyConfig() {
 }
 function resetForm() {
   $("productForm").reset();
+  imageRemoved = false;
   $("pid").value = "";
   $("icon").value = "🔧";
   $("saveBtn").textContent = "حفظ المنتج";
@@ -328,6 +330,7 @@ async function editProduct(id) {
   $("price").value = product.price || "";
   $("stock").value = Number.isInteger(product.stock) && product.stock >= 0 ? String(product.stock) : "";
   $("icon").value = product.icon || "🔧";
+  imageRemoved = false;
   $("imageUrl").value = product.image || "";
   $("imageFile").value = "";
   $("desc").value = product.desc || "";
@@ -417,6 +420,15 @@ $("imageFile").addEventListener("change", function () {
   previewObjectUrl = URL.createObjectURL(file);
   showPreview(previewObjectUrl);
 });
+$("removeImageBtn").addEventListener("click", function () {
+  $("imageFile").value = "";
+  $("imageUrl").value = "";
+  imageRemoved = true;
+  if (previewObjectUrl) URL.revokeObjectURL(previewObjectUrl);
+  previewObjectUrl = "";
+  showPreview("");
+  message(saveStatus, "تم مسح الصورة من النموذج. اضغط حفظ المنتج لتأكيد إزالة الصورة من المنتج.");
+});
 $("productList").addEventListener("click", function (event) {
   const edit = event.target.closest("[data-edit]");
   const remove = event.target.closest("[data-delete]");
@@ -427,12 +439,12 @@ $("productForm").addEventListener("submit", async function (event) {
   event.preventDefault();
   const previous = $("pid").value ? products.find(function (item) { return String(item.id) === String($("pid").value); }) : null;
   const id = previous ? Number(previous.id) : Math.max(0, ...products.map(function (item) { return Number(item.id) || 0; })) + 1;
+  const file = $("imageFile").files && $("imageFile").files[0];
   if (file && !(/\\.(jpe?g|png|webp|gif|bmp|avif)$/i.test(file.name || "") || ["image/jpeg","image/png","image/webp","image/gif","image/bmp","image/avif"].includes(file.type))) {
     message(saveStatus, "صيغة الصورة غير مدعومة. استخدم JPG أو PNG أو WEBP أو GIF أو BMP أو AVIF.");
     $("imageFile").focus();
     return;
   }
-  const file = $("imageFile").files && $("imageFile").files[0];
   const stockValue = $("stock").value.trim();
   if (stockValue !== "" && (!/^\\d+$/.test(stockValue) || Number(stockValue) > 99999)) {
     message(saveStatus, "اكتب كمية صحيحة من 0 إلى 99999، أو اترك الخانة فارغة.");
@@ -449,9 +461,10 @@ $("productForm").addEventListener("submit", async function (event) {
       await setDoc(doc(db, "productImages", String(id)), {data:compressed, updatedAt:serverTimestamp()});
       image = "";
       imageId = String(id);
-    } else if (previous && image !== String(previous.image || "")) {
-      if (previous.imageId) await deleteDoc(doc(db, "productImages", String(previous.imageId)));
+    } else if (imageRemoved || (previous && image !== String(previous.image || ""))) {
+      if (previous && previous.imageId) await deleteDoc(doc(db, "productImages", String(previous.imageId)));
       imageId = null;
+      image = "";
     }
     const product = {
       id:id,
