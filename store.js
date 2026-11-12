@@ -205,14 +205,17 @@
           ? '<img src="" data-cloud-image="' + escapeHtml(item.imageId) + '" alt="' + escapeHtml(name) + '" loading="lazy">'
           : '<span class="product-placeholder" aria-hidden="true">' + escapeHtml(item.icon || "🔧") + '</span>';
       const detailUrl = "product.html?id=" + encodeURIComponent(String(item.id));
+      const stockKnown = Number.isInteger(item.stock) && item.stock >= 0;
+      const stockOut = stockKnown && item.stock === 0;
+      const stockLabel = stockOut ? '<span class="stock-status out">نفد المخزون</span>' : stockKnown ? '<span class="stock-status">المتاح: ' + item.stock + ' قطعة</span>' : '';
       return '<article class="product-card" id="product-' + encodeURIComponent(item.id) + '">' +
         '<a class="product-visual product-open-link" href="' + detailUrl + '" aria-label="تكبير صورة ' + escapeHtml(name) + '" title="اضغط لتكبير الصورة">' + visual + '</a>' +
         '<div class="product-info"><span class="product-category">' + (item.brand ? escapeHtml(displayBrand(item.brand)) + ' · ' : '') + escapeHtml(item.cat || "منتجات") + '</span>' +
         '<h3 class="product-name"><a class="product-name-link" href="' + detailUrl + '">' + escapeHtml(name) + '</a></h3>' +
-        '<p class="product-description">' + escapeHtml(description) + '</p>' +
+        '<p class="product-description">' + escapeHtml(description) + '</p>' + stockLabel +
         '<a class="product-details-link" href="' + detailUrl + '">عرض الإعلان والتفاصيل ←</a>' +
         '<div class="product-meta"><span class="product-price">' + escapeHtml(formatPrice(item.price)) + '<small>' + (parsePrice(item.price) === null ? 'السعر والتوفر عند التواصل' : 'التوفر عند التواصل') + '</small></span>' +
-        '<button class="button-primary" type="button" data-add="' + escapeHtml(item.id) + '">أضف إلى السلة</button></div></div></article>';
+        '<button class="button-primary" type="button" data-add="' + escapeHtml(item.id) + '"' + (stockOut ? ' disabled aria-disabled="true"' : '') + '>' + (stockOut ? 'غير متاح حاليًا' : 'أضف إلى السلة') + '</button></div></div></article>';
     }).join("") || '<p class="empty-cart">' + emptyMessage + '</p>';
     observeCloudImages();
     filterBar.querySelectorAll("[data-category]").forEach(function (button) {
@@ -261,9 +264,20 @@
     renderCart();
   });
   function addToCart(id) {
+    const item = products.find(function (entry) { return String(entry.id) === String(id); });
+    if (!item) return;
+    if (Number.isInteger(item.stock) && item.stock >= 0 && item.stock === 0) {
+      alert("هذا المنتج غير متاح حاليًا لأنه نفد من المخزون.");
+      return;
+    }
     const line = cart.find(function (entry) { return String(entry.id) === String(id); });
-    if (line) line.qty += 1;
-    else cart.push({id:id, qty:1});
+    if (line) {
+      if (Number.isInteger(item.stock) && item.stock >= 0 && line.qty >= item.stock) {
+        alert("لا يمكن طلب كمية أكبر من المتاح بالمخزون.");
+        return;
+      }
+      line.qty += 1;
+    } else cart.push({id:id, qty:1});
     renderCart();
     setDrawer(true);
   }
@@ -292,7 +306,13 @@
     if (quantity) {
       const line = cart.find(function (entry) { return String(entry.id) === String(quantity.dataset.qty); });
       if (line) {
-        line.qty += Number(quantity.dataset.delta);
+        const item = products.find(function (entry) { return String(entry.id) === String(line.id); });
+        const nextQty = line.qty + Number(quantity.dataset.delta);
+        if (item && Number.isInteger(item.stock) && item.stock >= 0 && nextQty > item.stock) {
+          alert("الكمية المطلوبة أكبر من المتاح بالمخزون.");
+          return;
+        }
+        line.qty = nextQty;
         if (line.qty <= 0) cart = cart.filter(function (entry) { return String(entry.id) !== String(line.id); });
         renderCart();
       }
