@@ -660,3 +660,18 @@ body { background: #f7f8fa; color: var(--ink); }
   .product-info { padding: 9px; }
   .footer { margin-top: 20px; }
 }
+
+
+/* Three live categories: use the full row without an empty fourth slot */
+.categories-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  width: 100%;
+}
+@media (max-width: 480px) {
+  .categories-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+  .categories-grid .category-tile:last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+  }
+}
