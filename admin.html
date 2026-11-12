@@ -40,6 +40,52 @@ button:disabled{opacity:.6;cursor:wait}
 @media(max-width:700px){.dashboard-stats{grid-template-columns:repeat(2,minmax(0,1fr))}.dashboard-stat{padding:12px}.dashboard-stat strong{font-size:22px}.order-stats{grid-template-columns:repeat(3,minmax(0,1fr))}.card{padding:15px}.dashboard-nav{margin:8px 0}}
 @media(max-width:380px){.dashboard-stats{gap:8px}.dashboard-stat strong{font-size:20px}}
 
+
+/* تحسين احترافي إضافي للوحة الإدارة */
+header{padding:28px 16px 30px;position:relative;overflow:hidden}
+header:after{content:"";position:absolute;width:230px;height:230px;border:1px solid #ffffff26;border-radius:50%;left:-70px;top:-125px;box-shadow:0 0 0 28px #ffffff0c,0 0 0 58px #ffffff08}
+header h1{font-size:26px;letter-spacing:-.5px}
+header p{font-size:14px;opacity:.92}
+.dashboard-nav{top:5px;backdrop-filter:blur(12px)}
+.dashboard-nav a{border:1px solid transparent}
+.dashboard-nav a:hover{border-color:#e6a3a6;background:#fff4f4}
+.dashboard-stat{position:relative;overflow:hidden;min-height:100px}
+.dashboard-stat:after{content:"";position:absolute;width:54px;height:54px;border-radius:50%;background:#d7192010;left:-12px;bottom:-18px}
+.dashboard-stat:nth-child(2):after{background:#2673c010}
+.dashboard-stat:nth-child(3):after{background:#d49b0015}
+.dashboard-stat:nth-child(4):after{background:#c02b3815}
+.dashboard-stat strong{font-size:28px}
+.card h2{letter-spacing:-.25px}
+#productForm{border:0;background:#fafbfc;border-radius:14px;padding:14px;margin-top:15px}
+#productForm .field{margin:13px 0}
+#productForm input,#productForm select,#productForm textarea{border-color:#dfe3e8;background:#fff}
+#productForm input:focus,#productForm select:focus,#productForm textarea:focus{box-shadow:0 0 0 3px #d7192012}
+#imagePreview{max-width:190px;max-height:155px;border:1px solid #e5e7eb;padding:5px}
+#removeImageBtn{margin-top:9px}
+.product{display:grid;grid-template-columns:68px minmax(0,1fr) auto;align-items:center;gap:12px;padding:12px 14px}
+.product-thumb{width:68px;height:68px;object-fit:contain;border-radius:11px;background:#f3f4f6;border:1px solid #eceef0;padding:4px}
+.product-info{min-width:0}
+.product strong{font-size:14px;line-height:1.6}
+.product small{font-size:12px;overflow-wrap:anywhere}
+.product .actions{flex-wrap:nowrap}
+.product .actions button{padding:9px 12px;font-size:12px}
+.order-card{border-radius:15px;box-shadow:0 3px 12px #111108}
+#productSearch,#orderSearch{background:#fafbfc}
+#inventoryAlertsCard{border-right:4px solid #d71920}
+#ordersCard{border-right:4px solid #34495e}
+#catalogCard{border-right:4px solid #c58b19}
+@media(max-width:620px){
+ header{padding:22px 15px}
+ header h1{font-size:22px}
+ .dashboard-nav{top:0;border-radius:0 0 13px 13px;margin:0 -4px 12px}
+ .product{grid-template-columns:58px minmax(0,1fr);gap:10px}
+ .product-thumb{width:58px;height:58px;grid-row:span 2}
+ .product .actions{grid-column:1/-1;width:100%}
+ .product .actions button{flex:1}
+ #productForm{padding:10px}
+ .dashboard-stat{min-height:88px}
+}
+
 </style>
 </head>
 <body>
@@ -164,8 +210,22 @@ function renderProducts() {
   $("listSummary").textContent = (term ? "نتائج البحث: " + filtered.length + " من " + products.length + " · " : "إجمالي المنتجات: " + products.length + " · ") + "مخزون مسجل: " + tracked + " · مخزون منخفض (5 أو أقل): " + lowStock + " · نفد المخزون: " + outOfStock + " · غير محدد: " + untracked;
   $("productList").innerHTML = filtered.map(function (product) {
     const stockLabel = Number.isInteger(product.stock) && product.stock >= 0 ? (product.stock === 0 ? "نفد المخزون" : product.stock <= 5 ? "مخزون منخفض: " + product.stock + " قطعة" : "المتاح: " + product.stock + " قطعة") : "المخزون غير محدد";
-    return '<div class="product"><div><strong>' + escapeHtml(product.name) + '</strong><small>' + escapeHtml(product.brand || "بدون ماركة") + ' · ' + escapeHtml(product.cat || "") + ' · ' + escapeHtml(product.price || "السعر عند الاستفسار") + ' · رقم: ' + escapeHtml(product.id) + '</small><span class="pill">' + escapeHtml(stockLabel) + '</span>' + (product.imageId ? '<span class="pill">صورة محفوظة</span>' : "") + '</div><div class="actions"><button class="light" type="button" data-edit="' + escapeHtml(product.id) + '">تعديل</button><button class="danger" type="button" data-delete="' + escapeHtml(product.id) + '">حذف</button></div></div>';
+    const imageId = Array.isArray(product.imageIds) && product.imageIds.length ? product.imageIds[0] : product.imageId;
+    const thumb = product.image ? '<img class="product-thumb" src="' + escapeHtml(product.image) + '" alt="" loading="lazy">' : '<img class="product-thumb" data-thumb-id="' + escapeHtml(imageId || "") + '" alt="" loading="lazy">';
+    return '<div class="product">' + thumb + '<div class="product-info"><strong>' + escapeHtml(product.name) + '</strong><small>' + escapeHtml(product.brand || "بدون ماركة") + ' · ' + escapeHtml(product.cat || "") + ' · ' + escapeHtml(product.price || "السعر عند الاستفسار") + ' · رقم: ' + escapeHtml(product.id) + '</small><span class="pill">' + escapeHtml(stockLabel) + '</span></div><div class="actions"><button class="light" type="button" data-edit="' + escapeHtml(product.id) + '">تعديل</button><button class="danger" type="button" data-delete="' + escapeHtml(product.id) + '">حذف</button></div></div>';
   }).join("") || '<p class="muted">' + (term ? "لا توجد نتائج مطابقة للبحث." : "لا توجد منتجات حاليًا.") + '</p>';
+  hydrateProductThumbs();
+}
+async function hydrateProductThumbs() {
+  const nodes = Array.from(document.querySelectorAll("#productList img[data-thumb-id]")).slice(0,40);
+  await Promise.all(nodes.map(async function(img) {
+    const id = img.getAttribute("data-thumb-id");
+    if (!id) return;
+    try {
+      const snap = await getDoc(doc(db, "productImages", id));
+      if (snap.exists() && snap.data().data) img.src = snap.data().data;
+    } catch (error) { console.warn("Product thumbnail unavailable:", id); }
+  }));
 }
 async function ensureCatalog() {
   const metaRef = doc(db, "storeMeta", "catalog");
@@ -578,34 +638,3 @@ if (!readyConfig()) {
         message(status, "تم تسجيل الدخول بنجاح.");
       }
     }).catch(function (error) {
-      console.error("Google redirect result error:", error);
-      message(status, "تعذر إكمال دخول Google (" + (error.code || error.message || "خطأ غير معروف") + ").");
-    });
-    message(status, "خدمة الدخول جاهزة. اضغط دخول بحساب Google.");
-    onAuthStateChanged(auth, async function (user) {
-      if (!user) {
-        $("manager").classList.add("hidden");
-        $("loginCard").classList.remove("hidden");
-        return;
-      }
-      $("loginCard").classList.add("hidden");
-      $("manager").classList.remove("hidden");
-      $("signedInAs").textContent = "تم تسجيل الدخول: " + user.email;
-      try { await loadProducts(); await loadOrders(); }
-      catch (error) { message(saveStatus, "تعذر تحميل المنتجات. تأكد من إعداد قاعدة Firestore ومن استخدام حساب الإدارة المسموح."); }
-    });
-  } catch (error) { console.error("Firebase initialization error:", error); message(status, "تعذر تهيئة Firebase (" + (error.code || error.message || "خطأ غير معروف") + "). راجع إعدادات Firebase."); }
-}
-</script>
-<script>
-(function () {
-  var status = document.getElementById("status");
-  window.setTimeout(function () {
-    if (status && status.textContent.indexOf("جارٍ تجهيز لوحة الإدارة") !== -1) {
-      status.textContent = "تعذر تشغيل كود لوحة الإدارة. غالبًا ملفات Firebase لم تُحمّل. جرّب فتح الرابط في Chrome مع إيقاف توفير البيانات، أو أرسل صورة بعد تحديث الصفحة.";
-    }
-  }, 8000);
-})();
-</script>
-</body>
-</html>
