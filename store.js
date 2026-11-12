@@ -9,6 +9,7 @@
   const cartOverlay = document.getElementById("cartOverlay");
   const checkout = document.getElementById("checkout");
   let activeCategory = "الكل";
+  let activeBrand = (new URLSearchParams(window.location.search).get("brand") || "").trim();
   let query = "";
   let cart = [];
 
@@ -23,6 +24,9 @@
     if (name.includes("قياس")) return "📏";
     if (name.includes("ورش")) return "🧰";
     return "🛠️";
+  }
+  function normalizeBrand(name) {
+    return String(name || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[\s._-]/g, "").toLocaleLowerCase();
   }
   function setDrawer(open) {
     cartDrawer.classList.toggle("open", open);
@@ -44,24 +48,34 @@
     const term = query.trim().toLocaleLowerCase();
     const shown = products.filter(function (item) {
       const categoryMatch = activeCategory === "الكل" || item.cat === activeCategory;
+      const brandMatch = !activeBrand || normalizeBrand(item.brand) === normalizeBrand(activeBrand);
       const text = [item.name, item.brand, item.cat, item.desc].join(" ").toLocaleLowerCase();
-      return categoryMatch && (!term || text.includes(term));
+      return categoryMatch && brandMatch && (!term || text.includes(term));
     });
+    const emptyMessage = activeBrand
+      ? 'لا توجد منتجات مسجلة لماركة ' + escapeHtml(activeBrand) + ' حاليًا.'
+      : "لا توجد منتجات مطابقة.";
     grid.innerHTML = shown.map(function (item) {
       const visual = item.image
         ? '<img src="' + escapeHtml(item.image) + '" alt="' + escapeHtml(item.name) + '">'
         : '<span class="product-placeholder" aria-hidden="true">' + escapeHtml(item.icon || "🔧") + '</span>';
       return '<article class="product-card" id="product-' + encodeURIComponent(item.id) + '">' +
         '<div class="product-visual">' + visual + '</div>' +
-        '<div class="product-info"><span class="product-category">' + escapeHtml(item.cat || "منتجات") + '</span>' +
+        '<div class="product-info"><span class="product-category">' + (item.brand ? escapeHtml(item.brand) + ' · ' : '') + escapeHtml(item.cat || "منتجات") + '</span>' +
         '<h3 class="product-name">' + escapeHtml(item.name) + '</h3>' +
         '<p class="product-description">' + escapeHtml(item.desc || "") + '</p>' +
         '<div class="product-meta"><span class="product-price">' + escapeHtml(item.price || "السعر عند الاستفسار") + '<small>السعر والتوفر عند التواصل</small></span>' +
         '<button class="button-primary" type="button" data-add="' + escapeHtml(item.id) + '">أضف إلى السلة</button></div></div></article>';
-    }).join("") || '<p class="empty-cart">لا توجد منتجات مطابقة.</p>';
+    }).join("") || '<p class="empty-cart">' + emptyMessage + '</p>';
     filterBar.querySelectorAll("[data-category]").forEach(function (button) {
       button.classList.toggle("active", button.dataset.category === activeCategory);
     });
+  }
+  if (activeBrand) {
+    const title = document.querySelector("#products .section-title");
+    const subtitle = document.querySelector("#products .section-subtitle");
+    if (title) title.textContent = "منتجات " + activeBrand;
+    if (subtitle) subtitle.textContent = "المنتجات المسجلة لماركة " + activeBrand;
   }
   function renderCart() {
     const count = cart.reduce(function (sum, line) { return sum + line.qty; }, 0);

@@ -7,70 +7,48 @@ label{display:block;font-weight:bold;margin:12px 0 6px}input,textarea,select{wid
 button{border:0;border-radius:9px;padding:11px 15px;font:inherit;font-weight:bold;cursor:pointer}.red{background:#d71920;color:#fff}.gray{background:#eee}.danger{background:#fee;color:#a00}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.items{display:grid;gap:9px}.item{border:1px solid #ddd;border-radius:10px;padding:12px;display:flex;justify-content:space-between;gap:10px;align-items:center}.item small{display:block;color:#666}
 .actions{display:flex;gap:7px;flex-wrap:wrap}.preview{max-width:100px;max-height:85px;object-fit:contain}
+.steps{margin:8px 0;padding-right:22px;line-height:2}.link-button{display:inline-block;background:#202124;color:#fff;padding:10px 14px;border-radius:9px;text-decoration:none;font-weight:bold}
 @media(max-width:600px){.grid{grid-template-columns:1fr}.item{align-items:flex-start;flex-direction:column}}
 </style></head><body><header><div class="wrap"><h1>إدارة متجر الدولي للعدد</h1><div class="muted" style="color:#ddd">إضافة المنتجات وتعديلها واستبدالها</div></div></header>
 <main class="wrap">
-<div class="card"><b>طريقة العمل</b><p class="muted">أدر المنتجات هنا من موبايلك، ثم اضغط «تنزيل ملف المنتجات». ارفع ملف products.js الناتج إلى مستودع GitHub لاستبدال النسخة القديمة. هذه الصفحة لا تنشر مباشرة إلى GitHub ولا تحتوي على كلمة مرور؛ لا تضع فيها أي رمز وصول سري.</p>
+<div class="card"><b>إضافة المنتجات بنفسك</b><p class="muted">اكتب اسم المنتج والماركة والقسم والسعر والصورة إن وجدت، ثم اضغط «حفظ المنتج». ستبقى المسودة محفوظة على هذا الجهاز، ويمكنك تنزيل ملف المنتجات عند الانتهاء لنشرها على الموقع.</p>
 <div class="actions"><button class="gray" id="importBtn">استيراد ملف products.js</button><input id="importFile" type="file" accept=".js,.txt" hidden><button class="red" id="exportBtn">تنزيل ملف المنتجات</button></div></div>
 <div class="card"><h2 id="formTitle">إضافة منتج جديد</h2><form id="productForm">
 <input type="hidden" id="pid"><label>اسم المنتج</label><input id="name" required placeholder="مثال: طقم مفكات WERA">
-<div class="grid"><div><label>الماركة</label><input id="brand" placeholder="WERA / WÜRTH / KNIPEX"></div><div><label>القسم</label><select id="cat"><option>عدد يدوية</option><option>عدد كهربائية</option><option>مستلزمات الورش</option><option>قياس</option></select></div></div>
+<div class="grid"><div><label>الماركة</label><input id="brand" placeholder="BOSCH / WÜRTH / WERA / KNIPEX / Beta / DEWALT"><small class="muted">اكتب الاسم مثلما يظهر في شريط الماركات حتى يظهر المنتج عند الضغط عليها.</small></div><div><label>القسم</label><select id="cat"><option>عدد يدوية</option><option>عدد كهربائية</option><option>مستلزمات الورش</option><option>قياس</option></select></div></div>
 <div class="grid"><div><label>السعر بالجنيه</label><input id="price" placeholder="مثال: 2500 جنيه"></div><div><label>رمز بديل عند عدم وجود صورة</label><input id="icon" value="🔧"></div></div>
 <label>رابط صورة المنتج (اختياري)</label><input id="image" type="url" placeholder="رابط صورة منشورة على الإنترنت">
 <label>الوصف والمواصفات</label><textarea id="desc" rows="3" placeholder="عدد القطع، المقاسات، بلد الصناعة..."></textarea>
 <label>الاستخدام المناسب للمساعد</label><select id="tasks" multiple size="6"><option value="drill">تخريم</option><option value="screw">فك وربط</option><option value="cut">قطع وتجليخ</option><option value="wood">نجارة</option><option value="clean">تنظيف وصنفرة</option><option value="other">استخدامات أخرى</option></select><p class="muted">يمكن اختيار أكثر من استخدام بالضغط المطوّل على الهاتف إن كان يدعم ذلك.</p>
-<div class="actions"><button class="red" type="submit">حفظ المنتج في القائمة</button><button class="gray" type="button" id="resetBtn">تفريغ الحقول</button></div></form></div>
+<div class="actions"><button class="red" type="submit">حفظ المنتج</button><button class="gray" type="button" id="resetBtn">تفريغ الحقول</button></div></form></div>
 
-<div class="card"><h2>النشر المباشر على GitHub</h2>
-<p class="muted">بعد إضافة المنتجات أو تعديلها، يمكنك إرسال ملف products.js مباشرة إلى مستودعك. يلزم إنشاء Fine-grained Personal Access Token بصلاحية Contents: Read and write للمستودع المحدد فقط.</p>
-<div class="grid"><div><label>اسم حساب GitHub (Owner)</label><input id="ghOwner" placeholder="اسم حسابك"></div><div><label>اسم المستودع (Repository)</label><input id="ghRepo" placeholder="اسم المستودع"></div></div>
-<label>الفرع (Branch)</label><input id="ghBranch" value="main">
-<label>GitHub Token</label><input id="ghToken" type="password" autocomplete="off" placeholder="الصق الرمز هنا مؤقتًا">
-<button class="red" id="publishBtn" type="button">نشر المنتجات مباشرة على GitHub</button>
-<p class="muted" id="publishStatus" aria-live="polite">الرمز يبقى في ذاكرة الصفحة فقط ولا يتم حفظه في المتصفح. أفرغ خانة الرمز بعد النشر.</p>
+<div class="card"><h2>نشر المنتجات للزوار</h2>
+<p class="muted">الإضافة هنا تحفظ المسودة على هذا الجهاز فقط. لن تظهر المنتجات للزوار إلا بعد تنزيل الملف واستبدال products.js في المستودع. اتبع الخطوات التالية:</p>
+<ol class="muted steps"><li>اضغط «تنزيل ملف المنتجات» بعد الانتهاء.</li><li>افتح ملف products.js على GitHub واضغط علامة القلم لتعديله.</li><li>افتح الملف الذي نزلته بالمفكرة، وانسخ محتواه كاملًا والصقه مكان المحتوى القديم.</li><li>اضغط «Commit changes» لحفظ المنتجات على الموقع.</li></ol>
+<a class="link-button" href="https://github.com/aldawly-tools/aldawly-website/blob/main/products.js" target="_blank" rel="noopener">فتح ملف المنتجات على GitHub</a>
+<p class="muted" id="draftStatus" aria-live="polite"></p>
+<button class="gray" id="clearDraftBtn" type="button">إلغاء المسودة والعودة للمنتجات المنشورة</button>
 </div>
-\n<div class="card"><h2>المنتجات الحالية (<span id="count">0</span>)</h2><div class="items" id="items"></div></div>
+<div class="card"><h2>المنتجات الحالية (<span id="count">0</span>)</h2><div class="items" id="items"></div></div>
 </main>
 <script src="products.js"></script><script>
-let products=(window.DAWLY_PRODUCTS||[]).map(p=>({...p}));
+const BASE_PRODUCTS=(window.DAWLY_PRODUCTS||[]).map(p=>({...p}));
+const DRAFT_KEY='aldawlyProductsDraftV1';
+let products=BASE_PRODUCTS.map(p=>({...p}));
+let hasDraft=false;
+try{const saved=localStorage.getItem(DRAFT_KEY);if(saved){const parsed=JSON.parse(saved);if(Array.isArray(parsed)){products=parsed;hasDraft=true;}}}catch{}
 const $=id=>document.getElementById(id);
 function escapeHTML(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
-function render(){ $('count').textContent=products.length; $('items').innerHTML=products.map(p=>`<div class="item"><div><b>${escapeHTML(p.name)}</b><small>${escapeHTML(p.cat)} · ${escapeHTML(p.price||'السعر عند الاستفسار')}</small></div><div class="actions"><button class="gray" onclick="editProduct(${p.id})">تعديل</button><button class="danger" onclick="deleteProduct(${p.id})">حذف</button></div></div>`).join('')||'<p class="muted">لا توجد منتجات.</p>'; }
+function saveDraft(){try{localStorage.setItem(DRAFT_KEY,JSON.stringify(products));hasDraft=true;$('draftStatus').textContent='تم حفظ المسودة على هذا الجهاز. نزّل الملف لنشر التغييرات للزوار.';}catch{$('draftStatus').textContent='تعذر حفظ المسودة على هذا الجهاز. نزّل ملف المنتجات بعد كل تعديل.';}}
+function render(){ $('count').textContent=products.length; $('items').innerHTML=products.map(p=>`<div class="item"><div><b>${escapeHTML(p.name)}</b><small>${escapeHTML(p.brand||'بدون ماركة')} · ${escapeHTML(p.cat)} · ${escapeHTML(p.price||'السعر عند الاستفسار')}</small></div><div class="actions"><button class="gray" onclick="editProduct(${p.id})">تعديل</button><button class="danger" onclick="deleteProduct(${p.id})">حذف</button></div></div>`).join('')||'<p class="muted">لا توجد منتجات.</p>'; $('draftStatus').textContent=hasDraft?'توجد مسودة محفوظة على هذا الجهاز.':'تعرض اللوحة المنتجات المنشورة حاليًا.'; }
 function resetForm(){ $('productForm').reset();$('pid').value='';$('icon').value='🔧';$('formTitle').textContent='إضافة منتج جديد';}
 function editProduct(id){const p=products.find(x=>x.id===id);if(!p)return;$('pid').value=p.id;$('name').value=p.name;$('brand').value=p.brand||'';$('cat').value=p.cat;$('price').value=p.price||'';$('icon').value=p.icon||'🔧';$('image').value=p.image||'';$('desc').value=p.desc||'';[...$('tasks').options].forEach(o=>o.selected=(p.tasks||[]).includes(o.value));$('formTitle').textContent='تعديل المنتج';window.scrollTo({top:0,behavior:'smooth'});}
-function deleteProduct(id){if(confirm('هل تريد حذف هذا المنتج؟')){products=products.filter(p=>p.id!==id);render();}}
-$('productForm').addEventListener('submit',e=>{e.preventDefault();const id=$('pid').value?Number($('pid').value):Math.max(0,...products.map(p=>p.id||0))+1;const p={id,name:$('name').value.trim(),brand:$('brand').value.trim(),cat:$('cat').value,desc:$('desc').value.trim(),price:$('price').value.trim()||'السعر عند الاستفسار',icon:$('icon').value.trim()||'🔧',image:$('image').value.trim(),tasks:[...$('tasks').selectedOptions].map(o=>o.value)};const i=products.findIndex(x=>x.id===id);if(i>=0)products[i]=p;else products.push(p);resetForm();render();alert('تم حفظ المنتج في قائمة الإدارة. نزّل ملف products.js ثم ارفعه إلى GitHub لنشر التغيير.');});
+function deleteProduct(id){if(confirm('هل تريد حذف هذا المنتج؟')){products=products.filter(p=>p.id!==id);saveDraft();render();}}
+$('productForm').addEventListener('submit',e=>{e.preventDefault();const id=$('pid').value?Number($('pid').value):Math.max(0,...products.map(p=>p.id||0))+1;const p={id,name:$('name').value.trim(),brand:$('brand').value.trim(),cat:$('cat').value,desc:$('desc').value.trim(),price:$('price').value.trim()||'السعر عند الاستفسار',icon:$('icon').value.trim()||'🔧',image:$('image').value.trim(),tasks:[...$('tasks').selectedOptions].map(o=>o.value)};const i=products.findIndex(x=>x.id===id);if(i>=0)products[i]=p;else products.push(p);saveDraft();resetForm();render();alert('تم حفظ المنتج في المسودة على هذا الجهاز. اضغط «تنزيل ملف المنتجات» ثم حدّث الملف على GitHub لنشره للزوار.');});
 $('resetBtn').onclick=resetForm;
-$('exportBtn').onclick=()=>{const data='window.DAWLY_PRODUCTS = '+JSON.stringify(products,null,2)+';\n';const blob=new Blob([data],{type:'text/javascript;charset=utf-8'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='products.js';a.click();URL.revokeObjectURL(a.href);};
+$('exportBtn').onclick=()=>{const data='window.DAWLY_PRODUCTS = '+JSON.stringify(products,null,2)+';\n';const blob=new Blob([data],{type:'text/javascript;charset=utf-8'});const a=document.createElement('a');const url=URL.createObjectURL(blob);a.href=url;a.download='products.js';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);};
 $('importBtn').onclick=()=>$('importFile').click();
-$('importFile').onchange=async e=>{const f=e.target.files[0];if(!f)return;const t=await f.text();try{const m=t.match(/window\\.DAWLY_PRODUCTS\\s*=\\s*([\\s\\S]*?);?\\s*$/);if(!m)throw Error();const parsed=JSON.parse(m[1].replace(/;\\s*$/,''));if(!Array.isArray(parsed))throw Error();products=parsed;render();alert('تم استيراد المنتجات.');}catch{alert('تعذر قراءة الملف. استخدم ملف products.js الصادر من هذه اللوحة.');}e.target.value='';};
+$('importFile').onchange=async e=>{const f=e.target.files[0];if(!f)return;const t=await f.text();try{const m=t.match(/window\.DAWLY_PRODUCTS\s*=\s*([\s\S]*?);?\s*$/);if(!m)throw Error();const parsed=JSON.parse(m[1].replace(/;\s*$/,''));if(!Array.isArray(parsed))throw Error();products=parsed;saveDraft();render();alert('تم استيراد المنتجات وحفظها كمسودة على هذا الجهاز.');}catch{alert('تعذر قراءة الملف. استخدم ملف products.js الصادر من هذه اللوحة.');}e.target.value='';};
 render();
 
-async function publishToGitHub(){
- const owner=$('ghOwner').value.trim(), repo=$('ghRepo').value.trim(), branch=$('ghBranch').value.trim()||'main', token=$('ghToken').value.trim(), status=$('publishStatus'), btn=$('publishBtn');
- if(!owner||!repo||!token){status.textContent='أدخل اسم الحساب والمستودع والرمز أولًا.';return;}
- if(!confirm('سيتم تحديث ملف products.js في مستودع GitHub. هل تريد المتابعة؟'))return;
- btn.disabled=true;status.textContent='جارٍ الاتصال بـ GitHub...';
- const api=`https://api.github.com/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}/contents/products.js`;
- const headers={'Accept':'application/vnd.github+json','Authorization':`Bearer ${token}`,'X-GitHub-Api-Version':'2022-11-28'};
- try{
-   let sha;
-   const existing=await fetch(`${api}?ref=${encodeURIComponent(branch)}`,{headers});
-   if(existing.ok){const data=await existing.json();sha=data.sha;}
-   else if(existing.status!==404){const err=await existing.json().catch(()=>({}));throw new Error(err.message||`تعذر قراءة الملف (${existing.status})`);}
-   const content='window.DAWLY_PRODUCTS = '+JSON.stringify(products,null,2)+';\\n';
-   const bytes=new TextEncoder().encode(content);
-   let binary='';bytes.forEach(b=>binary+=String.fromCharCode(b));
-   const body={message:'Update store products from admin panel',content:btoa(binary),branch};
-   if(sha)body.sha=sha;
-   const response=await fetch(api,{method:'PUT',headers:{...headers,'Content-Type':'application/json'},body:JSON.stringify(body)});
-   const result=await response.json().catch(()=>({}));
-   if(!response.ok)throw new Error(result.message||`فشل النشر (${response.status})`);
-   status.textContent='تم إرسال المنتجات إلى GitHub بنجاح. انتظر اكتمال تحديث Pages ثم حدّث الموقع.';
-   $('ghToken').value='';
- }catch(err){status.textContent='لم يتم النشر: '+err.message+'. راجع صلاحيات الرمز واسم المستودع والفرع.';}
- finally{btn.disabled=false;}
-}
-$('publishBtn').addEventListener('click',publishToGitHub);
-
-</script></body></html>
+$('clearDraftBtn').addEventListener('click',()=>{if(!confirm('سيتم مسح مسودة هذا الجهاز والعودة للمنتجات المنشورة. هل تريد المتابعة؟'))return;localStorage.removeItem(DRAFT_KEY);products=BASE_PRODUCTS.map(p=>({...p}));hasDraft=false;resetForm();render();});</script></body></html>
