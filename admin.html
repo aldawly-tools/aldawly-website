@@ -412,5 +412,15 @@ if (!readyConfig()) {
   } catch (error) { console.error("Firebase initialization error:", error); message(status, "تعذر تهيئة Firebase (" + (error.code || error.message || "خطأ غير معروف") + "). راجع إعدادات Firebase."); }
 }
 </script>
+<script>
+(function () {
+  var status = document.getElementById("status");
+  window.setTimeout(function () {
+    if (status && status.textContent.indexOf("جارٍ تجهيز لوحة الإدارة") !== -1) {
+      status.textContent = "تعذر تشغيل كود لوحة الإدارة. غالبًا ملفات Firebase لم تُحمّل. جرّب فتح الرابط في Chrome مع إيقاف توفير البيانات، أو أرسل صورة بعد تحديث الصفحة.";
+    }
+  }, 8000);
+})();
+</script>
 </body>
 </html>
