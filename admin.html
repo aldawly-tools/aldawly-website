@@ -8,7 +8,39 @@
 <title>إدارة منتجات الدولي</title>
 <style>
 :root{font-family:Tahoma,Arial,sans-serif;color:#202124;background:#f4f6f8;font-synthesis:none}*{box-sizing:border-box}body{margin:0}header{background:#d71920;color:#fff;padding:20px 16px}.wrap{width:min(100% - 28px,900px);margin:auto}h1{font-size:23px;margin:0 0 5px}header p{margin:0;color:#ffe7e7;font-size:14px}.card{background:#fff;border:1px solid #e2e5e8;border-radius:16px;padding:18px;margin:16px 0;box-shadow:0 5px 18px #1111}.muted{color:#68707a;font-size:13px;line-height:1.8}.field{margin:12px 0}.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}label{display:block;font-size:14px;font-weight:700;margin:0 0 6px}input,select,textarea{width:100%;font:inherit;padding:11px 12px;border:1px solid #cfd4da;border-radius:10px;background:#fff}input:focus,select:focus,textarea:focus{outline:2px solid #f2a2a4;border-color:#d71920}button,.link{font:inherit;font-weight:700;border:0;border-radius:10px;padding:12px 16px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:7px}.red{background:#d71920;color:#fff}.light{background:#f0f1f3;color:#202124}.danger{background:#fff0f0;color:#b00012}.actions{display:flex;gap:8px;flex-wrap:wrap}.hidden{display:none!important}.status{padding:10px 12px;border-radius:9px;background:#fff7df;color:#5e4b11;line-height:1.8;font-size:14px}.status:empty{display:none}.products{display:grid;gap:10px}.product{display:flex;align-items:center;justify-content:space-between;gap:12px;border:1px solid #e6e8eb;border-radius:12px;padding:12px}.product strong{display:block;margin-bottom:5px}.product small{display:block;color:#68707a;line-height:1.7}.image-preview{display:block;max-width:150px;max-height:130px;object-fit:contain;margin-top:8px;border-radius:8px;background:#f3f4f5}.form-actions{margin-top:14px}.footer-link{color:#555}.pill{display:inline-block;background:#fff1f1;color:#ae1018;border-radius:999px;padding:5px 9px;font-size:12px;margin-top:5px}@media(max-width:620px){.grid{grid-template-columns:1fr}.product{align-items:flex-start;flex-direction:column}.actions button{flex:1}}
- .inventory-alert-head{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;align-items:center}.inventory-alert-group{margin-top:10px;padding:10px 12px;border-radius:10px;font-size:13px}.inventory-alert-group ul{margin:6px 0 0;padding-right:20px;line-height:1.9}.inventory-alert-group.out{background:#fff0f0;color:#a40012}.inventory-alert-group.low{background:#fff8df;color:#735500}.order-card{border:1px solid #e3e6ea;border-radius:12px;padding:13px;background:#fff}.order-card p{font-size:13px;line-height:1.8;margin:7px 0;overflow-wrap:anywhere}.order-top,.order-actions{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}.order-actions{margin-top:10px}.order-actions select{flex:1;min-width:140px}\n</style>
+ .inventory-alert-head{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;align-items:center}.inventory-alert-group{margin-top:10px;padding:10px 12px;border-radius:10px;font-size:13px}.inventory-alert-group ul{margin:6px 0 0;padding-right:20px;line-height:1.9}.inventory-alert-group.out{background:#fff0f0;color:#a40012}.inventory-alert-group.low{background:#fff8df;color:#735500}.order-card{border:1px solid #e3e6ea;border-radius:12px;padding:13px;background:#fff}.order-card p{font-size:13px;line-height:1.8;margin:7px 0;overflow-wrap:anywhere}.order-top,.order-actions{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}.order-actions{margin-top:10px}.order-actions select{flex:1;min-width:140px}\n
+/* لوحة تحكم محسّنة */
+:root{background:#f5f6f8;color:#20242a}
+header{background:linear-gradient(120deg,#a90f18,#df2028);padding:24px 16px;box-shadow:0 4px 18px #5d0a1022}
+header .wrap{max-width:1120px}
+.wrap{max-width:1120px}
+#manager{padding-bottom:28px}
+.dashboard-nav{position:sticky;top:0;z-index:5;display:flex;gap:8px;overflow:auto;padding:10px;margin:12px 0;background:#ffffffed;border:1px solid #e6e8eb;border-radius:14px;box-shadow:0 4px 16px #1111}
+.dashboard-nav a{white-space:nowrap;text-decoration:none;color:#343941;background:#f3f4f6;border-radius:9px;padding:10px 13px;font-size:13px;font-weight:700}
+.dashboard-nav a:first-child{background:#fff0f0;color:#b20f19}
+.dashboard-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:14px 0}
+.dashboard-stat{background:#fff;border:1px solid #e5e7eb;border-radius:15px;padding:15px;box-shadow:0 4px 14px #11108}
+.dashboard-stat span{display:block;color:#707782;font-size:12px;margin-bottom:8px}
+.dashboard-stat strong{font-size:25px;color:#222;line-height:1.2}
+.card{border-radius:17px;padding:20px;box-shadow:0 5px 20px #11110a}
+.card h2{font-size:19px}
+#productForm{border-top:1px solid #eceef0;margin-top:16px;padding-top:10px}
+#productForm .field{margin:15px 0}
+#productForm input,#productForm select,#productForm textarea{min-height:46px}
+#productForm textarea{min-height:90px}
+#saveBtn{min-width:150px;box-shadow:0 5px 12px #d7192028}
+.product{background:#fff;transition:box-shadow .2s,border-color .2s}
+.product:hover{border-color:#e6a4a7;box-shadow:0 4px 14px #11110c}
+.order-stats{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin:12px 0}
+.order-stat{background:#f7f8fa;border:1px solid #eceef0;border-radius:11px;padding:10px;text-align:center}
+.order-stat b{display:block;font-size:20px;color:#a90f18}
+.order-stat span{font-size:12px;color:#626a73}
+#catalogCard,#ordersCard,#inventoryAlertsCard{scroll-margin-top:80px}
+button:disabled{opacity:.6;cursor:wait}
+@media(max-width:700px){.dashboard-stats{grid-template-columns:repeat(2,minmax(0,1fr))}.dashboard-stat{padding:12px}.dashboard-stat strong{font-size:22px}.order-stats{grid-template-columns:repeat(3,minmax(0,1fr))}.card{padding:15px}.dashboard-nav{margin:8px 0}}
+@media(max-width:380px){.dashboard-stats{gap:8px}.dashboard-stat strong{font-size:20px}}
+
+</style>
 </head>
 <body>
 <header><div class="wrap"><h1>إدارة منتجات الدولي</h1><p>أضف المنتج وصورته من هنا، وسيظهر للزوار بعد الحفظ.</p></div></header>
@@ -21,6 +53,15 @@
   </section>
 
   <section class="hidden" id="manager">
+    <nav class="dashboard-nav" aria-label="أقسام لوحة الإدارة">
+      <a href="#productForm">＋ إضافة منتج</a><a href="#catalogCard">المنتجات</a><a href="#ordersCard">الطلبات</a><a href="#inventoryAlertsCard">المخزون</a>
+    </nav>
+    <div class="dashboard-stats" aria-label="ملخص المتجر">
+      <div class="dashboard-stat"><span>إجمالي المنتجات</span><strong id="dashProducts">0</strong></div>
+      <div class="dashboard-stat"><span>إجمالي الطلبات</span><strong id="dashOrders">0</strong></div>
+      <div class="dashboard-stat"><span>مخزون منخفض</span><strong id="dashLowStock">0</strong></div>
+      <div class="dashboard-stat"><span>منتجات نفدت</span><strong id="dashOutStock">0</strong></div>
+    </div>
     <div class="card">
       <div class="actions" style="justify-content:space-between;align-items:center"><div><h2 style="margin:0 0 5px">إضافة منتج</h2><span class="muted" id="signedInAs"></span></div><button class="light" id="enablePushBtn" type="button">تفعيل إشعارات الطلبات على هذا الهاتف</button><button class="light" id="logoutBtn" type="button">تسجيل الخروج</button></div>
       <p class="status" id="saveStatus" aria-live="polite"></p><p class="status" id="pushStatus" aria-live="polite"></p>
@@ -43,7 +84,7 @@
       </form>
     </div>
     <section class="card" id="inventoryAlertsCard"><h2 style="margin:0 0 8px">تنبيهات المخزون</h2><div id="inventoryAlerts" aria-live="polite"><p class="muted">جارٍ فحص المخزون…</p></div></section>
-    <section class="card" id="ordersCard"><div class="actions" style="justify-content:space-between;align-items:center"><div><h2 style="margin:0">طلبات العملاء (<span id="ordersCount">0</span>)</h2><p class="muted" style="margin:5px 0 0">الطلبات المسجلة من الموقع، مع تحديث حالة كل طلب.</p></div><div class="actions"><button class="light" id="exportOrdersBtn" type="button">تصدير الطلبات CSV</button><button class="light" id="refreshOrdersBtn" type="button">تحديث الطلبات</button></div></div><p class="status" id="ordersStatus" aria-live="polite"></p><div class="order-stats" id="orderStats"></div><div class="field"><label for="orderSearch">بحث في الطلبات</label><input id="orderSearch" type="search" placeholder="رقم الطلب أو اسم العميل أو الهاتف"></div><div class="field"><label for="orderFilter">تصفية الطلبات</label><select id="orderFilter"><option value="all">كل الطلبات</option><option value="new">جديد</option><option value="confirmed">تم التأكيد</option><option value="shipped">تم الشحن</option><option value="delivered">تم التسليم</option><option value="cancelled">ملغي</option></select></div><div id="ordersList" class="products"><p class="muted">جارٍ تحميل الطلبات…</p></div></section>\n    <div class="card"><div class="actions" style="justify-content:space-between;align-items:center"><h2 style="margin:0">المنتجات الحالية (<span id="count">0</span>)</h2><div class="actions"><button class="light" id="importBtn" type="button">استيراد products.js</button><button class="light" id="exportBtn" type="button">تنزيل نسخة</button></div></div><input id="importFile" type="file" accept=".js,.txt,text/javascript,text/plain" hidden><p class="muted">الصور المرفوعة محفوظة في قاعدة المتجر؛ نسخة products.js تحفظ بيانات المنتجات فقط.</p><div class="field"><label for="productSearch">ابحث في المنتجات</label><input id="productSearch" type="search" placeholder="اسم المنتج أو الماركة أو القسم أو رقم المنتج"></div><p class="muted" id="listSummary" aria-live="polite"></p><div class="products" id="productList"></div></div>
+    <section class="card" id="ordersCard"><div class="actions" style="justify-content:space-between;align-items:center"><div><h2 style="margin:0">طلبات العملاء (<span id="ordersCount">0</span>)</h2><p class="muted" style="margin:5px 0 0">الطلبات المسجلة من الموقع، مع تحديث حالة كل طلب.</p></div><div class="actions"><button class="light" id="exportOrdersBtn" type="button">تصدير الطلبات CSV</button><button class="light" id="refreshOrdersBtn" type="button">تحديث الطلبات</button></div></div><p class="status" id="ordersStatus" aria-live="polite"></p><div class="order-stats" id="orderStats"></div><div class="field"><label for="orderSearch">بحث في الطلبات</label><input id="orderSearch" type="search" placeholder="رقم الطلب أو اسم العميل أو الهاتف"></div><div class="field"><label for="orderFilter">تصفية الطلبات</label><select id="orderFilter"><option value="all">كل الطلبات</option><option value="new">جديد</option><option value="confirmed">تم التأكيد</option><option value="shipped">تم الشحن</option><option value="delivered">تم التسليم</option><option value="cancelled">ملغي</option></select></div><div id="ordersList" class="products"><p class="muted">جارٍ تحميل الطلبات…</p></div></section>\n    <div class="card" id="catalogCard"><div class="actions" style="justify-content:space-between;align-items:center"><h2 style="margin:0">المنتجات الحالية (<span id="count">0</span>)</h2><div class="actions"><button class="light" id="importBtn" type="button">استيراد products.js</button><button class="light" id="exportBtn" type="button">تنزيل نسخة</button></div></div><input id="importFile" type="file" accept=".js,.txt,text/javascript,text/plain" hidden><p class="muted">الصور المرفوعة محفوظة في قاعدة المتجر؛ نسخة products.js تحفظ بيانات المنتجات فقط.</p><div class="field"><label for="productSearch">ابحث في المنتجات</label><input id="productSearch" type="search" placeholder="اسم المنتج أو الماركة أو القسم أو رقم المنتج"></div><p class="muted" id="listSummary" aria-live="polite"></p><div class="products" id="productList"></div></div>
   </section>
 </main>
 <script src="products.js?v=product-admin-2"></script>
@@ -106,6 +147,9 @@ function renderProducts() {
   const tracked = products.filter(function (item) { return Number.isInteger(item.stock) && item.stock >= 0; }).length;
   const lowStock = products.filter(function (item) { return Number.isInteger(item.stock) && item.stock > 0 && item.stock <= 5; }).length;
   const untracked = products.length - tracked;
+  if ($("dashProducts")) $("dashProducts").textContent = String(products.length);
+  if ($("dashLowStock")) $("dashLowStock").textContent = String(lowStock);
+  if ($("dashOutStock")) $("dashOutStock").textContent = String(outOfStock);
   const alertBox = $("inventoryAlerts");
   if (alertBox) {
     const lowItems = products.filter(function(item){return Number.isInteger(item.stock)&&item.stock>=1&&item.stock<=5;});
@@ -154,6 +198,7 @@ function renderOrders(){
  const filter=$("orderFilter").value,term=String($("orderSearch").value||"").trim().toLocaleLowerCase("ar");
  const filtered=orders.filter(o=>(filter==="all"||o.status===filter)&&(!term||[o.orderNumber,o.customerName,o.customerPhone,o.customerAddress].join(" ").toLocaleLowerCase("ar").includes(term)));
  $("ordersCount").textContent=String(orders.length);
+ if($("dashOrders"))$("dashOrders").textContent=String(orders.length);
  $("orderStats").innerHTML=Object.keys(orderStatusLabels).map(k=>'<div class="order-stat"><b>'+orders.filter(o=>o.status===k).length+'</b><span>'+orderStatusLabels[k]+'</span></div>').join("");
  $("ordersList").innerHTML=filtered.map(o=>{
   const items=(Array.isArray(o.items)?o.items:[]).map(i=>escapeHtml(i.name)+" × "+Number(i.qty||0)).join("، ");
