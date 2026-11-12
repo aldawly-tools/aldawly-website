@@ -41,7 +41,7 @@
     document.title = name + " | الدولي";
     document.getElementById("detailBreadcrumb").textContent = name;
     root.innerHTML = '<article class="product-detail-layout">' +
-      '<div class="product-detail-image" id="detailImage">' + image + '</div>' +
+      '<div class="product-detail-image" id="detailImage" tabindex="0" role="button" aria-label="تكبير صورة ' + escapeHtml(name) + '" title="اضغط لتكبير الصورة">' + image + '</div>' +
       '<div class="product-detail-info"><span class="product-detail-category">' + brand + escapeHtml(item.cat || "منتجات") + '</span>' +
       '<h1 class="product-detail-title">' + escapeHtml(name) + '</h1>' +
       '<p class="product-detail-description">' + escapeHtml(item.desc || "للاستفسار عن مواصفات المنتج وتفاصيله، تواصل معنا مباشرة.") + '</p>' +

@@ -121,7 +121,7 @@
           : '<span class="product-placeholder" aria-hidden="true">' + escapeHtml(item.icon || "🔧") + '</span>';
       const detailUrl = "product.html?id=" + encodeURIComponent(String(item.id));
       return '<article class="product-card" id="product-' + encodeURIComponent(item.id) + '">' +
-        '<a class="product-visual product-open-link" href="' + detailUrl + '" aria-label="تفاصيل ' + escapeHtml(item.name) + '">' + visual + '</a>' +
+        '<a class="product-visual product-open-link" href="' + detailUrl + '" aria-label="تكبير صورة ' + escapeHtml(item.name) + '" title="اضغط لتكبير الصورة">' + visual + '</a>' +
         '<div class="product-info"><span class="product-category">' + (item.brand ? escapeHtml(item.brand) + ' · ' : '') + escapeHtml(item.cat || "منتجات") + '</span>' +
         '<h3 class="product-name"><a class="product-name-link" href="' + detailUrl + '">' + escapeHtml(item.name) + '</a></h3>' +
         '<p class="product-description">' + escapeHtml(item.desc || "") + '</p>' +
