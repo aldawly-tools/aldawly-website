@@ -115,7 +115,7 @@ const r=recommendations[task],usage=frequency==='heavy'?'استخدام احتر
 const p=power==='battery'?'التشغيل المطلوب: بطارية.':power==='electric'?'التشغيل المطلوب: كهرباء بسلك.':'نوع التشغيل مفتوح للمقارنة.';
 out.innerHTML=`<span class="pill">ترشيح مبدئي</span><h3>${r.name}</h3><p>${r.base}</p><p><b>حسب إجاباتك:</b> الخامة: ${material} — ${usage} ${p}</p><b>قبل ما تشتري:</b><ul>${r.checks.map(x=>`<li>${x}</li>`).join('')}</ul>${budget?`<p><b>الميزانية:</b> ${budget}</p>`:''}${details?`<p><b>تفاصيلك:</b> ${details}</p>`:''}<p><b>الخطوة التالية:</b> ابعت الترشيح للدولي لمراجعة الموديلات المتاحة والسعر النهائي.</p><button class="secondary" type="button" id="copy">نسخ ملخص الاحتياج</button>`;
 const catalog=Array.isArray(window.DAWLY_PRODUCTS)?window.DAWLY_PRODUCTS:[];
- const detailWords=details.toLocaleLowerCase('ar').split(/[\\s،,؛;]+/).filter(word=>word.length>2);
+ const detailWords=details.toLocaleLowerCase('ar').split(/[\s،,؛;]+/).filter(word=>word.length>2);
  const materialWords=material==='حديد أو معدن'?['معدن','حديد','صلب','metal']:material==='خشب'?['خشب','wood']:material==='خرسانة أو طوب'?['خرسانة','طوب','خرسانه','concrete']:material==='بلاستيك'?['بلاستيك','pvc']:[''];
  const scored=catalog.map(item=>{
    const text=[item.name,item.brand,item.cat,item.desc,item.specs,item.model,item.code,item.sku].join(' ').toLocaleLowerCase('ar');
