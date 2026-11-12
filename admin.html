@@ -31,6 +31,7 @@
           <div class="field"><label for="brand">الماركة</label><input id="brand" placeholder="Würth / Bosch / Wera"></div>
           <div class="field"><label for="cat">القسم</label><select id="cat"><option>عدد يدوية</option><option>عدد كهربائية</option><option>مستلزمات الورش</option><option>قياس</option></select></div>
           <div class="field"><label for="price">السعر</label><input id="price" placeholder="السعر عند الاستفسار"></div>
+          <div class="field"><label for="stock">الكمية المتاحة بالمخزون</label><input id="stock" type="number" min="0" max="99999" step="1" inputmode="numeric" placeholder="اتركها فارغة إذا لم تحدد المخزون"><small class="muted">اكتب 0 إذا المنتج نفد، أو اتركها فارغة إذا لم تسجل الكمية.</small></div>
           <div class="field"><label for="icon">رمز بديل</label><input id="icon" value="🔧"></div>
         </div>
         <div class="field"><label for="imageUrl">رابط الصورة (اختياري)</label><input id="imageUrl" type="text" placeholder="اتركه فارغًا إذا سترفع صورة من جهازك"></div>
@@ -93,9 +94,12 @@ function renderProducts() {
     const haystack = [product.name, product.brand, product.cat, product.price, product.id, product.specs, product.desc].join(" ").toLocaleLowerCase("ar");
     return !term || haystack.includes(term);
   });
-  $("listSummary").textContent = term ? "نتائج البحث: " + filtered.length + " من " + products.length : "إجمالي المنتجات: " + products.length;
+  const outOfStock = products.filter(function (item) { return item.stock === 0; }).length;
+  const tracked = products.filter(function (item) { return Number.isInteger(item.stock) && item.stock >= 0; }).length;
+  $("listSummary").textContent = (term ? "نتائج البحث: " + filtered.length + " من " + products.length + " · " : "إجمالي المنتجات: " + products.length + " · ") + "مخزون مسجل: " + tracked + " · نفد المخزون: " + outOfStock;
   $("productList").innerHTML = filtered.map(function (product) {
-    return '<div class="product"><div><strong>' + escapeHtml(product.name) + '</strong><small>' + escapeHtml(product.brand || "بدون ماركة") + ' · ' + escapeHtml(product.cat || "") + ' · ' + escapeHtml(product.price || "السعر عند الاستفسار") + ' · رقم: ' + escapeHtml(product.id) + '</small>' + (product.imageId ? '<span class="pill">صورة محفوظة</span>' : "") + '</div><div class="actions"><button class="light" type="button" data-edit="' + escapeHtml(product.id) + '">تعديل</button><button class="danger" type="button" data-delete="' + escapeHtml(product.id) + '">حذف</button></div></div>';
+    const stockLabel = Number.isInteger(product.stock) && product.stock >= 0 ? (product.stock === 0 ? "نفد المخزون" : "المتاح: " + product.stock + " قطعة") : "المخزون غير محدد";
+    return '<div class="product"><div><strong>' + escapeHtml(product.name) + '</strong><small>' + escapeHtml(product.brand || "بدون ماركة") + ' · ' + escapeHtml(product.cat || "") + ' · ' + escapeHtml(product.price || "السعر عند الاستفسار") + ' · رقم: ' + escapeHtml(product.id) + '</small><span class="pill">' + escapeHtml(stockLabel) + '</span>' + (product.imageId ? '<span class="pill">صورة محفوظة</span>' : "") + '</div><div class="actions"><button class="light" type="button" data-edit="' + escapeHtml(product.id) + '">تعديل</button><button class="danger" type="button" data-delete="' + escapeHtml(product.id) + '">حذف</button></div></div>';
   }).join("") || '<p class="muted">' + (term ? "لا توجد نتائج مطابقة للبحث." : "لا توجد منتجات حاليًا.") + '</p>';
 }
 async function ensureCatalog() {
@@ -157,6 +161,7 @@ async function importProducts(file) {
       price:String(item.price || "السعر عند الاستفسار"),
       image:image,
       imageId:image ? null : (item.imageId || previous.imageId || null),
+      stock:Number.isInteger(Number(item.stock)) && item.stock !== "" && Number(item.stock) >= 0 ? Number(item.stock) : (Number.isInteger(previous.stock) ? previous.stock : null),
       tasks:Array.isArray(item.tasks) ? item.tasks.map(String) : []
     };
   });
@@ -211,6 +216,7 @@ async function editProduct(id) {
   $("brand").value = product.brand || "";
   $("cat").value = product.cat || "عدد يدوية";
   $("price").value = product.price || "";
+  $("stock").value = Number.isInteger(product.stock) && product.stock >= 0 ? String(product.stock) : "";
   $("icon").value = product.icon || "🔧";
   $("imageUrl").value = product.image || "";
   $("imageFile").value = "";
@@ -270,6 +276,12 @@ $("productForm").addEventListener("submit", async function (event) {
   const previous = $("pid").value ? products.find(function (item) { return String(item.id) === String($("pid").value); }) : null;
   const id = previous ? Number(previous.id) : Math.max(0, ...products.map(function (item) { return Number(item.id) || 0; })) + 1;
   const file = $("imageFile").files && $("imageFile").files[0];
+  const stockValue = $("stock").value.trim();
+  if (stockValue !== "" && (!/^\\d+$/.test(stockValue) || Number(stockValue) > 99999)) {
+    message(saveStatus, "اكتب كمية صحيحة من 0 إلى 99999، أو اترك الخانة فارغة.");
+    $("stock").focus();
+    return;
+  }
   let image = $("imageUrl").value.trim();
   let imageId = previous && previous.imageId ? String(previous.imageId) : null;
   $("saveBtn").disabled = true;
@@ -292,6 +304,7 @@ $("productForm").addEventListener("submit", async function (event) {
       desc:$("desc").value.trim(),
       specs:$("specs").value.trim(),
       price:$("price").value.trim() || "السعر عند الاستفسار",
+      stock:$("stock").value.trim() === "" ? null : Math.max(0, Math.min(99999, Math.floor(Number($("stock").value)))),
       icon:$("icon").value.trim() || "🔧",
       image:image,
       imageId:imageId,
