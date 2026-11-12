@@ -170,7 +170,7 @@ $("exportOrdersBtn").addEventListener("click",exportOrdersCsv);
 async function loadOrders(){
  $("ordersStatus").textContent="جارٍ تحميل الطلبات…";
  try{const snap=await getDocs(query(collection(db,"orders"),orderBy("createdAt","desc")));orders=snap.docs.map(d=>Object.assign({id:d.id},d.data()));renderOrders();$("ordersStatus").textContent=orders.length?"تم تحميل الطلبات.":"لا توجد طلبات مسجلة حتى الآن.";}
- catch(e){$("ordersStatus").textContent="تعذر تحميل الطلبات. راجع قواعد Firestore الخاصة بالطلبات في ملف firebase-setup-ar.txt.";$("ordersList").innerHTML="";}
+ catch(e){console.error("Orders load failed:",e);$("ordersStatus").textContent="تعذر تحميل الطلبات: "+(e.code||"")+(e.message?" — "+e.message:"");$("ordersList").innerHTML="";}
 }
 $("refreshOrdersBtn").addEventListener("click",loadOrders);
 $("orderFilter").addEventListener("change",renderOrders);
