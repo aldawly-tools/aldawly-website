@@ -359,10 +359,14 @@ $("loginBtn").addEventListener("click", async function () {
   try {
     const provider = new GoogleAuthProvider();
     provider.setCustomParameters({prompt:"select_account"});
-    if (/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-      await signInWithRedirect(auth, provider);
-    } else {
+    try {
       await signInWithPopup(auth, provider);
+    } catch (popupError) {
+      if (popupError.code === "auth/popup-blocked" || popupError.code === "auth/operation-not-supported-in-this-environment") {
+        await signInWithRedirect(auth, provider);
+      } else {
+        throw popupError;
+      }
     }
   } catch (error) {
     console.error("Firebase sign-in error:", error);
@@ -478,7 +482,9 @@ if (!readyConfig()) {
     db = getFirestore(app);
     auth = getAuth(app);
     getRedirectResult(auth).then(function (result) {
-      if (!result && !auth.currentUser) message(status, "لم يكتمل تسجيل الدخول. اضغط دخول بحساب Google وحاول مرة أخرى.");
+      if (result && result.user) {
+        message(status, "تم تسجيل الدخول بنجاح.");
+      }
     }).catch(function (error) {
       console.error("Google redirect result error:", error);
       message(status, "تعذر إكمال دخول Google (" + (error.code || error.message || "خطأ غير معروف") + ").");
