@@ -41,7 +41,7 @@
         <div class="actions form-actions"><button class="red" id="saveBtn" type="submit">حفظ المنتج</button><button class="light" id="resetBtn" type="button">منتج جديد</button></div>
       </form>
     </div>
-    <div class="card"><div class="actions" style="justify-content:space-between;align-items:center"><h2 style="margin:0">المنتجات الحالية (<span id="count">0</span>)</h2><div class="actions"><button class="light" id="importBtn" type="button">استيراد products.js</button><button class="light" id="exportBtn" type="button">تنزيل نسخة</button></div></div><input id="importFile" type="file" accept=".js,.txt,text/javascript,text/plain" hidden><p class="muted">الصور المرفوعة محفوظة في قاعدة المتجر؛ نسخة products.js تحفظ بيانات المنتجات فقط.</p><div class="products" id="productList"></div></div>
+    <div class="card"><div class="actions" style="justify-content:space-between;align-items:center"><h2 style="margin:0">المنتجات الحالية (<span id="count">0</span>)</h2><div class="actions"><button class="light" id="importBtn" type="button">استيراد products.js</button><button class="light" id="exportBtn" type="button">تنزيل نسخة</button></div></div><input id="importFile" type="file" accept=".js,.txt,text/javascript,text/plain" hidden><p class="muted">الصور المرفوعة محفوظة في قاعدة المتجر؛ نسخة products.js تحفظ بيانات المنتجات فقط.</p><div class="field"><label for="productSearch">ابحث في المنتجات</label><input id="productSearch" type="search" placeholder="اسم المنتج أو الماركة أو القسم أو رقم المنتج"></div><p class="muted" id="listSummary" aria-live="polite"></p><div class="products" id="productList"></div></div>
   </section>
 </main>
 <script src="products.js?v=product-admin-2"></script>
@@ -88,9 +88,15 @@ function showPreview(url) {
 }
 function renderProducts() {
   $("count").textContent = String(products.length);
-  $("productList").innerHTML = products.map(function (product) {
-    return '<div class="product"><div><strong>' + escapeHtml(product.name) + '</strong><small>' + escapeHtml(product.brand || "بدون ماركة") + ' · ' + escapeHtml(product.cat || "") + ' · ' + escapeHtml(product.price || "السعر عند الاستفسار") + '</small>' + (product.imageId ? '<span class="pill">صورة محفوظة</span>' : "") + '</div><div class="actions"><button class="light" type="button" data-edit="' + escapeHtml(product.id) + '">تعديل</button><button class="danger" type="button" data-delete="' + escapeHtml(product.id) + '">حذف</button></div></div>';
-  }).join("") || '<p class="muted">لا توجد منتجات حاليًا.</p>';
+  const term = String($("productSearch").value || "").trim().toLocaleLowerCase("ar");
+  const filtered = products.filter(function (product) {
+    const haystack = [product.name, product.brand, product.cat, product.price, product.id, product.specs, product.desc].join(" ").toLocaleLowerCase("ar");
+    return !term || haystack.includes(term);
+  });
+  $("listSummary").textContent = term ? "نتائج البحث: " + filtered.length + " من " + products.length : "إجمالي المنتجات: " + products.length;
+  $("productList").innerHTML = filtered.map(function (product) {
+    return '<div class="product"><div><strong>' + escapeHtml(product.name) + '</strong><small>' + escapeHtml(product.brand || "بدون ماركة") + ' · ' + escapeHtml(product.cat || "") + ' · ' + escapeHtml(product.price || "السعر عند الاستفسار") + ' · رقم: ' + escapeHtml(product.id) + '</small>' + (product.imageId ? '<span class="pill">صورة محفوظة</span>' : "") + '</div><div class="actions"><button class="light" type="button" data-edit="' + escapeHtml(product.id) + '">تعديل</button><button class="danger" type="button" data-delete="' + escapeHtml(product.id) + '">حذف</button></div></div>';
+  }).join("") || '<p class="muted">' + (term ? "لا توجد نتائج مطابقة للبحث." : "لا توجد منتجات حاليًا.") + '</p>';
 }
 async function ensureCatalog() {
   const metaRef = doc(db, "storeMeta", "catalog");
@@ -236,6 +242,7 @@ $("loginBtn").addEventListener("click", async function () {
 });
 $("logoutBtn").addEventListener("click", function () { signOut(auth); });
 $("resetBtn").addEventListener("click", resetForm);
+$("productSearch").addEventListener("input", renderProducts);
 $("exportBtn").addEventListener("click", exportProducts);
 $("importBtn").addEventListener("click", function () { $("importFile").click(); });
 $("importFile").addEventListener("change", async function (event) {
