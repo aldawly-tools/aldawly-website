@@ -445,9 +445,8 @@ $("productForm").addEventListener("submit", async function (event) {
   event.preventDefault();
   const previous = $("pid").value ? products.find(function (item) { return String(item.id) === String($("pid").value); }) : null;
   const id = previous ? Number(previous.id) : Math.max(0, ...products.map(function (item) { return Number(item.id) || 0; })) + 1;
-  const file = $("imageFile").files && $("imageFile").files[0];
   const files = Array.from($("imageFile").files || []);
-  if (files.length > 5) { message(saveStatus, "يمكن إضافة 5 صور كحد أقصى للمنتج."); return; }
+  if (files.length + (imageRemoved ? 0 : existingImageIds.length) > 5) { message(saveStatus, "الحد الأقصى 5 صور للمنتج. امسح الصور القديمة أولًا إذا أردت استبدالها."); return; }
   const file = files[0];
   const stockValue = $("stock").value.trim();
   if (stockValue !== "" && (!/^\\d+$/.test(stockValue) || Number(stockValue) > 99999)) {
@@ -468,7 +467,6 @@ $("productForm").addEventListener("submit", async function (event) {
         await setDoc(doc(db, "productImages", newImageId), {data:compressed, updatedAt:serverTimestamp()});
         imageIds.push(newImageId);
       }
-      imageIds = imageIds.slice(0, 5);
       image = "";
     } else if (imageRemoved || (previous && image !== String(previous.image || ""))) {
       const oldIds = previous && Array.isArray(previous.imageIds) ? previous.imageIds : (previous && previous.imageId ? [previous.imageId] : []);
