@@ -63,6 +63,19 @@
         : '<span class="product-detail-placeholder" aria-hidden="true">' + escapeHtml(item.icon || "🔧") + '</span>';
     const brand = item.brand ? escapeHtml(displayBrand(item.brand)) + ' · ' : "";
     const price = escapeHtml(formatPrice(item.price));
+    const specsText = cleanProductCopy(item.specs || "");
+    const specsRows = specsText.split("\\n").map(function (line) {
+      const parts = line.split(/[:：]/);
+      if (parts.length < 2) return null;
+      const label = parts.shift().trim();
+      const value = parts.join(":").trim();
+      return label && value ? {label:label,value:value} : null;
+    }).filter(Boolean);
+    const specsHtml = specsRows.length
+      ? '<section class="product-specs"><h2>المواصفات الفنية</h2><div class="product-specs-table">' +
+        specsRows.map(function (spec) { return '<div class="product-spec-row"><strong>' + escapeHtml(spec.label) + '</strong><span>' + escapeHtml(spec.value) + '</span></div>'; }).join("") +
+        '</div></section>'
+      : "";
     const productUrl = new URL("product.html?id=" + encodeURIComponent(item.id), window.location.href).toString();
     const message = "السلام عليكم، أريد الاستفسار عن الإعلان: " + name + "\nرابط الإعلان والصورة للتوضيح: " + productUrl;
     const whatsapp = "https://wa.me/201024787222?text=" + encodeURIComponent(message);
@@ -76,7 +89,7 @@
       '<p class="product-detail-description">' + escapeHtml(cleanProductCopy(item.desc || "للاستفسار عن مواصفات المنتج وتفاصيله، تواصل معنا مباشرة.")) + '</p>' +
       '<div class="product-detail-price">' + price + '<small>' + (formatPrice(item.price).includes("ج.م") ? 'السعر بالجنيه المصري · التوفر عند التواصل' : 'السعر والتوفر عند التواصل') + '</small></div>' +
       '<div class="product-detail-actions"><a class="button-primary" href="' + whatsapp + '" target="_blank" rel="noopener">استفسر عن المنتج عبر واتساب</a>' +
-      '<a class="button-outline" href="products.html">العودة إلى المنتجات</a></div></div></article>';
+      '<a class="button-outline" href="products.html">العودة إلى المنتجات</a></div>' + specsHtml + '</div></article>';
 
     const cloudImage = document.getElementById("detailCloudImage");
     if (cloudImage && typeof window.DAWLY_LOAD_PRODUCT_IMAGE === "function") {
