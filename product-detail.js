@@ -56,11 +56,13 @@
     }
 
     const name = cleanProductName(item.name || "منتج من الدولي");
+    const imageIds = Array.isArray(item.imageIds) && item.imageIds.length ? item.imageIds : (item.imageId ? [item.imageId] : []);
     const image = item.image
-      ? '<img src="' + escapeHtml(item.image) + '" alt="' + escapeHtml(name) + '">'
-      : item.imageId
-        ? '<img id="detailCloudImage" data-cloud-image="' + escapeHtml(item.imageId) + '" alt="' + escapeHtml(name) + '" loading="lazy">'
+      ? '<img id="detailMainImage" src="' + escapeHtml(item.image) + '" alt="' + escapeHtml(name) + '">'
+      : imageIds.length
+        ? '<img id="detailCloudImage" data-cloud-image="' + escapeHtml(imageIds[0]) + '" alt="' + escapeHtml(name) + '" loading="lazy">'
         : '<span class="product-detail-placeholder" aria-hidden="true">' + escapeHtml(item.icon || "🔧") + '</span>';
+    const galleryHtml = imageIds.length > 1 ? '<div class="detail-image-thumbs" id="detailImageThumbs"></div>' : '';
     const brand = item.brand ? escapeHtml(displayBrand(item.brand)) + ' · ' : "";
     const price = escapeHtml(formatPrice(item.price));
     const stockKnown = Number.isInteger(item.stock) && item.stock >= 0;
@@ -91,7 +93,7 @@
     document.title = name + " | الدولي";
     document.getElementById("detailBreadcrumb").textContent = name;
     root.innerHTML = '<article class="product-detail-layout">' +
-      '<div class="product-detail-image" id="detailImage" tabindex="0" role="button" aria-label="تكبير صورة ' + escapeHtml(name) + '" title="اضغط لتكبير الصورة">' + image + '</div>' +
+      '<div><div class="product-detail-image" id="detailImage" tabindex="0" role="button" aria-label="تكبير صورة ' + escapeHtml(name) + '" title="اضغط لتكبير الصورة">' + image + '</div>' + galleryHtml + '</div>' +
       '<div class="product-detail-info"><span class="product-detail-category">' + brand + escapeHtml(item.cat || "منتجات") + '</span>' +
       '<h1 class="product-detail-title">' + escapeHtml(name) + '</h1>' +
       '<p class="product-detail-description">' + escapeHtml(cleanProductCopy(item.desc || "للاستفسار عن مواصفات المنتج وتفاصيله، تواصل معنا مباشرة.")) + '</p>' +
@@ -134,9 +136,24 @@
     }
 
     const cloudImage = document.getElementById("detailCloudImage");
-    if (cloudImage && typeof window.DAWLY_LOAD_PRODUCT_IMAGE === "function") {
-      window.DAWLY_LOAD_PRODUCT_IMAGE(cloudImage.dataset.cloudImage).then(function (url) {
-        if (url && cloudImage.isConnected) cloudImage.src = url;
+    const mainImage = document.getElementById("detailMainImage") || cloudImage;
+    const thumbBox = document.getElementById("detailImageThumbs");
+    if (imageIds.length && typeof window.DAWLY_LOAD_PRODUCT_IMAGE === "function") {
+      Promise.all(imageIds.slice(0, 5).map(function (imageId) {
+        return window.DAWLY_LOAD_PRODUCT_IMAGE(imageId);
+      })).then(function (urls) {
+        const valid = urls.filter(Boolean);
+        if (!valid.length) return;
+        if (mainImage && mainImage.isConnected && !mainImage.src) mainImage.src = valid[0];
+        if (thumbBox && thumbBox.isConnected) {
+          thumbBox.innerHTML = valid.map(function (url, index) {
+            return '<button type="button" class="detail-image-thumb" data-image-url="' + escapeHtml(url) + '" aria-label="عرض الصورة ' + (index + 1) + '"><img src="' + escapeHtml(url) + '" alt=""></button>';
+          }).join("");
+          thumbBox.addEventListener("click", function (event) {
+            const button = event.target.closest("[data-image-url]");
+            if (button && mainImage) mainImage.src = button.dataset.imageUrl;
+          });
+        }
       }).catch(function () {});
     }
   }
