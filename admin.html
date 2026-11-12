@@ -168,20 +168,27 @@ $("ordersList").addEventListener("change",async function(e){
  const found=orders.find(o=>o.id===id);
  if(!found)return;
  const previousStatus=found.status||"new";
- if(statusValue==="confirmed"&&previousStatus!=="confirmed"&&!found.inventoryDeducted){
-  if(!window.confirm("تأكيد الطلب سيخصم الكميات المتاحة من مخزون المنتجات المسجل. هل تريد المتابعة؟")){renderOrders();return;}
- }
+ const needsDeduction=statusValue==="confirmed"&&previousStatus!=="confirmed"&&(!found.inventoryDeducted||found.inventoryRestored);
+ const needsRestock=statusValue==="cancelled"&&previousStatus==="confirmed"&&found.inventoryDeducted&&!found.inventoryRestored;
+ if(needsDeduction&&!window.confirm("تأكيد الطلب سيخصم الكميات المتاحة من مخزون المنتجات المسجل. هل تريد المتابعة؟")){renderOrders();return;}
+ if(needsRestock&&!window.confirm("إلغاء الطلب سيعيد الكميات التي خُصمت إلى المخزون المسجل. هل تريد المتابعة؟")){renderOrders();return;}
  el.disabled=true;
  try{
-  if(statusValue==="confirmed"&&!found.inventoryDeducted&&previousStatus!=="confirmed"){
+  if(needsDeduction||needsRestock){
    await runTransaction(db,async function(transaction){
     const orderRef=doc(db,"orders",id);
     const orderSnap=await transaction.get(orderRef);
     if(!orderSnap.exists())throw new Error("الطلب غير موجود.");
     const orderData=orderSnap.data();
-    if(orderData.inventoryDeducted){transaction.update(orderRef,{status:"confirmed",updatedAt:serverTimestamp()});return;}
     const items=Array.isArray(orderData.items)?orderData.items:[];
     if(!items.length)throw new Error("لا توجد منتجات داخل الطلب.");
+    const shouldDeduct=statusValue==="confirmed";
+    if(shouldDeduct&&orderData.inventoryDeducted&&!orderData.inventoryRestored){
+     transaction.update(orderRef,{status:"confirmed",updatedAt:serverTimestamp()});return;
+    }
+    if(!shouldDeduct&&(!orderData.inventoryDeducted||orderData.inventoryRestored)){
+     transaction.update(orderRef,{status:"cancelled",updatedAt:serverTimestamp()});return;
+    }
     const productReads=[];
     for(const item of items){
      const productId=String(item.id||"");
@@ -195,18 +202,21 @@ $("ordersList").addEventListener("change",async function(e){
     productReads.forEach(function(entry){
      const stock=entry.data.stock;
      if(Number.isInteger(stock)&&stock>=0){
-      if(stock<entry.qty)throw new Error("المخزون غير كافٍ للمنتج رقم "+entry.id+". المتاح: "+stock+" والمطلوب: "+entry.qty);
-      transaction.update(entry.ref,{stock:stock-entry.qty,updatedAt:serverTimestamp()});
+      if(shouldDeduct&&stock<entry.qty)throw new Error("المخزون غير كافٍ للمنتج رقم "+entry.id+". المتاح: "+stock+" والمطلوب: "+entry.qty);
+      transaction.update(entry.ref,{stock:shouldDeduct?stock-entry.qty:stock+entry.qty,updatedAt:serverTimestamp()});
      }
     });
-    transaction.update(orderRef,{status:"confirmed",inventoryDeducted:true,inventoryDeductedAt:serverTimestamp(),updatedAt:serverTimestamp()});
+    transaction.update(orderRef,shouldDeduct
+     ?{status:"confirmed",inventoryDeducted:true,inventoryRestored:false,inventoryDeductedAt:serverTimestamp(),updatedAt:serverTimestamp()}
+     :{status:"cancelled",inventoryRestored:true,inventoryRestoredAt:serverTimestamp(),updatedAt:serverTimestamp()});
    });
-   found.inventoryDeducted=true;
+   found.inventoryDeducted=needsDeduction?true:found.inventoryDeducted;
+   found.inventoryRestored=needsRestock?true:false;
   }else{
    await updateDoc(doc(db,"orders",id),{status:statusValue,updatedAt:serverTimestamp()});
   }
   found.status=statusValue;renderOrders();
-  $("ordersStatus").textContent=statusValue==="confirmed"?(found.inventoryDeducted?"تم تأكيد الطلب وخصم المخزون مرة واحدة.":"تم تأكيد الطلب؛ بعض المنتجات مخزونها غير محدد."):"تم تحديث حالة الطلب.";
+  $("ordersStatus").textContent=needsDeduction?"تم تأكيد الطلب وخصم المخزون مرة واحدة.":needsRestock?"تم إلغاء الطلب وإعادة الكميات إلى المخزون.":statusValue==="confirmed"?"الطلب مؤكد بالفعل؛ لم يتكرر خصم المخزون.":"تم تحديث حالة الطلب.";
  }catch(err){
   console.error("Order status update failed:",err);
   $("ordersStatus").textContent=err.message||"تعذر تحديث الحالة. تحقق من صلاحيات حساب الإدارة.";
