@@ -40,7 +40,7 @@ footer{text-align:center;color:var(--muted);font-size:12px;padding:20px}
 </head>
 <body>
 <header><div class="wrap">
-<div class="top"><div class="brand"><span class="brand-main">الدولي للعدد</span><span class="brand-tagline">العدد الأصلية والمستوردة</span></div><span class="tag">مساعد اختيار العدد الذكي</span><a href="products.html" style="color:#fff;text-decoration:underline">العودة للمتجر</a></div>
+<div class="top"><div class="brand"><span class="brand-main">الدولي</span><span class="brand-tagline">العدد الأصلية والمستوردة</span></div><span class="tag">مساعد اختيار العدد الذكي</span><a href="products.html" style="color:#fff;text-decoration:underline">العودة للمتجر</a></div>
 <h1>اختار العِدّة المناسبة لشغلك</h1>
 <p>جاوب على كام سؤال بسيط، وخد ترشيح مبدئي لنوع الأداة والمواصفات اللي تدور عليها قبل الشراء.</p>
 </div></header>
@@ -81,7 +81,7 @@ footer{text-align:center;color:var(--muted);font-size:12px;padding:20px}
 </aside>
 </div>
 </main>
-<footer>الدولي للعدد الأصلية والمستوردة — مساعد اختيار العدد</footer>
+<footer>الدولي — العدد الأصلية والمستوردة — مساعد اختيار العدد</footer>
 <script src="products.js"></script>
 <script src="firebase-config.js?v=product-admin-2"></script>
 <script>
@@ -108,7 +108,7 @@ const matched=(window.DAWLY_PRODUCTS||[]).filter(item=>(item.tasks||[]).includes
  ? `<h3>منتجات من متجر الدولي قد تناسب احتياجك</h3><div class="matched-grid">${matched.map(item=>`<div class="matched-item"><b>${escapeHTML(item.name)}</b><small>${escapeHTML(item.cat)} · ${escapeHTML(item.desc)}</small><strong>${escapeHTML(item.price||'السعر عند الاستفسار')}</strong><br><a href="products.html#product-${item.id}">عرض المنتج في المتجر</a></div>`).join('')}</div>`
  : '<b>لا توجد منتجات مرتبطة بهذا الاستخدام حاليًا.</b><p><a href="https://wa.me/201024787222">اسألنا على واتساب</a></p>';
  document.getElementById('copy').addEventListener('click',async()=>{
-const t=`احتياجي من الدولي للعدد:\nالأداة المقترحة: ${r.name}\nنوع الشغل: ${document.getElementById('task').selectedOptions[0].text}\nالخامة: ${material}\nمعدل الاستخدام: ${document.getElementById('frequency').selectedOptions[0].text}\nالتشغيل: ${p}\nالميزانية: ${budget||'غير محددة'}\nتفاصيل: ${details||'لا يوجد'}`;
+const t=`احتياجي من الدولي:\nالأداة المقترحة: ${r.name}\nنوع الشغل: ${document.getElementById('task').selectedOptions[0].text}\nالخامة: ${material}\nمعدل الاستخدام: ${document.getElementById('frequency').selectedOptions[0].text}\nالتشغيل: ${p}\nالميزانية: ${budget||'غير محددة'}\nتفاصيل: ${details||'لا يوجد'}`;
 try{await navigator.clipboard.writeText(t);document.getElementById('copy').textContent='تم نسخ الملخص';}catch{document.getElementById('copy').textContent='تعذر النسخ من المتصفح';}
 });
 });

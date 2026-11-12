@@ -11,7 +11,7 @@
     });
   }
   function showMissing() {
-    document.title = "المنتج غير موجود | الدولي للعدد";
+    document.title = "المنتج غير موجود | الدولي";
     root.innerHTML = '<div class="product-detail-missing"><h1>المنتج غير موجود</h1><p>قد يكون الإعلان حُذف أو أن الرابط غير صحيح.</p><a class="button-primary" href="products.html">العودة إلى المنتجات</a></div>';
   }
   function render() {
@@ -38,7 +38,7 @@
     const message = "السلام عليكم، أريد الاستفسار عن الإعلان: " + name + "\nرابط الإعلان والصورة للتوضيح: " + productUrl;
     const whatsapp = "https://wa.me/201024787222?text=" + encodeURIComponent(message);
 
-    document.title = name + " | الدولي للعدد الأصلية والمستوردة";
+    document.title = name + " | الدولي";
     document.getElementById("detailBreadcrumb").textContent = name;
     root.innerHTML = '<article class="product-detail-layout">' +
       '<div class="product-detail-image" id="detailImage">' + image + '</div>' +
