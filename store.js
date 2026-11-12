@@ -46,6 +46,36 @@
       return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[char];
     });
   }
+  function parsePrice(value) {
+    if (typeof value === "number") return Number.isFinite(value) && value >= 0 ? value : null;
+    let text = String(value == null ? "" : value).trim();
+    if (!text || /استفسار|حسب الطلب/i.test(text)) return null;
+    text = text
+      .replace(/[٠-٩]/g, function (digit) { return String("٠١٢٣٤٥٦٧٨٩".indexOf(digit)); })
+      .replace(/[۰-۹]/g, function (digit) { return String("۰۱۲۳۴۵۶۷۸۹".indexOf(digit)); });
+    text = text.replace(/(?:جنيه(?:\s*مصري)?|ج\.?م\.?|EGP|LE)/gi, "").replace(/[\s,،٬]/g, "");
+    if (!/^\d+(?:\.\d+)?$/.test(text)) return null;
+    const amount = Number(text);
+    return Number.isFinite(amount) ? amount : null;
+  }
+  function money(amount) {
+    return new Intl.NumberFormat("ar-EG", {maximumFractionDigits:2}).format(amount) + " ج.م";
+  }
+  function cartPricing() {
+    let total = 0;
+    let pricedCount = 0;
+    cart.forEach(function (line) {
+      const item = products.find(function (entry) { return String(entry.id) === String(line.id); });
+      if (!item) return;
+      const price = parsePrice(item.price);
+      if (price === null) return;
+      total += price * line.qty;
+      pricedCount += 1;
+    });
+    return {total:total, pricedCount:pricedCount, itemCount:cart.filter(function (line) {
+      return products.some(function (item) { return String(item.id) === String(line.id); });
+    }).length};
+  }
   function categoryIcon(name) {
     if (name.includes("كهرب")) return "⚡";
     if (name.includes("يدوي")) return "🔧";
@@ -117,10 +147,23 @@
     cartItems.innerHTML = cart.length ? cart.map(function (line) {
       const item = products.find(function (entry) { return String(entry.id) === String(line.id); });
       if (!item) return "";
-      return '<div class="cart-row"><div><strong>' + escapeHtml(item.name) + '</strong><small>' + escapeHtml(item.price || "السعر عند الاستفسار") + '</small>' +
+      const price = parsePrice(item.price);
+      const lineTotal = price === null ? "" : '<small class="cart-line-total">مجموع هذا المنتج: ' + escapeHtml(money(price * line.qty)) + '</small>';
+      return '<div class="cart-row"><div><strong>' + escapeHtml(item.name) + '</strong><small>' + escapeHtml(item.price || "السعر عند الاستفسار") + '</small>' + lineTotal +
         '<div class="quantity"><button type="button" data-qty="' + escapeHtml(item.id) + '" data-delta="-1" aria-label="تقليل الكمية">−</button><span>' + line.qty + '</span><button type="button" data-qty="' + escapeHtml(item.id) + '" data-delta="1" aria-label="زيادة الكمية">+</button></div></div>' +
         '<button class="remove-item" type="button" data-remove="' + escapeHtml(item.id) + '">حذف</button></div>';
     }).join("") : '<div class="empty-cart">السلة فارغة حاليًا</div>';
+    const totalBox = document.getElementById("cartTotal");
+    const pricing = cartPricing();
+    if (!count) {
+      totalBox.innerHTML = "";
+    } else if (pricing.pricedCount === pricing.itemCount) {
+      totalBox.innerHTML = '<div class="cart-total-row"><span>إجمالي الطلب</span><strong>' + escapeHtml(money(pricing.total)) + '</strong></div>';
+    } else if (pricing.pricedCount) {
+      totalBox.innerHTML = '<div class="cart-total-row"><span>مجموع المنتجات المسعّرة</span><strong>' + escapeHtml(money(pricing.total)) + '</strong></div><small>يوجد منتج سعره عند الاستفسار؛ يتحدد الإجمالي بعد تأكيد سعره.</small>';
+    } else {
+      totalBox.innerHTML = '<div class="cart-total-row"><span>الإجمالي</span><strong>بعد تأكيد الأسعار</strong></div>';
+    }
   }
 
   window.addEventListener("dawly-products-updated", function (event) {
@@ -179,13 +222,21 @@
   });
   checkout.addEventListener("click", function () {
     if (!cart.length) return;
+    const pricing = cartPricing();
     const lines = cart.map(function (line) {
       const item = products.find(function (entry) { return String(entry.id) === String(line.id); });
       if (!item) return "";
       const productUrl = new URL("product.html?id=" + encodeURIComponent(item.id), window.location.href).toString();
-      return "• " + item.name + " × " + line.qty + "\n  الإعلان والصورة: " + productUrl;
+      const price = parsePrice(item.price);
+      const amount = price === null ? "السعر عند الاستفسار" : "مجموع المنتج: " + money(price * line.qty);
+      return "• " + item.name + " × " + line.qty + "\n  " + amount + "\n  الإعلان والصورة: " + productUrl;
     }).filter(Boolean).join("\n");
-    const message = "طلب جديد من متجر الدولي:\n" + lines + "\nمن فضلكم أكدوا السعر والتوفر.";
+    const totalText = pricing.pricedCount === pricing.itemCount
+      ? "إجمالي الطلب: " + money(pricing.total)
+      : pricing.pricedCount
+        ? "المجموع الجزئي للمنتجات المسعّرة: " + money(pricing.total) + "\nباقي المنتجات سعرها عند الاستفسار."
+        : "الإجمالي يتحدد بعد تأكيد الأسعار.";
+    const message = "طلب جديد من متجر الدولي:\n" + lines + "\n" + totalText + "\nمن فضلكم أكدوا السعر والتوفر.";
     window.open("https://wa.me/201024787222?text=" + encodeURIComponent(message), "_blank", "noopener");
   });
   document.addEventListener("keydown", function (event) {
