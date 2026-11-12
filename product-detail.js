@@ -34,7 +34,8 @@
         : '<span class="product-detail-placeholder" aria-hidden="true">' + escapeHtml(item.icon || "🔧") + '</span>';
     const brand = item.brand ? escapeHtml(item.brand) + ' · ' : "";
     const price = escapeHtml(item.price || "السعر عند الاستفسار");
-    const message = "السلام عليكم، أريد الاستفسار عن: " + name;
+    const productUrl = new URL("product.html?id=" + encodeURIComponent(item.id), window.location.href).toString();
+    const message = "السلام عليكم، أريد الاستفسار عن الإعلان: " + name + "\nرابط الإعلان والصورة للتوضيح: " + productUrl;
     const whatsapp = "https://wa.me/201024787222?text=" + encodeURIComponent(message);
 
     document.title = name + " | الدولي للعدد الأصلية والمستوردة";

@@ -181,7 +181,9 @@
     if (!cart.length) return;
     const lines = cart.map(function (line) {
       const item = products.find(function (entry) { return String(entry.id) === String(line.id); });
-      return item ? "• " + item.name + " × " + line.qty : "";
+      if (!item) return "";
+      const productUrl = new URL("product.html?id=" + encodeURIComponent(item.id), window.location.href).toString();
+      return "• " + item.name + " × " + line.qty + "\n  الإعلان والصورة: " + productUrl;
     }).filter(Boolean).join("\n");
     const message = "طلب جديد من متجر الدولي:\n" + lines + "\nمن فضلكم أكدوا السعر والتوفر.";
     window.open("https://wa.me/201024787222?text=" + encodeURIComponent(message), "_blank", "noopener");
