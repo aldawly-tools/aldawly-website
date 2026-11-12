@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="store.css?v=cart-mobile-12">
+<link rel="stylesheet" href="store.css?v=checkout-details-13">
 </head>
 <body>
 <div class="benefit-bar">
@@ -103,11 +103,22 @@
  <div class="drawer-head"><h2>سلة المشتريات</h2><button class="drawer-close" type="button" id="closeCart">إغلاق ✕</button></div>
  <div class="cart-items" id="cartItems"></div>
  <div class="cart-total" id="cartTotal" aria-live="polite"></div>
- <button class="button-primary checkout" type="button" id="checkout">إرسال الطلب عبر واتساب</button>
+ <div class="checkout-fields" aria-label="بيانات العميل">
+  <h3>بيانات التوصيل</h3>
+  <label for="customerName">الاسم بالكامل <span>*</span></label>
+  <input id="customerName" type="text" autocomplete="name" maxlength="80" placeholder="اكتب اسمك" required>
+  <label for="customerPhone">رقم الهاتف <span>*</span></label>
+  <input id="customerPhone" type="tel" inputmode="tel" autocomplete="tel" maxlength="18" placeholder="مثال: 01012345678" required>
+  <label for="customerAddress">العنوان بالتفصيل <span>*</span></label>
+  <textarea id="customerAddress" autocomplete="street-address" maxlength="300" rows="2" placeholder="المحافظة - المدينة - الشارع - أقرب علامة مميزة" required></textarea>
+  <label for="orderNotes">ملاحظات إضافية (اختياري)</label>
+  <textarea id="orderNotes" maxlength="300" rows="2" placeholder="أي تفاصيل تخص الطلب أو التوصيل"></textarea>
+ </div>
+ <button class="button-primary checkout" type="button" id="checkout">تأكيد البيانات وإرسال الطلب عبر واتساب</button>
 </aside>
 <script src="products.js"></script>
 <script src="firebase-config.js?v=product-admin-2"></script>
-<script src="store.js?v=cart-saved-12"></script>
+<script src="store.js?v=checkout-details-13"></script>
 <script src="image-zoom.js?v=product-zoom-1"></script>
 <script type="module" src="product-cloud.js?v=product-admin-2"></script>
 </body></html>
