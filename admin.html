@@ -50,7 +50,7 @@
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-app.js";
 import { getAuth, GoogleAuthProvider, onAuthStateChanged, signInWithPopup, signInWithRedirect, getRedirectResult, signOut } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-auth.js";
-import { collection, deleteDoc, doc, getDoc, getDocs, getFirestore, setDoc, serverTimestamp, writeBatch, query, orderBy, updateDoc } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-firestore.js";
+import { collection, deleteDoc, doc, getDoc, getDocs, getFirestore, setDoc, serverTimestamp, writeBatch, query, orderBy, updateDoc, runTransaction } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-firestore.js";
 
 const $ = function (id) { return document.getElementById(id); };
 const config = window.DAWLY_FIREBASE_CONFIG || {};
@@ -163,9 +163,55 @@ $("refreshOrdersBtn").addEventListener("click",loadOrders);
 $("orderFilter").addEventListener("change",renderOrders);
 $("orderSearch").addEventListener("input",renderOrders);
 $("ordersList").addEventListener("change",async function(e){
- const el=e.target.closest("[data-order-status]");if(!el)return;const id=el.dataset.orderStatus,statusValue=el.value;el.disabled=true;
- try{await updateDoc(doc(db,"orders",id),{status:statusValue,updatedAt:serverTimestamp()});const found=orders.find(o=>o.id===id);if(found)found.status=statusValue;renderOrders();$("ordersStatus").textContent="تم تحديث حالة الطلب.";}
- catch(err){$("ordersStatus").textContent="تعذر تحديث الحالة. تحقق من صلاحيات حساب الإدارة.";el.disabled=false;}
+ const el=e.target.closest("[data-order-status]");if(!el)return;
+ const id=el.dataset.orderStatus,statusValue=el.value;
+ const found=orders.find(o=>o.id===id);
+ if(!found)return;
+ const previousStatus=found.status||"new";
+ if(statusValue==="confirmed"&&previousStatus!=="confirmed"&&!found.inventoryDeducted){
+  if(!window.confirm("تأكيد الطلب سيخصم الكميات المتاحة من مخزون المنتجات المسجل. هل تريد المتابعة؟")){renderOrders();return;}
+ }
+ el.disabled=true;
+ try{
+  if(statusValue==="confirmed"&&!found.inventoryDeducted&&previousStatus!=="confirmed"){
+   await runTransaction(db,async function(transaction){
+    const orderRef=doc(db,"orders",id);
+    const orderSnap=await transaction.get(orderRef);
+    if(!orderSnap.exists())throw new Error("الطلب غير موجود.");
+    const orderData=orderSnap.data();
+    if(orderData.inventoryDeducted){transaction.update(orderRef,{status:"confirmed",updatedAt:serverTimestamp()});return;}
+    const items=Array.isArray(orderData.items)?orderData.items:[];
+    if(!items.length)throw new Error("لا توجد منتجات داخل الطلب.");
+    const productReads=[];
+    for(const item of items){
+     const productId=String(item.id||"");
+     const qty=Number(item.qty);
+     if(!productId||!Number.isInteger(qty)||qty<1)throw new Error("بيانات كمية أو رقم منتج غير صحيحة.");
+     const productRef=doc(db,"products",productId);
+     const productSnap=await transaction.get(productRef);
+     if(!productSnap.exists())throw new Error("المنتج رقم "+productId+" غير موجود في المخزون.");
+     productReads.push({ref:productRef,data:productSnap.data(),qty:qty,id:productId});
+    }
+    productReads.forEach(function(entry){
+     const stock=entry.data.stock;
+     if(Number.isInteger(stock)&&stock>=0){
+      if(stock<entry.qty)throw new Error("المخزون غير كافٍ للمنتج رقم "+entry.id+". المتاح: "+stock+" والمطلوب: "+entry.qty);
+      transaction.update(entry.ref,{stock:stock-entry.qty,updatedAt:serverTimestamp()});
+     }
+    });
+    transaction.update(orderRef,{status:"confirmed",inventoryDeducted:true,inventoryDeductedAt:serverTimestamp(),updatedAt:serverTimestamp()});
+   });
+   found.inventoryDeducted=true;
+  }else{
+   await updateDoc(doc(db,"orders",id),{status:statusValue,updatedAt:serverTimestamp()});
+  }
+  found.status=statusValue;renderOrders();
+  $("ordersStatus").textContent=statusValue==="confirmed"?(found.inventoryDeducted?"تم تأكيد الطلب وخصم المخزون مرة واحدة.":"تم تأكيد الطلب؛ بعض المنتجات مخزونها غير محدد."):"تم تحديث حالة الطلب.";
+ }catch(err){
+  console.error("Order status update failed:",err);
+  $("ordersStatus").textContent=err.message||"تعذر تحديث الحالة. تحقق من صلاحيات حساب الإدارة.";
+  renderOrders();
+ }
 });
 function exportProducts() {
   const content = "window.DAWLY_PRODUCTS = " + JSON.stringify(products, null, 2) + ";\n";
