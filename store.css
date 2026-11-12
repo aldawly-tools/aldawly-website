@@ -151,7 +151,8 @@ img{max-width:100%}
  .cart-button>span:last-child{font-size:12px}
  .hero-grid{grid-template-columns:190px minmax(260px,.95fr) minmax(320px,1.2fr)}
  .product-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
- .nav-link{padding-inline:8px;font-size:13px}
+ .nav-row{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:2px 4px;padding:5px 2%;overflow:visible}
+ .nav-link{min-width:0;min-height:38px;justify-content:center;white-space:normal;text-align:center;padding-inline:8px;gap:5px;font-size:13px}
 }
 @media(max-width:850px){
  .masthead-grid{grid-template-columns:1fr auto;gap:10px;padding-block:10px}
