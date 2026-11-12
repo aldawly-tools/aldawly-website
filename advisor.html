@@ -81,6 +81,7 @@ footer{text-align:center;color:var(--muted);font-size:12px;padding:20px}
 </main>
 <footer>الدولي للعدد الأصلية والمستوردة — مساعد اختيار العدد</footer>
 <script src="products.js"></script>
+<script src="firebase-config.js?v=product-admin-2"></script>
 <script>
 const form=document.getElementById('finder'),out=document.getElementById('result');
 const recommendations={
@@ -109,5 +110,9 @@ const t=`احتياجي من الدولي للعدد:\nالأداة المقتر
 try{await navigator.clipboard.writeText(t);document.getElementById('copy').textContent='تم نسخ الملخص';}catch{document.getElementById('copy').textContent='تعذر النسخ من المتصفح';}
 });
 });
+window.addEventListener("dawly-products-updated", function (event) {
+if (Array.isArray(event.detail)) window.DAWLY_PRODUCTS = event.detail;
+});
 </script>
+<script type="module" src="product-cloud.js?v=product-admin-2"></script>
 </body></html>

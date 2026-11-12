@@ -1,54 +1,324 @@
-<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>إدارة متجر الدولي</title>
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#d71920">
+<title>إدارة منتجات الدولي</title>
 <style>
-body{margin:0;background:#f4f5f7;color:#202124;font-family:Tahoma,Arial,sans-serif}.wrap{max-width:850px;margin:auto;padding:18px}
-header{background:#151515;color:#fff;padding:18px}.card{background:#fff;border:1px solid #e5e5e5;border-radius:14px;padding:16px;margin:14px 0}
-h1{font-size:22px;margin:0}.muted{color:#666;font-size:13px;line-height:1.8}
-label{display:block;font-weight:bold;margin:12px 0 6px}input,textarea,select{width:100%;padding:11px;border:1px solid #ccc;border-radius:9px;font:inherit;box-sizing:border-box}
-button{border:0;border-radius:9px;padding:11px 15px;font:inherit;font-weight:bold;cursor:pointer}.red{background:#d71920;color:#fff}.gray{background:#eee}.danger{background:#fee;color:#a00}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.items{display:grid;gap:9px}.item{border:1px solid #ddd;border-radius:10px;padding:12px;display:flex;justify-content:space-between;gap:10px;align-items:center}.item small{display:block;color:#666}
-.actions{display:flex;gap:7px;flex-wrap:wrap}.preview{max-width:100px;max-height:85px;object-fit:contain}
-.steps{margin:8px 0;padding-right:22px;line-height:2}.link-button{display:inline-block;background:#202124;color:#fff;padding:10px 14px;border-radius:9px;text-decoration:none;font-weight:bold}
-@media(max-width:600px){.grid{grid-template-columns:1fr}.item{align-items:flex-start;flex-direction:column}}
-</style></head><body><header><div class="wrap"><h1>إدارة متجر الدولي للعدد</h1><div class="muted" style="color:#ddd">إضافة المنتجات وتعديلها واستبدالها</div></div></header>
+:root{font-family:Tahoma,Arial,sans-serif;color:#202124;background:#f4f6f8;font-synthesis:none}*{box-sizing:border-box}body{margin:0}header{background:#d71920;color:#fff;padding:20px 16px}.wrap{width:min(100% - 28px,900px);margin:auto}h1{font-size:23px;margin:0 0 5px}header p{margin:0;color:#ffe7e7;font-size:14px}.card{background:#fff;border:1px solid #e2e5e8;border-radius:16px;padding:18px;margin:16px 0;box-shadow:0 5px 18px #1111}.muted{color:#68707a;font-size:13px;line-height:1.8}.field{margin:12px 0}.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}label{display:block;font-size:14px;font-weight:700;margin:0 0 6px}input,select,textarea{width:100%;font:inherit;padding:11px 12px;border:1px solid #cfd4da;border-radius:10px;background:#fff}input:focus,select:focus,textarea:focus{outline:2px solid #f2a2a4;border-color:#d71920}button,.link{font:inherit;font-weight:700;border:0;border-radius:10px;padding:12px 16px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:7px}.red{background:#d71920;color:#fff}.light{background:#f0f1f3;color:#202124}.danger{background:#fff0f0;color:#b00012}.actions{display:flex;gap:8px;flex-wrap:wrap}.hidden{display:none!important}.status{padding:10px 12px;border-radius:9px;background:#fff7df;color:#5e4b11;line-height:1.8;font-size:14px}.status:empty{display:none}.products{display:grid;gap:10px}.product{display:flex;align-items:center;justify-content:space-between;gap:12px;border:1px solid #e6e8eb;border-radius:12px;padding:12px}.product strong{display:block;margin-bottom:5px}.product small{display:block;color:#68707a;line-height:1.7}.image-preview{display:block;max-width:150px;max-height:130px;object-fit:contain;margin-top:8px;border-radius:8px;background:#f3f4f5}.form-actions{margin-top:14px}.footer-link{color:#555}.pill{display:inline-block;background:#fff1f1;color:#ae1018;border-radius:999px;padding:5px 9px;font-size:12px;margin-top:5px}@media(max-width:620px){.grid{grid-template-columns:1fr}.product{align-items:flex-start;flex-direction:column}.actions button{flex:1}}
+</style>
+</head>
+<body>
+<header><div class="wrap"><h1>إدارة منتجات الدولي للعدد</h1><p>أضف المنتج وصورته من هنا، وسيظهر للزوار بعد الحفظ.</p></div></header>
 <main class="wrap">
-<div class="card"><b>إضافة المنتجات بنفسك</b><p class="muted">اكتب اسم المنتج والماركة والقسم والسعر والصورة إن وجدت، ثم اضغط «حفظ المنتج». ستبقى المسودة محفوظة على هذا الجهاز، ويمكنك تنزيل ملف المنتجات عند الانتهاء لنشرها على الموقع.</p>
-<div class="actions"><button class="gray" id="importBtn">استيراد ملف products.js</button><input id="importFile" type="file" accept=".js,.txt" hidden><button class="red" id="exportBtn">تنزيل ملف المنتجات</button></div></div>
-<div class="card"><h2 id="formTitle">إضافة منتج جديد</h2><form id="productForm">
-<input type="hidden" id="pid"><label>اسم المنتج</label><input id="name" required placeholder="مثال: طقم مفكات WERA">
-<div class="grid"><div><label>الماركة</label><input id="brand" placeholder="BOSCH / WÜRTH / WERA / KNIPEX / Beta / DEWALT"><small class="muted">اكتب الاسم مثلما يظهر في شريط الماركات حتى يظهر المنتج عند الضغط عليها.</small></div><div><label>القسم</label><select id="cat"><option>عدد يدوية</option><option>عدد كهربائية</option><option>مستلزمات الورش</option><option>قياس</option></select></div></div>
-<div class="grid"><div><label>السعر بالجنيه</label><input id="price" placeholder="مثال: 2500 جنيه"></div><div><label>رمز بديل عند عدم وجود صورة</label><input id="icon" value="🔧"></div></div>
-<label>رابط صورة المنتج (اختياري)</label><input id="image" type="url" placeholder="رابط صورة منشورة على الإنترنت">
-<label>الوصف والمواصفات</label><textarea id="desc" rows="3" placeholder="عدد القطع، المقاسات، بلد الصناعة..."></textarea>
-<label>الاستخدام المناسب للمساعد</label><select id="tasks" multiple size="6"><option value="drill">تخريم</option><option value="screw">فك وربط</option><option value="cut">قطع وتجليخ</option><option value="wood">نجارة</option><option value="clean">تنظيف وصنفرة</option><option value="other">استخدامات أخرى</option></select><p class="muted">يمكن اختيار أكثر من استخدام بالضغط المطوّل على الهاتف إن كان يدعم ذلك.</p>
-<div class="actions"><button class="red" type="submit">حفظ المنتج</button><button class="gray" type="button" id="resetBtn">تفريغ الحقول</button></div></form></div>
+  <section class="card" id="loginCard">
+    <h2>دخول صاحب المتجر</h2>
+    <p class="muted">سجّل الدخول بحساب Google المصرّح له بإدارة المتجر.</p>
+    <div class="actions"><button class="red" id="loginBtn" type="button">دخول بحساب Google</button><a class="link light" href="index.html">العودة إلى المتجر</a></div>
+    <p class="status" id="status" aria-live="polite">جارٍ تجهيز لوحة الإدارة…</p>
+  </section>
 
-<div class="card"><h2>نشر المنتجات للزوار</h2>
-<p class="muted">الإضافة هنا تحفظ المسودة على هذا الجهاز فقط. لن تظهر المنتجات للزوار إلا بعد تنزيل الملف واستبدال products.js في المستودع. اتبع الخطوات التالية:</p>
-<ol class="muted steps"><li>اضغط «تنزيل ملف المنتجات» بعد الانتهاء.</li><li>افتح ملف products.js على GitHub واضغط علامة القلم لتعديله.</li><li>افتح الملف الذي نزلته بالمفكرة، وانسخ محتواه كاملًا والصقه مكان المحتوى القديم.</li><li>اضغط «Commit changes» لحفظ المنتجات على الموقع.</li></ol>
-<a class="link-button" href="https://github.com/aldawly-tools/aldawly-website/blob/main/products.js" target="_blank" rel="noopener">فتح ملف المنتجات على GitHub</a>
-<p class="muted" id="draftStatus" aria-live="polite"></p>
-<button class="gray" id="clearDraftBtn" type="button">إلغاء المسودة والعودة للمنتجات المنشورة</button>
-</div>
-<div class="card"><h2>المنتجات الحالية (<span id="count">0</span>)</h2><div class="items" id="items"></div></div>
+  <section class="hidden" id="manager">
+    <div class="card">
+      <div class="actions" style="justify-content:space-between;align-items:center"><div><h2 style="margin:0 0 5px">إضافة منتج</h2><span class="muted" id="signedInAs"></span></div><button class="light" id="logoutBtn" type="button">تسجيل الخروج</button></div>
+      <p class="status" id="saveStatus" aria-live="polite"></p>
+      <form id="productForm">
+        <input type="hidden" id="pid">
+        <div class="field"><label for="name">اسم المنتج</label><input id="name" required placeholder="مثال: شنطة عدة Würth"></div>
+        <div class="grid">
+          <div class="field"><label for="brand">الماركة</label><input id="brand" placeholder="Würth / Bosch / Wera"></div>
+          <div class="field"><label for="cat">القسم</label><select id="cat"><option>عدد يدوية</option><option>عدد كهربائية</option><option>مستلزمات الورش</option><option>قياس</option></select></div>
+          <div class="field"><label for="price">السعر</label><input id="price" placeholder="السعر عند الاستفسار"></div>
+          <div class="field"><label for="icon">رمز بديل</label><input id="icon" value="🔧"></div>
+        </div>
+        <div class="field"><label for="imageUrl">رابط الصورة (اختياري)</label><input id="imageUrl" type="text" placeholder="اتركه فارغًا إذا سترفع صورة من جهازك"></div>
+        <div class="field"><label for="imageFile">أو اختر صورة من الجهاز</label><input id="imageFile" type="file" accept="image/*"><img id="imagePreview" class="image-preview hidden" alt="معاينة صورة المنتج"><small class="muted">سيتم تصغير الصورة تلقائيًا قبل حفظها.</small></div>
+        <div class="field"><label for="desc">الوصف والمواصفات</label><textarea id="desc" rows="3" placeholder="الماركة، المقاس، عدد القطع، الاستخدام..."></textarea></div>
+        <div class="field"><label for="tasks">الاستخدامات المناسبة للمساعد الفني</label><select id="tasks" multiple size="5"><option value="drill">تخريم</option><option value="screw">فك وربط</option><option value="cut">قطع وتجليخ</option><option value="wood">نجارة</option><option value="clean">تنظيف وصنفرة</option><option value="other">استخدامات أخرى</option></select></div>
+        <div class="actions form-actions"><button class="red" id="saveBtn" type="submit">حفظ المنتج</button><button class="light" id="resetBtn" type="button">منتج جديد</button></div>
+      </form>
+    </div>
+    <div class="card"><div class="actions" style="justify-content:space-between;align-items:center"><h2 style="margin:0">المنتجات الحالية (<span id="count">0</span>)</h2><div class="actions"><button class="light" id="importBtn" type="button">استيراد products.js</button><button class="light" id="exportBtn" type="button">تنزيل نسخة</button></div></div><input id="importFile" type="file" accept=".js,.txt,text/javascript,text/plain" hidden><p class="muted">الصور المرفوعة محفوظة في قاعدة المتجر؛ نسخة products.js تحفظ بيانات المنتجات فقط.</p><div class="products" id="productList"></div></div>
+  </section>
 </main>
-<script src="products.js"></script><script>
-const BASE_PRODUCTS=(window.DAWLY_PRODUCTS||[]).map(p=>({...p}));
-const DRAFT_KEY='aldawlyProductsDraftV1';
-let products=BASE_PRODUCTS.map(p=>({...p}));
-let hasDraft=false;
-try{const saved=localStorage.getItem(DRAFT_KEY);if(saved){const parsed=JSON.parse(saved);if(Array.isArray(parsed)){products=parsed;hasDraft=true;}}}catch{}
-const $=id=>document.getElementById(id);
-function escapeHTML(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
-function saveDraft(){try{localStorage.setItem(DRAFT_KEY,JSON.stringify(products));hasDraft=true;$('draftStatus').textContent='تم حفظ المسودة على هذا الجهاز. نزّل الملف لنشر التغييرات للزوار.';}catch{$('draftStatus').textContent='تعذر حفظ المسودة على هذا الجهاز. نزّل ملف المنتجات بعد كل تعديل.';}}
-function render(){ $('count').textContent=products.length; $('items').innerHTML=products.map(p=>`<div class="item"><div><b>${escapeHTML(p.name)}</b><small>${escapeHTML(p.brand||'بدون ماركة')} · ${escapeHTML(p.cat)} · ${escapeHTML(p.price||'السعر عند الاستفسار')}</small></div><div class="actions"><button class="gray" onclick="editProduct(${p.id})">تعديل</button><button class="danger" onclick="deleteProduct(${p.id})">حذف</button></div></div>`).join('')||'<p class="muted">لا توجد منتجات.</p>'; $('draftStatus').textContent=hasDraft?'توجد مسودة محفوظة على هذا الجهاز.':'تعرض اللوحة المنتجات المنشورة حاليًا.'; }
-function resetForm(){ $('productForm').reset();$('pid').value='';$('icon').value='🔧';$('formTitle').textContent='إضافة منتج جديد';}
-function editProduct(id){const p=products.find(x=>x.id===id);if(!p)return;$('pid').value=p.id;$('name').value=p.name;$('brand').value=p.brand||'';$('cat').value=p.cat;$('price').value=p.price||'';$('icon').value=p.icon||'🔧';$('image').value=p.image||'';$('desc').value=p.desc||'';[...$('tasks').options].forEach(o=>o.selected=(p.tasks||[]).includes(o.value));$('formTitle').textContent='تعديل المنتج';window.scrollTo({top:0,behavior:'smooth'});}
-function deleteProduct(id){if(confirm('هل تريد حذف هذا المنتج؟')){products=products.filter(p=>p.id!==id);saveDraft();render();}}
-$('productForm').addEventListener('submit',e=>{e.preventDefault();const id=$('pid').value?Number($('pid').value):Math.max(0,...products.map(p=>p.id||0))+1;const p={id,name:$('name').value.trim(),brand:$('brand').value.trim(),cat:$('cat').value,desc:$('desc').value.trim(),price:$('price').value.trim()||'السعر عند الاستفسار',icon:$('icon').value.trim()||'🔧',image:$('image').value.trim(),tasks:[...$('tasks').selectedOptions].map(o=>o.value)};const i=products.findIndex(x=>x.id===id);if(i>=0)products[i]=p;else products.push(p);saveDraft();resetForm();render();alert('تم حفظ المنتج في المسودة على هذا الجهاز. اضغط «تنزيل ملف المنتجات» ثم حدّث الملف على GitHub لنشره للزوار.');});
-$('resetBtn').onclick=resetForm;
-$('exportBtn').onclick=()=>{const data='window.DAWLY_PRODUCTS = '+JSON.stringify(products,null,2)+';\n';const blob=new Blob([data],{type:'text/javascript;charset=utf-8'});const a=document.createElement('a');const url=URL.createObjectURL(blob);a.href=url;a.download='products.js';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);};
-$('importBtn').onclick=()=>$('importFile').click();
-$('importFile').onchange=async e=>{const f=e.target.files[0];if(!f)return;const t=await f.text();try{const m=t.match(/window\.DAWLY_PRODUCTS\s*=\s*([\s\S]*?);?\s*$/);if(!m)throw Error();const parsed=JSON.parse(m[1].replace(/;\s*$/,''));if(!Array.isArray(parsed))throw Error();products=parsed;saveDraft();render();alert('تم استيراد المنتجات وحفظها كمسودة على هذا الجهاز.');}catch{alert('تعذر قراءة الملف. استخدم ملف products.js الصادر من هذه اللوحة.');}e.target.value='';};
-render();
+<script src="products.js?v=product-admin-2"></script>
+<script src="firebase-config.js?v=product-admin-2"></script>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-app.js";
+import { getAuth, GoogleAuthProvider, onAuthStateChanged, signInWithPopup, signOut } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-auth.js";
+import { collection, deleteDoc, doc, getDoc, getDocs, getFirestore, setDoc, serverTimestamp, writeBatch } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-firestore.js";
 
-$('clearDraftBtn').addEventListener('click',()=>{if(!confirm('سيتم مسح مسودة هذا الجهاز والعودة للمنتجات المنشورة. هل تريد المتابعة؟'))return;localStorage.removeItem(DRAFT_KEY);products=BASE_PRODUCTS.map(p=>({...p}));hasDraft=false;resetForm();render();});</script></body></html>
+const $ = function (id) { return document.getElementById(id); };
+const config = window.DAWLY_FIREBASE_CONFIG || {};
+const status = $("status");
+const saveStatus = $("saveStatus");
+const baseProducts = Array.isArray(window.DAWLY_PRODUCTS) ? window.DAWLY_PRODUCTS.map(function (item) { return Object.assign({}, item); }) : [];
+let db = null;
+let auth = null;
+let products = [];
+let previewObjectUrl = "";
+
+function message(target, text) { target.textContent = text || ""; }
+function escapeHtml(value) {
+  return String(value == null ? "" : value).replace(/[&<>"']/g, function (character) {
+    return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[character];
+  });
+}
+function readyConfig() {
+  return config.apiKey && config.apiKey !== "PASTE_FIREBASE_WEB_API_KEY" && config.authDomain && config.projectId && config.projectId !== "YOUR_PROJECT_ID" && config.appId;
+}
+function resetForm() {
+  $("productForm").reset();
+  $("pid").value = "";
+  $("icon").value = "🔧";
+  $("saveBtn").textContent = "حفظ المنتج";
+  $("imagePreview").classList.add("hidden");
+  $("imagePreview").removeAttribute("src");
+  if (previewObjectUrl) URL.revokeObjectURL(previewObjectUrl);
+  previewObjectUrl = "";
+}
+function showPreview(url) {
+  const image = $("imagePreview");
+  if (!url) { image.classList.add("hidden"); image.removeAttribute("src"); return; }
+  image.src = url;
+  image.classList.remove("hidden");
+}
+function renderProducts() {
+  $("count").textContent = String(products.length);
+  $("productList").innerHTML = products.map(function (product) {
+    return '<div class="product"><div><strong>' + escapeHtml(product.name) + '</strong><small>' + escapeHtml(product.brand || "بدون ماركة") + ' · ' + escapeHtml(product.cat || "") + ' · ' + escapeHtml(product.price || "السعر عند الاستفسار") + '</small>' + (product.imageId ? '<span class="pill">صورة محفوظة</span>' : "") + '</div><div class="actions"><button class="light" type="button" data-edit="' + escapeHtml(product.id) + '">تعديل</button><button class="danger" type="button" data-delete="' + escapeHtml(product.id) + '">حذف</button></div></div>';
+  }).join("") || '<p class="muted">لا توجد منتجات حاليًا.</p>';
+}
+async function ensureCatalog() {
+  const metaRef = doc(db, "storeMeta", "catalog");
+  const meta = await getDoc(metaRef);
+  if (meta.exists()) return;
+  const existing = await getDocs(collection(db, "products"));
+  const batch = writeBatch(db);
+  if (existing.empty) {
+    baseProducts.forEach(function (product) {
+      const record = Object.assign({}, product, {imageId:null});
+      batch.set(doc(db, "products", String(product.id)), record);
+    });
+  }
+  batch.set(metaRef, {initialized:true, updatedAt:serverTimestamp()});
+  await batch.commit();
+}
+async function loadProducts() {
+  await ensureCatalog();
+  const result = await getDocs(collection(db, "products"));
+  products = result.docs.map(function (item) {
+    const data = item.data();
+    return Object.assign({}, data, {id:Number(data.id || item.id)});
+  }).sort(function (a, b) { return a.id - b.id; });
+  renderProducts();
+}
+function exportProducts() {
+  const content = "window.DAWLY_PRODUCTS = " + JSON.stringify(products, null, 2) + ";\n";
+  const url = URL.createObjectURL(new Blob([content], {type:"text/javascript;charset=utf-8"}));
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = "products.js";
+  link.click();
+  setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+}
+async function importProducts(file) {
+  const source = await file.text();
+  const match = source.match(/window\.DAWLY_PRODUCTS\s*=\s*([\s\S]*?)\s*;?\s*$/);
+  if (!match) throw new Error("تعذر قراءة الملف. استخدم ملف products.js.");
+  const imported = JSON.parse(match[1].replace(/;\s*$/, ""));
+  if (!Array.isArray(imported) || imported.length > 2000) throw new Error("ملف المنتجات غير صالح أو أكبر من الحد المسموح.");
+  const currentById = new Map(products.map(function (item) { return [Number(item.id), item]; }));
+  const seen = new Set();
+  const records = imported.map(function (item) {
+    const id = Number(item && item.id);
+    const name = String(item && item.name || "").trim();
+    if (!Number.isSafeInteger(id) || id < 1 || !name || seen.has(id)) throw new Error("تأكد من وجود رقم واسم فريد لكل منتج.");
+    seen.add(id);
+    const previous = currentById.get(id) || {};
+    const image = String(item.image || "");
+    return {
+      id:id,
+      name:name,
+      brand:String(item.brand || ""),
+      cat:String(item.cat || "عدد يدوية"),
+      desc:String(item.desc || ""),
+      icon:String(item.icon || "🔧"),
+      price:String(item.price || "السعر عند الاستفسار"),
+      image:image,
+      imageId:image ? null : (item.imageId || previous.imageId || null),
+      tasks:Array.isArray(item.tasks) ? item.tasks.map(String) : []
+    };
+  });
+  if (!records.length) throw new Error("الملف لا يحتوي على منتجات.");
+  for (let start = 0; start < records.length; start += 400) {
+    const batch = writeBatch(db);
+    records.slice(start, start + 400).forEach(function (record) {
+      batch.set(doc(db, "products", String(record.id)), record);
+    });
+    if (start + 400 >= records.length) batch.set(doc(db, "storeMeta", "catalog"), {initialized:true,updatedAt:serverTimestamp()});
+    await batch.commit();
+  }
+  await loadProducts();
+  message(saveStatus, "تم استيراد " + records.length + " منتجًا إلى المتجر.");
+}
+function readFileAsDataUrl(file) {
+  return new Promise(function (resolve, reject) {
+    const reader = new FileReader();
+    reader.onload = function () { resolve(String(reader.result || "")); };
+    reader.onerror = function () { reject(new Error("تعذر قراءة الصورة.")); };
+    reader.readAsDataURL(file);
+  });
+}
+async function compressImage(file) {
+  const source = await readFileAsDataUrl(file);
+  const picture = await new Promise(function (resolve, reject) {
+    const image = new Image();
+    image.onload = function () { resolve(image); };
+    image.onerror = function () { reject(new Error("صيغة الصورة غير مدعومة.")); };
+    image.src = source;
+  });
+  const scale = Math.min(1, 700 / Math.max(picture.naturalWidth, picture.naturalHeight));
+  const canvas = document.createElement("canvas");
+  canvas.width = Math.max(1, Math.round(picture.naturalWidth * scale));
+  canvas.height = Math.max(1, Math.round(picture.naturalHeight * scale));
+  const context = canvas.getContext("2d");
+  context.fillStyle = "#ffffff";
+  context.fillRect(0, 0, canvas.width, canvas.height);
+  context.drawImage(picture, 0, 0, canvas.width, canvas.height);
+  for (const quality of [0.82, 0.74, 0.66, 0.58, 0.5]) {
+    const data = canvas.toDataURL("image/jpeg", quality);
+    const encoded = data.split(",")[1] || "";
+    if (Math.ceil(encoded.length * 3 / 4) <= 220 * 1024) return data;
+  }
+  throw new Error("الصورة كبيرة جدًا بعد التصغير. اختر صورة أبسط أو أصغر.");
+}
+async function editProduct(id) {
+  const product = products.find(function (item) { return String(item.id) === String(id); });
+  if (!product) return;
+  $("pid").value = product.id;
+  $("name").value = product.name || "";
+  $("brand").value = product.brand || "";
+  $("cat").value = product.cat || "عدد يدوية";
+  $("price").value = product.price || "";
+  $("icon").value = product.icon || "🔧";
+  $("imageUrl").value = product.image || "";
+  $("imageFile").value = "";
+  $("desc").value = product.desc || "";
+  Array.from($("tasks").options).forEach(function (option) { option.selected = (product.tasks || []).includes(option.value); });
+  $("saveBtn").textContent = "حفظ التعديل";
+  if (product.imageId) {
+    const imageDoc = await getDoc(doc(db, "productImages", String(product.imageId)));
+    if (imageDoc.exists()) showPreview(imageDoc.data().data || "");
+  } else showPreview(product.image || "");
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+async function deleteProduct(id) {
+  const product = products.find(function (item) { return String(item.id) === String(id); });
+  if (!product || !window.confirm("هل تريد حذف هذا المنتج؟")) return;
+  try {
+    await deleteDoc(doc(db, "products", String(product.id)));
+    if (product.imageId) await deleteDoc(doc(db, "productImages", String(product.imageId)));
+    products = products.filter(function (item) { return String(item.id) !== String(id); });
+    renderProducts();
+    message(saveStatus, "تم حذف المنتج.");
+  } catch (error) { message(saveStatus, "تعذر حذف المنتج. تحقق من الاتصال والصلاحيات."); }
+}
+
+$("loginBtn").addEventListener("click", async function () {
+  try { await signInWithPopup(auth, new GoogleAuthProvider()); }
+  catch (error) { message(status, "تعذر تسجيل الدخول. تأكد من تفعيل دخول Google في Firebase والسماح بعنوان الموقع."); }
+});
+$("logoutBtn").addEventListener("click", function () { signOut(auth); });
+$("resetBtn").addEventListener("click", resetForm);
+$("exportBtn").addEventListener("click", exportProducts);
+$("importBtn").addEventListener("click", function () { $("importFile").click(); });
+$("importFile").addEventListener("change", async function (event) {
+  const file = event.target.files && event.target.files[0];
+  if (!file) return;
+  try { await importProducts(file); }
+  catch (error) { message(saveStatus, error && error.message ? error.message : "تعذر استيراد الملف. تحقق من الصلاحيات والاتصال."); }
+  finally { event.target.value = ""; }
+});
+$("imageFile").addEventListener("change", function () {
+  const file = $("imageFile").files && $("imageFile").files[0];
+  if (!file) return;
+  if (previewObjectUrl) URL.revokeObjectURL(previewObjectUrl);
+  previewObjectUrl = URL.createObjectURL(file);
+  showPreview(previewObjectUrl);
+});
+$("productList").addEventListener("click", function (event) {
+  const edit = event.target.closest("[data-edit]");
+  const remove = event.target.closest("[data-delete]");
+  if (edit) editProduct(edit.dataset.edit);
+  if (remove) deleteProduct(remove.dataset.delete);
+});
+$("productForm").addEventListener("submit", async function (event) {
+  event.preventDefault();
+  const previous = $("pid").value ? products.find(function (item) { return String(item.id) === String($("pid").value); }) : null;
+  const id = previous ? Number(previous.id) : Math.max(0, ...products.map(function (item) { return Number(item.id) || 0; })) + 1;
+  const file = $("imageFile").files && $("imageFile").files[0];
+  let image = $("imageUrl").value.trim();
+  let imageId = previous && previous.imageId ? String(previous.imageId) : null;
+  $("saveBtn").disabled = true;
+  message(saveStatus, "جارٍ حفظ المنتج…");
+  try {
+    if (file) {
+      const compressed = await compressImage(file);
+      await setDoc(doc(db, "productImages", String(id)), {data:compressed, updatedAt:serverTimestamp()});
+      image = "";
+      imageId = String(id);
+    } else if (previous && image !== String(previous.image || "")) {
+      if (previous.imageId) await deleteDoc(doc(db, "productImages", String(previous.imageId)));
+      imageId = null;
+    }
+    const product = {
+      id:id,
+      name:$("name").value.trim(),
+      brand:$("brand").value.trim(),
+      cat:$("cat").value,
+      desc:$("desc").value.trim(),
+      price:$("price").value.trim() || "السعر عند الاستفسار",
+      icon:$("icon").value.trim() || "🔧",
+      image:image,
+      imageId:imageId,
+      tasks:Array.from($("tasks").selectedOptions).map(function (option) { return option.value; }),
+      updatedAt:serverTimestamp()
+    };
+    await setDoc(doc(db, "products", String(id)), product);
+    products = products.filter(function (item) { return String(item.id) !== String(id); }).concat([product]).sort(function (a, b) { return a.id - b.id; });
+    renderProducts();
+    resetForm();
+    message(saveStatus, "تم حفظ المنتج، وسيظهر للزوار عند تحديث الصفحة.");
+  } catch (error) {
+    message(saveStatus, error && error.message ? error.message : "تعذر الحفظ. تحقق من إعدادات Firebase والاتصال.");
+  } finally { $("saveBtn").disabled = false; }
+});
+
+if (!readyConfig()) {
+  $("loginBtn").disabled = true;
+  message(status, "يلزم ربط قاعدة Firebase مرة واحدة. راجع ملف firebase-setup-ar.txt.");
+} else {
+  try {
+    const app = initializeApp(config);
+    db = getFirestore(app);
+    auth = getAuth(app);
+    onAuthStateChanged(auth, async function (user) {
+      if (!user) {
+        $("manager").classList.add("hidden");
+        $("loginCard").classList.remove("hidden");
+        return;
+      }
+      $("loginCard").classList.add("hidden");
+      $("manager").classList.remove("hidden");
+      $("signedInAs").textContent = "تم تسجيل الدخول: " + user.email;
+      try { await loadProducts(); }
+      catch (error) { message(saveStatus, "تعذر تحميل المنتجات. تأكد من إعداد قاعدة Firestore ومن استخدام حساب الإدارة المسموح."); }
+    });
+  } catch (error) { message(status, "تعذر تهيئة Firebase. راجع قيم firebase-config.js."); }
+}
+</script>
+</body>
+</html>

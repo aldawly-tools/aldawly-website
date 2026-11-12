@@ -1,0 +1,27 @@
+ضع القواعد التالية في Firebase Console > Firestore Database > Rules، واستبدل البريد بالبريد الذي ستدخل به إلى لوحة الإدارة:
+
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isStoreAdmin() {
+      return request.auth != null
+        && request.auth.token.email_verified == true
+        && request.auth.token.email == "YOUR_GOOGLE_EMAIL@example.com";
+    }
+
+    match /products/{productId} {
+      allow read: if true;
+      allow write: if isStoreAdmin();
+    }
+
+    match /productImages/{productId} {
+      allow read: if true;
+      allow write: if isStoreAdmin();
+    }
+
+    match /storeMeta/{documentId} {
+      allow read: if true;
+      allow write: if isStoreAdmin();
+    }
+  }
+}

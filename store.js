@@ -1,5 +1,5 @@
 (() => {
-  const products = Array.isArray(window.DAWLY_PRODUCTS) ? window.DAWLY_PRODUCTS : [];
+  let products = Array.isArray(window.DAWLY_PRODUCTS) ? window.DAWLY_PRODUCTS : [];
   const grid = document.getElementById("productGrid");
   const tiles = document.getElementById("categoryTiles");
   const filterBar = document.getElementById("filterBar");
@@ -12,6 +12,34 @@
   let activeBrand = (new URLSearchParams(window.location.search).get("brand") || "").trim();
   let query = "";
   let cart = [];
+  let cloudImageObserver = null;
+
+  function observeCloudImages() {
+    if (typeof window.DAWLY_LOAD_PRODUCT_IMAGE !== "function") return;
+    const images = grid.querySelectorAll("img[data-cloud-image]");
+    if (!images.length) return;
+    if ("IntersectionObserver" in window) {
+      if (!cloudImageObserver) {
+        cloudImageObserver = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            if (!entry.isIntersecting) return;
+            const image = entry.target;
+            cloudImageObserver.unobserve(image);
+            window.DAWLY_LOAD_PRODUCT_IMAGE(image.dataset.cloudImage).then(function (url) {
+              if (url && image.isConnected) image.src = url;
+            }).catch(function () {});
+          });
+        }, {rootMargin:"240px"});
+      }
+      images.forEach(function (image) { cloudImageObserver.observe(image); });
+      return;
+    }
+    images.forEach(function (image) {
+      window.DAWLY_LOAD_PRODUCT_IMAGE(image.dataset.cloudImage).then(function (url) {
+        if (url) image.src = url;
+      }).catch(function () {});
+    });
+  }
 
   function escapeHtml(value) {
     return String(value == null ? "" : value).replace(/[&<>"']/g, function (char) {
@@ -58,7 +86,9 @@
     grid.innerHTML = shown.map(function (item) {
       const visual = item.image
         ? '<img src="' + escapeHtml(item.image) + '" alt="' + escapeHtml(item.name) + '">'
-        : '<span class="product-placeholder" aria-hidden="true">' + escapeHtml(item.icon || "🔧") + '</span>';
+        : item.imageId
+          ? '<img src="" data-cloud-image="' + escapeHtml(item.imageId) + '" alt="' + escapeHtml(item.name) + '" loading="lazy">'
+          : '<span class="product-placeholder" aria-hidden="true">' + escapeHtml(item.icon || "🔧") + '</span>';
       return '<article class="product-card" id="product-' + encodeURIComponent(item.id) + '">' +
         '<div class="product-visual">' + visual + '</div>' +
         '<div class="product-info"><span class="product-category">' + (item.brand ? escapeHtml(item.brand) + ' · ' : '') + escapeHtml(item.cat || "منتجات") + '</span>' +
@@ -67,6 +97,7 @@
         '<div class="product-meta"><span class="product-price">' + escapeHtml(item.price || "السعر عند الاستفسار") + '<small>السعر والتوفر عند التواصل</small></span>' +
         '<button class="button-primary" type="button" data-add="' + escapeHtml(item.id) + '">أضف إلى السلة</button></div></div></article>';
     }).join("") || '<p class="empty-cart">' + emptyMessage + '</p>';
+    observeCloudImages();
     filterBar.querySelectorAll("[data-category]").forEach(function (button) {
       button.classList.toggle("active", button.dataset.category === activeCategory);
     });
@@ -89,6 +120,14 @@
         '<button class="remove-item" type="button" data-remove="' + escapeHtml(item.id) + '">حذف</button></div>';
     }).join("") : '<div class="empty-cart">السلة فارغة حاليًا</div>';
   }
+
+  window.addEventListener("dawly-products-updated", function (event) {
+    if (!Array.isArray(event.detail)) return;
+    products = event.detail;
+    drawCategories();
+    renderProducts();
+    renderCart();
+  });
   function addToCart(id) {
     const line = cart.find(function (entry) { return String(entry.id) === String(id); });
     if (line) line.qty += 1;
