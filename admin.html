@@ -49,7 +49,7 @@
 <script src="firebase-config.js?v=product-admin-2"></script>
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-app.js";
-import { getAuth, GoogleAuthProvider, onAuthStateChanged, signInWithPopup, signInWithRedirect, signOut } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-auth.js";
+import { getAuth, GoogleAuthProvider, onAuthStateChanged, signInWithPopup, signInWithRedirect, getRedirectResult, signOut } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-auth.js";
 import { collection, deleteDoc, doc, getDoc, getDocs, getFirestore, setDoc, serverTimestamp, writeBatch, query, orderBy, updateDoc } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-firestore.js";
 
 const $ = function (id) { return document.getElementById(id); };
@@ -390,6 +390,13 @@ if (!readyConfig()) {
     const app = initializeApp(config);
     db = getFirestore(app);
     auth = getAuth(app);
+    getRedirectResult(auth).then(function (result) {
+      if (!result && !auth.currentUser) message(status, "لم يكتمل تسجيل الدخول. اضغط دخول بحساب Google وحاول مرة أخرى.");
+    }).catch(function (error) {
+      console.error("Google redirect result error:", error);
+      message(status, "تعذر إكمال دخول Google (" + (error.code || error.message || "خطأ غير معروف") + ").");
+    });
+    message(status, "خدمة الدخول جاهزة. اضغط دخول بحساب Google.");
     onAuthStateChanged(auth, async function (user) {
       if (!user) {
         $("manager").classList.add("hidden");
