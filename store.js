@@ -202,7 +202,7 @@
       const visual = item.image
         ? '<img src="' + escapeHtml(item.image) + '" alt="' + escapeHtml(name) + '">'
         : item.imageId
-          ? '<img src="" data-cloud-image="' + escapeHtml(item.imageId) + '" alt="' + escapeHtml(name) + '" loading="lazy">'
+          ? '<img data-cloud-image="' + escapeHtml(item.imageId) + '" alt="' + escapeHtml(name) + '" loading="lazy">'
           : '<span class="product-placeholder" aria-hidden="true">' + escapeHtml(item.icon || "🔧") + '</span>';
       const detailUrl = "product.html?id=" + encodeURIComponent(String(item.id));
       const stockKnown = Number.isInteger(item.stock) && item.stock >= 0;
