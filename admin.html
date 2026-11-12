@@ -18,7 +18,7 @@ header .wrap{max-width:1120px}
 .dashboard-nav{position:sticky;top:0;z-index:5;display:flex;gap:8px;overflow:auto;padding:10px;margin:12px 0;background:#ffffffed;border:1px solid #e6e8eb;border-radius:14px;box-shadow:0 4px 16px #1111}
 .dashboard-nav a{white-space:nowrap;text-decoration:none;color:#343941;background:#f3f4f6;border-radius:9px;padding:10px 13px;font-size:13px;font-weight:700}
 .dashboard-nav a:first-child{background:#fff0f0;color:#b20f19}
-.dashboard-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:14px 0}
+.dashboard-stats{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;margin:14px 0}
 .dashboard-stat{background:#fff;border:1px solid #e5e7eb;border-radius:15px;padding:15px;box-shadow:0 4px 14px #11108}
 .dashboard-stat span{display:block;color:#707782;font-size:12px;margin-bottom:8px}
 .dashboard-stat strong{font-size:25px;color:#222;line-height:1.2}
@@ -59,6 +59,7 @@ button:disabled{opacity:.6;cursor:wait}
       <button type="button" class="dashboard-tab" data-tab="catalogPanel" role="tab" aria-selected="false">المنتجات</button>
       <button type="button" class="dashboard-tab" data-tab="ordersPanel" role="tab" aria-selected="false">الطلبات</button>
       <button type="button" class="dashboard-tab" data-tab="inventoryPanel" role="tab" aria-selected="false">المخزون</button>
+      <button type="button" class="dashboard-tab" data-tab="postPanel" role="tab" aria-selected="false">منشئ البوستات</button>
     </nav>
     <div class="dashboard-stats" aria-label="ملخص المتجر">
       <div class="dashboard-stat"><span>إجمالي المنتجات</span><strong id="dashProducts">0</strong></div>
@@ -89,6 +90,16 @@ button:disabled{opacity:.6;cursor:wait}
     </div>
     <section class="card admin-panel hidden" id="inventoryPanel" role="tabpanel"><h2 style="margin:0 0 8px">تنبيهات المخزون</h2><div id="inventoryAlerts" aria-live="polite"><p class="muted">جارٍ فحص المخزون…</p></div></section>
     <section class="card admin-panel hidden" id="ordersPanel" role="tabpanel"><div class="actions" style="justify-content:space-between;align-items:center"><div><h2 style="margin:0">طلبات العملاء (<span id="ordersCount">0</span>)</h2><p class="muted" style="margin:5px 0 0">الطلبات المسجلة من الموقع، مع تحديث حالة كل طلب.</p></div><div class="actions"><button class="light" id="exportOrdersBtn" type="button">تصدير الطلبات CSV</button><button class="light" id="refreshOrdersBtn" type="button">تحديث الطلبات</button></div></div><p class="status" id="ordersStatus" aria-live="polite"></p><div class="order-stats" id="orderStats"></div><div class="field"><label for="orderSearch">بحث في الطلبات</label><input id="orderSearch" type="search" placeholder="رقم الطلب أو اسم العميل أو الهاتف"></div><div class="field"><label for="orderFilter">تصفية الطلبات</label><select id="orderFilter"><option value="all">كل الطلبات</option><option value="new">جديد</option><option value="confirmed">تم التأكيد</option><option value="shipped">تم الشحن</option><option value="delivered">تم التسليم</option><option value="cancelled">ملغي</option></select></div><div id="ordersList" class="products"><p class="muted">جارٍ تحميل الطلبات…</p></div></section>\n    <div class="card admin-panel hidden" id="catalogPanel" role="tabpanel"><div class="actions" style="justify-content:space-between;align-items:center"><h2 style="margin:0">المنتجات الحالية (<span id="count">0</span>)</h2><div class="actions"><button class="light" id="importBtn" type="button">استيراد products.js</button><button class="light" id="exportBtn" type="button">تنزيل نسخة</button></div></div><input id="importFile" type="file" accept=".js,.txt,text/javascript,text/plain" hidden><p class="muted">الصور المرفوعة محفوظة في قاعدة المتجر؛ نسخة products.js تحفظ بيانات المنتجات فقط.</p><div class="field"><label for="productSearch">ابحث في المنتجات</label><input id="productSearch" type="search" placeholder="اسم المنتج أو الماركة أو القسم أو رقم المنتج"></div><p class="muted" id="listSummary" aria-live="polite"></p><div class="products" id="productList"></div></div>
+    <section class="card admin-panel hidden" id="postPanel" role="tabpanel">
+      <h2>منشئ بوستات فيسبوك</h2><p class="muted">اختار منتجًا من المتجر وسيتم تجهيز نص تسويقي قابل للتعديل والنسخ. راجع السعر والمواصفات قبل النشر.</p>
+      <div class="field"><label for="postProduct">اختيار المنتج</label><select id="postProduct"><option value="">اختر المنتج</option></select></div>
+      <div class="field"><label for="postHook">جملة افتتاحية (اختياري)</label><input id="postHook" placeholder="مثال: الجودة اللي تستحقها ورشتك"></div>
+      <div class="field"><label for="postOffer">عرض أو ملاحظة (اختياري)</label><input id="postOffer" placeholder="مثال: اسأل عن التوفر"></div>
+      <div class="field"><label for="postContact">طريقة التواصل</label><input id="postContact" value="للطلب والاستفسار ابعتلنا رسالة على الصفحة."></div>
+      <div class="actions"><button class="red" id="generatePostBtn" type="button">إنشاء البوست</button><button class="light" id="copyPostBtn" type="button">نسخ النص</button></div>
+      <p class="status" id="postStatus" aria-live="polite"></p><div class="field"><label for="postText">نص البوست — قابل للتعديل</label><textarea id="postText" rows="12" placeholder="سيظهر نص البوست هنا..."></textarea></div>
+      <div class="field"><label>صورة المنتج</label><img id="postImagePreview" class="image-preview hidden" alt="صورة المنتج المختار"><p class="muted" id="postImageNote">اختر منتجًا لعرض صورته إن كانت محفوظة.</p></div>
+    </section>
   </section>
 </main>
 <script src="products.js?v=product-admin-2"></script>
@@ -113,7 +124,7 @@ let existingImageIds = [];
 let selectedImageFiles = [];
 
 function showAdminTab(panelId) {
-  const ids = ["productPanel","catalogPanel","ordersPanel","inventoryPanel"];
+  const ids = ["productPanel","catalogPanel","ordersPanel","inventoryPanel","postPanel"];
   ids.forEach(function(id) {
     const panel = $(id);
     if (panel) panel.classList.toggle("hidden", id !== panelId);
@@ -212,6 +223,7 @@ async function loadProducts() {
     return Object.assign({}, data, {id:Number(data.id || item.id)});
   }).sort(function (a, b) { return a.id - b.id; });
   renderProducts();
+  refreshPostProducts();
 }
 const orderStatusLabels={new:"جديد",confirmed:"تم التأكيد",shipped:"تم الشحن",delivered:"تم التسليم",cancelled:"ملغي"};
 let orders=[];
@@ -478,6 +490,11 @@ $("enablePushBtn").addEventListener("click", function () {
 });
 $("logoutBtn").addEventListener("click", function () { signOut(auth); });
 $("resetBtn").addEventListener("click", resetForm);
+function refreshPostProducts(){const s=$("postProduct"),old=s.value;s.innerHTML='<option value="">اختر المنتج</option>'+products.map(p=>'<option value="'+escapeHtml(p.id)+'">'+escapeHtml(p.name)+(p.brand?" — "+escapeHtml(p.brand):"")+'</option>').join("");if(products.some(p=>String(p.id)===old))s.value=old;}
+async function showPostProductImage(p){const img=$("postImagePreview"),note=$("postImageNote");img.classList.add("hidden");img.removeAttribute("src");if(!p){note.textContent="اختر منتجًا لعرض صورته إن كانت محفوظة.";return;}if(p.image){img.src=p.image;img.classList.remove("hidden");note.textContent="صورة المنتج";return;}const id=(Array.isArray(p.imageIds)&&p.imageIds[0])||p.imageId;if(!id){note.textContent="لا توجد صورة محفوظة لهذا المنتج.";return;}note.textContent="جارٍ تحميل الصورة…";try{const snap=await getDoc(doc(db,"productImages",String(id)));if(snap.exists()&&snap.data().data){img.src=snap.data().data;img.classList.remove("hidden");note.textContent="صورة المنتج";}else note.textContent="لم يتم العثور على الصورة.";}catch(e){note.textContent="تعذر تحميل الصورة.";}}
+function buildFacebookPost(){const p=products.find(x=>String(x.id)===$("postProduct").value);if(!p){message($("postStatus"),"اختار المنتج الأول.");return;}const lines=[],hook=$("postHook").value.trim(),specs=String(p.specs||"").split(/\r?\n/).map(x=>x.trim()).filter(Boolean);if(hook)lines.push("🔥 "+hook);lines.push("🔧 "+p.name);if(p.brand)lines.push("🏷️ الماركة: "+p.brand);if(p.cat)lines.push("📂 القسم: "+p.cat);lines.push("💰 السعر: "+(p.price||"للاستفسار عن السعر"));if(p.desc)lines.push("",p.desc);if(specs.length)lines.push("","📌 المواصفات:",...specs.map(x=>"• "+x));if($("postOffer").value.trim())lines.push("","🎁 "+$("postOffer").value.trim());lines.push("","📩 "+($("postContact").value.trim()||"للطلب والاستفسار ابعتلنا رسالة."),"","الدولي للعدد الأصلية","#الدولي_للعدد_الأصلية #عدد_وأدوات #أدوات_أصلية");$("postText").value=lines.join("\n");message($("postStatus"),"تم إنشاء البوست. راجع النص والسعر ثم انسخه للنشر.");showPostProductImage(p);}
+$("postProduct").addEventListener("change",buildFacebookPost);$("generatePostBtn").addEventListener("click",buildFacebookPost);
+$("copyPostBtn").addEventListener("click",async function(){const v=$("postText").value.trim();if(!v){message($("postStatus"),"أنشئ البوست أولًا.");return;}try{await navigator.clipboard.writeText(v);message($("postStatus"),"تم نسخ النص. يمكنك لصقه في فيسبوك.");}catch(e){$("postText").focus();$("postText").select();message($("postStatus"),"حدد النص وانسخه يدويًا من الهاتف.");}});
 $("productSearch").addEventListener("input", renderProducts);
 $("exportBtn").addEventListener("click", exportProducts);
 $("importBtn").addEventListener("click", function () { $("importFile").click(); });
