@@ -316,12 +316,12 @@
     const customerPhone = customerPhoneRaw
       .replace(/[٠-٩]/g, function (digit) { return String("٠١٢٣٤٥٦٧٨٩".indexOf(digit)); })
       .replace(/[۰-۹]/g, function (digit) { return String("۰۱۲۳۴۵۶۷۸۹".indexOf(digit)); })
-      .replace(/[\\s()+-]/g, "");
+      .replace(/[\s()+-]/g, "");
     if (!customerName || !customerPhoneRaw || !customerAddress) {
       alert("من فضلك اكتب الاسم ورقم الهاتف والعنوان قبل إرسال الطلب.");
       return;
     }
-    if (!/^\\d{8,15}$/.test(customerPhone)) {
+    if (!/^\d{8,15}$/.test(customerPhone)) {
       alert("رقم الهاتف غير صحيح. راجع الرقم وحاول مرة أخرى.");
       document.getElementById("customerPhone").focus();
       return;
@@ -340,7 +340,7 @@
       : pricing.pricedCount
         ? "المجموع الجزئي للمنتجات المسعّرة: " + money(pricing.total) + "\nباقي المنتجات سعرها عند الاستفسار."
         : "الإجمالي يتحدد بعد تأكيد الأسعار.";
-    const message = "طلب جديد من متجر الدولي:\\nالاسم: " + customerName + "\\nالهاتف: " + customerPhone + "\\nالعنوان: " + customerAddress + (orderNotes ? "\\nملاحظات: " + orderNotes : "") + "\\n\\n" + lines + "\\n" + totalText + "\\nمن فضلكم أكدوا السعر والتوفر.";
+    const message = "طلب جديد من متجر الدولي:\nالاسم: " + customerName + "\nالهاتف: " + customerPhone + "\nالعنوان: " + customerAddress + (orderNotes ? "\nملاحظات: " + orderNotes : "") + "\n\n" + lines + "\n" + totalText + "\nمن فضلكم أكدوا السعر والتوفر.";
     window.open("https://wa.me/201024787222?text=" + encodeURIComponent(message), "_blank", "noopener");
   });
   document.addEventListener("keydown", function (event) {
