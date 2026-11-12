@@ -128,12 +128,12 @@
       .replace(/ة/g, "ه")
       .replace(/[٠-٩]/g, function (digit) { return String("٠١٢٣٤٥٦٧٨٩".indexOf(digit)); })
       .replace(/[۰-۹]/g, function (digit) { return String("۰۱۲۳۴۵۶۷۸۹".indexOf(digit)); })
-      .replace(/[^\\p{L}\\p{N}]+/gu, " ")
+      .replace(/[^\p{L}\p{N}]+/gu, " ")
       .trim()
-      .replace(/\\s+/g, " ");
+      .replace(/\s+/g, " ");
   }
   function normalizeBrand(name) {
-    return normalizeSearchText(name).replace(/\\s/g, "");
+    return normalizeSearchText(name).replace(/\s/g, "");
   }
   function displayBrand(name) {
     const labels = {wurth:"WÜRTH",bosch:"BOSCH",wera:"WERA",knipex:"KNIPEX",beta:"Beta",dewalt:"DEWALT"};
