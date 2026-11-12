@@ -1,7 +1,8 @@
 (function () {
   const root = document.getElementById("productDetail");
   const productId = new URLSearchParams(window.location.search).get("id");
-  let products = Array.isArray(window.DAWLY_PRODUCTS) ? window.DAWLY_PRODUCTS : [];
+  const fallbackProducts = Array.isArray(window.DAWLY_PRODUCTS) ? window.DAWLY_PRODUCTS.slice() : [];
+  let cloudProducts = null;
 
   function escapeHtml(value) {
     return String(value == null ? "" : value).replace(/[&<>"']/g, function (char) {
@@ -13,7 +14,8 @@
     root.innerHTML = '<div class="product-detail-missing"><h1>المنتج غير موجود</h1><p>قد يكون الإعلان حُذف أو أن الرابط غير صحيح.</p><a class="button-primary" href="products.html">العودة إلى المنتجات</a></div>';
   }
   function render() {
-    const item = products.find(function (product) { return String(product.id) === String(productId); });
+    const matchesId = function (product) { return String(product.id) === String(productId); };
+    const item = (cloudProducts || []).find(matchesId) || fallbackProducts.find(matchesId);
     if (!item) {
       showMissing();
       return;
@@ -51,7 +53,7 @@
 
   window.addEventListener("dawly-products-updated", function (event) {
     if (!Array.isArray(event.detail)) return;
-    products = event.detail;
+    cloudProducts = event.detail;
     render();
   });
   render();
