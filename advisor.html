@@ -130,7 +130,7 @@ const catalog=Array.isArray(window.DAWLY_PRODUCTS)?window.DAWLY_PRODUCTS:[];
  const matched=scored.map(entry=>entry.item);
  const productBox=document.getElementById('matchedProducts'); productBox.style.display='block';
  productBox.innerHTML=matched.length
- ? `<h3>منتجات من كتالوج الدولي الأقرب لاحتياجك</h3><div class="matched-grid">${matched.map(item=>`<div class="matched-item"><b>${escapeHTML(cleanProductName(item.name))}</b><small>${escapeHTML(item.cat)} · ${escapeHTML(cleanProductCopy(item.desc).slice(0,130))}</small><strong>${escapeHTML(formatAdvisorPrice(item.price||'السعر عند الاستفسار'))}</strong><br><a href="products.html#product-${item.id}">عرض المنتج في المتجر</a></div>`).join('')}</div>`
+ ? `<h3>منتجات من كتالوج الدولي الأقرب لاحتياجك</h3><div class="matched-grid">${matched.map(item=>`<div class="matched-item"><b>${escapeHTML(cleanProductName(item.name))}</b><small>${escapeHTML(item.cat)} · ${escapeHTML(cleanProductCopy(item.desc).slice(0,130))}</small><strong>${escapeHTML(formatAdvisorPrice(item.price||'السعر عند الاستفسار'))}</strong><br><a href="product.html?id=${encodeURIComponent(item.id)}">عرض المنتج في المتجر</a></div>`).join('')}</div>`
  : '<b>لم نجد منتجًا مطابقًا بدرجة كافية في الكتالوج الحالي. أرسل احتياجك للدولي لمساعدتك في اختيار البديل.</b><p><a href="https://wa.me/201024787222">اسألنا على واتساب</a></p>';
  document.getElementById('copy').addEventListener('click',async()=>{
 const t=`احتياجي من الدولي:\nالأداة المقترحة: ${r.name}\nنوع الشغل: ${document.getElementById('task').selectedOptions[0].text}\nالخامة: ${material}\nمعدل الاستخدام: ${document.getElementById('frequency').selectedOptions[0].text}\nالتشغيل: ${p}\nالميزانية: ${budget||'غير محددة'}\nتفاصيل: ${details||'لا يوجد'}`;
