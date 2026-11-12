@@ -30,6 +30,7 @@ button{border:0;border-radius:11px;padding:12px 18px;font:inherit;font-weight:70
 .matched-item{border:1px solid var(--line);border-radius:12px;padding:12px;background:#fff}
 .matched-item b{display:block}.matched-item small{color:var(--muted);display:block;margin:5px 0}
 .matched-item a{display:inline-block;background:var(--red);color:#fff;padding:7px 11px;border-radius:8px;font-size:12px;margin-top:8px}
+.profession-note{border:1px solid #f1c7c9;background:#fff7f7;color:#8f1c20;border-radius:12px;padding:11px 13px;margin:0 0 14px;font-size:13px;font-weight:700;line-height:1.7}
 @media(max-width:480px){.matched-grid{grid-template-columns:1fr}}
 .notice{font-size:12px;color:var(--muted);margin-top:14px}
 .steps{display:grid;gap:12px}.step{display:flex;gap:12px;align-items:flex-start}.num{flex:0 0 30px;height:30px;border-radius:50%;display:grid;place-items:center;background:#fff0f0;color:var(--red);font-weight:800}
@@ -48,6 +49,7 @@ footer{text-align:center;color:var(--muted);font-size:12px;padding:20px}
 <div class="layout">
 <section class="card">
 <h2>خلّينا نحدد احتياجك</h2><p class="sub">كل ما كانت إجاباتك أدق، كان الترشيح أقرب لاحتياجك.</p>
+<div id="professionPreset" class="profession-note" hidden></div>
 <form id="finder">
 <label for="task">هتستخدم الأداة في إيه؟</label>
 <select id="task" required>
@@ -95,6 +97,16 @@ clean:{name:'صنفرة أو أداة تنظيف',base:'اختار نوع الص
 other:{name:'تحديد الأداة حسب المهمة',base:'اكتب المهمة بالتفصيل حتى نحدد فئة الأداة المناسبة بدقة.',checks:['حدد العملية المطلوبة','اذكر الخامة والمقاسات','اذكر هل الاستخدام منزلي أم احترافي']}
 };
 function escapeHTML(value){return String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));}
+function cleanProductCopy(value){return String(value ?? '').replace(/\uFFFD/g,'').replace(/[\u200B-\u200F\u2060\uFEFF]/g,' ').replace(/\r\n?/g,'\n').replace(/[ \t]{2,}/g,' ').trim();}
+function cleanProductName(value){let text=cleanProductCopy(value).replace(/[\uFE0E\uFE0F\u200D]/g,'').replace(/[\u{1F1E6}-\u{1F1FF}]/gu,' ').replace(/\p{Extended_Pictographic}/gu,' ');text=text.replace(/\s+(?:لو بتدور(?:ي)?|لو عايز|لو محتاج|لو محتاجة|سرعة في الأداء|دقة في التحكم|جودة للمحترفين|شغل أنضف|اطلب الآن).*/iu,'').replace(/\s+/g,' ').trim();return text.length>72?text.slice(0,69).replace(/\s+\S*$/,'')+'…':text||'منتج من الدولي';}
+function formatAdvisorPrice(value){let text=String(value ?? '').trim();if(!text||/استفسار|حسب الطلب/i.test(text))return cleanProductCopy(text||'السعر عند الاستفسار');text=text.replace(/[٠-٩]/g,d=>String('٠١٢٣٤٥٦٧٨٩'.indexOf(d))).replace(/[۰-۹]/g,d=>String('۰۱۲۳۴۵۶۷۸۹'.indexOf(d))).replace(/(?:جنيه(?:\s*مصري)?|ج\.?م\.?|ج\.?|EGP|LE)/gi,'').replace(/[\s,،٬]/g,'');return /^\d+(?:\.\d+)?$/.test(text)?new Intl.NumberFormat('ar-EG',{maximumFractionDigits:2}).format(Number(text))+' ج.م':cleanProductCopy(value);}
+const professionPresets={
+ 'air-conditioning':{label:'فني تكييف وتبريد',task:'cut',material:'أكثر من خامة',frequency:'heavy',power:'any',details:'أعمال تكييف وتبريد: قص وتجهيز مواسير النحاس والألومنيوم وتحديد المقاسات.'},
+ plumbing:{label:'سباكة وتمديدات',task:'cut',material:'بلاستيك',frequency:'heavy',power:'any',details:'أعمال سباكة: قص وتجهيز المواسير حسب الخامة والمقاس المطلوب.'},
+ workshop:{label:'ورشة وصيانة',task:'drill',material:'حديد أو معدن',frequency:'heavy',power:'any',details:'أعمال ورشة وصيانة متكررة على المعادن؛ أحتاج أدوات مناسبة للاستخدام الاحترافي.'}
+};
+const selectedProfession=professionPresets[new URLSearchParams(location.search).get('profession')];
+if(selectedProfession){document.getElementById('task').value=selectedProfession.task;document.getElementById('material').value=selectedProfession.material;document.getElementById('frequency').value=selectedProfession.frequency;document.getElementById('power').value=selectedProfession.power;document.getElementById('details').value=selectedProfession.details;const presetNote=document.getElementById('professionPreset');presetNote.hidden=false;presetNote.textContent='اختيار مبدئي لـ'+selectedProfession.label+' — راجع الخامة والتفاصيل قبل عرض الترشيح.';}
 form.addEventListener('submit',e=>{
 e.preventDefault();
 const task=document.getElementById('task').value,material=document.getElementById('material').value,frequency=document.getElementById('frequency').value,power=document.getElementById('power').value,budget=document.getElementById('budget').value.trim(),details=document.getElementById('details').value.trim();
@@ -105,7 +117,7 @@ out.innerHTML=`<span class="pill">ترشيح مبدئي</span><h3>${r.name}</h3>
 const matched=(window.DAWLY_PRODUCTS||[]).filter(item=>(item.tasks||[]).includes(task));
  const productBox=document.getElementById('matchedProducts'); productBox.style.display='block';
  productBox.innerHTML=matched.length
- ? `<h3>منتجات من متجر الدولي قد تناسب احتياجك</h3><div class="matched-grid">${matched.map(item=>`<div class="matched-item"><b>${escapeHTML(item.name)}</b><small>${escapeHTML(item.cat)} · ${escapeHTML(item.desc)}</small><strong>${escapeHTML(item.price||'السعر عند الاستفسار')}</strong><br><a href="products.html#product-${item.id}">عرض المنتج في المتجر</a></div>`).join('')}</div>`
+ ? `<h3>منتجات من متجر الدولي قد تناسب احتياجك</h3><div class="matched-grid">${matched.map(item=>`<div class="matched-item"><b>${escapeHTML(cleanProductName(item.name))}</b><small>${escapeHTML(item.cat)} · ${escapeHTML(cleanProductCopy(item.desc).slice(0,130))}</small><strong>${escapeHTML(formatAdvisorPrice(item.price||'السعر عند الاستفسار'))}</strong><br><a href="products.html#product-${item.id}">عرض المنتج في المتجر</a></div>`).join('')}</div>`
  : '<b>لا توجد منتجات مرتبطة بهذا الاستخدام حاليًا.</b><p><a href="https://wa.me/201024787222">اسألنا على واتساب</a></p>';
  document.getElementById('copy').addEventListener('click',async()=>{
 const t=`احتياجي من الدولي:\nالأداة المقترحة: ${r.name}\nنوع الشغل: ${document.getElementById('task').selectedOptions[0].text}\nالخامة: ${material}\nمعدل الاستخدام: ${document.getElementById('frequency').selectedOptions[0].text}\nالتشغيل: ${p}\nالميزانية: ${budget||'غير محددة'}\nتفاصيل: ${details||'لا يوجد'}`;
