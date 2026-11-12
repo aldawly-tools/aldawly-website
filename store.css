@@ -148,6 +148,19 @@ img{max-width:100%}
  .category-tile{flex-direction:column;gap:5px}
  .product-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
+@media(max-width:700px){
+ .benefits{justify-content:center;white-space:normal;overflow:visible;flex-wrap:wrap;padding-block:4px}
+ .benefit{padding:3px 10px;font-size:11px}
+ .nav-row{flex-wrap:wrap;justify-content:center;gap:2px 4px;padding-block:5px;overflow:visible}
+ .nav-link{min-height:36px;font-size:12px;padding-inline:8px}
+ .nav-link.active{margin:2px 0;padding-inline:11px}
+ .hero-grid{grid-template-columns:minmax(0,1fr);grid-template-areas:"copy" "photo" "services"}
+ .hero-copy{min-height:0;padding:20px}
+ .hero-photo{height:clamp(190px,42vw,270px);min-height:0}
+ .hero-services{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:auto}
+ .service-card{min-height:64px;flex-direction:row;justify-content:flex-start;text-align:right;padding:9px 12px;font-size:12px}
+ .product-visual{height:136px}
+}
 @media(max-width:600px){
  .container{width:94%}
  .benefits{min-height:34px}
