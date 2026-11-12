@@ -86,6 +86,7 @@ header p{font-size:14px;opacity:.92}
  .dashboard-stat{min-height:88px}
 }
 
+.dashboard-nav{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));position:sticky;top:4px}.dashboard-tab{background:#f1f2f4;color:#444;border:1px solid #e5e7eb;padding:12px 8px;white-space:nowrap;font-size:13px}.dashboard-tab.active{background:#d71920;color:#fff;border-color:#d71920;box-shadow:0 4px 12px #d7192030}.admin-panel{scroll-margin-top:75px}.admin-panel.hidden{display:none!important}@media(max-width:480px){.dashboard-nav{gap:5px;padding:7px}.dashboard-tab{font-size:11px;padding:11px 4px;border-radius:9px}}
 </style>
 </head>
 <body>
@@ -99,8 +100,11 @@ header p{font-size:14px;opacity:.92}
   </section>
 
   <section class="hidden" id="manager">
-    <nav class="dashboard-nav" aria-label="أقسام لوحة الإدارة">
-      <a href="#productForm">＋ إضافة منتج</a><a href="#catalogCard">المنتجات</a><a href="#ordersCard">الطلبات</a><a href="#inventoryAlertsCard">المخزون</a>
+    <nav class="dashboard-nav" aria-label="أقسام لوحة الإدارة" role="tablist">
+      <button type="button" class="dashboard-tab active" data-tab="productPanel" role="tab" aria-selected="true">＋ إضافة منتج</button>
+      <button type="button" class="dashboard-tab" data-tab="catalogPanel" role="tab" aria-selected="false">المنتجات</button>
+      <button type="button" class="dashboard-tab" data-tab="ordersPanel" role="tab" aria-selected="false">الطلبات</button>
+      <button type="button" class="dashboard-tab" data-tab="inventoryPanel" role="tab" aria-selected="false">المخزون</button>
     </nav>
     <div class="dashboard-stats" aria-label="ملخص المتجر">
       <div class="dashboard-stat"><span>إجمالي المنتجات</span><strong id="dashProducts">0</strong></div>
@@ -108,7 +112,7 @@ header p{font-size:14px;opacity:.92}
       <div class="dashboard-stat"><span>مخزون منخفض</span><strong id="dashLowStock">0</strong></div>
       <div class="dashboard-stat"><span>منتجات نفدت</span><strong id="dashOutStock">0</strong></div>
     </div>
-    <div class="card">
+    <div class="card admin-panel" id="productPanel" role="tabpanel">
       <div class="actions" style="justify-content:space-between;align-items:center"><div><h2 style="margin:0 0 5px">إضافة منتج</h2><span class="muted" id="signedInAs"></span></div><button class="light" id="enablePushBtn" type="button">تفعيل إشعارات الطلبات على هذا الهاتف</button><button class="light" id="logoutBtn" type="button">تسجيل الخروج</button></div>
       <p class="status" id="saveStatus" aria-live="polite"></p><p class="status" id="pushStatus" aria-live="polite"></p>
       <form id="productForm">
@@ -129,8 +133,8 @@ header p{font-size:14px;opacity:.92}
         <div class="actions form-actions"><button class="red" id="saveBtn" type="submit">حفظ المنتج</button><button class="light" id="resetBtn" type="button">منتج جديد</button></div>
       </form>
     </div>
-    <section class="card" id="inventoryAlertsCard"><h2 style="margin:0 0 8px">تنبيهات المخزون</h2><div id="inventoryAlerts" aria-live="polite"><p class="muted">جارٍ فحص المخزون…</p></div></section>
-    <section class="card" id="ordersCard"><div class="actions" style="justify-content:space-between;align-items:center"><div><h2 style="margin:0">طلبات العملاء (<span id="ordersCount">0</span>)</h2><p class="muted" style="margin:5px 0 0">الطلبات المسجلة من الموقع، مع تحديث حالة كل طلب.</p></div><div class="actions"><button class="light" id="exportOrdersBtn" type="button">تصدير الطلبات CSV</button><button class="light" id="refreshOrdersBtn" type="button">تحديث الطلبات</button></div></div><p class="status" id="ordersStatus" aria-live="polite"></p><div class="order-stats" id="orderStats"></div><div class="field"><label for="orderSearch">بحث في الطلبات</label><input id="orderSearch" type="search" placeholder="رقم الطلب أو اسم العميل أو الهاتف"></div><div class="field"><label for="orderFilter">تصفية الطلبات</label><select id="orderFilter"><option value="all">كل الطلبات</option><option value="new">جديد</option><option value="confirmed">تم التأكيد</option><option value="shipped">تم الشحن</option><option value="delivered">تم التسليم</option><option value="cancelled">ملغي</option></select></div><div id="ordersList" class="products"><p class="muted">جارٍ تحميل الطلبات…</p></div></section>\n    <div class="card" id="catalogCard"><div class="actions" style="justify-content:space-between;align-items:center"><h2 style="margin:0">المنتجات الحالية (<span id="count">0</span>)</h2><div class="actions"><button class="light" id="importBtn" type="button">استيراد products.js</button><button class="light" id="exportBtn" type="button">تنزيل نسخة</button></div></div><input id="importFile" type="file" accept=".js,.txt,text/javascript,text/plain" hidden><p class="muted">الصور المرفوعة محفوظة في قاعدة المتجر؛ نسخة products.js تحفظ بيانات المنتجات فقط.</p><div class="field"><label for="productSearch">ابحث في المنتجات</label><input id="productSearch" type="search" placeholder="اسم المنتج أو الماركة أو القسم أو رقم المنتج"></div><p class="muted" id="listSummary" aria-live="polite"></p><div class="products" id="productList"></div></div>
+    <section class="card admin-panel hidden" id="inventoryPanel" role="tabpanel"><h2 style="margin:0 0 8px">تنبيهات المخزون</h2><div id="inventoryAlerts" aria-live="polite"><p class="muted">جارٍ فحص المخزون…</p></div></section>
+    <section class="card admin-panel hidden" id="ordersPanel" role="tabpanel"><div class="actions" style="justify-content:space-between;align-items:center"><div><h2 style="margin:0">طلبات العملاء (<span id="ordersCount">0</span>)</h2><p class="muted" style="margin:5px 0 0">الطلبات المسجلة من الموقع، مع تحديث حالة كل طلب.</p></div><div class="actions"><button class="light" id="exportOrdersBtn" type="button">تصدير الطلبات CSV</button><button class="light" id="refreshOrdersBtn" type="button">تحديث الطلبات</button></div></div><p class="status" id="ordersStatus" aria-live="polite"></p><div class="order-stats" id="orderStats"></div><div class="field"><label for="orderSearch">بحث في الطلبات</label><input id="orderSearch" type="search" placeholder="رقم الطلب أو اسم العميل أو الهاتف"></div><div class="field"><label for="orderFilter">تصفية الطلبات</label><select id="orderFilter"><option value="all">كل الطلبات</option><option value="new">جديد</option><option value="confirmed">تم التأكيد</option><option value="shipped">تم الشحن</option><option value="delivered">تم التسليم</option><option value="cancelled">ملغي</option></select></div><div id="ordersList" class="products"><p class="muted">جارٍ تحميل الطلبات…</p></div></section>\n    <div class="card admin-panel hidden" id="catalogPanel" role="tabpanel"><div class="actions" style="justify-content:space-between;align-items:center"><h2 style="margin:0">المنتجات الحالية (<span id="count">0</span>)</h2><div class="actions"><button class="light" id="importBtn" type="button">استيراد products.js</button><button class="light" id="exportBtn" type="button">تنزيل نسخة</button></div></div><input id="importFile" type="file" accept=".js,.txt,text/javascript,text/plain" hidden><p class="muted">الصور المرفوعة محفوظة في قاعدة المتجر؛ نسخة products.js تحفظ بيانات المنتجات فقط.</p><div class="field"><label for="productSearch">ابحث في المنتجات</label><input id="productSearch" type="search" placeholder="اسم المنتج أو الماركة أو القسم أو رقم المنتج"></div><p class="muted" id="listSummary" aria-live="polite"></p><div class="products" id="productList"></div></div>
   </section>
 </main>
 <script src="products.js?v=product-admin-2"></script>
@@ -154,6 +158,24 @@ let imageRemoved = false;
 let existingImageIds = [];
 let selectedImageFiles = [];
 
+function showAdminTab(panelId) {
+  const ids = ["productPanel","catalogPanel","ordersPanel","inventoryPanel"];
+  ids.forEach(function(id) {
+    const panel = $(id);
+    if (panel) panel.classList.toggle("hidden", id !== panelId);
+  });
+  document.querySelectorAll(".dashboard-tab").forEach(function(button) {
+    const active = button.dataset.tab === panelId;
+    button.classList.toggle("active", active);
+    button.setAttribute("aria-selected", active ? "true" : "false");
+  });
+}
+document.querySelectorAll(".dashboard-tab").forEach(function(button) {
+  button.addEventListener("click", function() {
+    showAdminTab(button.dataset.tab);
+    window.scrollTo({top:0,behavior:"smooth"});
+  });
+});
 function message(target, text) { target.textContent = text || ""; }
 function escapeHtml(value) {
   return String(value == null ? "" : value).replace(/[&<>"']/g, function (character) {
@@ -448,6 +470,7 @@ async function editProduct(id) {
   $("specs").value = product.specs || "";
   Array.from($("tasks").options).forEach(function (option) { option.selected = (product.tasks || []).includes(option.value); });
   $("saveBtn").textContent = "حفظ التعديل";
+  showAdminTab("productPanel");
   if (product.imageId) {
     const imageDoc = await getDoc(doc(db, "productImages", String(product.imageId)));
     if (imageDoc.exists()) showPreview(imageDoc.data().data || "");
@@ -598,43 +621,3 @@ $("productForm").addEventListener("submit", async function (event) {
       imageIds = [];
       image = "";
     }
-    imageId = imageIds[0] || null;
-    const product = {
-      id:id,
-      name:$("name").value.trim(),
-      brand:$("brand").value.trim(),
-      cat:$("cat").value,
-      desc:$("desc").value.trim(),
-      specs:$("specs").value.trim(),
-      price:$("price").value.trim() || "السعر عند الاستفسار",
-      stock:$("stock").value.trim() === "" ? null : Math.max(0, Math.min(99999, Math.floor(Number($("stock").value)))),
-      icon:$("icon").value.trim() || "🔧",
-      image:image,
-      imageId:imageId,
-      imageIds:imageIds,
-      tasks:Array.from($("tasks").selectedOptions).map(function (option) { return option.value; }),
-      updatedAt:serverTimestamp()
-    };
-    await setDoc(doc(db, "products", String(id)), product);
-    products = products.filter(function (item) { return String(item.id) !== String(id); }).concat([product]).sort(function (a, b) { return a.id - b.id; });
-    renderProducts();
-    resetForm();
-    message(saveStatus, "تم حفظ المنتج، وسيظهر للزوار عند تحديث الصفحة.");
-  } catch (error) {
-    message(saveStatus, error && error.message ? error.message : "تعذر الحفظ. تحقق من إعدادات Firebase والاتصال.");
-  } finally { $("saveBtn").disabled = false; }
-});
-
-if (!readyConfig()) {
-  $("loginBtn").disabled = true;
-  message(status, "يلزم ربط قاعدة Firebase مرة واحدة. راجع ملف firebase-setup-ar.txt.");
-} else {
-  try {
-    const app = initializeApp(config);
-    db = getFirestore(app);
-    auth = getAuth(app);
-    getRedirectResult(auth).then(function (result) {
-      if (result && result.user) {
-        message(status, "تم تسجيل الدخول بنجاح.");
-      }
-    }).catch(function (error) {
