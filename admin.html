@@ -35,7 +35,7 @@
           <div class="field"><label for="icon">رمز بديل</label><input id="icon" value="🔧"></div>
         </div>
         <div class="field"><label for="imageUrl">رابط الصورة (اختياري)</label><input id="imageUrl" type="text" placeholder="اتركه فارغًا إذا سترفع صورة من جهازك"></div>
-        <div class="field"><label for="imageFile">أو اختر صورة من الجهاز</label><input id="imageFile" type="file" accept=".jpg,.jpeg,.png,.webp,.gif,.bmp,.avif,image/jpeg,image/png,image/webp,image/gif,image/bmp,image/avif"><img id="imagePreview" class="image-preview hidden" alt="معاينة صورة المنتج"><button class="light" id="removeImageBtn" type="button">مسح الصورة المختارة</button><small class="muted">الصيغ المدعومة: JPG وJPEG وPNG وWEBP وGIF وBMP وAVIF. سيتم تحويل الصورة تلقائيًا إلى JPG مضغوط قبل الحفظ.</small></div>
+        <div class="field"><label for="imageFile">أو اختر صورًا متعددة من الجهاز (حتى 5 صور)</label><input id="imageFile" type="file" multiple accept=".jpg,.jpeg,.png,.webp,.gif,.bmp,.avif,image/jpeg,image/png,image/webp,image/gif,image/bmp,image/avif"><img id="imagePreview" class="image-preview hidden" alt="معاينة صورة المنتج"><button class="light" id="removeImageBtn" type="button">مسح الصورة المختارة</button><small class="muted">الصيغ المدعومة: JPG وJPEG وPNG وWEBP وGIF وBMP وAVIF. سيتم تحويل الصورة تلقائيًا إلى JPG مضغوط قبل الحفظ.</small></div>
         <div class="field"><label for="desc">وصف المنتج</label><textarea id="desc" rows="3" placeholder="اكتب وصفًا واضحًا للمنتج واستخدامه..."></textarea></div>
         <div class="field"><label for="specs">المواصفات الفنية (كل مواصفة في سطر)</label><textarea id="specs" rows="5" placeholder="بلد المنشأ: ألمانيا&#10;رقم الموديل: ...&#10;المقاس: ...&#10;عدد القطع: ...&#10;الخامة: ..."></textarea><small class="muted">اكتب كل سطر بهذا الشكل: اسم المواصفة: القيمة. اتركه فارغًا إذا لم تتوفر المعلومة.</small></div>
         <div class="field"><label for="tasks">الاستخدامات المناسبة للمساعد الفني</label><select id="tasks" multiple size="5"><option value="drill">تخريم</option><option value="screw">فك وربط</option><option value="cut">قطع وتجليخ</option><option value="wood">نجارة</option><option value="clean">تنظيف وصنفرة</option><option value="other">استخدامات أخرى</option></select></div>
@@ -64,6 +64,7 @@ let auth = null;
 let products = [];
 let previewObjectUrl = "";
 let imageRemoved = false;
+let existingImageIds = [];
 
 function message(target, text) { target.textContent = text || ""; }
 function escapeHtml(value) {
@@ -331,6 +332,7 @@ async function editProduct(id) {
   $("stock").value = Number.isInteger(product.stock) && product.stock >= 0 ? String(product.stock) : "";
   $("icon").value = product.icon || "🔧";
   imageRemoved = false;
+  existingImageIds = Array.isArray(product.imageIds) ? product.imageIds.map(String) : (product.imageId ? [String(product.imageId)] : []);
   $("imageUrl").value = product.image || "";
   $("imageFile").value = "";
   $("desc").value = product.desc || "";
@@ -348,7 +350,8 @@ async function deleteProduct(id) {
   if (!product || !window.confirm("هل تريد حذف هذا المنتج؟")) return;
   try {
     await deleteDoc(doc(db, "products", String(product.id)));
-    if (product.imageId) await deleteDoc(doc(db, "productImages", String(product.imageId)));
+    const ids = Array.isArray(product.imageIds) ? product.imageIds : (product.imageId ? [product.imageId] : []);
+    for (const imageId of ids) await deleteDoc(doc(db, "productImages", String(imageId)));
     products = products.filter(function (item) { return String(item.id) !== String(id); });
     renderProducts();
     message(saveStatus, "تم حذف المنتج.");
@@ -414,8 +417,10 @@ $("importFile").addEventListener("change", async function (event) {
   finally { event.target.value = ""; }
 });
 $("imageFile").addEventListener("change", function () {
-  const file = $("imageFile").files && $("imageFile").files[0];
-  if (!file) return;
+  const files = Array.from($("imageFile").files || []);
+  if (!files.length) return;
+  if (files.length > 5) { $("imageFile").value = ""; message(saveStatus, "يمكن اختيار 5 صور كحد أقصى."); return; }
+  const file = files[0];
   if (previewObjectUrl) URL.revokeObjectURL(previewObjectUrl);
   previewObjectUrl = URL.createObjectURL(file);
   showPreview(previewObjectUrl);
@@ -423,6 +428,7 @@ $("imageFile").addEventListener("change", function () {
 $("removeImageBtn").addEventListener("click", function () {
   $("imageFile").value = "";
   $("imageUrl").value = "";
+  existingImageIds = [];
   imageRemoved = true;
   if (previewObjectUrl) URL.revokeObjectURL(previewObjectUrl);
   previewObjectUrl = "";
@@ -440,11 +446,9 @@ $("productForm").addEventListener("submit", async function (event) {
   const previous = $("pid").value ? products.find(function (item) { return String(item.id) === String($("pid").value); }) : null;
   const id = previous ? Number(previous.id) : Math.max(0, ...products.map(function (item) { return Number(item.id) || 0; })) + 1;
   const file = $("imageFile").files && $("imageFile").files[0];
-  if (file && !(/\\.(jpe?g|png|webp|gif|bmp|avif)$/i.test(file.name || "") || ["image/jpeg","image/png","image/webp","image/gif","image/bmp","image/avif"].includes(file.type))) {
-    message(saveStatus, "صيغة الصورة غير مدعومة. استخدم JPG أو PNG أو WEBP أو GIF أو BMP أو AVIF.");
-    $("imageFile").focus();
-    return;
-  }
+  const files = Array.from($("imageFile").files || []);
+  if (files.length > 5) { message(saveStatus, "يمكن إضافة 5 صور كحد أقصى للمنتج."); return; }
+  const file = files[0];
   const stockValue = $("stock").value.trim();
   if (stockValue !== "" && (!/^\\d+$/.test(stockValue) || Number(stockValue) > 99999)) {
     message(saveStatus, "اكتب كمية صحيحة من 0 إلى 99999، أو اترك الخانة فارغة.");
@@ -452,20 +456,27 @@ $("productForm").addEventListener("submit", async function (event) {
     return;
   }
   let image = $("imageUrl").value.trim();
-  let imageId = previous && previous.imageId ? String(previous.imageId) : null;
+  let imageIds = imageRemoved ? [] : existingImageIds.slice();
+  let imageId = imageIds[0] || null;
   $("saveBtn").disabled = true;
   message(saveStatus, "جارٍ حفظ المنتج…");
   try {
-    if (file) {
-      const compressed = await compressImage(file);
-      await setDoc(doc(db, "productImages", String(id)), {data:compressed, updatedAt:serverTimestamp()});
+    if (files.length) {
+      for (let i = 0; i < files.length; i++) {
+        const newImageId = String(id) + "_" + Date.now() + "_" + i;
+        const compressed = await compressImage(files[i]);
+        await setDoc(doc(db, "productImages", newImageId), {data:compressed, updatedAt:serverTimestamp()});
+        imageIds.push(newImageId);
+      }
+      imageIds = imageIds.slice(0, 5);
       image = "";
-      imageId = String(id);
     } else if (imageRemoved || (previous && image !== String(previous.image || ""))) {
-      if (previous && previous.imageId) await deleteDoc(doc(db, "productImages", String(previous.imageId)));
-      imageId = null;
+      const oldIds = previous && Array.isArray(previous.imageIds) ? previous.imageIds : (previous && previous.imageId ? [previous.imageId] : []);
+      for (const oldId of oldIds) await deleteDoc(doc(db, "productImages", String(oldId)));
+      imageIds = [];
       image = "";
     }
+    imageId = imageIds[0] || null;
     const product = {
       id:id,
       name:$("name").value.trim(),
@@ -478,6 +489,7 @@ $("productForm").addEventListener("submit", async function (event) {
       icon:$("icon").value.trim() || "🔧",
       image:image,
       imageId:imageId,
+      imageIds:imageIds,
       tasks:Array.from($("tasks").selectedOptions).map(function (option) { return option.value; }),
       updatedAt:serverTimestamp()
     };
