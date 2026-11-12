@@ -49,7 +49,7 @@
 <script src="firebase-config.js?v=product-admin-2"></script>
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-app.js";
-import { getAuth, GoogleAuthProvider, onAuthStateChanged, signInWithPopup, signOut } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-auth.js";
+import { getAuth, GoogleAuthProvider, onAuthStateChanged, signInWithPopup, signInWithRedirect, signOut } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-auth.js";
 import { collection, deleteDoc, doc, getDoc, getDocs, getFirestore, setDoc, serverTimestamp, writeBatch, query, orderBy, updateDoc } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-firestore.js";
 
 const $ = function (id) { return document.getElementById(id); };
@@ -284,8 +284,28 @@ async function deleteProduct(id) {
 }
 
 $("loginBtn").addEventListener("click", async function () {
-  try { await signInWithPopup(auth, new GoogleAuthProvider()); }
-  catch (error) { message(status, "تعذر تسجيل الدخول. تأكد من تفعيل دخول Google في Firebase والسماح بعنوان الموقع."); }
+  if (!auth) { message(status, "خدمة تسجيل الدخول لم تجهز. حدّث الصفحة وحاول مرة أخرى."); return; }
+  $("loginBtn").disabled = true;
+  message(status, "جارٍ فتح تسجيل الدخول بحساب Google…");
+  try {
+    const provider = new GoogleAuthProvider();
+    provider.setCustomParameters({prompt:"select_account"});
+    if (/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+      await signInWithRedirect(auth, provider);
+    } else {
+      await signInWithPopup(auth, provider);
+    }
+  } catch (error) {
+    console.error("Firebase sign-in error:", error);
+    const messages = {
+      "auth/unauthorized-domain":"عنوان الموقع غير مضاف إلى النطاقات المصرح بها في Firebase Authentication.",
+      "auth/operation-not-allowed":"تسجيل الدخول بحساب Google غير مفعّل في Firebase Authentication.",
+      "auth/popup-blocked":"المتصفح منع نافذة الدخول. افتح الصفحة في Chrome وحاول مرة أخرى.",
+      "auth/network-request-failed":"تعذر الاتصال. تحقق من الإنترنت وحاول مرة أخرى."
+    };
+    message(status, messages[error.code] || ("تعذر تسجيل الدخول (" + (error.code || "خطأ غير معروف") + "). افتح الموقع في Chrome وحاول مرة أخرى."));
+    $("loginBtn").disabled = false;
+  }
 });
 $("logoutBtn").addEventListener("click", function () { signOut(auth); });
 $("resetBtn").addEventListener("click", resetForm);
@@ -382,7 +402,7 @@ if (!readyConfig()) {
       try { await loadProducts(); await loadOrders(); }
       catch (error) { message(saveStatus, "تعذر تحميل المنتجات. تأكد من إعداد قاعدة Firestore ومن استخدام حساب الإدارة المسموح."); }
     });
-  } catch (error) { message(status, "تعذر تهيئة Firebase. راجع قيم firebase-config.js."); }
+  } catch (error) { console.error("Firebase initialization error:", error); message(status, "تعذر تهيئة Firebase (" + (error.code || error.message || "خطأ غير معروف") + "). راجع إعدادات Firebase."); }
 }
 </script>
 </body>
