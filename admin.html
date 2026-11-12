@@ -22,8 +22,8 @@
 
   <section class="hidden" id="manager">
     <div class="card">
-      <div class="actions" style="justify-content:space-between;align-items:center"><div><h2 style="margin:0 0 5px">إضافة منتج</h2><span class="muted" id="signedInAs"></span></div><button class="light" id="logoutBtn" type="button">تسجيل الخروج</button></div>
-      <p class="status" id="saveStatus" aria-live="polite"></p>
+      <div class="actions" style="justify-content:space-between;align-items:center"><div><h2 style="margin:0 0 5px">إضافة منتج</h2><span class="muted" id="signedInAs"></span></div><button class="light" id="enablePushBtn" type="button">تفعيل إشعارات الطلبات على هذا الهاتف</button><button class="light" id="logoutBtn" type="button">تسجيل الخروج</button></div>
+      <p class="status" id="saveStatus" aria-live="polite"></p><p class="status" id="pushStatus" aria-live="polite"></p>
       <form id="productForm">
         <input type="hidden" id="pid">
         <div class="field"><label for="name">اسم المنتج</label><input id="name" required placeholder="مثال: شنطة عدة Würth"></div>
@@ -48,6 +48,7 @@
 </main>
 <script src="products.js?v=product-admin-2"></script>
 <script src="firebase-config.js?v=product-admin-2"></script>
+<script src="onesignal-init.js?v=1"></script>
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-app.js";
 import { getAuth, GoogleAuthProvider, onAuthStateChanged, signInWithPopup, signInWithRedirect, getRedirectResult, signOut } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-auth.js";
