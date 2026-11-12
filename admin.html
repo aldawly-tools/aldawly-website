@@ -35,7 +35,7 @@
           <div class="field"><label for="icon">رمز بديل</label><input id="icon" value="🔧"></div>
         </div>
         <div class="field"><label for="imageUrl">رابط الصورة (اختياري)</label><input id="imageUrl" type="text" placeholder="اتركه فارغًا إذا سترفع صورة من جهازك"></div>
-        <div class="field"><label for="imageFile">أو اختر صورًا متعددة من الجهاز (حتى 5 صور)</label><input id="imageFile" type="file" multiple accept=".jpg,.jpeg,.png,.webp,.gif,.bmp,.avif,image/jpeg,image/png,image/webp,image/gif,image/bmp,image/avif"><img id="imagePreview" class="image-preview hidden" alt="معاينة صورة المنتج"><button class="light" id="removeImageBtn" type="button">مسح الصورة المختارة</button><small class="muted">الصيغ المدعومة: JPG وJPEG وPNG وWEBP وGIF وBMP وAVIF. سيتم تحويل الصورة تلقائيًا إلى JPG مضغوط قبل الحفظ.</small></div>
+        <div class="field"><label for="imageFile">أو اختر صورًا متعددة من الجهاز (حتى 5 صور)</label><input id="imageFile" type="file" accept=".jpg,.jpeg,.png,.webp,.gif,.bmp,.avif,image/jpeg,image/png,image/webp,image/gif,image/bmp,image/avif"><img id="imagePreview" class="image-preview hidden" alt="معاينة صورة المنتج"><button class="light" id="removeImageBtn" type="button">مسح الصورة المختارة</button><small class="muted">الصيغ المدعومة: JPG وJPEG وPNG وWEBP وGIF وBMP وAVIF. سيتم تحويل الصورة تلقائيًا إلى JPG مضغوط قبل الحفظ.</small></div>
         <div class="field"><label for="desc">وصف المنتج</label><textarea id="desc" rows="3" placeholder="اكتب وصفًا واضحًا للمنتج واستخدامه..."></textarea></div>
         <div class="field"><label for="specs">المواصفات الفنية (كل مواصفة في سطر)</label><textarea id="specs" rows="5" placeholder="بلد المنشأ: ألمانيا&#10;رقم الموديل: ...&#10;المقاس: ...&#10;عدد القطع: ...&#10;الخامة: ..."></textarea><small class="muted">اكتب كل سطر بهذا الشكل: اسم المواصفة: القيمة. اتركه فارغًا إذا لم تتوفر المعلومة.</small></div>
         <div class="field"><label for="tasks">الاستخدامات المناسبة للمساعد الفني</label><select id="tasks" multiple size="5"><option value="drill">تخريم</option><option value="screw">فك وربط</option><option value="cut">قطع وتجليخ</option><option value="wood">نجارة</option><option value="clean">تنظيف وصنفرة</option><option value="other">استخدامات أخرى</option></select></div>
@@ -65,6 +65,7 @@ let products = [];
 let previewObjectUrl = "";
 let imageRemoved = false;
 let existingImageIds = [];
+let selectedImageFiles = [];
 
 function message(target, text) { target.textContent = text || ""; }
 function escapeHtml(value) {
@@ -78,6 +79,8 @@ function readyConfig() {
 function resetForm() {
   $("productForm").reset();
   imageRemoved = false;
+  existingImageIds = [];
+  selectedImageFiles = [];
   $("pid").value = "";
   $("icon").value = "🔧";
   $("saveBtn").textContent = "حفظ المنتج";
@@ -335,6 +338,7 @@ async function editProduct(id) {
   existingImageIds = Array.isArray(product.imageIds) ? product.imageIds.map(String) : (product.imageId ? [String(product.imageId)] : []);
   $("imageUrl").value = product.image || "";
   $("imageFile").value = "";
+  selectedImageFiles = [];
   $("desc").value = product.desc || "";
   $("specs").value = product.specs || "";
   Array.from($("tasks").options).forEach(function (option) { option.selected = (product.tasks || []).includes(option.value); });
@@ -417,17 +421,32 @@ $("importFile").addEventListener("change", async function (event) {
   finally { event.target.value = ""; }
 });
 $("imageFile").addEventListener("change", function () {
-  const files = Array.from($("imageFile").files || []);
-  if (!files.length) return;
-  if (files.length > 5) { $("imageFile").value = ""; message(saveStatus, "يمكن اختيار 5 صور كحد أقصى."); return; }
-  const file = files[0];
-  if (previewObjectUrl) URL.revokeObjectURL(previewObjectUrl);
-  previewObjectUrl = URL.createObjectURL(file);
-  showPreview(previewObjectUrl);
+  const chosen = Array.from($("imageFile").files || []);
+  if (!chosen.length) return;
+  if (selectedImageFiles.length + (imageRemoved ? 0 : existingImageIds.length) + chosen.length > 5) {
+    message(saveStatus, "يمكن إضافة 5 صور فقط للمنتج. امسح الصور القديمة إذا أردت استبدالها.");
+    $("imageFile").value = "";
+    return;
+  }
+  selectedImageFiles = selectedImageFiles.concat(chosen);
+  $("imageFile").value = "";
+  imageRemoved = false;
+  renderSelectedImagePreviews();
 });
+function renderSelectedImagePreviews() {
+  const preview = $("imagePreview");
+  const urls = selectedImageFiles.map(function(file) {
+    return URL.createObjectURL(file);
+  });
+  if (previewObjectUrl) URL.revokeObjectURL(previewObjectUrl);
+  previewObjectUrl = urls[0] || "";
+  if (previewObjectUrl) showPreview(previewObjectUrl);
+  message(saveStatus, "عدد الصور الجديدة المختارة: " + selectedImageFiles.length + " — يمكنك الضغط على اختيار صورة مرة أخرى لإضافة صورة أخرى.");
+}
 $("removeImageBtn").addEventListener("click", function () {
   $("imageFile").value = "";
   $("imageUrl").value = "";
+  selectedImageFiles = [];
   existingImageIds = [];
   imageRemoved = true;
   if (previewObjectUrl) URL.revokeObjectURL(previewObjectUrl);
@@ -445,7 +464,7 @@ $("productForm").addEventListener("submit", async function (event) {
   event.preventDefault();
   const previous = $("pid").value ? products.find(function (item) { return String(item.id) === String($("pid").value); }) : null;
   const id = previous ? Number(previous.id) : Math.max(0, ...products.map(function (item) { return Number(item.id) || 0; })) + 1;
-  const files = Array.from($("imageFile").files || []);
+  const files = selectedImageFiles.slice();
   if (files.length + (imageRemoved ? 0 : existingImageIds.length) > 5) { message(saveStatus, "الحد الأقصى 5 صور للمنتج. امسح الصور القديمة أولًا إذا أردت استبدالها."); return; }
   const file = files[0];
   const stockValue = $("stock").value.trim();
