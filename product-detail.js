@@ -64,7 +64,7 @@
     const brand = item.brand ? escapeHtml(displayBrand(item.brand)) + ' · ' : "";
     const price = escapeHtml(formatPrice(item.price));
     const specsText = cleanProductCopy(item.specs || "");
-    const specsRows = specsText.split("\\n").map(function (line) {
+    const specsRows = specsText.split("\n").map(function (line) {
       const parts = line.split(/[:：]/);
       if (parts.length < 2) return null;
       const label = parts.shift().trim();
@@ -90,6 +90,40 @@
       '<div class="product-detail-price">' + price + '<small>' + (formatPrice(item.price).includes("ج.م") ? 'السعر بالجنيه المصري · التوفر عند التواصل' : 'السعر والتوفر عند التواصل') + '</small></div>' +
       '<div class="product-detail-actions"><a class="button-primary" href="' + whatsapp + '" target="_blank" rel="noopener">استفسر عن المنتج عبر واتساب</a>' +
       '<a class="button-outline" href="products.html">العودة إلى المنتجات</a></div>' + specsHtml + '</div></article>';
+
+
+    const allProducts = cloudProducts || fallbackProducts;
+    const relatedProducts = allProducts.filter(function (product) {
+      if (String(product.id) === String(item.id)) return false;
+      return (item.cat && product.cat === item.cat) ||
+        (item.brand && product.brand && displayBrand(item.brand) === displayBrand(product.brand));
+    }).sort(function (a,b) {
+      const score = function (product) {
+        return (item.brand && product.brand && displayBrand(item.brand) === displayBrand(product.brand) ? 2 : 0) +
+          (item.cat && product.cat === item.cat ? 1 : 0);
+      };
+      return score(b)-score(a);
+    }).slice(0,4);
+    const relatedHtml = relatedProducts.length
+      ? '<section class="related-products"><div class="related-heading"><div><h2>منتجات قد تهمك</h2><p>منتجات أخرى من نفس القسم أو الماركة</p></div><a href="products.html">عرض كل المنتجات ←</a></div><div class="related-grid">' +
+        relatedProducts.map(function (product) {
+          const relatedName = cleanProductName(product.name || "منتج من الدولي");
+          const relatedImage = product.image
+            ? '<img src="' + escapeHtml(product.image) + '" alt="' + escapeHtml(relatedName) + '" loading="lazy">'
+            : product.imageId
+              ? '<img data-related-image="' + escapeHtml(product.imageId) + '" alt="' + escapeHtml(relatedName) + '" loading="lazy">'
+              : '<span>' + escapeHtml(product.icon || "🔧") + '</span>';
+          return '<a class="related-card" href="product.html?id=' + encodeURIComponent(product.id) + '"><div class="related-visual">' + relatedImage + '</div><div class="related-info"><small>' + escapeHtml(product.brand ? displayBrand(product.brand) : product.cat || "منتجات") + '</small><strong>' + escapeHtml(relatedName) + '</strong><span>' + escapeHtml(formatPrice(product.price)) + '</span></div></a>';
+        }).join("") + '</div></section>'
+      : "";
+    root.insertAdjacentHTML("beforeend", relatedHtml);
+    if (typeof window.DAWLY_LOAD_PRODUCT_IMAGE === "function") {
+      root.querySelectorAll("[data-related-image]").forEach(function (image) {
+        window.DAWLY_LOAD_PRODUCT_IMAGE(image.dataset.relatedImage).then(function (url) {
+          if (url && image.isConnected) image.src = url;
+        }).catch(function () {});
+      });
+    }
 
     const cloudImage = document.getElementById("detailCloudImage");
     if (cloudImage && typeof window.DAWLY_LOAD_PRODUCT_IMAGE === "function") {
