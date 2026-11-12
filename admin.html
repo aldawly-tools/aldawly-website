@@ -364,7 +364,7 @@ if (!readyConfig()) {
       $("loginCard").classList.add("hidden");
       $("manager").classList.remove("hidden");
       $("signedInAs").textContent = "تم تسجيل الدخول: " + user.email;
-      try { await loadProducts(); }
+      try { await loadProducts(); await loadOrders(); }
       catch (error) { message(saveStatus, "تعذر تحميل المنتجات. تأكد من إعداد قاعدة Firestore ومن استخدام حساب الإدارة المسموح."); }
     });
   } catch (error) { message(status, "تعذر تهيئة Firebase. راجع قيم firebase-config.js."); }
