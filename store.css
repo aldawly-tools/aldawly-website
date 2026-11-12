@@ -917,3 +917,13 @@ body { background: #f7f8fa; color: var(--ink); }
  .cart-total-row { font-size:14px; }
  .cart-total-row strong { font-size:18px; }
 }
+
+/* Checkout customer details */
+.checkout-fields{display:grid;gap:7px;margin:14px 0;padding:13px;background:#f7f8fa;border:1px solid #e1e5ea;border-radius:12px}
+.checkout-fields h3{margin:0 0 3px;font-size:16px;font-weight:1000}
+.checkout-fields label{font-size:12px;font-weight:900;color:#343a40;margin-top:3px}
+.checkout-fields label span{color:var(--red)}
+.checkout-fields input,.checkout-fields textarea{width:100%;min-width:0;border:1px solid #cfd5dc;border-radius:8px;background:#fff;padding:10px 11px;font:600 13px "Cairo",Tahoma,Arial,sans-serif;outline:none}
+.checkout-fields input:focus,.checkout-fields textarea:focus{border-color:var(--red);box-shadow:0 0 0 3px #d7192014}
+.checkout-fields textarea{resize:vertical;min-height:58px}
+.checkout-fields input::placeholder,.checkout-fields textarea::placeholder{color:#9299a1;font-weight:500}
