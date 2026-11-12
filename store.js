@@ -14,10 +14,34 @@
   let cart = [];
   let cloudImageObserver = null;
 
+  function showProductImageFallback(image) {
+    if (!image || !image.parentNode) return;
+    const placeholder = document.createElement("span");
+    placeholder.className = "product-placeholder";
+    placeholder.setAttribute("aria-hidden", "true");
+    placeholder.textContent = "🔧";
+    image.parentNode.replaceChild(placeholder, image);
+  }
+
+  grid.addEventListener("error", function (event) {
+    if (event.target && event.target.tagName === "IMG") showProductImageFallback(event.target);
+  }, true);
+
   function observeCloudImages() {
-    if (typeof window.DAWLY_LOAD_PRODUCT_IMAGE !== "function") return;
     const images = grid.querySelectorAll("img[data-cloud-image]");
     if (!images.length) return;
+    function loadImage(image) {
+      if (typeof window.DAWLY_LOAD_PRODUCT_IMAGE !== "function") {
+        showProductImageFallback(image);
+        return;
+      }
+      window.DAWLY_LOAD_PRODUCT_IMAGE(image.dataset.cloudImage).then(function (url) {
+        if (url && image.isConnected) image.src = url;
+        else if (image.isConnected) showProductImageFallback(image);
+      }).catch(function () {
+        if (image.isConnected) showProductImageFallback(image);
+      });
+    }
     if ("IntersectionObserver" in window) {
       if (!cloudImageObserver) {
         cloudImageObserver = new IntersectionObserver(function (entries) {
@@ -25,22 +49,15 @@
             if (!entry.isIntersecting) return;
             const image = entry.target;
             cloudImageObserver.unobserve(image);
-            window.DAWLY_LOAD_PRODUCT_IMAGE(image.dataset.cloudImage).then(function (url) {
-              if (url && image.isConnected) image.src = url;
-            }).catch(function () {});
+            loadImage(image);
           });
         }, {rootMargin:"240px"});
       }
       images.forEach(function (image) { cloudImageObserver.observe(image); });
       return;
     }
-    images.forEach(function (image) {
-      window.DAWLY_LOAD_PRODUCT_IMAGE(image.dataset.cloudImage).then(function (url) {
-        if (url) image.src = url;
-      }).catch(function () {});
-    });
+    images.forEach(loadImage);
   }
-
   function escapeHtml(value) {
     return String(value == null ? "" : value).replace(/[&<>"']/g, function (char) {
       return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[char];
