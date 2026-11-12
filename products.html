@@ -3,42 +3,43 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#151515">
+<meta name="theme-color" content="#d71920">
 <title>الدولي للعدد الأصلية والمستوردة | المتجر</title>
 <style>
-:root{--red:#d71920;--dark:#151515;--muted:#777;--line:#e8e8e8;--bg:#f5f5f5}
+:root{--red:#d71920;--dark:#202020;--muted:#686868;--line:#e9e9e9;--bg:#f7f7f7}
 *{box-sizing:border-box}body{margin:0;font-family:Tahoma,Arial,sans-serif;background:var(--bg);color:#202020}
 a{color:inherit;text-decoration:none}button,input{font:inherit}
-.top{background:#101010;color:#fff;padding:9px 5%;font-size:13px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.top{background:#d71920;color:#fff;padding:9px 5%;font-size:13px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
 header{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:5}
 .nav{max-width:1200px;margin:auto;padding:14px 20px;display:flex;align-items:center;gap:22px}
-.brand{display:flex;align-items:center;gap:10px;min-width:210px}.mark{background:var(--red);color:white;font-size:23px;font-weight:bold;width:48px;height:48px;border-radius:12px;display:grid;place-items:center}
-.brand b{display:block;font-size:17px}.brand small{color:#777;font-size:11px}
+.brand{display:flex;align-items:center;gap:10px;min-width:210px}.mark{background:var(--red);color:white;font-size:20px;font-weight:bold;width:42px;height:42px;border-radius:10px;display:grid;place-items:center}
+.brand b{display:block;font-size:15px}.brand small{color:#777;font-size:11px}
 .search{flex:1;display:flex;background:#f3f3f3;border:1px solid #e5e5e5;border-radius:9px;overflow:hidden}.search input{width:100%;border:0;background:transparent;padding:13px;outline:0}.search button{border:0;background:var(--red);color:#fff;padding:0 18px;cursor:pointer}
-.cart{border:0;background:#171717;color:#fff;padding:12px 16px;border-radius:9px;cursor:pointer;white-space:nowrap}.cart span{background:var(--red);padding:2px 7px;border-radius:20px;margin-right:5px}
+.cart{border:0;background:var(--red);color:#fff;padding:12px 16px;border-radius:9px;cursor:pointer;white-space:nowrap}.cart span{background:var(--red);padding:2px 7px;border-radius:20px;margin-right:5px}
 .links{max-width:1200px;margin:auto;padding:0 20px 12px;display:flex;gap:24px;font-size:14px;color:#555}.links a:first-child{color:var(--red);font-weight:bold}
-.hero{background:linear-gradient(110deg,#171717,#292929);color:#fff;padding:55px 20px}
+.hero{background:linear-gradient(115deg,#f7f7f7,#fff 58%,#fff3f3);color:#202020;padding:55px 20px;border-bottom:1px solid #f0eeee}
 .hero-in{max-width:1160px;margin:auto;display:grid;grid-template-columns:1.2fr .8fr;align-items:center;gap:25px}
-.hero h1{font-size:clamp(30px,5vw,52px);line-height:1.35;margin:0 0 12px}.hero h1 em{font-style:normal;color:#ff4248}.hero p{color:#ddd;line-height:1.9;max-width:580px}
-.points{display:flex;gap:18px;flex-wrap:wrap;color:#eee;font-size:13px;margin:20px 0}.points span:before{content:"✓";color:#ff555a;font-weight:bold;margin-left:6px}
-.actions{display:flex;gap:10px;flex-wrap:wrap}.btn{border:0;border-radius:8px;padding:13px 22px;font-weight:bold;cursor:pointer;display:inline-block}.primary{background:var(--red);color:#fff}.outline{border:1px solid #777;color:#fff;background:transparent}
-.hero-art{min-height:220px;border:1px solid #444;border-radius:18px;background:radial-gradient(circle at 50% 45%,#555,#222 65%);display:grid;place-items:center;text-align:center;padding:25px;color:#ddd}
-.hero-art strong{font-size:65px;display:block;color:#ef343b}.hero-art small{line-height:1.8}
+.hero h1{font-size:clamp(30px,5vw,52px);line-height:1.35;margin:0 0 12px}.hero h1 em{font-style:normal;color:var(--red)}.hero p{color:#5f5f5f;line-height:1.9;max-width:580px}
+.points{display:flex;gap:18px;flex-wrap:wrap;color:#444;font-size:13px;margin:20px 0}.points span:before{content:"✓";color:var(--red);font-weight:bold;margin-left:6px}
+.actions{display:flex;gap:10px;flex-wrap:wrap}.btn{border:0;border-radius:8px;padding:13px 22px;font-weight:bold;cursor:pointer;display:inline-block}.primary{background:var(--red);color:#fff}.outline{border:1px solid #cfcfcf;color:#333;background:#fff}
+.hero-art{min-height:220px;border:1px solid #f0d7d8;border-radius:18px;background:radial-gradient(circle at 50% 45%,#fff,#fbe6e7 68%);display:grid;place-items:center;text-align:center;padding:25px;color:#333;box-shadow:0 12px 35px #b6182010}
+.hero-art strong{font-size:65px;display:block;color:var(--red)}.hero-art small{line-height:1.8}
 .wrap{max-width:1200px;margin:34px auto;padding:0 20px}
 .features{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:-8px}
 .feature{background:white;border:1px solid var(--line);border-radius:10px;padding:17px;text-align:center}.feature b{display:block;margin-bottom:5px}.feature small{color:#777}
 .section-head{display:flex;justify-content:space-between;align-items:end;gap:12px;margin:38px 0 18px}.section-head h2{margin:0;font-size:25px}.section-head p{margin:6px 0 0;color:#777;font-size:13px}
-.categories{display:flex;gap:9px;flex-wrap:wrap}.cat{border:1px solid #ddd;background:#fff;padding:10px 16px;border-radius:30px;cursor:pointer}.cat.active{background:#171717;color:#fff;border-color:#171717}
+.categories{display:flex;gap:9px;flex-wrap:wrap}.cat{border:1px solid #ddd;background:#fff;padding:10px 16px;border-radius:30px;cursor:pointer}.cat.active{background:var(--red);color:#fff;border-color:var(--red)}
 .products{display:grid;grid-template-columns:repeat(4,1fr);gap:15px}
 .product{background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden;display:flex;flex-direction:column}
-.photo{height:165px;background:#f0f0f0;display:grid;place-items:center;color:#aaa;font-size:48px}
+.photo{height:165px;background:#fafafa;display:grid;place-items:center;color:#aaa;font-size:48px}
 .pbody{padding:15px;display:flex;flex-direction:column;gap:9px;flex:1}.tag{font-size:11px;color:var(--red);font-weight:bold}.pbody h3{margin:0;font-size:16px}.pbody p{margin:0;color:#777;font-size:12px;line-height:1.7}.price{font-weight:bold;font-size:14px}.pbody button{margin-top:auto}
 .note{background:#fff8e8;border:1px solid #f0dfb5;color:#755b20;padding:13px 15px;border-radius:9px;font-size:13px;line-height:1.8;margin-top:18px}
 .about{background:#fff;border:1px solid var(--line);border-radius:12px;padding:24px;line-height:1.9}
-footer{background:#111;color:#ddd;margin-top:50px;padding:30px 20px;text-align:center;line-height:2}footer b{color:#fff}
+footer{background:#252525;color:#eee;margin-top:50px;padding:30px 20px;text-align:center;line-height:2}footer b{color:#fff}
 .drawer-bg{position:fixed;inset:0;background:#0008;z-index:9;display:none}.drawer{position:fixed;z-index:10;left:0;top:0;height:100%;width:min(420px,92vw);background:#fff;transform:translateX(-105%);transition:.25s;padding:20px;overflow:auto}.drawer.open{transform:translateX(0)}.drawer-bg.open{display:block}.drawer-head{display:flex;justify-content:space-between;align-items:center}.drawer-head button{border:0;background:#eee;padding:8px 12px;border-radius:8px}.cart-row{display:flex;justify-content:space-between;gap:10px;border-bottom:1px solid #eee;padding:13px 0}.qty button{border:0;background:#eee;border-radius:5px;padding:4px 9px;cursor:pointer}.empty{color:#777;text-align:center;padding:35px 0}.checkout{width:100%;margin-top:15px}
 @media(max-width:850px){.nav{flex-wrap:wrap}.brand{min-width:0;flex:1}.search{order:3;flex-basis:100%}.links{overflow:auto;white-space:nowrap}.hero-in{grid-template-columns:1fr}.hero-art{min-height:150px}.products{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:480px){.top{justify-content:center}.products{gap:9px}.photo{height:125px}.pbody{padding:11px}.features{grid-template-columns:1fr}.section-head{align-items:start;flex-direction:column}}
+.brand-strip{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin:26px 0 34px}.brand-strip span{background:#fff;border:1px solid var(--line);border-radius:10px;padding:14px 8px;text-align:center;font-size:18px;font-weight:900;letter-spacing:.3px;color:#353535}.brand-strip span:first-child{color:var(--red)}@media(max-width:600px){.brand-strip{grid-template-columns:repeat(3,1fr);gap:8px}.brand-strip span{font-size:15px;padding:11px 5px}}
 </style>
 </head>
 <body>
@@ -60,6 +61,7 @@ footer{background:#111;color:#ddd;margin-top:50px;padding:30px 20px;text-align:c
 </div></section>
 <div class="wrap">
  <div class="features"><div class="feature"><b>✓ اختيار موثوق</b><small>نهتم بتوفير العدد المناسبة لاحتياجك</small></div><div class="feature"><b>☎ تواصل سريع</b><small>اسأل عن التوفر والسعر قبل الطلب</small></div><div class="feature"><b>📦 طلب سهل</b><small>جهّز سلتك وأرسل الطلب عبر واتساب</small></div></div>
+ <section class="brand-strip" aria-label="العلامات التجارية"><span>WÜRTH</span><span>BOSCH</span><span>WERA</span><span>KNIPEX</span><span>MAKITA</span></section>
  <section id="categories"><div class="section-head"><div><h2>تسوق حسب القسم</h2><p>اختر القسم لعرض المنتجات التابعة له</p></div></div>
  <div class="categories" id="categoryList"><button class="cat active" data-cat="الكل">كل المنتجات</button><button class="cat" data-cat="عدد كهربائية">عدد كهربائية</button><button class="cat" data-cat="عدد يدوية">عدد يدوية</button><button class="cat" data-cat="مستلزمات الورش">مستلزمات الورش</button><button class="cat" data-cat="قياس">أدوات قياس</button></div></section>
  <section id="products"><div class="section-head"><div><h2>منتجات المتجر</h2><p>منتجات الدولي — استخدم مساعد اختيار العدد للوصول للأداة المناسبة</p></div></div>
@@ -75,7 +77,7 @@ footer{background:#111;color:#ddd;margin-top:50px;padding:30px 20px;text-align:c
 const products = window.DAWLY_PRODUCTS || [];
 let cart=[];let active="الكل";let query="";
 const grid=document.getElementById("productGrid");
-function render(){let shown=products.filter(p=>(active==="الكل"||p.cat===active)&&(`${p.name} ${p.cat} ${p.desc}`).includes(query));grid.innerHTML=shown.map(p=>`<article class="product" id="product-${p.id}"><div class="photo">${p.image ? `<img src="${p.image}" alt="${p.name}" style="width:100%;height:100%;object-fit:contain">` : p.icon}</div><div class="pbody"><span class="tag">${p.cat}</span><h3>${p.name}</h3><p>${p.desc}</p><div class="price">السعر عند الاستفسار</div><button class="btn primary" onclick="add(${p.id})">أضف إلى السلة</button></div></article>`).join("")||'<p>لا توجد نتائج مطابقة.</p>'}
+function render(){let shown=products.filter(p=>(active==="الكل"||p.cat===active)&&(`${p.name} ${p.cat} ${p.desc}`).includes(query));grid.innerHTML=shown.map(p=>`<article class="product" id="product-${p.id}"><div class="photo">${p.image ? `<img src="${p.image}" alt="${p.name}" style="width:100%;height:100%;object-fit:contain">` : p.icon}</div><div class="pbody"><span class="tag">${p.cat}</span><h3>${p.name}</h3><p>${p.desc}</p><div class="price">${p.price||"السعر عند الاستفسار"}</div><button class="btn primary" onclick="add(${p.id})">أضف إلى السلة</button></div></article>`).join("")||'<p>لا توجد نتائج مطابقة.</p>'}
 function add(id){let item=cart.find(x=>x.id===id);if(item)item.qty++;else cart.push({id,qty:1});updateCart();openDrawer()}
 function updateCart(){document.getElementById("count").textContent=cart.reduce((s,x)=>s+x.qty,0);let box=document.getElementById("cartItems");if(!cart.length){box.innerHTML='<div class="empty">السلة فارغة حاليًا</div>';document.getElementById("checkout").disabled=true;return}document.getElementById("checkout").disabled=false;box.innerHTML=cart.map(x=>{let p=products.find(y=>y.id===x.id);return `<div class="cart-row"><div><b>${p.name}</b><div class="qty"><button onclick="changeQty(${x.id},-1)">−</button> ${x.qty} <button onclick="changeQty(${x.id},1)">+</button></div></div><button onclick="removeItem(${x.id})" aria-label="حذف">حذف</button></div>`}).join("")}
 function changeQty(id,d){let x=cart.find(y=>y.id===id);if(x){x.qty+=d;if(x.qty<1)removeItem(id);else updateCart()}}
