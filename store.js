@@ -118,8 +118,22 @@
     if (name.includes("ورش")) return "🧰";
     return "🛠️";
   }
+  function normalizeSearchText(value) {
+    return String(value == null ? "" : value)
+      .toLocaleLowerCase("ar")
+      .normalize("NFD")
+      .replace(/[\u064B-\u065F\u0670\u0640]/g, "")
+      .replace(/[أإآٱ]/g, "ا")
+      .replace(/ى/g, "ي")
+      .replace(/ة/g, "ه")
+      .replace(/[٠-٩]/g, function (digit) { return String("٠١٢٣٤٥٦٧٨٩".indexOf(digit)); })
+      .replace(/[۰-۹]/g, function (digit) { return String("۰۱۲۳۴۵۶۷۸۹".indexOf(digit)); })
+      .replace(/[^\\p{L}\\p{N}]+/gu, " ")
+      .trim()
+      .replace(/\\s+/g, " ");
+  }
   function normalizeBrand(name) {
-    return String(name || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[\s._-]/g, "").toLocaleLowerCase();
+    return normalizeSearchText(name).replace(/\\s/g, "");
   }
   function displayBrand(name) {
     const labels = {wurth:"WÜRTH",bosch:"BOSCH",wera:"WERA",knipex:"KNIPEX",beta:"Beta",dewalt:"DEWALT"};
@@ -163,12 +177,16 @@
       categories.map(function (name) { return '<button class="filter-chip" type="button" data-category="' + escapeHtml(name) + '">' + escapeHtml(name) + '</button>'; }).join("");
   }
   function renderProducts() {
-    const term = query.trim().toLocaleLowerCase();
+    const terms = normalizeSearchText(query).split(" ").filter(Boolean);
     const shown = products.filter(function (item) {
       const categoryMatch = activeCategory === "الكل" || item.cat === activeCategory;
       const brandMatch = !activeBrand || normalizeBrand(item.brand) === normalizeBrand(activeBrand);
-      const text = [item.name, item.brand, item.cat, item.desc].join(" ").toLocaleLowerCase();
-      return categoryMatch && brandMatch && (!term || text.includes(term));
+      const searchable = normalizeSearchText([
+        item.name, item.brand, item.cat, item.desc, item.specs,
+        item.sku, item.code, item.model, item.partNumber, item.id
+      ].join(" "));
+      const searchMatch = !terms.length || terms.every(function (term) { return searchable.includes(term); });
+      return categoryMatch && brandMatch && searchMatch;
     });
     const emptyMessage = activeBrand
       ? 'لا توجد منتجات مسجلة لماركة ' + escapeHtml(activeBrand) + ' حاليًا.'
