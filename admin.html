@@ -376,6 +376,24 @@ $("loginBtn").addEventListener("click", async function () {
     $("loginBtn").disabled = false;
   }
 });
+$("enablePushBtn").addEventListener("click", function () {
+  const pushStatus = $("pushStatus");
+  $("enablePushBtn").disabled = true;
+  message(pushStatus, "جارٍ طلب إذن الإشعارات لهذا الهاتف…");
+  window.OneSignalDeferred = window.OneSignalDeferred || [];
+  window.OneSignalDeferred.push(async function (OneSignal) {
+    try {
+      const granted = await OneSignal.Notifications.requestPermission();
+      if (!granted) throw new Error("لم يتم السماح بالإشعارات من المتصفح.");
+      await OneSignal.User.PushSubscription.optIn();
+      OneSignal.User.addTag("store_admin", "true");
+      message(pushStatus, "تم تفعيل إشعارات المتجر على هذا الهاتف. سنكمل ربط تنبيهات السلة.");
+    } catch (error) {
+      console.error("OneSignal subscription error:", error);
+      message(pushStatus, error.message || "تعذر تفعيل الإشعارات. تحقق من إعدادات المتصفح.");
+    } finally { $("enablePushBtn").disabled = false; }
+  });
+});
 $("logoutBtn").addEventListener("click", function () { signOut(auth); });
 $("resetBtn").addEventListener("click", resetForm);
 $("productSearch").addEventListener("input", renderProducts);
