@@ -85,6 +85,11 @@ button:disabled{opacity:.6;cursor:wait}
   .dashboard-stat strong{font-size:22px}
 }
 
+/* تحسين عرض صورة منشئ البوستات */
+#postPanel #postText{min-height:260px;line-height:1.9}
+#postPanel #postImagePreview{display:block;width:100%;max-width:360px;max-height:320px;object-fit:contain;object-position:right center;padding:10px;border:1px solid #e5e7eb;border-radius:12px;background:#fafafa}
+#postPanel #postImagePreview.hidden{display:none!important}
+@media(max-width:700px){#postPanel #postImagePreview{max-width:100%;max-height:280px}#postPanel #postText{min-height:280px}}
 </style>
 </head>
 <body>
@@ -537,7 +542,7 @@ $("resetBtn").addEventListener("click", resetForm);
 function refreshPostProducts(){const s=$("postProduct"),old=s.value;s.innerHTML='<option value="">اختر المنتج</option>'+products.map(p=>'<option value="'+escapeHtml(p.id)+'">'+escapeHtml(p.name)+(p.brand?" — "+escapeHtml(p.brand):"")+'</option>').join("");if(products.some(p=>String(p.id)===old))s.value=old;}
 async function showPostProductImage(p){const img=$("postImagePreview"),note=$("postImageNote");img.classList.add("hidden");img.removeAttribute("src");if(!p){note.textContent="اختر منتجًا لعرض صورته إن كانت محفوظة.";return;}if(p.image){img.src=p.image;img.classList.remove("hidden");note.textContent="صورة المنتج";return;}const id=(Array.isArray(p.imageIds)&&p.imageIds[0])||p.imageId;if(!id){note.textContent="لا توجد صورة محفوظة لهذا المنتج.";return;}note.textContent="جارٍ تحميل الصورة…";try{const snap=await getDoc(doc(db,"productImages",String(id)));if(snap.exists()&&snap.data().data){img.src=snap.data().data;img.classList.remove("hidden");note.textContent="صورة المنتج";}else note.textContent="لم يتم العثور على الصورة.";}catch(e){note.textContent="تعذر تحميل الصورة.";}}
 function buildFacebookPost(){const p=products.find(x=>String(x.id)===$("postProduct").value);if(!p){message($("postStatus"),"اختار المنتج الأول.");return;}const lines=[],hook=$("postHook").value.trim(),specs=String(p.specs||"").split(/\r?\n/).map(x=>x.trim()).filter(Boolean);if(hook)lines.push("🔥 "+hook);lines.push("🔧 "+p.name);if(p.brand)lines.push("🏷️ الماركة: "+p.brand);if(p.cat)lines.push("📂 القسم: "+p.cat);lines.push("💰 السعر: "+(p.price||"للاستفسار عن السعر"));if(p.desc)lines.push("",p.desc);if(specs.length)lines.push("","📌 المواصفات:",...specs.map(x=>"• "+x));if($("postOffer").value.trim())lines.push("","🎁 "+$("postOffer").value.trim());lines.push("","📩 "+($("postContact").value.trim()||"للطلب والاستفسار ابعتلنا رسالة."),"","الدولي للعدد الأصلية","#الدولي_للعدد_الأصلية #عدد_وأدوات #أدوات_أصلية");$("postText").value=lines.join("\n");message($("postStatus"),"تم إنشاء البوست. راجع النص والسعر ثم انسخه للنشر.");showPostProductImage(p);}
-$("postProduct").addEventListener("change",buildFacebookPost);$("generatePostBtn").addEventListener("click",buildFacebookPost);
+$("postProduct").addEventListener("change",function(){if(!$("postProduct").value){$("postText").value="";$("postImagePreview").classList.add("hidden");$("postImagePreview").removeAttribute("src");$("postImageNote").textContent="اختر منتجًا لعرض صورته إن كانت محفوظة.";message($("postStatus"),"");return;}buildFacebookPost();});$("generatePostBtn").addEventListener("click",buildFacebookPost);
 $("copyPostBtn").addEventListener("click",async function(){const v=$("postText").value.trim();if(!v){message($("postStatus"),"أنشئ البوست أولًا.");return;}try{await navigator.clipboard.writeText(v);message($("postStatus"),"تم نسخ النص. يمكنك لصقه في فيسبوك.");}catch(e){$("postText").focus();$("postText").select();message($("postStatus"),"حدد النص وانسخه يدويًا من الهاتف.");}});
 $("productSearch").addEventListener("input", renderProducts);
 $("exportBtn").addEventListener("click", exportProducts);
