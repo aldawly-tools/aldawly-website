@@ -327,7 +327,7 @@
     if (event.target.closest("#openCart")) { setDrawer(true); return; }
     if (event.target.closest("#closeCart") || event.target === cartOverlay) setDrawer(false);
   });
-  checkout.addEventListener("click", function () {
+  checkout.addEventListener("click", async function () {
     if (!cart.length) return;
     const customerName = document.getElementById("customerName").value.trim();
     const customerPhoneRaw = document.getElementById("customerPhone").value.trim();
@@ -361,7 +361,16 @@
         ? "المجموع الجزئي للمنتجات المسعّرة: " + money(pricing.total) + "\nباقي المنتجات سعرها عند الاستفسار."
         : "الإجمالي يتحدد بعد تأكيد الأسعار.";
     const message = "طلب جديد من متجر الدولي:\nالاسم: " + customerName + "\nالهاتف: " + customerPhone + "\nالعنوان: " + customerAddress + (orderNotes ? "\nملاحظات: " + orderNotes : "") + "\n\n" + lines + "\n" + totalText + "\nمن فضلكم أكدوا السعر والتوفر.";
-    window.open("https://wa.me/201024787222?text=" + encodeURIComponent(message), "_blank", "noopener");
+    const orderNumber="DW-"+Date.now().toString().slice(-8);
+    const record={orderNumber,customerName,customerPhone,customerAddress,notes:orderNotes,items:cart.map(function(line){const item=products.find(function(entry){return String(entry.id)===String(line.id);});return item?{id:String(item.id),name:cleanProductName(item.name),brand:String(item.brand||""),qty:line.qty,unitPrice:String(item.price||"السعر عند الاستفسار")}:null;}).filter(Boolean),totalText,status:"new",source:"website"};
+    window.open("https://wa.me/201024787222?text="+encodeURIComponent("رقم الطلب: "+orderNumber+"\\n"+message),"_blank","noopener");
+    try{
+      const appMod=await import("https://www.gstatic.com/firebasejs/13.2.0/firebase-app.js");
+      const fsMod=await import("https://www.gstatic.com/firebasejs/13.2.0/firebase-firestore.js");
+      const app=appMod.getApps().length?appMod.getApp():appMod.initializeApp(window.DAWLY_FIREBASE_CONFIG);
+      await fsMod.addDoc(fsMod.collection(fsMod.getFirestore(app),"orders"),Object.assign({},record,{createdAt:fsMod.serverTimestamp()}));
+      alert("تم تسجيل طلبك برقم "+orderNumber+"، وسيتم تأكيد التفاصيل عبر واتساب.");
+    }catch(err){console.warn("تعذر تسجيل الطلب في لوحة الإدارة.",err);alert("تم فتح واتساب لإرسال طلبك، لكن لم يتم تسجيله في لوحة الإدارة. يرجى إرسال الرسالة هناك.");}
   });
   document.addEventListener("keydown", function (event) {
     if (event.key === "Escape") setDrawer(false);
