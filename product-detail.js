@@ -3,6 +3,7 @@
   const productId = new URLSearchParams(window.location.search).get("id");
   const fallbackProducts = Array.isArray(window.DAWLY_PRODUCTS) ? window.DAWLY_PRODUCTS.slice() : [];
   let cloudProducts = null;
+  let catalogReady = false;
 
   function escapeHtml(value) {
     return String(value == null ? "" : value).replace(/[&<>"']/g, function (char) {
@@ -17,6 +18,10 @@
     const matchesId = function (product) { return String(product.id) === String(productId); };
     const item = (cloudProducts || []).find(matchesId) || fallbackProducts.find(matchesId);
     if (!item) {
+      if (!catalogReady) {
+        root.innerHTML = '<div class="product-detail-loading">جارٍ تحميل المنتج…</div>';
+        return;
+      }
       showMissing();
       return;
     }
@@ -54,6 +59,11 @@
   window.addEventListener("dawly-products-updated", function (event) {
     if (!Array.isArray(event.detail)) return;
     cloudProducts = event.detail;
+    catalogReady = true;
+    render();
+  });
+  window.addEventListener("dawly-catalog-ready", function () {
+    catalogReady = true;
     render();
   });
   render();

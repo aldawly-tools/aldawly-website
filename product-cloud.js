@@ -33,3 +33,5 @@ if (!config.apiKey || config.apiKey === "PASTE_FIREBASE_WEB_API_KEY" || !config.
     console.warn("تعذر تحميل كتالوج المنتجات من قاعدة البيانات. سيتم عرض النسخة المنشورة.", error);
   }
 }
+
+window.dispatchEvent(new Event("dawly-catalog-ready"));
