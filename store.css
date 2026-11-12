@@ -904,3 +904,16 @@ body { background: #f7f8fa; color: var(--ink); }
  .related-info { padding:9px; }
  .related-info strong { font-size:12px; min-height:38px; }
 }
+
+/* Mobile cart refinements */
+.cart-drawer { overscroll-behavior: contain; }
+.cart-row { align-items:flex-start; }
+.quantity button { min-width:34px; min-height:34px; font-size:18px; font-weight:900; }
+.remove-item { color:#a71922; font-weight:800; }
+.checkout:disabled { opacity:.5; cursor:not-allowed; }
+@media(max-width:520px) {
+ .cart-drawer { padding:16px; width:min(390px,94vw); }
+ .cart-row { gap:8px; }
+ .cart-total-row { font-size:14px; }
+ .cart-total-row strong { font-size:18px; }
+}
