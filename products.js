@@ -104,14 +104,13 @@ window.DAWLY_PRODUCTS = [
     "id": 9,
     "name": "شنطة عدة Würth احترافية",
     "cat": "مستلزمات الورش",
-    "desc": "شنطة خدمة احترافية مقاومة للصدمات من Würth. جسم مزدوج من البولي إيثيلين (PE)، درجتا تنظيم قابلتان للإزالة مع جيوب للأدوات، أقفال ومفصلات معدنية قابلة للقفل، ومقبض مبطن. الأبعاد: 470 × 375 × 205 مم. الوزن: نحو 6.2 كجم. السعر عند الاستفسار.",
+    "desc": "شنطة عدة قماشية مفتوحة من Würth، مع مقبض حمل علوي وحزام كتف مبطن وجيوب لتنظيم الأدوات. السعر عند الاستفسار.",
     "icon": "🧰",
     "price": "السعر عند الاستفسار",
-    "image": "assets/wurth-service-case.jpg",
+    "image": "assets/wurth-tool-bag.png",
     "tasks": [
       "other"
-    ],
-    "source": "https://www.facebook.com/groups/httpsigli.megermanfbclidiwar0wfrunj1cbhrgcq5/posts/2085716815399617/"
+    ]
   }
 ];
 
