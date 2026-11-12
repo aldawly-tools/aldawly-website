@@ -63,6 +63,14 @@
         : '<span class="product-detail-placeholder" aria-hidden="true">' + escapeHtml(item.icon || "🔧") + '</span>';
     const brand = item.brand ? escapeHtml(displayBrand(item.brand)) + ' · ' : "";
     const price = escapeHtml(formatPrice(item.price));
+    const stockKnown = Number.isInteger(item.stock) && item.stock >= 0;
+    const stockHtml = stockKnown
+      ? (item.stock === 0
+        ? '<div class="detail-stock-status out">غير متوفر حاليًا — تواصل معنا لمعرفة موعد التوفر</div>'
+        : item.stock <= 5
+          ? '<div class="detail-stock-status low">متبقي ' + item.stock + ' قطع فقط — سارع بالاستفسار</div>'
+          : '<div class="detail-stock-status">متوفر — الكمية: ' + item.stock + ' قطعة</div>')
+      : "";
     const specsText = cleanProductCopy(item.specs || "");
     const specsRows = specsText.split("\n").map(function (line) {
       const parts = line.split(/[:：]/);
@@ -87,7 +95,7 @@
       '<div class="product-detail-info"><span class="product-detail-category">' + brand + escapeHtml(item.cat || "منتجات") + '</span>' +
       '<h1 class="product-detail-title">' + escapeHtml(name) + '</h1>' +
       '<p class="product-detail-description">' + escapeHtml(cleanProductCopy(item.desc || "للاستفسار عن مواصفات المنتج وتفاصيله، تواصل معنا مباشرة.")) + '</p>' +
-      '<div class="product-detail-price">' + price + '<small>' + (formatPrice(item.price).includes("ج.م") ? 'السعر بالجنيه المصري · التوفر عند التواصل' : 'السعر والتوفر عند التواصل') + '</small></div>' +
+      '<div class="product-detail-price">' + price + '<small>' + (formatPrice(item.price).includes("ج.م") ? 'السعر بالجنيه المصري · التوفر عند التواصل' : 'السعر والتوفر عند التواصل') + '</small></div>' + stockHtml +
       '<div class="product-detail-actions"><a class="button-primary" href="' + whatsapp + '" target="_blank" rel="noopener">استفسر عن المنتج عبر واتساب</a>' +
       '<a class="button-outline" href="products.html">العودة إلى المنتجات</a></div>' + specsHtml + '</div></article>';
 
