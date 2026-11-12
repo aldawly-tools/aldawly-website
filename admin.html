@@ -41,6 +41,50 @@ button:disabled{opacity:.6;cursor:wait}
 @media(max-width:380px){.dashboard-stats{gap:8px}.dashboard-stat strong{font-size:20px}}
 
 .dashboard-nav{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));position:sticky;top:4px}.dashboard-tab{background:#f1f2f4;color:#444;border:1px solid #e5e7eb;padding:12px 8px;white-space:nowrap;font-size:13px}.dashboard-tab.active{background:#d71920;color:#fff;border-color:#d71920;box-shadow:0 4px 12px #d7192030}.admin-panel{scroll-margin-top:75px}.admin-panel.hidden{display:none!important}@media(max-width:480px){.dashboard-nav{gap:5px;padding:7px}.dashboard-tab{font-size:11px;padding:11px 4px;border-radius:9px}}
+
+/* تحسين عرض لوحة الإدارة على الهاتف */
+@media(max-width:700px){
+  html{font-size:16px;-webkit-text-size-adjust:100%}
+  body{font-size:16px}
+  header{padding:20px 14px}
+  header h1{font-size:22px;line-height:1.5}
+  header p{font-size:14px;line-height:1.8}
+  .wrap{width:calc(100% - 20px);max-width:none}
+  #manager{padding-bottom:24px}
+  .dashboard-nav{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;padding:9px;top:0}
+  .dashboard-tab{white-space:normal;min-height:46px;font-size:14px;padding:10px 7px;line-height:1.4}
+  .dashboard-tab:last-child{grid-column:1/-1}
+  .dashboard-stats{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+  .dashboard-stat{padding:13px 11px}
+  .dashboard-stat span{font-size:13px;line-height:1.5}
+  .dashboard-stat strong{font-size:24px}
+  .card{padding:16px 13px;margin:12px 0;border-radius:15px}
+  .card h2{font-size:19px;line-height:1.5}
+  #productForm .field{margin:18px 0}
+  label{font-size:15px;line-height:1.6}
+  input,select,textarea{font-size:16px!important;min-height:48px;padding:12px;border-radius:10px}
+  #productForm textarea{min-height:110px}
+  #tasks{min-height:145px}
+  button,.link{font-size:15px;min-height:46px;padding:12px 14px}
+  .actions{gap:9px}
+  .actions button{flex:1 1 auto}
+  .form-actions{display:grid;grid-template-columns:1fr 1fr}
+  #saveBtn{min-width:0}
+  .muted,small.muted{font-size:13px;line-height:1.8}
+  .product{padding:13px}
+  .order-stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .order-stat span{font-size:13px}
+  .order-stat b{font-size:21px}
+  #postText{min-height:240px}
+  .image-preview{max-width:100%;max-height:220px}
+}
+@media(max-width:380px){
+  .wrap{width:calc(100% - 14px)}
+  .card{padding:13px 10px}
+  .dashboard-tab{font-size:13px}
+  .dashboard-stat strong{font-size:22px}
+}
+
 </style>
 </head>
 <body>
