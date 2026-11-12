@@ -8,7 +8,7 @@
 <title>إدارة منتجات الدولي</title>
 <style>
 :root{font-family:Tahoma,Arial,sans-serif;color:#202124;background:#f4f6f8;font-synthesis:none}*{box-sizing:border-box}body{margin:0}header{background:#d71920;color:#fff;padding:20px 16px}.wrap{width:min(100% - 28px,900px);margin:auto}h1{font-size:23px;margin:0 0 5px}header p{margin:0;color:#ffe7e7;font-size:14px}.card{background:#fff;border:1px solid #e2e5e8;border-radius:16px;padding:18px;margin:16px 0;box-shadow:0 5px 18px #1111}.muted{color:#68707a;font-size:13px;line-height:1.8}.field{margin:12px 0}.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}label{display:block;font-size:14px;font-weight:700;margin:0 0 6px}input,select,textarea{width:100%;font:inherit;padding:11px 12px;border:1px solid #cfd4da;border-radius:10px;background:#fff}input:focus,select:focus,textarea:focus{outline:2px solid #f2a2a4;border-color:#d71920}button,.link{font:inherit;font-weight:700;border:0;border-radius:10px;padding:12px 16px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:7px}.red{background:#d71920;color:#fff}.light{background:#f0f1f3;color:#202124}.danger{background:#fff0f0;color:#b00012}.actions{display:flex;gap:8px;flex-wrap:wrap}.hidden{display:none!important}.status{padding:10px 12px;border-radius:9px;background:#fff7df;color:#5e4b11;line-height:1.8;font-size:14px}.status:empty{display:none}.products{display:grid;gap:10px}.product{display:flex;align-items:center;justify-content:space-between;gap:12px;border:1px solid #e6e8eb;border-radius:12px;padding:12px}.product strong{display:block;margin-bottom:5px}.product small{display:block;color:#68707a;line-height:1.7}.image-preview{display:block;max-width:150px;max-height:130px;object-fit:contain;margin-top:8px;border-radius:8px;background:#f3f4f5}.form-actions{margin-top:14px}.footer-link{color:#555}.pill{display:inline-block;background:#fff1f1;color:#ae1018;border-radius:999px;padding:5px 9px;font-size:12px;margin-top:5px}@media(max-width:620px){.grid{grid-template-columns:1fr}.product{align-items:flex-start;flex-direction:column}.actions button{flex:1}}
-</style>
+ .order-card{border:1px solid #e3e6ea;border-radius:12px;padding:13px;background:#fff}.order-card p{font-size:13px;line-height:1.8;margin:7px 0;overflow-wrap:anywhere}.order-top,.order-actions{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}.order-actions{margin-top:10px}.order-actions select{flex:1;min-width:140px}\n</style>
 </head>
 <body>
 <header><div class="wrap"><h1>إدارة منتجات الدولي</h1><p>أضف المنتج وصورته من هنا، وسيظهر للزوار بعد الحفظ.</p></div></header>
@@ -42,7 +42,7 @@
         <div class="actions form-actions"><button class="red" id="saveBtn" type="submit">حفظ المنتج</button><button class="light" id="resetBtn" type="button">منتج جديد</button></div>
       </form>
     </div>
-    <div class="card"><div class="actions" style="justify-content:space-between;align-items:center"><h2 style="margin:0">المنتجات الحالية (<span id="count">0</span>)</h2><div class="actions"><button class="light" id="importBtn" type="button">استيراد products.js</button><button class="light" id="exportBtn" type="button">تنزيل نسخة</button></div></div><input id="importFile" type="file" accept=".js,.txt,text/javascript,text/plain" hidden><p class="muted">الصور المرفوعة محفوظة في قاعدة المتجر؛ نسخة products.js تحفظ بيانات المنتجات فقط.</p><div class="field"><label for="productSearch">ابحث في المنتجات</label><input id="productSearch" type="search" placeholder="اسم المنتج أو الماركة أو القسم أو رقم المنتج"></div><p class="muted" id="listSummary" aria-live="polite"></p><div class="products" id="productList"></div></div>
+    <section class="card" id="ordersCard"><div class="actions" style="justify-content:space-between;align-items:center"><div><h2 style="margin:0">طلبات العملاء (<span id="ordersCount">0</span>)</h2><p class="muted" style="margin:5px 0 0">الطلبات المسجلة من الموقع، مع تحديث حالة كل طلب.</p></div><button class="light" id="refreshOrdersBtn" type="button">تحديث الطلبات</button></div><p class="status" id="ordersStatus" aria-live="polite"></p><div class="field"><label for="orderFilter">تصفية الطلبات</label><select id="orderFilter"><option value="all">كل الطلبات</option><option value="new">جديد</option><option value="confirmed">تم التأكيد</option><option value="shipped">تم الشحن</option><option value="delivered">تم التسليم</option><option value="cancelled">ملغي</option></select></div><div id="ordersList" class="products"><p class="muted">جارٍ تحميل الطلبات…</p></div></section>\n    <div class="card"><div class="actions" style="justify-content:space-between;align-items:center"><h2 style="margin:0">المنتجات الحالية (<span id="count">0</span>)</h2><div class="actions"><button class="light" id="importBtn" type="button">استيراد products.js</button><button class="light" id="exportBtn" type="button">تنزيل نسخة</button></div></div><input id="importFile" type="file" accept=".js,.txt,text/javascript,text/plain" hidden><p class="muted">الصور المرفوعة محفوظة في قاعدة المتجر؛ نسخة products.js تحفظ بيانات المنتجات فقط.</p><div class="field"><label for="productSearch">ابحث في المنتجات</label><input id="productSearch" type="search" placeholder="اسم المنتج أو الماركة أو القسم أو رقم المنتج"></div><p class="muted" id="listSummary" aria-live="polite"></p><div class="products" id="productList"></div></div>
   </section>
 </main>
 <script src="products.js?v=product-admin-2"></script>
@@ -50,7 +50,7 @@
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-app.js";
 import { getAuth, GoogleAuthProvider, onAuthStateChanged, signInWithPopup, signOut } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-auth.js";
-import { collection, deleteDoc, doc, getDoc, getDocs, getFirestore, setDoc, serverTimestamp, writeBatch } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-firestore.js";
+import { collection, deleteDoc, doc, getDoc, getDocs, getFirestore, setDoc, serverTimestamp, writeBatch, query, orderBy, updateDoc } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-firestore.js";
 
 const $ = function (id) { return document.getElementById(id); };
 const config = window.DAWLY_FIREBASE_CONFIG || {};
@@ -128,7 +128,31 @@ async function loadProducts() {
   }).sort(function (a, b) { return a.id - b.id; });
   renderProducts();
 }
-function exportProducts() {
+const orderStatusLabels={new:"جديد",confirmed:"تم التأكيد",shipped:"تم الشحن",delivered:"تم التسليم",cancelled:"ملغي"};
+let orders=[];
+function orderDate(value){if(!value)return "التاريخ غير متاح";const d=value.toDate?value.toDate():new Date(value);return Number.isNaN(d.getTime())?"التاريخ غير متاح":d.toLocaleString("ar-EG");}
+function renderOrders(){
+ const filter=$("orderFilter").value,filtered=orders.filter(o=>filter==="all"||o.status===filter);
+ $("ordersCount").textContent=String(orders.length);
+ $("ordersList").innerHTML=filtered.map(o=>{
+  const items=(Array.isArray(o.items)?o.items:[]).map(i=>escapeHtml(i.name)+" × "+Number(i.qty||0)).join("، ");
+  const options=Object.keys(orderStatusLabels).map(k=>'<option value="'+k+'"'+(o.status===k?" selected":"")+'>'+orderStatusLabels[k]+'</option>').join("");
+  return '<article class="order-card"><div class="order-top"><strong>طلب '+escapeHtml(o.orderNumber||o.id)+'</strong><span class="pill">'+escapeHtml(orderStatusLabels[o.status]||"جديد")+'</span></div><p><b>العميل:</b> '+escapeHtml(o.customerName||"")+' · <b>الهاتف:</b> <a href="tel:'+escapeHtml(o.customerPhone||"")+'">'+escapeHtml(o.customerPhone||"")+'</a></p><p><b>العنوان:</b> '+escapeHtml(o.customerAddress||"")+'</p><p><b>المنتجات:</b> '+items+'</p><p><b>الإجمالي:</b> '+escapeHtml(o.totalText||"يحدد عند التأكيد")+'</p>'+(o.notes?'<p><b>ملاحظات:</b> '+escapeHtml(o.notes)+'</p>':"")+'<small class="muted">'+escapeHtml(orderDate(o.createdAt))+'</small><div class="order-actions"><select data-order-status="'+escapeHtml(o.id)+'">'+options+'</select><a class="link light" href="https://wa.me/'+encodeURIComponent(String(o.customerPhone||"").replace(/[^0-9]/g,""))+'" target="_blank" rel="noopener">مراسلة العميل</a></div></article>';
+ }).join("")||'<p class="muted">لا توجد طلبات في هذا التصنيف.</p>';
+}
+async function loadOrders(){
+ $("ordersStatus").textContent="جارٍ تحميل الطلبات…";
+ try{const snap=await getDocs(query(collection(db,"orders"),orderBy("createdAt","desc")));orders=snap.docs.map(d=>Object.assign({id:d.id},d.data()));renderOrders();$("ordersStatus").textContent=orders.length?"تم تحميل الطلبات.":"لا توجد طلبات مسجلة حتى الآن.";}
+ catch(e){$("ordersStatus").textContent="تعذر تحميل الطلبات. راجع قواعد Firestore الخاصة بالطلبات في ملف firebase-setup-ar.txt.";$("ordersList").innerHTML="";}
+}
+$("refreshOrdersBtn").addEventListener("click",loadOrders);
+$("orderFilter").addEventListener("change",renderOrders);
+$("ordersList").addEventListener("change",async function(e){
+ const el=e.target.closest("[data-order-status]");if(!el)return;const id=el.dataset.orderStatus,statusValue=el.value;el.disabled=true;
+ try{await updateDoc(doc(db,"orders",id),{status:statusValue,updatedAt:serverTimestamp()});const found=orders.find(o=>o.id===id);if(found)found.status=statusValue;renderOrders();$("ordersStatus").textContent="تم تحديث حالة الطلب.";}
+ catch(err){$("ordersStatus").textContent="تعذر تحديث الحالة. تحقق من صلاحيات حساب الإدارة.";el.disabled=false;}
+});
+\nfunction exportProducts() {
   const content = "window.DAWLY_PRODUCTS = " + JSON.stringify(products, null, 2) + ";\n";
   const url = URL.createObjectURL(new Blob([content], {type:"text/javascript;charset=utf-8"}));
   const link = document.createElement("a");
