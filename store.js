@@ -53,7 +53,7 @@
     text = text
       .replace(/[٠-٩]/g, function (digit) { return String("٠١٢٣٤٥٦٧٨٩".indexOf(digit)); })
       .replace(/[۰-۹]/g, function (digit) { return String("۰۱۲۳۴۵۶۷۸۹".indexOf(digit)); });
-    text = text.replace(/(?:جنيه(?:\s*مصري)?|ج\.?م\.?|EGP|LE)/gi, "").replace(/[\s,،٬]/g, "");
+    text = text.replace(/(?:جنيه(?:\s*مصري)?|ج\.?م\.?|ج\.?|EGP|LE)/gi, "").replace(/[\s,،٬]/g, "");
     if (!/^\d+(?:\.\d+)?$/.test(text)) return null;
     const amount = Number(text);
     return Number.isFinite(amount) ? amount : null;
