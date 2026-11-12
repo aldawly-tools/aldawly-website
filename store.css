@@ -18,9 +18,9 @@ img{max-width:100%}
 .brand-mark{width:48px;height:48px;display:grid;place-items:center;color:var(--red);flex:0 0 48px}
 .brand-mark svg{width:48px;height:48px}
 .brand-copy{min-width:0}
-.brand-name{font-size:23px;line-height:1.1;font-weight:1000;color:#000;white-space:nowrap}
+.brand-name{font-size:21px;line-height:1.1;font-weight:1000;color:#000;white-space:nowrap}
 .brand-en{font:800 14px Arial,sans-serif;letter-spacing:.3px;line-height:1.25}
-.brand-tag{display:block;margin-top:1px;background:transparent;color:var(--red);border-radius:0;padding:0;font-size:25px;line-height:1.12;font-weight:1000;white-space:nowrap}
+.brand-tag{display:block;margin-top:1px;background:transparent;color:var(--red);border-radius:0;padding:0;font-size:23px;line-height:1.12;font-weight:1000;white-space:nowrap}
 .search-form{display:flex;height:48px;border:1px solid #aeb7c1;border-radius:10px;overflow:hidden;box-shadow:0 1px 3px #00000008}
 .search-form input{width:100%;min-width:0;border:0;background:#fff;padding:0 18px;outline:0;color:var(--ink);font-weight:700}
 .search-form input::placeholder{color:#858c94}
@@ -50,7 +50,7 @@ img{max-width:100%}
 .eyebrow{color:var(--red);font-size:13px;font-weight:1000;margin-bottom:3px}
 .hero-copy h1{font-size:clamp(27px,3vw,42px);line-height:1.27;margin:0 0 4px;font-weight:1000;color:#000}
 .hero-copy h1 em{font-style:normal;color:var(--red)}
-.hero-copy h2{font-size:clamp(30px,3.2vw,45px);line-height:1.25;margin:0 0 10px;font-weight:1000;color:var(--red)}
+.hero-copy h2{font-size:clamp(18px,2vw,25px);line-height:1.4;margin:0 0 10px;font-weight:900}
 .hero-copy p{color:#4f5660;line-height:1.8;font-size:14px;font-weight:700;margin:0}
 .hero-cta{margin-top:14px;align-self:center;background:var(--red);color:#fff;border:0;border-radius:9px;padding:10px 22px;display:inline-flex;align-items:center;justify-content:center;gap:13px;font-weight:1000;min-width:210px;box-shadow:0 5px 13px #d7192022}
 .hero-cta:hover,.button-primary:hover{background:var(--red-dark)}
@@ -127,8 +127,8 @@ img{max-width:100%}
 .checkout{width:100%;margin-top:12px;padding:12px}
 @media(max-width:1100px){
  .masthead-grid{grid-template-columns:290px minmax(250px,1fr) 190px;gap:16px}
- .brand-name{font-size:18px}
- .brand-tag{font-size:20px}
+ .brand-name{font-size:16px}
+ .brand-tag{font-size:18px}
  .head-actions{gap:8px;min-width:0}
  .head-action span{display:none}
  .cart-button>span:last-child{font-size:12px}
@@ -171,9 +171,9 @@ img{max-width:100%}
  .benefit{padding-inline:13px;font-size:11px}
  .masthead-grid{grid-template-columns:1fr auto;gap:8px}
  .brand-mark,.brand-mark svg{width:40px;height:40px;flex-basis:40px}
- .brand-name{font-size:15px}
+ .brand-name{font-size:14px}
  .brand-en{font-size:10px}
- .brand-tag{font-size:17px;white-space:normal;max-width:100%}
+ .brand-tag{font-size:16px;white-space:normal;max-width:100%}
  .head-actions{gap:10px}
  .head-action span{display:none}
  .cart-button{font-size:12px;gap:5px}
@@ -186,7 +186,7 @@ img{max-width:100%}
  .hero-grid{grid-template-columns:1fr;grid-template-areas:"copy" "photo" "services"}
  .hero-copy{min-height:auto;padding:18px}
  .hero-copy h1{font-size:29px}
- .hero-copy h2{font-size:31px}
+ .hero-copy h2{font-size:18px}
  .hero-copy p{font-size:13px}
  .hero-photo{min-height:190px;height:190px}
  .hero-services{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
@@ -214,7 +214,7 @@ img{max-width:100%}
  .floating-whatsapp{width:48px;height:48px;left:13px;bottom:13px}
 }
 @media(max-width:360px){
- .brand-name{font-size:14px}
+ .brand-name{font-size:13px}
  .brand-tag{font-size:15px}
  .brand-en{display:none}
  .product-grid{grid-template-columns:1fr}
@@ -248,8 +248,8 @@ img{max-width:100%}
 .product-detail-missing h1{color:var(--ink);font-size:22px}
 @media(max-width:700px){
  .product-detail-header{min-height:68px}
-  .product-detail-header .brand-name{font-size:14px}
-  .product-detail-header .brand-tag{font-size:16px;white-space:normal;max-width:100%}
+  .product-detail-header .brand-name{font-size:13px}
+  .product-detail-header .brand-tag{font-size:15px;white-space:normal;max-width:100%}
  .product-detail-shell{padding-top:14px}
  .product-detail-layout{grid-template-columns:1fr;gap:16px;padding:12px}
  .product-detail-image,.product-detail-image img{min-height:260px;max-height:390px}
