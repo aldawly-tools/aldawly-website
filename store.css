@@ -160,8 +160,8 @@ img{max-width:100%}
  .head-actions{grid-column:2;grid-row:1}
  .search-form{grid-column:1/-1;grid-row:2}
  .main-nav .container{width:100%}
- .nav-row{flex-wrap:wrap;justify-content:center;gap:2px 4px;padding:5px 2%;overflow:visible}
- .nav-link{min-height:38px}
+ .nav-row{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:2px 4px;padding:5px 2%;overflow:visible}
+ .nav-link{min-width:0;min-height:38px;justify-content:center;white-space:normal;text-align:center;padding-inline:4px;gap:5px;font-size:12px}
  .hero-grid{grid-template-columns:1fr 1.1fr;grid-template-areas:"copy photo" "services services"}
  .hero-copy{grid-area:copy;min-height:230px}
  .hero-photo{grid-area:photo;min-height:230px}
@@ -173,7 +173,7 @@ img{max-width:100%}
 @media(max-width:700px){
  .benefits{justify-content:center;white-space:normal;overflow:visible;flex-wrap:wrap;padding-block:4px}
  .benefit{padding:3px 10px;font-size:11px}
- .nav-row{flex-wrap:wrap;justify-content:center;gap:2px 4px;padding-block:5px;overflow:visible}
+ .nav-row{gap:2px 4px;padding-block:5px;overflow:visible}
  .nav-link{min-height:36px;font-size:12px;padding-inline:8px}
  .nav-link.active{margin:2px 0;padding-inline:11px}
  .profession-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
