@@ -479,9 +479,11 @@
   }
 
   async function shareWhatsAppOrderImage(orderNumber, customerName, customerPhone, customerAddress, orderItems, totalText, message) {
+    let blob = null;
+    let file = null;
     try {
-      const blob = await createWhatsAppOrderImage(orderNumber, customerName, customerPhone, customerAddress, orderItems, totalText);
-      const file = new File([blob], "dawly-order-" + orderNumber + ".png", {type:"image/png"});
+      blob = await createWhatsAppOrderImage(orderNumber, customerName, customerPhone, customerAddress, orderItems, totalText);
+      file = new File([blob], "dawly-order-" + orderNumber + ".png", {type:"image/png"});
       if (navigator.share && navigator.canShare && navigator.canShare({files:[file]})) {
         await navigator.share({files:[file], title:"طلب من متجر الدولي", text:"تفاصيل الطلب " + orderNumber + " — أرسل الصورة إلى متجر الدولي."});
         return true;
@@ -496,8 +498,14 @@
     } catch (error) {
       if (error && error.name === "AbortError") return false;
       console.warn("تعذرت مشاركة صورة الطلب:", error);
-      window.open("https://wa.me/201024787222?text=" + encodeURIComponent(message), "_blank", "noopener");
-      alert("تعذر تجهيز الصورة تلقائيًا؛ تم فتح رسالة الطلب وبها روابط صور المنتجات.");
+      if (blob) {
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url; link.download = (file && file.name) || ("dawly-order-" + orderNumber + ".png"); link.click();
+        setTimeout(function(){ URL.revokeObjectURL(url); }, 60000);
+      }
+      window.open("https://wa.me/201024787222?text=" + encodeURIComponent(message + (blob ? "\\n\\nتم تنزيل صورة مجمعة للمنتجات؛ أرفقها في المحادثة قبل الإرسال." : "")), "_blank", "noopener");
+      alert(blob ? "تم تنزيل صورة الطلب. أرفق الصورة في واتساب ثم اضغط إرسال." : "تعذر تجهيز صورة الطلب؛ تم فتح رسالة واتساب وبها روابط المنتجات.");
       return false;
     }
   }
