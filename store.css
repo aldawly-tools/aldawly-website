@@ -1610,3 +1610,24 @@ input::placeholder,textarea::placeholder{color:#606a75;opacity:1}
   #productGrid .product-description{font-size:11px!important;-webkit-line-clamp:4!important;line-clamp:4!important}
   #productGrid .product-meta .button-primary{font-size:11px!important}
 }
+
+
+/* Business and factory supply lead banner */
+.business-cta{padding:22px 0 8px}
+.business-cta-inner{display:flex;align-items:center;justify-content:space-between;gap:22px;padding:24px 28px;border:1px solid #e3b7ba;border-right:7px solid var(--red);border-radius:14px;background:linear-gradient(115deg,#fff,#fff4f4)}
+.business-cta-copy{min-width:0}
+.business-cta-kicker{display:inline-block;color:#a80d17;font-size:13px;font-weight:1000;margin-bottom:5px}
+.business-cta h2{margin:0 0 6px;color:#11161b;font-size:clamp(20px,2.4vw,28px);font-weight:1000;line-height:1.5}
+.business-cta p{margin:0;color:#303943;font-size:14px;font-weight:700;line-height:1.8}
+.business-cta-points{display:flex;flex-wrap:wrap;gap:7px 18px;margin-top:10px;color:#28313a;font-size:12px;font-weight:800}
+.business-cta-button{flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;min-height:50px;padding:12px 18px;border-radius:9px;background:var(--red);color:#fff;font-size:14px;font-weight:1000;text-align:center;box-shadow:0 5px 14px #d7192026}
+.business-cta-button:hover{background:var(--red-dark)}
+@media(max-width:700px){
+ .business-cta{padding:15px 0 3px}
+ .business-cta-inner{display:flex;flex-direction:column;align-items:stretch;gap:13px;padding:17px 15px;border-right-width:5px}
+ .business-cta-kicker{font-size:11px}
+ .business-cta h2{font-size:20px}
+ .business-cta p{font-size:12px}
+ .business-cta-points{display:grid;gap:6px;font-size:11px}
+ .business-cta-button{width:100%;min-height:47px;font-size:13px}
+}
