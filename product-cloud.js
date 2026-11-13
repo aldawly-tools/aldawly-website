@@ -24,8 +24,17 @@ if (!config.apiKey || config.apiKey === "PASTE_FIREBASE_WEB_API_KEY" || !config.
       const snapshot = await getDocs(collection(db, "products"));
       const products = snapshot.docs.map(function (item) {
         const data = item.data();
-        return Object.assign({}, data, {id:Number(data.id || item.id)});
-      }).sort(function (a, b) { return a.id - b.id; });
+        // Keep Firestore document IDs intact; product IDs may be strings/slugs.
+        const productId = data.id !== undefined && data.id !== null && data.id !== ""
+          ? data.id
+          : item.id;
+        return Object.assign({}, data, {id:productId});
+      }).sort(function (a, b) {
+        const aNumber = Number(a.id);
+        const bNumber = Number(b.id);
+        if (Number.isFinite(aNumber) && Number.isFinite(bNumber)) return aNumber - bNumber;
+        return String(a.id).localeCompare(String(b.id), "en");
+      });
       window.DAWLY_PRODUCTS = products;
       window.dispatchEvent(new CustomEvent("dawly-products-updated", {detail:products}));
     }
