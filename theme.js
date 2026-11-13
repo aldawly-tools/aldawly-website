@@ -33,7 +33,9 @@
     var icon = currentTheme === "dark" ? "☾" : "☀";
     button.textContent = icon + " " + labels[mode];
     button.setAttribute("aria-label", "مظهر الموقع: " + labels[mode]);
-    button.title = "مظهر الموقع: " + labels[mode] + ". اضغط للتبديل بين تلقائي وفاتح وداكن.";
+    button.title = mode === "auto"
+      ? "تلقائي: حساس الإضاءة إن كان متاحًا، وإلا إعداد المظهر في الجهاز. اضغط للتبديل."
+      : "مظهر الموقع: " + labels[mode] + ". اضغط للتبديل بين تلقائي وفاتح وداكن.";
   }
 
   function useSystemFallback() {
@@ -50,7 +52,8 @@
     try {
       sensor = new window.AmbientLightSensor({frequency: 1});
       sensor.addEventListener("reading", function () {
-        var lux = Number(sensor && sensor.illuminance);
+        if (!sensor || sensor.illuminance == null) return;
+        var lux = Number(sensor.illuminance);
         if (!Number.isFinite(lux)) return;
         if (ambientTheme === null) ambientTheme = lux < 50 ? "dark" : "light";
         else if (ambientTheme === "dark" && lux >= 80) ambientTheme = "light";
