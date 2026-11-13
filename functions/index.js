@@ -42,6 +42,7 @@ function buildOrderMessage(order) {
 exports.notifyOrderOnTelegram = onDocumentCreated(
   {
     document: "orders/{orderId}",
+    region: "me-central1",
     retry: true,
     secrets: [telegramBotToken, telegramChatId]
   },
