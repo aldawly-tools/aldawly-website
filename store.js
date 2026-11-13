@@ -257,10 +257,24 @@
       }
       const price = parsePrice(item.price);
       const lineTotal = price === null ? "" : '<small class="cart-line-total">مجموع هذا المنتج: ' + escapeHtml(money(price * line.qty)) + '</small>';
-      return '<div class="cart-row"><div><strong>' + escapeHtml(cleanProductName(item.name)) + '</strong><small>' + escapeHtml(formatPrice(item.price)) + '</small>' + lineTotal +
-        '<div class="quantity"><button type="button" data-qty="' + escapeHtml(item.id) + '" data-delta="-1" aria-label="تقليل الكمية">−</button><span>' + line.qty + '</span><button type="button" data-qty="' + escapeHtml(item.id) + '" data-delta="1" aria-label="زيادة الكمية">+</button></div></div>' +
+      const cartImage = item.image
+        ? '<img src="' + escapeHtml(item.image) + '" alt="" loading="lazy">'
+        : item.imageId
+          ? '<img data-cart-image="' + escapeHtml(item.imageId) + '" alt="" loading="lazy">'
+          : '<span aria-hidden="true">🔧</span>';
+      return '<div class="cart-row"><div class="cart-product-main"><div class="cart-product-thumb">' + cartImage + '</div><div class="cart-product-copy"><strong>' + escapeHtml(cleanProductName(item.name)) + '</strong><small>' + escapeHtml(formatPrice(item.price)) + '</small>' + lineTotal +
+        '<div class="quantity"><button type="button" data-qty="' + escapeHtml(item.id) + '" data-delta="-1" aria-label="تقليل الكمية">−</button><span>' + line.qty + '</span><button type="button" data-qty="' + escapeHtml(item.id) + '" data-delta="1" aria-label="زيادة الكمية">+</button></div></div></div>' +
         '<button class="remove-item" type="button" data-remove="' + escapeHtml(item.id) + '">حذف</button></div>';
     }).join("") : '<div class="empty-cart">السلة فارغة حاليًا</div>';
+    cartItems.querySelectorAll("img[data-cart-image]").forEach(function (image) {
+      if (typeof window.DAWLY_LOAD_PRODUCT_IMAGE !== "function") return;
+      window.DAWLY_LOAD_PRODUCT_IMAGE(image.dataset.cartImage).then(function (url) {
+        if (url && image.isConnected) image.src = url;
+        else if (image.isConnected) image.closest(".cart-product-thumb").classList.add("no-image");
+      }).catch(function () {
+        if (image.isConnected) image.closest(".cart-product-thumb").classList.add("no-image");
+      });
+    });
     const totalBox = document.getElementById("cartTotal");
     const pricing = cartPricing();
     if (!count) {
