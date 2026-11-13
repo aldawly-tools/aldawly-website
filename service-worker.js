@@ -4,7 +4,9 @@ const APP_SHELL = [
   "/aldawly-website/index.html",
   "/aldawly-website/products.html",
   "/aldawly-website/store.css",
-  "/aldawly-website/assets/app-icon.svg"
+  "/aldawly-website/assets/app-icon.svg",
+  "/aldawly-website/assets/app-icon-192.svg",
+  "/aldawly-website/assets/app-icon-512.svg"
 ];
 self.addEventListener("install", event => {
   event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(APP_SHELL)).then(() => self.skipWaiting()));
