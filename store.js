@@ -224,11 +224,9 @@
     filterBar.innerHTML = '<button class="filter-chip active" type="button" data-category="الكل">كل المنتجات</button>' +
       categories.map(function (name) { return '<button class="filter-chip" type="button" data-category="' + escapeHtml(name) + '">' + escapeHtml(name) + '</button>'; }).join("");
     if (mobileMenuCategories) {
-      mobileMenuCategories.innerHTML = '<button type="button" data-category="الكل"><span class="mobile-menu-category-icon">▦</span><span>جميع المنتجات</span><span class="mobile-menu-category-count">' + products.length + ' منتج</span></button>' +
-        categories.map(function(name) {
-          const count = products.filter(function(item){ return item.cat === name; }).length;
-          return '<button type="button" data-category="' + escapeHtml(name) + '"><span class="mobile-menu-category-icon">' + categoryIcon(name) + '</span><span>' + escapeHtml(name) + '</span><span class="mobile-menu-category-count">' + count + '</span></button>';
-        }).join("");
+      mobileMenuCategories.innerHTML = categories.map(function(name) {
+        return '<button type="button" data-category="' + escapeHtml(name) + '">' + escapeHtml(name) + '</button>';
+      }).join("");
     }
   }
   const listingControls = document.createElement("div");
