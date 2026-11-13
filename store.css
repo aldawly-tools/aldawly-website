@@ -1516,3 +1516,10 @@ input::placeholder,textarea::placeholder{color:#606a75;opacity:1}
   font-weight:650;
  }
 }
+
+
+/* Product pagination / progressive loading */
+.product-listing-controls{display:flex;flex-direction:column;align-items:center;gap:10px;padding:22px 0 8px}
+.product-results-count{margin:0;color:#3f4852;font-size:13px;font-weight:800}
+.product-listing-controls [data-load-more]{min-width:min(100%,280px);min-height:48px;padding:12px 24px;font-size:15px;box-shadow:0 5px 14px #c8101e20}
+.product-listing-controls [data-load-more][hidden]{display:none!important}
