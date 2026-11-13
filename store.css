@@ -2086,3 +2086,39 @@ body:has(.hero-shell) .section#categories .category-tile.all small{color:#fff}
     margin-top:0!important;
   }
 }
+
+
+/* Never crop product photos in catalog cards: show the complete source image */
+#productGrid .product-visual{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  overflow:hidden!important;
+  background:#fff!important;
+}
+#productGrid .product-visual img{
+  display:block!important;
+  width:100%!important;
+  height:100%!important;
+  max-width:100%!important;
+  max-height:100%!important;
+  object-fit:contain!important;
+  object-position:center center!important;
+  padding:4px!important;
+  transform:none!important;
+}
+@media(max-width:700px){
+  #productGrid .product-visual{
+    height:clamp(185px,55vw,230px)!important;
+    min-height:185px!important;
+    max-height:230px!important;
+    padding:8px!important;
+  }
+  #productGrid .product-visual img{
+    width:100%!important;
+    height:100%!important;
+    object-fit:contain!important;
+    object-position:center!important;
+    padding:2px!important;
+  }
+}
