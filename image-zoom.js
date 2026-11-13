@@ -116,6 +116,7 @@
     const image = container.querySelector("img");
     if (!image) return;
     if (cardLink) event.preventDefault();
+    hideHoverPreview();
     openImage(image);
   }
 
