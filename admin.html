@@ -91,6 +91,13 @@ button:disabled{opacity:.6;cursor:wait}
 #postPanel #postImagePreview.hidden{display:none!important}
 @media(max-width:700px){#postPanel #postImagePreview{max-width:100%;max-height:280px}#postPanel #postText{min-height:280px}}
 </style>
+
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="assets/app-icon.svg" type="image/svg+xml">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<script>if ("serviceWorker" in navigator) { window.addEventListener("load", () => navigator.serviceWorker.register("./service-worker.js").catch(error => console.warn("App offline support:", error))); }</script>
 </head>
 <body>
 <header><div class="wrap"><h1>إدارة منتجات الدولي</h1><p>أضف المنتج وصورته من هنا، وسيظهر للزوار بعد الحفظ.</p></div></header>
