@@ -444,7 +444,7 @@
       const priceLines = price === null
         ? "   السعر: عند الاستفسار"
         : "   سعر الوحدة: " + money(price) + "\n   إجمالي المنتج: " + money(price * line.qty);
-      return itemNumber + ") " + cleanOrderProductName(item.name) + "\n   الكمية: " + line.qty + "\n" + priceLines + "\n   رابط التفاصيل: " + productUrl;
+      return itemNumber + ") " + cleanOrderProductName(item.name) + "\n   الكمية: " + line.qty + "\n" + priceLines + "\n   صورة المنتج والتفاصيل: " + productUrl;
     }).filter(Boolean).join("\n\n");
     const totalText = pricing.pricedCount === pricing.itemCount
       ? "إجمالي المنتجات: " + money(pricing.total) + "\nرسوم التوصيل: تُحدد بعد تأكيد العنوان\nالإجمالي النهائي: بعد تأكيد التوصيل"
@@ -472,7 +472,7 @@
       "",
       "برجاء تأكيد توفر المنتجات والسعر النهائي ورسوم التوصيل."
     ].join("\n");
-    const record={orderNumber,customerName,customerPhone,customerAddress,notes:orderNotes,items:cart.map(function(line){const item=products.find(function(entry){return String(entry.id)===String(line.id);});return item?{id:String(item.id),name:cleanOrderProductName(item.name),brand:String(item.brand||""),qty:line.qty,unitPrice:String(item.price||"السعر عند الاستفسار")}:null;}).filter(Boolean),totalText,status:"new",source:"website"};
+    const record={orderNumber,customerName,customerPhone,customerAddress,notes:orderNotes,items:cart.map(function(line){const item=products.find(function(entry){return String(entry.id)===String(line.id);});return item?{id:String(item.id),name:cleanOrderProductName(item.name),brand:String(item.brand||""),qty:line.qty,unitPrice:String(item.price||"السعر عند الاستفسار"),image:item.image||item.imageUrl||"",imageId:(Array.isArray(item.imageIds)&&item.imageIds[0])||item.imageId||null}:null;}).filter(Boolean),totalText,status:"new",source:"website"};
     window.open("https://wa.me/201024787222?text=" + encodeURIComponent(message), "_blank", "noopener");
     try{
       const appMod=await import("https://www.gstatic.com/firebasejs/13.2.0/firebase-app.js");
