@@ -1456,3 +1456,27 @@ body:has(.hero-shell) .section#work-kits{padding-top:24px}
  #productGrid .product-meta .button-primary{font-size:12px;min-height:43px}
  .section-subtitle{font-size:12px;color:#303840}
 }
+
+
+/* Make product ad descriptions bold, crisp and easy to read */
+#productGrid .product-description{
+ color:#20252b !important;
+ font-size:16px !important;
+ font-weight:800 !important;
+ line-height:1.9 !important;
+ letter-spacing:0 !important;
+ opacity:1 !important;
+ -webkit-line-clamp:unset !important;
+ line-clamp:unset !important;
+ max-height:none !important;
+ height:auto !important;
+ text-shadow:none !important;
+}
+@media(max-width:700px){
+ #productGrid .product-description{
+  color:#20252b !important;
+  font-size:14px !important;
+  font-weight:800 !important;
+  line-height:1.9 !important;
+ }
+}
