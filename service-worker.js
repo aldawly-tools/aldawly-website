@@ -1,12 +1,9 @@
-const CACHE_NAME = "aldawly-tools-v4";
+const CACHE_NAME = "aldawly-tools-v2";
 const APP_SHELL = [
   "/aldawly-website/",
   "/aldawly-website/index.html",
   "/aldawly-website/products.html",
   "/aldawly-website/store.css",
-  "/aldawly-website/theme-init.js?v=1",
-  "/aldawly-website/theme.js?v=1",
-  "/aldawly-website/theme.css?v=2",
   "/aldawly-website/assets/app-icon.svg",
   "/aldawly-website/assets/app-icon-192.svg",
   "/aldawly-website/assets/app-icon-512.svg",
