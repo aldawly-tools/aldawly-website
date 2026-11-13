@@ -404,7 +404,7 @@ function printCustomerOrder(order){
 
 async function createOrderConfirmationImage(order){
  const items=Array.isArray(order.items)?order.items:[];
- const width=1080,rowHeight=112,topRows=570,footerSpace=145;
+ const width=1080,rowHeight=112,topRows=570,footerSpace=310;
  const height=topRows+items.length*rowHeight+footerSpace;
  const canvas=document.createElement("canvas");canvas.width=width;canvas.height=height;
  const ctx=canvas.getContext("2d");
@@ -460,11 +460,29 @@ async function createOrderConfirmationImage(order){
   write((price?"سعر الوحدة: "+price:"")+(total?"   |   الإجمالي: "+total:""),width-105,y+29,17,"#68707a", "400",740);
   y+=rowHeight;
  }
- y+=12;
- ctx.fillStyle="#fff1f1";ctx.fillRect(82,y-30,width-164,82);
- write("إجمالي الطلب: "+(order.totalText||"يحدد عند التأكيد"),width-110,y+22,30,"#b20f19","bold");
- write("شكرًا لثقتكم في الدولي للعدد الأصلية ❤️",width/2,y+105,25,"#555","bold",900);
- write("الدولي للعدد الأصلية",width/2,y+137,19,"#c8101e","bold",900);
+ y+=18;
+ const summaryText="إجمالي الطلب: "+(order.totalText||"يحدد عند التأكيد");
+ ctx.font="bold 25px Tahoma, Arial, sans-serif";
+ const words=summaryText.split(/\\s+/),summaryLines=[];
+ let currentLine="";
+ words.forEach(function(word){
+  const candidate=currentLine?currentLine+" "+word:word;
+  if(currentLine&&ctx.measureText(candidate).width>850){summaryLines.push(currentLine);currentLine=word;}
+  else currentLine=candidate;
+ });
+ if(currentLine)summaryLines.push(currentLine);
+ const visibleLines=summaryLines.slice(0,4);
+ const cardHeight=72+visibleLines.length*38;
+ ctx.fillStyle="#fff1f1";ctx.fillRect(82,y-28,width-164,cardHeight);
+ ctx.strokeStyle="#f0c9cc";ctx.lineWidth=2;ctx.strokeRect(82,y-28,width-164,cardHeight);
+ write("ملخص الطلب",width-112,y+12,21,"#8f1821","bold");
+ visibleLines.forEach(function(line,index){
+  write(line,width-112,y+48+index*38,25,"#b20f19",index===0?"bold":"400",850);
+ });
+ const footerY=y+cardHeight+65;
+ ctx.strokeStyle="#e5e7eb";ctx.beginPath();ctx.moveTo(180,footerY-32);ctx.lineTo(width-180,footerY-32);ctx.stroke();
+ write("شكرًا لثقتكم في الدولي للعدد الأصلية ❤️",width/2,footerY+8,28,"#444","bold",920);
+ write("نسعد دائمًا بخدمتكم",width/2,footerY+48,21,"#777","400",920);
  return await new Promise(function(resolve,reject){
   canvas.toBlob(function(blob){if(blob)resolve(blob);else reject(new Error("تعذر إنشاء صورة الطلب."));},"image/png");
  });
