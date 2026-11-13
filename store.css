@@ -1973,3 +1973,22 @@ body:has(.hero-shell) .section#categories .category-tile.all small{color:#fff}
   #productGrid .product-meta .button-primary{min-height:48px}
   .category-filter-heading{gap:6px}
 }
+
+/* Put the catalog first on phones so product names and prices appear immediately */
+@media(max-width:700px){
+  main{display:flex;flex-direction:column}
+  main > #products.section{order:-1;padding-top:12px}
+  main > .hero-shell{order:1}
+  #products .section-heading{margin-bottom:10px}
+  #products .section-subtitle{margin-top:3px}
+  #products .catalog-filters{gap:9px}
+  #products .brand-filter-panel{padding:10px}
+  #products .brand-filter-heading{margin-bottom:7px}
+  #products .brand-filter-search input{padding-block:6px}
+  #productGrid .product-visual{height:clamp(135px,38vw,175px)!important;min-height:135px!important}
+}
+@media(max-width:420px){
+  #products.section{padding-top:8px}
+  #products .section-heading{margin-bottom:7px}
+  #productGrid .product-visual{height:135px!important;min-height:135px!important}
+}
