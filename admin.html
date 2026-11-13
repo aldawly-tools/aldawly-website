@@ -433,7 +433,9 @@ async function createOrderConfirmationImage(order){
  let y=570;
  for(let index=0;index<items.length;index++){
   const item=items[index];
-  const product=products.find(function(p){return String(p.id)===String(item.id||item.productId||"");});
+  const itemProductId=item.id||item.productId||item.product_id||item.productID||"";
+  const normalizedItemName=String(item.name||"").trim().toLocaleLowerCase("ar");
+  const product=products.find(function(p){return itemProductId&&String(p.id)===String(itemProductId);})||products.find(function(p){return normalizedItemName&&String(p.name||"").trim().toLocaleLowerCase("ar")===normalizedItemName;});
   const imageUrl=item.image||item.imageUrl||(product&&product.image)||"";
   const imageId=item.imageId||(product&&((Array.isArray(product.imageIds)&&product.imageIds[0])||product.imageId))||"";
   let src=imageUrl;
