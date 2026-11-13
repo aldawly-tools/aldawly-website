@@ -70,7 +70,7 @@ html[data-theme="dark"] :is(input, select, textarea) {
   border-color: var(--theme-border) !important;
 }
 html[data-theme="dark"] :is(input, textarea)::placeholder { color: #9aa7b5; }
-html[data-theme="dark"] :is(.brand-name, .brand-main, .hero-copy h1, .brand-word, .dashboard-stat strong) {
+html[data-theme="dark"] :is(.brand-name, .brand-main, .hero-copy h1, .dashboard-stat strong) {
   color: var(--theme-text);
 }
 html[data-theme="dark"] .nav-link.active,
@@ -80,6 +80,8 @@ html[data-theme="dark"] .dashboard-tab.active {
   color: #fff !important;
   border-color: var(--red);
 }
+html[data-theme="dark"] .brand-word:first-child,
+html[data-theme="dark"] .brand-word:nth-child(6) { color: var(--theme-text); }
 html[data-theme="dark"] .footer { background: #0c1117; }
 html[data-theme="dark"] .footer p,
 html[data-theme="dark"] .footer-links { color: #d0d7df; }
