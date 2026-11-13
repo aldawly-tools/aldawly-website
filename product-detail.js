@@ -124,7 +124,9 @@
       '<h1 class="product-detail-title">' + escapeHtml(name) + '</h1>' +
       '<p class="product-detail-description">' + escapeHtml(cleanProductCopy(item.desc || "للاستفسار عن مواصفات المنتج وتفاصيله، تواصل معنا مباشرة.")) + '</p>' +
       '<div class="product-detail-price">' + price + '<small>' + (formatPrice(item.price).includes("ج.م") ? 'السعر بالجنيه المصري · التوفر عند التواصل' : 'السعر والتوفر عند التواصل') + '</small></div>' + stockHtml +
-      '<div class="product-detail-actions"><a class="button-primary" href="' + whatsapp + '" target="_blank" rel="noopener">استفسر عن المنتج عبر واتساب</a>' +
+      '<div class="product-detail-actions">' +
+      '<button class="button-primary detail-add-cart" type="button" data-detail-add="' + escapeHtml(item.id) + '"' + (stockKnown && item.stock === 0 ? ' disabled aria-disabled="true"' : '') + '>' + (stockKnown && item.stock === 0 ? 'غير متاح حاليًا' : 'أضف إلى السلة') + '</button>' +
+      '<a class="button-outline" href="' + whatsapp + '" target="_blank" rel="noopener">استفسر عن المنتج عبر واتساب</a>' +
       '<a class="button-outline" href="products.html">العودة إلى المنتجات</a></div>' + specsHtml + '</div></article>';
 
 
@@ -183,6 +185,43 @@
       }).catch(function () {});
     }
   }
+
+
+  root.addEventListener("click", function (event) {
+    const button = event.target.closest("[data-detail-add]");
+    if (!button || button.disabled) return;
+    const id = button.dataset.detailAdd;
+    const item = (cloudProducts || fallbackProducts).find(function (product) { return String(product.id) === String(id); });
+    if (!item) { alert("تعذر تحميل بيانات المنتج. حدّث الصفحة وحاول مرة أخرى."); return; }
+    if (Number.isInteger(item.stock) && item.stock >= 0 && item.stock === 0) {
+      alert("هذا المنتج غير متاح حاليًا.");
+      return;
+    }
+    let cart = [];
+    try {
+      const saved = JSON.parse(localStorage.getItem("dawly_cart_v1") || "[]");
+      if (Array.isArray(saved)) cart = saved.filter(function (line) {
+        return line && line.id != null && Number.isInteger(Number(line.qty)) && Number(line.qty) > 0;
+      }).map(function (line) { return {id:line.id,qty:Math.min(99,Number(line.qty))}; });
+    } catch (error) { cart = []; }
+    const line = cart.find(function (entry) { return String(entry.id) === String(id); });
+    if (line) {
+      if (Number.isInteger(item.stock) && item.stock >= 0 && line.qty >= item.stock) {
+        alert("الكمية المطلوبة أكبر من المتاح بالمخزون.");
+        return;
+      }
+      line.qty = Math.min(99, line.qty + 1);
+    } else {
+      cart.push({id:item.id,qty:1});
+    }
+    try {
+      localStorage.setItem("dawly_cart_v1", JSON.stringify(cart));
+    } catch (error) {
+      alert("تعذر حفظ السلة على هذا الجهاز. تأكد من إعدادات المتصفح وحاول مرة أخرى.");
+      return;
+    }
+    window.location.href = "products.html?cart=1";
+  });
 
   window.addEventListener("dawly-products-updated", function (event) {
     if (!Array.isArray(event.detail)) return;
