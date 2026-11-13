@@ -2122,3 +2122,11 @@ body:has(.hero-shell) .section#categories .category-tile.all small{color:#fff}
     padding:2px!important;
   }
 }
+
+
+/* Product card clarity and tap targets: mobile polish 2026-11-14 */
+.product-price{font-size:19px;line-height:1.35}
+.product-price del{display:block;color:#747b84;font-size:12px;font-weight:700;text-decoration:line-through}
+.product-discount{display:inline-block;margin-inline-start:5px;padding:2px 6px;border-radius:999px;background:#fff0f0;color:var(--red);font-size:10px;font-style:normal;font-weight:900}
+.product-card .button-primary{min-height:42px}
+@media(max-width:640px){.product-description{-webkit-line-clamp:2;line-clamp:2;min-height:0}.product-meta{align-items:stretch;gap:8px}.product-card .button-primary{flex:1;min-height:44px}}
