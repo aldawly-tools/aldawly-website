@@ -139,7 +139,6 @@ button:disabled{opacity:.6;cursor:wait}
           <div class="field"><label for="brand">الماركة</label><input id="brand" placeholder="Würth / Bosch / Wera"></div>
           <div class="field"><label for="cat">القسم</label><select id="cat"><option>عدد يدوية</option><option>عدد كهربائية</option><option>مستلزمات الورش</option><option>قياس</option></select></div>
           <div class="field"><label for="price">السعر</label><input id="price" placeholder="السعر عند الاستفسار"></div>
-          <div class="field"><label for="stock">الكمية المتاحة بالمخزون</label><input id="stock" type="number" min="0" max="99999" step="1" inputmode="numeric" placeholder="اتركها فارغة إذا لم تحدد المخزون"><small class="muted">اكتب 0 إذا المنتج نفد، أو اتركها فارغة إذا لم تسجل الكمية.</small></div>
           <div class="field"><label for="icon">رمز بديل</label><input id="icon" value="🔧"></div>
         </div>
         <div class="field"><label for="imageUrl">رابط الصورة (اختياري)</label><input id="imageUrl" type="text" placeholder="اتركه فارغًا إذا سترفع صورة من جهازك"></div>
@@ -663,7 +662,6 @@ async function editProduct(id) {
   $("brand").value = product.brand || "";
   $("cat").value = product.cat || "عدد يدوية";
   $("price").value = product.price || "";
-  $("stock").value = Number.isInteger(product.stock) && product.stock >= 0 ? String(product.stock) : "";
   $("icon").value = product.icon || "🔧";
   imageRemoved = false;
   existingImageIds = Array.isArray(product.imageIds) ? product.imageIds.map(String) : (product.imageId ? [String(product.imageId)] : []);
@@ -824,12 +822,6 @@ $("productForm").addEventListener("submit", async function (event) {
   const files = selectedImageFiles.slice();
   if (files.length + (imageRemoved ? 0 : existingImageIds.length) > 5) { message(saveStatus, "الحد الأقصى 5 صور للمنتج. امسح الصور القديمة أولًا إذا أردت استبدالها."); return; }
   const file = files[0];
-  const stockValue = $("stock").value.trim();
-  if (stockValue !== "" && (!/^\\d+$/.test(stockValue) || Number(stockValue) > 99999)) {
-    message(saveStatus, "اكتب كمية صحيحة من 0 إلى 99999، أو اترك الخانة فارغة.");
-    $("stock").focus();
-    return;
-  }
   let image = $("imageUrl").value.trim();
   let imageIds = imageRemoved ? [] : existingImageIds.slice();
   let imageId = imageIds[0] || null;
