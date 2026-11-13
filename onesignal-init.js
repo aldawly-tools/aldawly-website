@@ -1,16 +1,13 @@
 (function () {
-  // Keep a single readiness promise so the admin page can wait for SDK init.
   window.OneSignalDeferred = window.OneSignalDeferred || [];
-  var resolveReady, rejectReady;
-  window.__oneSignalReady = new Promise(function (resolve, reject) {
-    resolveReady = resolve;
-    rejectReady = reject;
-  });
+  window.__oneSignalInstance = null;
+  window.__oneSignalLoadError = null;
   var script = document.createElement("script");
   script.src = "https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js";
   script.defer = true;
   script.onerror = function () {
-    rejectReady(new Error("تعذر تحميل خدمة الإشعارات. تحقق من الاتصال ثم أعد المحاولة."));
+    window.__oneSignalLoadError = "تعذر الوصول إلى cdn.onesignal.com";
+    console.warn("OneSignal SDK could not be downloaded. Browser permission can still be requested, but push registration is unavailable.");
   };
   document.head.appendChild(script);
   window.OneSignalDeferred.push(async function (OneSignal) {
@@ -22,11 +19,9 @@
         notifyButton: { enable: false }
       });
       window.__oneSignalInstance = OneSignal;
-      resolveReady(OneSignal);
     } catch (error) {
-      rejectReady(error);
+      window.__oneSignalLoadError = error && error.message ? error.message : String(error);
+      console.error("OneSignal initialization failed:", error);
     }
   });
-  // Prevent an unhandled rejection if the admin page is not opened.
-  window.__oneSignalReady.catch(function () {});
 })();
