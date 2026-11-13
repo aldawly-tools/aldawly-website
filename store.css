@@ -1729,3 +1729,42 @@ body:has(.hero-shell) .section#categories .category-tile.all small{color:#fff}
   body:has(.hero-shell) .section#categories .category-tile{min-height:132px}
   body:has(.hero-shell) .section#categories .category-tile strong{font-size:13px}
 }
+
+
+/* Light, high-contrast header benefits and footer for mobile readability */
+.benefit-bar{
+  background:#f4f6f8 !important;
+  color:#252d36 !important;
+  border-bottom:1px solid #e1e5e9 !important;
+}
+.benefit-bar .benefit{
+  color:#252d36 !important;
+  font-weight:800 !important;
+}
+.benefit-bar .benefit svg{
+  stroke:#c8101e !important;
+}
+.footer{
+  background:#f4f6f8 !important;
+  color:#252d36 !important;
+  border-top:4px solid #c8101e !important;
+}
+.footer h3{
+  color:#151a20 !important;
+  font-weight:900 !important;
+}
+.footer p,.footer .footer-links,.footer .footer-links a,.footer a:not(.button-primary){
+  color:#303943 !important;
+  font-weight:700 !important;
+}
+.footer a:not(.button-primary):hover{color:#c8101e !important}
+.footer .button-primary{
+  color:#fff !important;
+}
+@media(max-width:700px){
+  .benefit-bar{background:#f4f6f8 !important}
+  .benefit-bar .benefit{color:#252d36 !important;font-size:11px;font-weight:850 !important}
+  .footer{background:#f4f6f8 !important;padding-bottom:76px}
+  .footer h3{color:#151a20 !important;font-size:16px}
+  .footer p,.footer .footer-links,.footer .footer-links a,.footer a:not(.button-primary){color:#303943 !important;font-size:13px;font-weight:750 !important}
+}
