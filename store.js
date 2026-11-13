@@ -312,6 +312,10 @@
           ? '<img data-cloud-image="' + escapeHtml(item.imageId) + '" alt="' + escapeHtml(name) + '" loading="lazy">'
           : '<span class="product-placeholder" aria-hidden="true">' + escapeHtml(item.icon || "🔧") + '</span>';
       const detailUrl = "product.html?id=" + encodeURIComponent(String(item.id));
+      const currentPrice = parsePrice(item.price);
+      const compareAtPrice = parsePrice(item.oldPrice ?? item.compareAtPrice ?? item.originalPrice);
+      const discountPercent = currentPrice !== null && compareAtPrice !== null && compareAtPrice > currentPrice
+        ? Math.round((compareAtPrice - currentPrice) / compareAtPrice * 100) : 0;
       const stockKnown = Number.isInteger(item.stock) && item.stock >= 0;
       const stockOut = stockKnown && item.stock === 0;
       const stockLabel = stockOut ? '<span class="stock-status out">نفد المخزون</span>' : stockKnown ? '<span class="stock-status">المتاح: ' + item.stock + ' قطعة</span>' : '';
@@ -321,7 +325,7 @@
         '<h3 class="product-name"><a class="product-name-link" href="' + detailUrl + '">' + escapeHtml(name) + '</a></h3>' +
         '<p class="product-description">' + escapeHtml(description) + '</p>' + stockLabel +
         '<a class="product-details-link" href="' + detailUrl + '">عرض الإعلان والتفاصيل ←</a>' +
-        '<div class="product-meta"><span class="product-price">' + escapeHtml(formatPrice(item.price)) + '<small>' + (parsePrice(item.price) === null ? 'السعر والتوفر عند التواصل' : 'التوفر عند التواصل') + '</small></span>' +
+        '<div class="product-meta"><span class="product-price">' + escapeHtml(formatPrice(item.price)) + (discountPercent ? '<del>' + escapeHtml(money(compareAtPrice)) + '</del><em class="product-discount">خصم ' + discountPercent + '%</em>' : '') + '<small>' + (currentPrice === null ? 'السعر والتوفر عند التواصل' : 'التوفر عند التواصل') + '</small></span>' +
         '<button class="button-primary" type="button" data-add="' + escapeHtml(item.id) + '"' + (stockOut ? ' disabled aria-disabled="true"' : '') + '>' + (stockOut ? 'غير متاح حاليًا' : 'أضف إلى السلة') + '</button></div></div></article>';
     }).join("") || '<p class="empty-cart">' + emptyMessage + '</p>';
     observeCloudImages();
