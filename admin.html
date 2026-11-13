@@ -160,7 +160,7 @@ button:disabled{opacity:.6;cursor:wait}
 </main>
 <script src="products.js?v=product-admin-2"></script>
 <script src="firebase-config.js?v=product-admin-2"></script>
-<script src="onesignal-init.js?v=3"></script>
+<script src="onesignal-init.js?v=4"></script>
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-app.js";
 import { getAuth, GoogleAuthProvider, onAuthStateChanged, signInWithPopup, signInWithRedirect, getRedirectResult, signOut } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-auth.js";
@@ -534,33 +534,32 @@ $("enablePushBtn").addEventListener("click", async function () {
     return;
   }
   if (Notification.permission === "denied") {
-    message(pushStatus, "الإشعارات محظورة من Chrome. افتح إعدادات الموقع لهذا العنوان وغيّر الإشعارات إلى سماح، ثم أعد تحميل الصفحة.");
-    return;
-  }
-  // Permission must be requested directly during the tap, before any await,
-  // otherwise mobile Chrome may silently ignore the prompt.
-  const OneSignal = window.__oneSignalInstance;
-  if (!OneSignal) {
-    message(pushStatus, "خدمة الإشعارات ما زالت تُجهّز. انتظر عدة ثوانٍ ثم اضغط الزر مرة أخرى.");
+    message(pushStatus, "الإشعارات محظورة لهذا الموقع. من إعدادات Chrome > إعدادات المواقع > الإشعارات، اسمح للموقع ثم أعد المحاولة.");
     return;
   }
   button.disabled = true;
-  message(pushStatus, "جارٍ طلب إذن الإشعارات من المتصفح…");
+  message(pushStatus, "جارٍ طلب إذن الإشعارات من Chrome…");
   try {
-    let permissionPromise = Promise.resolve(Notification.permission === "granted");
-    if (Notification.permission !== "granted") {
-      permissionPromise = OneSignal.Notifications.requestPermission();
+    // Call the browser permission API directly inside the button tap.
+    const permissionPromise = Notification.permission === "granted"
+      ? Promise.resolve("granted")
+      : Notification.requestPermission();
+    const permission = await permissionPromise;
+    if (permission !== "granted") {
+      message(pushStatus, "لم يتم السماح بالإشعارات. اختر سماح من نافذة Chrome.");
+      return;
     }
-    const granted = await permissionPromise;
-    if (!granted && Notification.permission !== "granted") {
-      throw new Error("لم يتم السماح بالإشعارات. اختر سماح من نافذة Chrome.");
+    const OneSignal = window.__oneSignalInstance;
+    if (!OneSignal) {
+      message(pushStatus, "تم السماح بإذن الإشعارات في Chrome، لكن خدمة إرسال الإشعارات لم تُحمّل بسبب الاتصال بخادم OneSignal. جرّب شبكة أخرى أو أوقف VPN/مانع الإعلانات، ثم أعد تحميل الصفحة لتفعيل استقبال الطلبات.");
+      return;
     }
     await OneSignal.User.PushSubscription.optIn();
     await OneSignal.User.addTag("store_admin", "true");
     message(pushStatus, "تم تفعيل إشعارات المتجر على هذا الهاتف.");
   } catch (error) {
-    console.error("OneSignal subscription error:", error);
-    message(pushStatus, error && error.message ? error.message : "تعذر تفعيل الإشعارات. تحقق من إعدادات Chrome.");
+    console.error("Notification activation error:", error);
+    message(pushStatus, error && error.message ? error.message : "تعذر تفعيل الإشعارات. تحقق من إعدادات Chrome والاتصال.");
   } finally {
     button.disabled = false;
   }
