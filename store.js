@@ -413,6 +413,106 @@
     followup.hidden = false;
     followup.scrollIntoView({behavior:"smooth",block:"nearest"});
   }
+  async function createWhatsAppOrderImage(orderNumber, customerName, customerPhone, customerAddress, orderItems, totalText) {
+    const width = 1080, rowHeight = 178, headerHeight = 420, footerHeight = 190;
+    const height = headerHeight + orderItems.length * rowHeight + footerHeight;
+    const canvas = document.createElement("canvas");
+    canvas.width = width; canvas.height = height;
+    const ctx = canvas.getContext("2d");
+    ctx.fillStyle = "#f3f4f6"; ctx.fillRect(0, 0, width, height);
+    ctx.fillStyle = "#fff"; ctx.fillRect(32, 32, width - 64, height - 64);
+    ctx.fillStyle = "#c8101e"; ctx.fillRect(32, 32, width - 64, 18);
+    ctx.direction = "rtl"; ctx.textAlign = "right";
+    function write(text, x, y, size, color, weight, maxWidth) {
+      ctx.font = (weight || "600") + " " + size + "px Tahoma, Arial, sans-serif";
+      ctx.fillStyle = color || "#20242a";
+      ctx.fillText(String(text || ""), x, y, maxWidth || 850);
+    }
+    function loadImage(src) {
+      return new Promise(function(resolve) {
+        if (!src) return resolve(null);
+        const img = new Image();
+        img.onload = function(){ resolve(img); };
+        img.onerror = function(){ resolve(null); };
+        if (/^https?:/i.test(src)) img.crossOrigin = "anonymous";
+        img.src = src;
+      });
+    }
+    write("الدولي للعدد الأصلية", width - 86, 130, 48, "#c8101e", "bold");
+    write("تفاصيل طلب جديد", width - 86, 195, 32, "#252b33", "bold");
+    write("رقم الطلب: " + orderNumber, width - 86, 255, 27, "#20242a", "bold");
+    write("العميل: " + customerName, width - 86, 310, 24, "#343d47", "600");
+    write("الهاتف: " + customerPhone, width - 86, 355, 24, "#343d47", "600");
+    write("العنوان: " + customerAddress, width - 86, 400, 22, "#343d47", "600", 850);
+    let y = headerHeight;
+    for (let i = 0; i < orderItems.length; i++) {
+      const item = orderItems[i];
+      ctx.fillStyle = i % 2 ? "#fafafa" : "#f1f3f5";
+      ctx.fillRect(68, y, width - 136, rowHeight - 12);
+      ctx.fillStyle = "#fff"; ctx.fillRect(86, y + 18, 136, 136);
+      let src = item.image || "";
+      if (!src && item.imageId && typeof window.DAWLY_LOAD_PRODUCT_IMAGE === "function") {
+        try { src = await window.DAWLY_LOAD_PRODUCT_IMAGE(item.imageId); } catch (e) { src = ""; }
+      }
+      const img = await loadImage(src);
+      if (img) {
+        const scale = Math.min(120 / img.width, 120 / img.height);
+        const iw = img.width * scale, ih = img.height * scale;
+        ctx.drawImage(img, 94 + (120 - iw) / 2, y + 26 + (120 - ih) / 2, iw, ih);
+      } else {
+        ctx.textAlign = "center"; ctx.font = "58px Tahoma"; ctx.fillStyle = "#9aa1a9";
+        ctx.fillText("🔧", 154, y + 105); ctx.textAlign = "right";
+      }
+      write((i + 1) + ". " + item.name, width - 258, y + 62, 25, "#20242a", "bold", 720);
+      write("الكمية: " + item.qty + "    |    " + (item.unitPrice || "السعر عند الاستفسار"), width - 258, y + 108, 21, "#4b5560", "600", 720);
+      y += rowHeight;
+    }
+    y += 28;
+    ctx.fillStyle = "#fff1f1"; ctx.fillRect(68, y, width - 136, 110);
+    ctx.strokeStyle = "#f0c9cc"; ctx.lineWidth = 2; ctx.strokeRect(68, y, width - 136, 110);
+    write("ملخص الطلب", width - 98, y + 40, 22, "#8f1821", "bold");
+    write(totalText, width - 98, y + 78, 24, "#b20f19", "bold", 850);
+    write("شكرًا لثقتكم في الدولي للعدد الأصلية ❤️", width / 2, height - 78, 25, "#444", "bold", 900);
+    return await new Promise(function(resolve, reject) {
+      canvas.toBlob(function(blob) { if (blob) resolve(blob); else reject(new Error("تعذر تجهيز صورة المنتجات")); }, "image/png");
+    });
+  }
+
+  async function shareWhatsAppOrderImage(orderNumber, customerName, customerPhone, customerAddress, orderItems, totalText, message) {
+    try {
+      const blob = await createWhatsAppOrderImage(orderNumber, customerName, customerPhone, customerAddress, orderItems, totalText);
+      const file = new File([blob], "dawly-order-" + orderNumber + ".png", {type:"image/png"});
+      if (navigator.share && navigator.canShare && navigator.canShare({files:[file]})) {
+        await navigator.share({files:[file], title:"طلب من متجر الدولي", text:"تفاصيل الطلب " + orderNumber + " — أرسل الصورة إلى متجر الدولي."});
+        return true;
+      }
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url; link.download = file.name; link.click();
+      setTimeout(function(){ URL.revokeObjectURL(url); }, 60000);
+      window.open("https://wa.me/201024787222?text=" + encodeURIComponent(message + "\\n\\nتم تنزيل صورة مجمعة للمنتجات؛ أرفقها في المحادثة قبل الإرسال."), "_blank", "noopener");
+      alert("تم تنزيل صورة الطلب. أرفق الصورة في واتساب ثم اضغط إرسال.");
+      return true;
+    } catch (error) {
+      if (error && error.name === "AbortError") return false;
+      console.warn("تعذرت مشاركة صورة الطلب:", error);
+      const orderImageItems = cart.map(function(line) {
+      const item = products.find(function(entry){ return String(entry.id) === String(line.id); });
+      if (!item) return null;
+      return {
+        name: cleanOrderProductName(item.name),
+        qty: line.qty,
+        unitPrice: String(item.price || "السعر عند الاستفسار"),
+        image: item.image || item.imageUrl || "",
+        imageId: (Array.isArray(item.imageIds) && item.imageIds[0]) || item.imageId || null
+      };
+    }).filter(Boolean);
+    shareWhatsAppOrderImage(orderNumber, customerName, customerPhone, customerAddress, orderImageItems, totalText, message);
+      alert("تعذر إرفاق الصورة تلقائيًا؛ تم فتح رسالة الطلب وبها روابط صور المنتجات.");
+      return false;
+    }
+  }
+
   checkout.addEventListener("click", async function () {
     if (!cart.length) return;
     const customerName = document.getElementById("customerName").value.trim();
