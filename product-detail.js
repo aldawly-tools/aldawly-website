@@ -114,7 +114,6 @@
       : "";
     const productUrl = new URL("product.html?id=" + encodeURIComponent(item.id), window.location.href).toString();
     const message = "السلام عليكم، أريد الاستفسار عن الإعلان: " + name + "\nرابط الإعلان والصورة للتوضيح: " + productUrl;
-    const whatsapp = "https://wa.me/201024787222?text=" + encodeURIComponent(message);
 
     document.title = name + " | الدولي";
     document.getElementById("detailBreadcrumb").textContent = name;
@@ -126,7 +125,7 @@
       '<div class="product-detail-price">' + price + '<small>' + (formatPrice(item.price).includes("ج.م") ? 'السعر بالجنيه المصري · التوفر عند التواصل' : 'السعر والتوفر عند التواصل') + '</small></div>' + stockHtml +
       '<div class="product-detail-actions">' +
       '<button class="button-primary detail-add-cart" type="button" data-detail-add="' + escapeHtml(item.id) + '"' + (stockKnown && item.stock === 0 ? ' disabled aria-disabled="true"' : '') + '>' + (stockKnown && item.stock === 0 ? 'غير متاح حاليًا' : 'أضف إلى السلة') + '</button>' +
-      '<a class="button-outline" href="' + whatsapp + '" target="_blank" rel="noopener">استفسر عن المنتج عبر واتساب</a>' +
+      '<button class="button-outline" type="button" data-share-whatsapp="' + escapeHtml(item.id) + '">إرسال صورة المنتج وتفاصيله عبر واتساب</button>' +
       '<a class="button-outline" href="products.html">العودة إلى المنتجات</a></div>' + specsHtml + '</div></article>';
 
 
@@ -186,6 +185,43 @@
     }
   }
 
+
+  root.addEventListener("click", async function (event) {
+    const shareButton = event.target.closest("[data-share-whatsapp]");
+    if (!shareButton) return;
+    const item = (cloudProducts || fallbackProducts).find(function (p) { return String(p.id) === String(shareButton.dataset.shareWhatsapp); });
+    if (!item) return;
+    const name = cleanProductName(item.name || "منتج من الدولي");
+    const productUrl = new URL("product.html?id=" + encodeURIComponent(item.id), window.location.href).toString();
+    const message = "السلام عليكم، أريد الاستفسار عن الإعلان: " + name + "\nرابط الإعلان: " + productUrl;
+    const originalText = shareButton.textContent;
+    shareButton.disabled = true;
+    shareButton.textContent = "جارٍ تجهيز الصورة…";
+    try {
+      let imageUrl = item.image || "";
+      const imageId = (Array.isArray(item.imageIds) && item.imageIds[0]) || item.imageId;
+      if (!imageUrl && imageId && typeof window.DAWLY_LOAD_PRODUCT_IMAGE === "function") imageUrl = await window.DAWLY_LOAD_PRODUCT_IMAGE(imageId);
+      if (imageUrl && navigator.share && navigator.canShare && typeof File !== "undefined") {
+        const response = await fetch(imageUrl);
+        if (!response.ok) throw new Error("تعذر تحميل صورة المنتج");
+        const blob = await response.blob();
+        const file = new File([blob], "product-" + item.id + ".jpg", {type:blob.type || "image/jpeg"});
+        if (navigator.canShare({files:[file]})) {
+          await navigator.share({title:name, text:message, files:[file]});
+          return;
+        }
+      }
+      window.open("https://wa.me/201024787222?text=" + encodeURIComponent(message), "_blank", "noopener");
+      alert("المتصفح لا يدعم إرفاق الصورة مباشرة. تم فتح واتساب مع تفاصيل المنتج ورابط الإعلان الذي يحتوي على الصورة.");
+    } catch (error) {
+      if (error && error.name === "AbortError") return;
+      window.open("https://wa.me/201024787222?text=" + encodeURIComponent(message), "_blank", "noopener");
+      alert("لم نتمكن من إرفاق الصورة تلقائيًا. أُرفق رابط الإعلان في رسالة واتساب؛ يمكنك فتحه لمشاهدة الصورة.");
+    } finally {
+      shareButton.disabled = false;
+      shareButton.textContent = originalText;
+    }
+  });
 
   root.addEventListener("click", function (event) {
     const button = event.target.closest("[data-detail-add]");
