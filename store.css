@@ -1992,3 +1992,60 @@ body:has(.hero-shell) .section#categories .category-tile.all small{color:#fff}
   #products .section-heading{margin-bottom:7px}
   #productGrid .product-visual{height:135px!important;min-height:135px!important}
 }
+
+
+/* Desktop product cards: remove equal-height stretching and excess blank space */
+@media(min-width:701px){
+  #productGrid.product-grid{
+    align-items:start!important;
+    grid-auto-rows:auto!important;
+    row-gap:18px!important;
+  }
+  #productGrid .product-card{
+    align-self:start!important;
+    height:auto!important;
+    min-height:0!important;
+    display:flex!important;
+    flex-direction:column!important;
+  }
+  #productGrid .product-visual{
+    height:clamp(155px,16vw,205px)!important;
+    min-height:0!important;
+    max-height:205px!important;
+    flex:0 0 auto!important;
+    padding:10px!important;
+  }
+  #productGrid .product-info{
+    display:flex!important;
+    flex:0 1 auto!important;
+    min-height:0!important;
+    height:auto!important;
+    padding:12px!important;
+    gap:7px!important;
+  }
+  #productGrid .product-name{
+    font-size:14px!important;
+    line-height:1.55!important;
+    margin:0!important;
+  }
+  #productGrid .product-description{
+    display:-webkit-box!important;
+    -webkit-box-orient:vertical!important;
+    -webkit-line-clamp:5!important;
+    line-clamp:5!important;
+    overflow:hidden!important;
+    min-height:0!important;
+    max-height:none!important;
+    height:auto!important;
+    font-size:12px!important;
+    line-height:1.7!important;
+  }
+  #productGrid .product-details-link{
+    margin-top:0!important;
+    padding:2px 0!important;
+  }
+  #productGrid .product-meta{
+    margin-top:8px!important;
+    padding-top:8px!important;
+  }
+}
