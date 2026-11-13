@@ -13,6 +13,15 @@
   const mobileMenuCategories = document.getElementById("mobileMenuCategories");
   const openMobileMenuButton = document.getElementById("openMobileMenu");
   const closeMobileMenuButton = document.getElementById("closeMobileMenu");
+  const floatingContactToggle = document.getElementById("floatingContactToggle");
+  const floatingContactPanel = document.getElementById("floatingContactPanel");
+  function setFloatingContact(open) {
+    if (!floatingContactToggle || !floatingContactPanel) return;
+    floatingContactPanel.hidden = !open;
+    floatingContactToggle.setAttribute("aria-expanded", open ? "true" : "false");
+    floatingContactToggle.setAttribute("aria-label", open ? "إغلاق أرقام التواصل" : "عرض أرقام الاتصال والواتساب");
+    floatingContactToggle.classList.toggle("is-open", open);
+  }
   function setMobileMenu(open) {
     if (!mobileMenu || !mobileMenuOverlay) return;
     mobileMenu.classList.toggle("open", open);
@@ -367,6 +376,8 @@
     renderProducts();
   });
   document.addEventListener("click", function (event) {
+    if (event.target.closest("#floatingContactToggle")) { setFloatingContact(floatingContactPanel && floatingContactPanel.hidden); return; }
+    if (floatingContactPanel && !floatingContactPanel.hidden && !event.target.closest("#floatingContactWidget")) setFloatingContact(false);
     const category = event.target.closest("[data-category]");
     if (category) {
       activeCategory = category.dataset.category;
@@ -620,7 +631,7 @@
     }catch(err){console.warn("تعذر تسجيل الطلب في لوحة الإدارة.",err);showPaymentFollowup(orderNumber,false);alert("تم فتح واتساب لإرسال طلبك، لكن لم يتم تسجيله في لوحة الإدارة. يرجى إرسال الرسالة هناك.");}
   });
   document.addEventListener("keydown", function (event) {
-    if (event.key === "Escape") { setDrawer(false); setMobileMenu(false); }
+    if (event.key === "Escape") { setDrawer(false); setMobileMenu(false); setFloatingContact(false); }
   });
   drawCategories();
   renderProducts();
