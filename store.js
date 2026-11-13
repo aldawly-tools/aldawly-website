@@ -252,7 +252,9 @@
     checkout.disabled = count === 0;
     cartItems.innerHTML = cart.length ? cart.map(function (line) {
       const item = products.find(function (entry) { return String(entry.id) === String(line.id); });
-      if (!item) return "";
+      if (!item) {
+        return '<div class="cart-row"><div><strong>منتج محفوظ في السلة</strong><small>تعذر تحميل بيانات المنتج. حدّث صفحة المنتجات ثم أعد فتح السلة.</small><div class="quantity"><span>الكمية: ' + line.qty + '</span></div></div><button class="remove-item" type="button" data-remove="' + escapeHtml(line.id) + '">حذف</button></div>';
+      }
       const price = parsePrice(item.price);
       const lineTotal = price === null ? "" : '<small class="cart-line-total">مجموع هذا المنتج: ' + escapeHtml(money(price * line.qty)) + '</small>';
       return '<div class="cart-row"><div><strong>' + escapeHtml(cleanProductName(item.name)) + '</strong><small>' + escapeHtml(formatPrice(item.price)) + '</small>' + lineTotal +
