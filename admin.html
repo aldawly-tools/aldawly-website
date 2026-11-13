@@ -123,14 +123,11 @@ button:disabled{opacity:.6;cursor:wait}
       <button type="button" class="dashboard-tab active" data-tab="productPanel" role="tab" aria-selected="true">＋ إضافة منتج</button>
       <button type="button" class="dashboard-tab" data-tab="catalogPanel" role="tab" aria-selected="false">المنتجات</button>
       <button type="button" class="dashboard-tab" data-tab="ordersPanel" role="tab" aria-selected="false">الطلبات</button>
-      <button type="button" class="dashboard-tab" data-tab="inventoryPanel" role="tab" aria-selected="false">المخزون</button>
       <button type="button" class="dashboard-tab" data-tab="postPanel" role="tab" aria-selected="false">منشئ البوستات</button>
     </nav>
     <div class="dashboard-stats" aria-label="ملخص المتجر">
       <div class="dashboard-stat"><span>إجمالي المنتجات</span><strong id="dashProducts">0</strong></div>
       <div class="dashboard-stat"><span>إجمالي الطلبات</span><strong id="dashOrders">0</strong></div>
-      <div class="dashboard-stat"><span>مخزون منخفض</span><strong id="dashLowStock">0</strong></div>
-      <div class="dashboard-stat"><span>منتجات نفدت</span><strong id="dashOutStock">0</strong></div>
     </div>
     <div class="card">
       <div class="actions" style="justify-content:space-between;align-items:center"><div><h2 style="margin:0 0 5px">إضافة منتج</h2><span class="muted" id="signedInAs"></span></div><button class="light" id="enablePushBtn" type="button">تفعيل إشعارات الطلبات على هذا الهاتف</button><button class="light" id="logoutBtn" type="button">تسجيل الخروج</button></div>
@@ -153,7 +150,6 @@ button:disabled{opacity:.6;cursor:wait}
         <div class="actions form-actions"><button class="red" id="saveBtn" type="submit">حفظ المنتج</button><button class="light" id="resetBtn" type="button">منتج جديد</button></div>
       </form>
     </div>
-    <section class="card admin-panel hidden" id="inventoryPanel" role="tabpanel"><h2 style="margin:0 0 8px">تنبيهات المخزون</h2><div id="inventoryAlerts" aria-live="polite"><p class="muted">جارٍ فحص المخزون…</p></div></section>
     <section class="card admin-panel hidden" id="ordersPanel" role="tabpanel"><div class="actions" style="justify-content:space-between;align-items:center"><div><h2 style="margin:0">طلبات العملاء (<span id="ordersCount">0</span>)</h2><p class="muted" style="margin:5px 0 0">الطلبات المسجلة من الموقع، مع تحديث حالة كل طلب.</p></div><div class="actions"><button class="light" id="exportOrdersBtn" type="button">تصدير الطلبات CSV</button><button class="light" id="exportSalesBtn" type="button">تقرير المبيعات CSV</button><button class="light" id="refreshOrdersBtn" type="button">تحديث الطلبات</button></div></div><p class="status" id="ordersStatus" aria-live="polite"></p><div class="order-stats" id="orderStats"></div><div class="card" style="margin:14px 0;padding:14px;background:#fafafa"><h3 style="margin:0 0 10px">ملخص المبيعات</h3><div class="order-stats"><div class="order-stat"><b id="salesTodayCount">0</b><span>طلبات اليوم</span></div><div class="order-stat"><b id="salesTodayValue">0 ج.م</b><span>قيمة المؤكد اليوم</span></div><div class="order-stat"><b id="salesMonthCount">0</b><span>طلبات الشهر</span></div><div class="order-stat"><b id="salesMonthValue">0 ج.م</b><span>قيمة المؤكد هذا الشهر</span></div><div class="order-stat"><b id="salesCancelled">0</b><span>طلبات ملغية</span></div></div><small class="muted">القيمة محسوبة للطلبات المؤكدة أو المشحونة أو المسلّمة فقط، وتُعرض إذا كان مبلغ الطلب محفوظًا كرقم.</small></div><div class="field"><label for="orderSearch">بحث في الطلبات</label><input id="orderSearch" type="search" placeholder="رقم الطلب أو اسم العميل أو الهاتف"></div><div class="field"><label for="orderFilter">تصفية الطلبات حسب الحالة</label><select id="orderFilter"><option value="all">كل الطلبات</option><option value="new">جديد</option><option value="confirmed">تم التأكيد</option><option value="shipped">تم الشحن</option><option value="delivered">تم التسليم</option><option value="cancelled">ملغي</option></select></div><div class="actions" style="gap:10px;align-items:end;flex-wrap:wrap"><div class="field" style="flex:1;min-width:130px"><label for="orderDateFrom">من تاريخ</label><input id="orderDateFrom" type="date"></div><div class="field" style="flex:1;min-width:130px"><label for="orderDateTo">إلى تاريخ</label><input id="orderDateTo" type="date"></div><button class="light" id="clearOrderDates" type="button">مسح التاريخ</button></div><div id="ordersList" class="products"><p class="muted">جارٍ تحميل الطلبات…</p></div></section>\n    <div class="card admin-panel hidden" id="catalogPanel" role="tabpanel"><div class="actions" style="justify-content:space-between;align-items:center"><h2 style="margin:0">المنتجات الحالية (<span id="count">0</span>)</h2><div class="actions"><button class="light" id="importBtn" type="button">استيراد products.js</button><button class="light" id="exportBtn" type="button">تنزيل نسخة</button></div></div><input id="importFile" type="file" accept=".js,.txt,text/javascript,text/plain" hidden><p class="muted">الصور المرفوعة محفوظة في قاعدة المتجر؛ نسخة products.js تحفظ بيانات المنتجات فقط.</p><div class="field"><label for="productSearch">ابحث في المنتجات</label><input id="productSearch" type="search" placeholder="اسم المنتج أو الماركة أو القسم أو رقم المنتج"></div><p class="muted" id="listSummary" aria-live="polite"></p><div class="products" id="productList"></div></div>
     <section class="card admin-panel hidden" id="postPanel" role="tabpanel">
       <h2>منشئ بوستات فيسبوك</h2><p class="muted">اختار منتجًا من المتجر وسيتم تجهيز نص تسويقي قابل للتعديل والنسخ. راجع السعر والمواصفات قبل النشر.</p>
@@ -189,7 +185,7 @@ let existingImageIds = [];
 let selectedImageFiles = [];
 
 function showAdminTab(panelId) {
-  const ids = ["productPanel","catalogPanel","ordersPanel","inventoryPanel","postPanel"];
+
   ids.forEach(function(id) {
     const panel = $(id);
     if (panel) panel.classList.toggle("hidden", id !== panelId);
@@ -241,24 +237,7 @@ function renderProducts() {
     const haystack = [product.name, product.brand, product.cat, product.price, product.id, product.specs, product.desc].join(" ").toLocaleLowerCase("ar");
     return !term || haystack.includes(term);
   });
-  const outOfStock = products.filter(function (item) { return item.stock === 0; }).length;
-  const tracked = products.filter(function (item) { return Number.isInteger(item.stock) && item.stock >= 0; }).length;
-  const lowStock = products.filter(function (item) { return Number.isInteger(item.stock) && item.stock > 0 && item.stock <= 5; }).length;
-  const untracked = products.length - tracked;
   if ($("dashProducts")) $("dashProducts").textContent = String(products.length);
-  if ($("dashLowStock")) $("dashLowStock").textContent = String(lowStock);
-  if ($("dashOutStock")) $("dashOutStock").textContent = String(outOfStock);
-  const alertBox = $("inventoryAlerts");
-  if (alertBox) {
-    const lowItems = products.filter(function(item){return Number.isInteger(item.stock)&&item.stock>=1&&item.stock<=5;});
-    const emptyItems = products.filter(function(item){return item.stock===0;});
-    const lowText = lowItems.map(function(item){return escapeHtml(item.name)+" (متبقي "+item.stock+")";});
-    const emptyText = emptyItems.map(function(item){return escapeHtml(item.name);});
-    alertBox.innerHTML = '<div class="inventory-alert-head"><strong>تنبيهات المخزون</strong><span>مخزون منخفض: '+lowItems.length+' · نفد: '+emptyItems.length+'</span></div>' +
-      (emptyItems.length ? '<div class="inventory-alert-group out"><b>نفد المخزون</b><ul>'+emptyText.map(function(x){return '<li>'+x+'</li>';}).join("")+'</ul></div>' : '') +
-      (lowItems.length ? '<div class="inventory-alert-group low"><b>مخزون منخفض (5 قطع أو أقل)</b><ul>'+lowText.map(function(x){return '<li>'+x+'</li>';}).join("")+'</ul></div>' : '') +
-      (!emptyItems.length&&!lowItems.length ? '<p class="muted">لا توجد تنبيهات حاليًا. المخزون المسجل بحالة جيدة.</p>' : '');
-  }
   $("listSummary").textContent = (term ? "نتائج البحث: " + filtered.length + " من " + products.length + " · " : "إجمالي المنتجات: " + products.length + " · ") + "مخزون مسجل: " + tracked + " · مخزون منخفض (5 أو أقل): " + lowStock + " · نفد المخزون: " + outOfStock + " · غير محدد: " + untracked;
   $("productList").innerHTML = filtered.map(function (product) {
     const stockLabel = Number.isInteger(product.stock) && product.stock >= 0 ? (product.stock === 0 ? "نفد المخزون" : product.stock <= 5 ? "مخزون منخفض: " + product.stock + " قطعة" : "المتاح: " + product.stock + " قطعة") : "المخزون غير محدد";
