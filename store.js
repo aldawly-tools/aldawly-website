@@ -191,12 +191,26 @@
     const labels = {wurth:"WÜRTH",bosch:"BOSCH",wera:"WERA",knipex:"KNIPEX",beta:"Beta",dewalt:"DEWALT"};
     return labels[normalizeBrand(name)] || cleanProductCopy(name);
   }
+  function productBrand(item) {
+    const explicit = item.brand || item.brandName || item.manufacturer;
+    if (explicit && String(explicit).trim()) return displayBrand(explicit);
+    const searchable = normalizeBrand([
+      item.name, item.desc, item.specs, item.sku, item.code, item.model, item.partNumber
+    ].filter(Boolean).join(" "));
+    const known = [
+      ["wurth","WÜRTH"],["bosch","BOSCH"],["dewalt","DEWALT"],
+      ["milwaukee","Milwaukee"],["makita","Makita"],["knipex","KNIPEX"],
+      ["wera","WERA"],["beta","Beta"]
+    ];
+    const match = known.find(function (entry) { return searchable.includes(entry[0]); });
+    return match ? match[1] : "";
+  }
   function renderBrandAvailability() {
     document.querySelectorAll(".brand-word").forEach(function (link) {
       if (!link.dataset.brandTarget) link.dataset.brandTarget = link.getAttribute("href") || "#brands";
       let target = "";
       try { target = new URL(link.dataset.brandTarget, window.location.href).searchParams.get("brand") || link.textContent; } catch (error) { target = link.textContent; }
-      const available = products.some(function (item) { return item.brand && normalizeBrand(item.brand) === normalizeBrand(target); });
+      const available = products.some(function (item) { return productBrand(item) && normalizeBrand(productBrand(item)) === normalizeBrand(target); });
       if (available) {
         link.href = link.dataset.brandTarget;
         link.classList.remove("brand-unavailable");
@@ -241,10 +255,11 @@
     if (!brandFilterList) return;
     const counts = new Map();
     products.forEach(function (item) {
-      if (!item.brand || !String(item.brand).trim()) return;
-      const key = normalizeBrand(item.brand);
+      const brand = productBrand(item);
+      if (!brand) return;
+      const key = normalizeBrand(brand);
       if (!key) return;
-      const entry = counts.get(key) || {label:displayBrand(item.brand), count:0};
+      const entry = counts.get(key) || {label:brand, count:0};
       entry.count += 1;
       counts.set(key, entry);
     });
@@ -275,9 +290,10 @@
     const terms = normalizeSearchText(query).split(" ").filter(Boolean);
     const filtered = products.filter(function (item) {
       const categoryMatch = activeCategory === "الكل" || item.cat === activeCategory;
-      const brandMatch = !activeBrand || normalizeBrand(item.brand) === normalizeBrand(activeBrand);
+      const brand = productBrand(item);
+      const brandMatch = !activeBrand || normalizeBrand(brand) === normalizeBrand(activeBrand);
       const searchable = normalizeSearchText([
-        item.name, item.brand, item.cat, item.desc, item.specs,
+        item.name, brand, item.brand, item.cat, item.desc, item.specs,
         item.sku, item.code, item.model, item.partNumber, item.id
       ].join(" "));
       const searchMatch = !terms.length || terms.every(function (term) { return searchable.includes(term); });
@@ -301,7 +317,7 @@
       const stockLabel = stockOut ? '<span class="stock-status out">نفد المخزون</span>' : stockKnown ? '<span class="stock-status">المتاح: ' + item.stock + ' قطعة</span>' : '';
       return '<article class="product-card" id="product-' + encodeURIComponent(item.id) + '">' +
         '<a class="product-visual product-open-link" href="' + detailUrl + '" aria-label="تكبير صورة ' + escapeHtml(name) + '" title="اضغط لتكبير الصورة">' + visual + '</a>' +
-        '<div class="product-info"><span class="product-category">' + (item.brand ? escapeHtml(displayBrand(item.brand)) + ' · ' : '') + escapeHtml(item.cat || "منتجات") + '</span>' +
+        '<div class="product-info"><span class="product-category">' + (productBrand(item) ? escapeHtml(displayBrand(productBrand(item))) + ' · ' : '') + escapeHtml(item.cat || "منتجات") + '</span>' +
         '<h3 class="product-name"><a class="product-name-link" href="' + detailUrl + '">' + escapeHtml(name) + '</a></h3>' +
         '<p class="product-description">' + escapeHtml(description) + '</p>' + stockLabel +
         '<a class="product-details-link" href="' + detailUrl + '">عرض الإعلان والتفاصيل ←</a>' +
