@@ -46,6 +46,8 @@
    <button type="submit" aria-label="بحث"><svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></svg></button>
   </form>
   <div class="head-actions">
+   <button class="mobile-menu-trigger" id="openMobileMenu" type="button" aria-label="فتح قائمة الأقسام" aria-controls="mobileMenuDrawer" aria-expanded="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg><span>الأقسام</span></button>
+
    <a class="head-action" href="advisor.html" aria-label="المساعد الفني"><svg viewBox="0 0 24 24"><path d="M12 3a8 8 0 0 0-8 8v2M20 13v-2a8 8 0 0 0-8-8M4 13h3v6H5a2 2 0 0 1-2-2v-2a2 2 0 0 1 1-2ZM20 13h-3v6h2a2 2 0 0 0 2-2v-2a2 2 0 0 0-1-2Z"/></svg><span>استشارة فنية</span></a>
    <button class="cart-button" id="openCart" type="button" aria-label="فتح سلة المشتريات">
     <span class="cart-icon"><svg viewBox="0 0 24 24"><path d="M3 4h2l2.2 11.2a2 2 0 0 0 2 1.6h8.6a2 2 0 0 0 2-1.6L21 8H6M10 21a1 1 0 1 0 0-2 1 1 0 0 0 0 2ZM18 21a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z"/></svg><span class="cart-count" id="cartCount">0</span></span>
@@ -64,6 +66,16 @@
  <a class="nav-link" href="#contact">تواصل معنا</a>
  <a class="nav-link" href="#about">عن الدولي</a>
 </div></nav>
+<div class="mobile-menu-overlay" id="mobileMenuOverlay"></div>
+<aside class="mobile-menu-drawer" id="mobileMenuDrawer" aria-label="قائمة أقسام المتجر" aria-modal="true" role="dialog" aria-hidden="true">
+ <div class="mobile-menu-head"><div class="mobile-menu-brand"><span class="mobile-menu-mark">✚</span><span><strong>الدولي</strong><small>العدد الأصلية والمستوردة</small></span></div><button class="mobile-menu-close" id="closeMobileMenu" type="button" aria-label="إغلاق القائمة">×</button></div>
+ <div class="mobile-menu-links"><a href="index.html"><span class="mobile-menu-link-icon">⌂</span>القائمة الرئيسية</a><a href="products.html"><span class="mobile-menu-link-icon">▦</span>تصفح المنتجات</a></div>
+ <div class="mobile-menu-section-title">تصفح التصنيفات</div>
+ <div class="mobile-menu-categories" id="mobileMenuCategories"><button type="button" data-category="الكل"><span class="mobile-menu-category-icon">▦</span><span>جميع المنتجات</span><span class="mobile-menu-chevron">‹</span></button></div>
+ <div class="mobile-menu-links mobile-menu-secondary"><a href="#brands"><span class="mobile-menu-link-icon">◇</span>الماركات</a><a href="#products"><span class="mobile-menu-link-icon">٪</span>العروض</a><a href="advisor.html"><span class="mobile-menu-link-icon">♧</span>الدعم الفني والاستشارات</a><a href="#contact"><span class="mobile-menu-link-icon">✆</span>تواصل معنا</a><a href="#about"><span class="mobile-menu-link-icon">ⓘ</span>عن الدولي</a></div>
+ <div class="mobile-menu-footer"><strong>الدولي للعدد الأصلية والمستوردة</strong><span>طنطا – محافظة الغربية</span></div>
+</aside>
+
 <main>
 <section class="hero-shell"><div class="container hero-grid">
  <aside class="hero-services" aria-label="خدمات المتجر">
