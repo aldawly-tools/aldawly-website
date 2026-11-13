@@ -11,6 +11,8 @@
 html[data-theme="dark"] {
   color-scheme: dark;
   --theme-bg: #10161e;
+  background: var(--theme-bg);
+  color: var(--theme-text);
   --theme-surface: #19232e;
   --theme-raised: #222e3a;
   --theme-text: #edf2f7;
@@ -43,7 +45,7 @@ html[data-theme="dark"] :is(
   .product-detail-loading, .product-detail-missing, .detail-image-thumb,
   .payment-confirm-label, .payment-method, .card, .dashboard-nav, .dashboard-stat,
   .dashboard-tab:not(.active), .order-stat, .order-card, .product, .matched-item,
-  .result, .benefit, .brand, .secondary, .light, #postPanel #postImagePreview
+  .result, .benefit, .brand, .secondary, .light, .image-preview, #postPanel #postImagePreview
 ) {
   background: var(--theme-surface) !important;
   color: var(--theme-text);
@@ -68,7 +70,7 @@ html[data-theme="dark"] :is(input, select, textarea) {
   border-color: var(--theme-border) !important;
 }
 html[data-theme="dark"] :is(input, textarea)::placeholder { color: #9aa7b5; }
-html[data-theme="dark"] :is(.brand-name, .hero-copy h1, .brand-word, .dashboard-stat strong) {
+html[data-theme="dark"] :is(.brand-name, .brand-main, .hero-copy h1, .brand-word, .dashboard-stat strong) {
   color: var(--theme-text);
 }
 html[data-theme="dark"] .nav-link.active,
@@ -92,6 +94,11 @@ html[data-theme="dark"] .product-detail-image:before {
   color: var(--theme-text);
   border-color: var(--theme-border);
 }
+html[data-theme="dark"] .pill {
+  background: #3b2026 !important;
+  color: #ffc4ca !important;
+}
+html[data-theme="dark"] .footer-link { color: #d0d7df; }
 html[data-theme="dark"] .status {
   background: #3a321e;
   color: #ffe8a3;
