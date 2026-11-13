@@ -327,6 +327,39 @@
     if (event.target.closest("#openCart")) { setDrawer(true); return; }
     if (event.target.closest("#closeCart") || event.target === cartOverlay) setDrawer(false);
   });
+  const paymentConfirmed = document.getElementById("paymentConfirmed");
+  const paymentLinks = Array.from(document.querySelectorAll("[data-payment-link]"));
+  function updatePaymentLinks() {
+    const enabled = Boolean(paymentConfirmed && paymentConfirmed.checked);
+    paymentLinks.forEach(function (link) {
+      link.setAttribute("aria-disabled", enabled ? "false" : "true");
+      link.tabIndex = enabled ? 0 : -1;
+    });
+  }
+  if (paymentConfirmed) paymentConfirmed.addEventListener("change", updatePaymentLinks);
+  paymentLinks.forEach(function (link) {
+    link.addEventListener("click", function (event) {
+      if (!paymentConfirmed || !paymentConfirmed.checked) {
+        event.preventDefault();
+        if (paymentConfirmed) paymentConfirmed.focus();
+      }
+    });
+  });
+  updatePaymentLinks();
+  function showPaymentFollowup(orderNumber, saved) {
+    const followup = document.getElementById("paymentFollowup");
+    const status = document.getElementById("paymentFollowupStatus");
+    const proofLink = document.getElementById("paymentProofLink");
+    if (!followup || !status || !proofLink) return;
+    if (paymentConfirmed) paymentConfirmed.checked = false;
+    updatePaymentLinks();
+    status.textContent = saved
+      ? "تم تسجيل طلبك برقم " + orderNumber + ". أرسل الطلب في واتساب وانتظر تأكيد المتجر قبل الدفع."
+      : "رقم طلبك " + orderNumber + ". أرسل الرسالة التي فُتحت في واتساب؛ تعذر تسجيل الطلب في لوحة المتجر.";
+    proofLink.href = "https://wa.me/201024787222?text=" + encodeURIComponent("السلام عليكم، أرسل إيصال الدفع للطلب رقم " + orderNumber + ".");
+    followup.hidden = false;
+    followup.scrollIntoView({behavior:"smooth",block:"nearest"});
+  }
   checkout.addEventListener("click", async function () {
     if (!cart.length) return;
     const customerName = document.getElementById("customerName").value.trim();
@@ -369,8 +402,8 @@
       const fsMod=await import("https://www.gstatic.com/firebasejs/13.2.0/firebase-firestore.js");
       const app=appMod.getApps().length?appMod.getApp():appMod.initializeApp(window.DAWLY_FIREBASE_CONFIG);
       await fsMod.addDoc(fsMod.collection(fsMod.getFirestore(app),"orders"),Object.assign({},record,{createdAt:fsMod.serverTimestamp()}));
-      alert("تم تسجيل طلبك برقم "+orderNumber+"، وسيتم تأكيد التفاصيل عبر واتساب.");
-    }catch(err){console.warn("تعذر تسجيل الطلب في لوحة الإدارة.",err);alert("تم فتح واتساب لإرسال طلبك، لكن لم يتم تسجيله في لوحة الإدارة. يرجى إرسال الرسالة هناك.");}
+      showPaymentFollowup(orderNumber,true);
+    }catch(err){console.warn("تعذر تسجيل الطلب في لوحة الإدارة.",err);showPaymentFollowup(orderNumber,false);alert("تم فتح واتساب لإرسال طلبك، لكن لم يتم تسجيله في لوحة الإدارة. يرجى إرسال الرسالة هناك.");}
   });
   document.addEventListener("keydown", function (event) {
     if (event.key === "Escape") setDrawer(false);
