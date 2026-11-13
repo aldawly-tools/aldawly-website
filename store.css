@@ -1364,3 +1364,27 @@ img,video,svg{max-width:100%}
  .product-name{font-size:11px}
  .product-meta .button-primary{font-size:9px;padding-inline:5px}
 }
+
+
+/* Homepage shopping flow: categories first, products next, trust and guidance after */
+body:has(.hero-shell) .section#categories{
+ margin-top:10px;padding:28px 0 25px;background:#f0f2f5;border-block:1px solid #e6e9ed
+}
+body:has(.hero-shell) .section#categories .category-tile{
+ min-height:118px;justify-content:flex-start;text-align:right;padding:16px;background:#fff;border-color:#e2e6ea
+}
+body:has(.hero-shell) .section#categories .category-tile:not(.all):hover{
+ border-color:#c8101e;box-shadow:0 10px 24px #17202b10
+}
+body:has(.hero-shell) .section#products{padding-top:30px;padding-bottom:26px}
+body:has(.hero-shell) .section#products .section-heading{align-items:flex-end}
+body:has(.hero-shell) .section#products .product-grid{margin-top:5px}
+body:has(.hero-shell) .section#brands{padding-top:26px}
+body:has(.hero-shell) .section#work-kits{padding-top:24px}
+@media(max-width:700px){
+ body:has(.hero-shell) .section#categories{margin-top:6px;padding:18px 0 17px}
+ body:has(.hero-shell) .section#categories .category-tile{min-height:104px;padding:10px;justify-content:center;text-align:center}
+ body:has(.hero-shell) .section#products{padding-top:20px;padding-bottom:18px}
+ body:has(.hero-shell) .section#products .section-heading{align-items:flex-start}
+ body:has(.hero-shell) .section#brands,body:has(.hero-shell) .section#work-kits{padding-top:19px}
+}
