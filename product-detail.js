@@ -65,12 +65,13 @@
     }
 
     const name = cleanProductName(item.name || "منتج من الدولي");
-    const seoDescription = cleanProductCopy(item.desc || item.specs || "تفاصيل المنتج من متجر الدولي للعدد الأصلية والمستوردة.").replace(/\\s+/g, " ").slice(0, 160);
+    const seoDescription = cleanProductCopy(item.desc || item.specs || "تفاصيل المنتج من متجر الدولي للعدد الأصلية والمستوردة.").replace(/\s+/g, " ").slice(0, 160);
     document.title = name + " | الدولي";
     updateMeta("name", "description", seoDescription);
     updateMeta("property", "og:type", "product");
     updateMeta("property", "og:title", name + " | الدولي");
     updateMeta("property", "og:description", seoDescription);
+    if (/^https:\/\//i.test(String(item.image || ""))) updateMeta("property", "og:image", String(item.image));
     const canonicalUrl = new URL(window.location.pathname, window.location.origin);
     canonicalUrl.searchParams.set("id", String(item.id));
     updateMeta("property", "og:url", canonicalUrl.href);
