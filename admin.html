@@ -851,7 +851,6 @@ $("productForm").addEventListener("submit", async function (event) {
       desc:$("desc").value.trim(),
       specs:$("specs").value.trim(),
       price:$("price").value.trim() || "السعر عند الاستفسار",
-      stock:$("stock").value.trim() === "" ? null : Math.max(0, Math.min(99999, Math.floor(Number($("stock").value)))),
       icon:$("icon").value.trim() || "🔧",
       image:image,
       imageId:imageId,
