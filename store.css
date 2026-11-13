@@ -1008,3 +1008,64 @@ body { background: #f7f8fa; color: var(--ink); }
 .payment-method small{margin-top:2px;color:var(--muted);font-size:10px}
 .payment-proof{display:block;margin-top:10px;padding:11px;border:1px solid #d71920;border-radius:10px;color:var(--red);font-size:12px;font-weight:900;text-align:center;text-decoration:none}
 @media(max-width:380px){.payment-methods{grid-template-columns:1fr}.payment-method{min-height:58px}}
+
+
+/* DAWLY 2026 — clean light professional storefront refresh */
+:root{
+ --red:#c8101e;--red-dark:#a90d18;--ink:#171b20;--muted:#68727e;
+ --line:#e7eaee;--soft:#f5f7f9;--shadow:0 10px 28px rgba(20,30,42,.065)
+}
+body{background:#fff;color:var(--ink)}
+.benefit-bar{background:#f4f5f6;color:#303840;border-bottom:1px solid #e6e9ed}
+.benefit{border-color:#e0e4e8}
+.benefit svg{stroke:#c8101e}
+.masthead{background:#fff;border-bottom:1px solid #e8ebef}
+.masthead-grid{min-height:88px}
+.brand-name{color:#171b20}
+.brand-tag{color:#c8101e}
+.search-form{border-color:#dce1e6;border-radius:9px;box-shadow:none}
+.search-form:focus-within{border-color:#c8101e;box-shadow:0 0 0 3px #c8101e12}
+.main-nav{background:#fff;border-bottom:2px solid #c8101e;box-shadow:none}
+.nav-row{min-height:50px}
+.nav-link{color:#252b32}
+.nav-link:hover{color:#c8101e;background:#fff5f5}
+.nav-link.active{background:#c8101e;color:#fff;border-radius:5px;margin:4px 0}
+.nav-link .red-mark{color:#c8101e}
+.hero-shell{padding:18px 0 7px}
+.hero-grid{gap:14px}
+.hero-copy{
+ min-height:290px;padding:30px;border:1px solid #e8ebef;border-right:5px solid #c8101e;
+ border-radius:12px;color:#171b20;background:linear-gradient(135deg,#fff 0%,#f7f8fa 100%);
+ box-shadow:0 8px 24px #17202b08
+}
+.hero-copy:after{display:none}
+.eyebrow{color:#c8101e}
+.hero-copy h1,.hero-copy h2{color:#171b20}
+.hero-copy p{color:#606a75}
+.hero-cta{align-self:flex-start;background:#c8101e;border-radius:7px;box-shadow:none}
+.hero-photo{border-radius:12px;box-shadow:0 8px 24px #17202b10}
+.hero-services{gap:9px}
+.service-card{background:#fff;border-color:#e7eaee;border-radius:10px;box-shadow:0 4px 14px #17202b06}
+.section{padding-top:25px}
+.section-title{font-size:23px}
+.brands-strip{background:#fff;border:1px solid #e7eaee;border-radius:12px;box-shadow:none}
+.category-tile,.profession-card{background:#fff;border-color:#e7eaee;box-shadow:0 5px 16px #17202b07}
+.category-tile{border-radius:11px}
+.profession-card{border-radius:12px}
+.product-card{border-radius:11px;box-shadow:0 5px 18px #17202b08}
+.product-card:hover{box-shadow:0 10px 24px #17202b12}
+.product-visual{background:#fafbfc}
+.button-primary,.hero-cta{background:#c8101e}
+.footer{background:#20252b;border-top:4px solid #c8101e}
+@media(max-width:700px){
+ body{background:#fff}
+ .benefit-bar{background:#f4f5f6;color:#303840}
+ .main-nav{background:#fff}
+ .nav-link{color:#252b32}
+ .nav-link.active{background:#c8101e;color:#fff}
+ .hero-copy{background:linear-gradient(135deg,#fff,#f7f8fa);border:1px solid #e8ebef;border-right:4px solid #c8101e}
+ .hero-copy h1,.hero-copy h2{color:#171b20}
+ .hero-copy p{color:#606a75}
+ .hero-cta{align-self:flex-start}
+ .section{padding-top:18px}
+}
