@@ -160,7 +160,7 @@ button:disabled{opacity:.6;cursor:wait}
 </main>
 <script src="products.js?v=product-admin-2"></script>
 <script src="firebase-config.js?v=product-admin-2"></script>
-<script src="onesignal-init.js?v=1"></script>
+<script src="onesignal-init.js?v=2"></script>
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-app.js";
 import { getAuth, GoogleAuthProvider, onAuthStateChanged, signInWithPopup, signInWithRedirect, getRedirectResult, signOut } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-auth.js";
@@ -526,23 +526,51 @@ $("loginBtn").addEventListener("click", async function () {
     $("loginBtn").disabled = false;
   }
 });
-$("enablePushBtn").addEventListener("click", function () {
+$("enablePushBtn").addEventListener("click", async function () {
   const pushStatus = $("pushStatus");
-  $("enablePushBtn").disabled = true;
-  message(pushStatus, "جارٍ طلب إذن الإشعارات لهذا الهاتف…");
-  window.OneSignalDeferred = window.OneSignalDeferred || [];
-  window.OneSignalDeferred.push(async function (OneSignal) {
-    try {
+  const button = $("enablePushBtn");
+  button.disabled = true;
+  message(pushStatus, "جارٍ تجهيز خدمة الإشعارات…");
+  let timeoutId;
+  try {
+    if (!("Notification" in window) || !("serviceWorker" in navigator)) {
+      throw new Error("هذا المتصفح لا يدعم إشعارات الويب. افتح الموقع في Chrome محدّث.");
+    }
+    if (!window.isSecureContext) {
+      throw new Error("الإشعارات تحتاج اتصالًا آمنًا HTTPS. افتح رابط الموقع الأصلي.");
+    }
+    if (!window.__oneSignalReady) {
+      throw new Error("خدمة الإشعارات لم تبدأ. حدّث الصفحة وحاول مرة أخرى.");
+    }
+    const OneSignal = await Promise.race([
+      window.__oneSignalReady,
+      new Promise(function (_, reject) {
+        timeoutId = window.setTimeout(function () {
+          reject(new Error("تأخر تحميل خدمة الإشعارات. تحقق من الإنترنت ثم حدّث الصفحة."));
+        }, 15000);
+      })
+    ]);
+    window.clearTimeout(timeoutId);
+    if (Notification.permission === "denied") {
+      throw new Error("الإشعارات محظورة لهذا الموقع. افتح إعدادات الموقع في Chrome ثم اسمح بالإشعارات.");
+    }
+    message(pushStatus, "جارٍ طلب إذن الإشعارات من المتصفح…");
+    if (Notification.permission !== "granted") {
       const granted = await OneSignal.Notifications.requestPermission();
-      if (!granted) throw new Error("لم يتم السماح بالإشعارات من المتصفح.");
-      await OneSignal.User.PushSubscription.optIn();
-      OneSignal.User.addTag("store_admin", "true");
-      message(pushStatus, "تم تفعيل إشعارات المتجر على هذا الهاتف. سنكمل ربط تنبيهات السلة.");
-    } catch (error) {
-      console.error("OneSignal subscription error:", error);
-      message(pushStatus, error.message || "تعذر تفعيل الإشعارات. تحقق من إعدادات المتصفح.");
-    } finally { $("enablePushBtn").disabled = false; }
-  });
+      if (!granted && Notification.permission !== "granted") {
+        throw new Error("لم يتم السماح بالإشعارات. اختر سماح من نافذة المتصفح.");
+      }
+    }
+    await OneSignal.User.PushSubscription.optIn();
+    await OneSignal.User.addTag("store_admin", "true");
+    message(pushStatus, "تم تفعيل إشعارات المتجر على هذا الهاتف.");
+  } catch (error) {
+    console.error("OneSignal subscription error:", error);
+    message(pushStatus, error && error.message ? error.message : "تعذر تفعيل الإشعارات. تحقق من إعدادات المتصفح.");
+  } finally {
+    window.clearTimeout(timeoutId);
+    button.disabled = false;
+  }
 });
 $("logoutBtn").addEventListener("click", function () { signOut(auth); });
 $("resetBtn").addEventListener("click", resetForm);
