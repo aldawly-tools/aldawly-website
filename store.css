@@ -1835,3 +1835,22 @@ body:has(.hero-shell) .section#categories .category-tile.all small{color:#fff}
  .mobile-menu-categories button{min-height:56px;font-size:14px;padding-inline:17px}
  .mobile-menu-links a{padding-inline:17px}
 }
+
+
+/* Keep category menu accessible while the shopper scrolls */
+@media(max-width:700px){
+ .mobile-menu-trigger{
+  position:fixed !important;
+  right:14px !important;
+  bottom:94px !important;
+  z-index:88 !important;
+  min-height:48px !important;
+  padding:0 16px !important;
+  border:1px solid #e7c5c8 !important;
+  border-radius:999px !important;
+  background:#c8101e !important;
+  color:#fff !important;
+  box-shadow:0 7px 22px rgba(32,20,22,.22) !important;
+ }
+ .mobile-menu-trigger svg{stroke:#fff !important}
+}
