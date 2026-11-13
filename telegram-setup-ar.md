@@ -35,4 +35,4 @@ firebase deploy --only functions:notifyOrderOnTelegram
 
 ## منطقة Firestore
 
-تستخدم الدالة منطقة Firebase الافتراضية ما لم تضبط المنطقة في إعدادات الدالة. إذا كانت قاعدة Firestore في منطقة محددة، اضبط خيار `region` في إعدادات `onDocumentCreated` داخل `functions/index.js` على منطقة متوافقة معها قبل النشر.
+قاعدة Firestore لهذا المشروع في `me-central1`، والدالة مضبوطة على المنطقة نفسها في `functions/index.js`. هذه المنطقة مدعومة في Cloud Functions الجيل الثاني.
