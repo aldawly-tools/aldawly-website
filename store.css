@@ -2049,3 +2049,40 @@ body:has(.hero-shell) .section#categories .category-tile.all small{color:#fff}
     padding-top:8px!important;
   }
 }
+
+
+/* Mobile product card readability: balanced title, shorter preview, compact image */
+@media(max-width:700px){
+  #productGrid .product-visual{
+    height:clamp(150px,45vw,190px)!important;
+    min-height:150px!important;
+    max-height:190px!important;
+    padding:10px!important;
+  }
+  #productGrid .product-info{
+    padding:12px!important;
+    gap:7px!important;
+  }
+  #productGrid .product-name{
+    font-size:17px!important;
+    line-height:1.5!important;
+    font-weight:850!important;
+  }
+  #productGrid .product-description{
+    font-size:12px!important;
+    line-height:1.65!important;
+    font-weight:600!important;
+    display:-webkit-box!important;
+    -webkit-box-orient:vertical!important;
+    -webkit-line-clamp:3!important;
+    line-clamp:3!important;
+    overflow:hidden!important;
+    min-height:0!important;
+    max-height:none!important;
+  }
+  #productGrid .product-details-link{
+    font-size:12px!important;
+    font-weight:850!important;
+    margin-top:0!important;
+  }
+}
