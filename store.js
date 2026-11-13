@@ -409,7 +409,7 @@
     status.textContent = saved
       ? "تم تسجيل طلبك برقم " + orderNumber + ". أرسل الطلب في واتساب وانتظر تأكيد المتجر قبل الدفع."
       : "رقم طلبك " + orderNumber + ". أرسل الرسالة التي فُتحت في واتساب؛ تعذر تسجيل الطلب في لوحة المتجر.";
-    proofLink.href = "https://wa.me/201024787222?text=" + encodeURIComponent("السلام عليكم، أرسل إيصال الدفع للطلب رقم " + orderNumber + ".");
+    proofLink.href = "https://wa.me/201024787222?text=" + encodeURIComponent("السلام عليكم، أرسل إيصال مقدم جدية الحجز 200 جنيه للطلب رقم " + orderNumber + ".");
     followup.hidden = false;
     followup.scrollIntoView({behavior:"smooth",block:"nearest"});
   }
@@ -567,9 +567,12 @@
       "💰 *ملخص الطلب*",
       totalText,
       "",
+      "🔒 *مقدم جدية الحجز: 200 جنيه* (يُخصم من إجمالي الفاتورة).",
+      "يتم الدفع بعد تأكيد المتجر توفر المنتجات والسعر النهائي ورسوم التوصيل.",
+      "",
       "برجاء تأكيد توفر المنتجات والسعر النهائي ورسوم التوصيل."
     ].join("\n");
-    const record={orderNumber,customerName,customerPhone,customerAddress,notes:orderNotes,items:cart.map(function(line){const item=products.find(function(entry){return String(entry.id)===String(line.id);});return item?{id:String(item.id),name:cleanOrderProductName(item.name),brand:String(item.brand||""),qty:line.qty,unitPrice:String(item.price||"السعر عند الاستفسار"),image:item.image||item.imageUrl||"",imageId:(Array.isArray(item.imageIds)&&item.imageIds[0])||item.imageId||null}:null;}).filter(Boolean),totalText,status:"new",source:"website"};
+    const record={orderNumber,customerName,customerPhone,customerAddress,notes:orderNotes,items:cart.map(function(line){const item=products.find(function(entry){return String(entry.id)===String(line.id);});return item?{id:String(item.id),name:cleanOrderProductName(item.name),brand:String(item.brand||""),qty:line.qty,unitPrice:String(item.price||"السعر عند الاستفسار"),image:item.image||item.imageUrl||"",imageId:(Array.isArray(item.imageIds)&&item.imageIds[0])||item.imageId||null}:null;}).filter(Boolean),totalText,depositAmount:200,depositStatus:"pending",status:"new",source:"website"};
     const orderImageItems = cart.map(function(line) {
       const item = products.find(function(entry){ return String(entry.id) === String(line.id); });
       if (!item) return null;
