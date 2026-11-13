@@ -1768,3 +1768,26 @@ body:has(.hero-shell) .section#categories .category-tile.all small{color:#fff}
   .footer h3{color:#151a20 !important;font-size:16px}
   .footer p,.footer .footer-links,.footer .footer-links a,.footer a:not(.button-primary){color:#303943 !important;font-size:13px;font-weight:750 !important}
 }
+
+
+/* Elegant fixed booking deposit notice */
+.booking-deposit-note{display:grid;grid-template-columns:42px minmax(0,1fr) auto;align-items:center;gap:12px;margin:14px 0 12px;padding:14px;border:1px solid #f0d5d7;border-right:5px solid #c8101e;border-radius:15px;background:linear-gradient(120deg,#fffafa,#fff4f4);box-shadow:0 5px 16px rgba(90,20,25,.05)}
+.booking-deposit-icon{display:grid;place-items:center;width:40px;height:40px;border-radius:12px;background:#c8101e;color:#fff;font-size:22px;font-weight:1000}
+.booking-deposit-copy{display:grid;gap:4px;min-width:0}
+.booking-deposit-copy strong{color:#242a31;font-size:14px;font-weight:950;line-height:1.5}
+.booking-deposit-copy span{color:#4d5863;font-size:11px;font-weight:700;line-height:1.7}
+.booking-deposit-amount{color:#b20f19;font-size:22px;font-weight:1000;white-space:nowrap}
+.booking-deposit-amount small{font-size:11px;font-weight:850}
+.booking-deposit-panel{margin:12px 0;padding:16px;border:1px solid #efc9cc;border-radius:14px;background:linear-gradient(135deg,#fff5f5,#fff);text-align:center}
+.booking-deposit-panel-label{display:block;color:#555f69;font-size:12px;font-weight:850}
+.booking-deposit-panel strong{display:block;margin:3px 0;color:#bd101b;font-size:27px;font-weight:1000}
+.booking-deposit-panel p{margin:0;color:#3f4852;font-size:12px;font-weight:700;line-height:1.8}
+@media(max-width:420px){
+ .booking-deposit-note{grid-template-columns:36px minmax(0,1fr) auto;gap:8px;padding:11px}
+ .booking-deposit-icon{width:34px;height:34px;font-size:19px}
+ .booking-deposit-copy strong{font-size:12px}
+ .booking-deposit-copy span{font-size:10px;line-height:1.65}
+ .booking-deposit-amount{font-size:19px}
+ .booking-deposit-amount small{font-size:10px}
+ .booking-deposit-panel{padding:13px}
+}
