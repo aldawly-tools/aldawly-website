@@ -8,6 +8,21 @@
   const cartDrawer = document.getElementById("cartDrawer");
   const cartOverlay = document.getElementById("cartOverlay");
   const checkout = document.getElementById("checkout");
+  const mobileMenu = document.getElementById("mobileMenuDrawer");
+  const mobileMenuOverlay = document.getElementById("mobileMenuOverlay");
+  const mobileMenuCategories = document.getElementById("mobileMenuCategories");
+  const openMobileMenuButton = document.getElementById("openMobileMenu");
+  const closeMobileMenuButton = document.getElementById("closeMobileMenu");
+  function setMobileMenu(open) {
+    if (!mobileMenu || !mobileMenuOverlay) return;
+    mobileMenu.classList.toggle("open", open);
+    mobileMenuOverlay.classList.toggle("open", open);
+    mobileMenu.setAttribute("aria-hidden", open ? "false" : "true");
+    if (openMobileMenuButton) openMobileMenuButton.setAttribute("aria-expanded", open ? "true" : "false");
+    document.body.style.overflow = open ? "hidden" : "";
+    if (open && closeMobileMenuButton) closeMobileMenuButton.focus();
+    if (!open && openMobileMenuButton) openMobileMenuButton.focus();
+  }
   let activeCategory = "الكل";
   let activeBrand = (new URLSearchParams(window.location.search).get("brand") || "").trim();
   let query = "";
@@ -199,6 +214,13 @@
       }).join("");
     filterBar.innerHTML = '<button class="filter-chip active" type="button" data-category="الكل">كل المنتجات</button>' +
       categories.map(function (name) { return '<button class="filter-chip" type="button" data-category="' + escapeHtml(name) + '">' + escapeHtml(name) + '</button>'; }).join("");
+    if (mobileMenuCategories) {
+      mobileMenuCategories.innerHTML = '<button type="button" data-category="الكل"><span class="mobile-menu-category-icon">▦</span><span>جميع المنتجات</span><span class="mobile-menu-category-count">' + products.length + ' منتج</span></button>' +
+        categories.map(function(name) {
+          const count = products.filter(function(item){ return item.cat === name; }).length;
+          return '<button type="button" data-category="' + escapeHtml(name) + '"><span class="mobile-menu-category-icon">' + categoryIcon(name) + '</span><span>' + escapeHtml(name) + '</span><span class="mobile-menu-category-count">' + count + '</span></button>';
+        }).join("");
+    }
   }
   const listingControls = document.createElement("div");
   listingControls.className = "product-listing-controls";
@@ -350,7 +372,8 @@
       activeCategory = category.dataset.category;
       visibleProductCount = pageSize;
       renderProducts();
-      if (category.classList.contains("category-tile")) document.getElementById("products").scrollIntoView({behavior:"smooth"});
+      if (category.classList.contains("category-tile") || category.closest("#mobileMenuCategories")) document.getElementById("products").scrollIntoView({behavior:"smooth"});
+      if (category.closest("#mobileMenuCategories")) setMobileMenu(false);
       return;
     }
     const add = event.target.closest("[data-add]");
@@ -379,6 +402,9 @@
     }
     if (event.target.closest("#openCart")) { setDrawer(true); return; }
     if (event.target.closest("#closeCart") || event.target === cartOverlay) setDrawer(false);
+    if (event.target.closest("#openMobileMenu")) { setMobileMenu(true); return; }
+    if (event.target.closest("#closeMobileMenu") || event.target === mobileMenuOverlay) { setMobileMenu(false); return; }
+    if (event.target.closest("#mobileMenuDrawer a")) { setMobileMenu(false); return; }
   });
   const paymentConfirmed = document.getElementById("paymentConfirmed");
   const paymentLinks = Array.from(document.querySelectorAll("[data-payment-link]"));
@@ -594,7 +620,7 @@
     }catch(err){console.warn("تعذر تسجيل الطلب في لوحة الإدارة.",err);showPaymentFollowup(orderNumber,false);alert("تم فتح واتساب لإرسال طلبك، لكن لم يتم تسجيله في لوحة الإدارة. يرجى إرسال الرسالة هناك.");}
   });
   document.addEventListener("keydown", function (event) {
-    if (event.key === "Escape") setDrawer(false);
+    if (event.key === "Escape") { setDrawer(false); setMobileMenu(false); }
   });
   drawCategories();
   renderProducts();
