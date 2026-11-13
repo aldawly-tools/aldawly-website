@@ -455,4 +455,10 @@
   renderProducts();
   renderBrandAvailability();
   renderCart();
+  if (new URLSearchParams(window.location.search).get("cart") === "1") {
+    setDrawer(true);
+    const cleanUrl = new URL(window.location.href);
+    cleanUrl.searchParams.delete("cart");
+    window.history.replaceState({}, "", cleanUrl.pathname + cleanUrl.search + cleanUrl.hash);
+  }
 })();
