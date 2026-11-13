@@ -149,14 +149,26 @@ if ("serviceWorker" in navigator) {
   <label for="orderNotes">ملاحظات إضافية (اختياري)</label>
   <textarea id="orderNotes" maxlength="300" rows="2" placeholder="أي تفاصيل تخص الطلب أو التوصيل"></textarea>
  </div>
+  <div class="booking-deposit-note" role="note" aria-label="مقدم جدية الحجز">
+  <div class="booking-deposit-icon">✓</div>
+  <div class="booking-deposit-copy">
+   <strong>تأكيد الحجز بمقدم 200 جنيه</strong>
+   <span>يُخصم المبلغ من إجمالي فاتورتك. ادفع بعد تأكيد المتجر توفر المنتجات والسعر والتوصيل.</span>
+  </div>
+  <div class="booking-deposit-amount">200 <small>جنيه</small></div>
+ </div>
  <button class="button-primary checkout" type="button" id="checkout">تأكيد البيانات وإرسال الطلب عبر واتساب</button>
  <section class="payment-followup" id="paymentFollowup" hidden aria-labelledby="paymentFollowupTitle">
-  <h3 id="paymentFollowupTitle">الدفع بعد تأكيد الطلب</h3>
+  <h3 id="paymentFollowupTitle">خطوة تأكيد الحجز</h3>
   <p class="payment-followup-status" id="paymentFollowupStatus" aria-live="polite"></p>
-  <p class="payment-followup-note">أرسل الطلب على واتساب أولًا، وانتظر تأكيد السعر والتوفر ورسوم التوصيل من المتجر. التحويل لا يؤكد الطلب تلقائيًا.</p>
+  <div class="booking-deposit-panel">
+   <span class="booking-deposit-panel-label">مقدم جدية الحجز</span>
+   <strong>200 جنيه</strong>
+   <p>يُخصم بالكامل من إجمالي فاتورتك. لا تحوّل المبلغ إلا بعد تأكيد المتجر توفر المنتجات والسعر النهائي ورسوم التوصيل.</p>
+  </div>
   <label class="payment-confirm-label" for="paymentConfirmed">
    <input id="paymentConfirmed" type="checkbox">
-   <span>أكد لي المتجر السعر والتوفر وقيمة التوصيل</span>
+   <span>أكد المتجر توفر الطلب والسعر والتوصيل، وأرغب في دفع مقدم الحجز 200 جنيه</span>
   </label>
   <div class="payment-methods" aria-label="طرق الدفع">
    <a class="payment-method" data-payment-link href="http://vf.eg/vfcash?id=mt&amp;qrId=Jv7yf5" target="_blank" rel="noopener noreferrer" aria-disabled="true" tabindex="-1">
