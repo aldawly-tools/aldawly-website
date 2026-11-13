@@ -11,6 +11,8 @@
   let activeCategory = "الكل";
   let activeBrand = (new URLSearchParams(window.location.search).get("brand") || "").trim();
   let query = "";
+  const pageSize = 12;
+  let visibleProductCount = pageSize;
   let cart = [];
   try {
     const savedCart = JSON.parse(localStorage.getItem('dawly_cart_v1') || '[]');
@@ -198,9 +200,20 @@
     filterBar.innerHTML = '<button class="filter-chip active" type="button" data-category="الكل">كل المنتجات</button>' +
       categories.map(function (name) { return '<button class="filter-chip" type="button" data-category="' + escapeHtml(name) + '">' + escapeHtml(name) + '</button>'; }).join("");
   }
+  const listingControls = document.createElement("div");
+  listingControls.className = "product-listing-controls";
+  listingControls.innerHTML = '<p class="product-results-count" aria-live="polite"></p><button class="button-primary" type="button" data-load-more hidden>عرض 12 منتج إضافي</button>';
+  grid.insertAdjacentElement("afterend", listingControls);
+  const resultsCount = listingControls.querySelector(".product-results-count");
+  const loadMoreButton = listingControls.querySelector("[data-load-more]");
+  loadMoreButton.addEventListener("click", function () {
+    visibleProductCount += pageSize;
+    renderProducts();
+  });
+
   function renderProducts() {
     const terms = normalizeSearchText(query).split(" ").filter(Boolean);
-    const shown = products.filter(function (item) {
+    const filtered = products.filter(function (item) {
       const categoryMatch = activeCategory === "الكل" || item.cat === activeCategory;
       const brandMatch = !activeBrand || normalizeBrand(item.brand) === normalizeBrand(activeBrand);
       const searchable = normalizeSearchText([
@@ -213,6 +226,7 @@
     const emptyMessage = activeBrand
       ? 'لا توجد منتجات مسجلة لماركة ' + escapeHtml(activeBrand) + ' حاليًا.'
       : "لا توجد منتجات مطابقة.";
+    const shown = filtered.slice(0, visibleProductCount);
     grid.innerHTML = shown.map(function (item) {
       const name = cleanProductName(item.name);
       const description = cleanProductCopy(item.desc || "");
@@ -235,6 +249,9 @@
         '<button class="button-primary" type="button" data-add="' + escapeHtml(item.id) + '"' + (stockOut ? ' disabled aria-disabled="true"' : '') + '>' + (stockOut ? 'غير متاح حاليًا' : 'أضف إلى السلة') + '</button></div></div></article>';
     }).join("") || '<p class="empty-cart">' + emptyMessage + '</p>';
     observeCloudImages();
+    resultsCount.textContent = filtered.length ? "عرض " + shown.length + " من " + filtered.length + " منتج" : "";
+    loadMoreButton.hidden = shown.length >= filtered.length;
+    loadMoreButton.textContent = "عرض " + Math.min(pageSize, filtered.length - shown.length) + " منتج إضافي";
     filterBar.querySelectorAll("[data-category]").forEach(function (button) {
       button.classList.toggle("active", button.dataset.category === activeCategory);
     });
@@ -318,17 +335,20 @@
   document.getElementById("searchForm").addEventListener("submit", function (event) {
     event.preventDefault();
     query = document.getElementById("searchInput").value;
+    visibleProductCount = pageSize;
     renderProducts();
     document.getElementById("products").scrollIntoView({behavior:"smooth"});
   });
   document.getElementById("searchInput").addEventListener("input", function (event) {
     query = event.target.value;
+    visibleProductCount = pageSize;
     renderProducts();
   });
   document.addEventListener("click", function (event) {
     const category = event.target.closest("[data-category]");
     if (category) {
       activeCategory = category.dataset.category;
+      visibleProductCount = pageSize;
       renderProducts();
       if (category.classList.contains("category-tile")) document.getElementById("products").scrollIntoView({behavior:"smooth"});
       return;
