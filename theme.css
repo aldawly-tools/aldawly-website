@@ -152,3 +152,36 @@ html[data-theme="dark"] .theme-toggle {
 @media (prefers-reduced-motion: no-preference) {
   html, body { transition: background-color .2s ease, color .2s ease; }
 }
+
+/* Keep promotional photography and product displays clear in dark mode. */
+html[data-theme="dark"] .hero-photo:after {
+  background: none;
+}
+html[data-theme="dark"] .product-card {
+  background: #fff !important;
+  color: #20252b !important;
+  border-color: #dfe3e8 !important;
+}
+html[data-theme="dark"] .product-card .product-visual {
+  background: linear-gradient(145deg, #f4f6f8, #fff 70%, #fff1f1) !important;
+}
+html[data-theme="dark"] .product-card .product-info {
+  color: #20252b !important;
+}
+html[data-theme="dark"] .product-card .product-name,
+html[data-theme="dark"] .product-card .product-name-link {
+  color: #20252b !important;
+}
+html[data-theme="dark"] .product-card .product-category,
+html[data-theme="dark"] .product-card .product-price,
+html[data-theme="dark"] .product-card .product-details-link {
+  color: #b80f17 !important;
+}
+html[data-theme="dark"] .product-card .product-description,
+html[data-theme="dark"] .product-card .product-price small {
+  color: #626d78 !important;
+}
+html[data-theme="dark"] .product-card .button-primary {
+  background: #b80f17 !important;
+  color: #fff !important;
+}
