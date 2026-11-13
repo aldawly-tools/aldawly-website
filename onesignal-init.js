@@ -21,6 +21,7 @@
         serviceWorkerParam: { scope: "/aldawly-website/" },
         notifyButton: { enable: false }
       });
+      window.__oneSignalInstance = OneSignal;
       resolveReady(OneSignal);
     } catch (error) {
       rejectReady(error);
