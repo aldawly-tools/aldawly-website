@@ -1480,3 +1480,39 @@ body:has(.hero-shell) .section#work-kits{padding-top:24px}
   line-height:1.9 !important;
  }
 }
+
+
+/* Site-wide readable typography: stronger contrast and clearer text */
+:root{--muted:#3f4852}
+body{color:#171b20}
+p,small,label,.section-subtitle,.product-description,.product-detail-description,
+.about-box,.disclaimer,.benefit,.service-card,.profession-copy small,
+.category-tile,.product-spec-row,.product-meta small,
+.footer p,.footer-links,.product-detail-crumb{
+ color:#343d47;
+ font-weight:600;
+ text-shadow:none;
+}
+h1,h2,h3,h4,.section-title,.product-name,.product-detail-title,
+.brand-name,.profession-copy strong,.category-tile strong{
+ color:#11161b;
+ font-weight:900;
+}
+.product-description,#productGrid .product-description{
+ color:#20252b !important;
+ font-weight:800 !important;
+}
+button,.button-primary,.button-outline,.nav-link,.filter-chip,
+.product-details-link,.text-link{
+ font-weight:800;
+}
+input,textarea,select{color:#171b20}
+input::placeholder,textarea::placeholder{color:#606a75;opacity:1}
+@media(max-width:700px){
+ p,small,label,.section-subtitle,.product-description,.product-detail-description,
+ .about-box,.disclaimer,.service-card,.profession-copy small,
+ .product-spec-row,.product-meta small,.footer p,.footer-links{
+  color:#303943;
+  font-weight:650;
+ }
+}
