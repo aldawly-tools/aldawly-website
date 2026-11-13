@@ -1900,3 +1900,15 @@ body:has(.hero-shell) .section#categories .category-tile.all small{color:#fff}
  .mobile-menu-home-label,.mobile-menu-browse-label{padding-right:24px !important;padding-left:24px !important}
  .mobile-menu-categories button{min-height:66px !important;padding-right:24px !important;font-size:18px !important}
 }
+
+
+@media(max-width:700px){
+ .mobile-menu-brand-row{
+  display:flex !important;align-items:center !important;justify-content:flex-start !important;
+  min-height:70px !important;padding:12px 25px !important;
+  border:0 !important;border-bottom:1px solid #edf0f2 !important;
+  background:#fff !important;color:#202a36 !important;text-decoration:none !important;
+  font:850 20px/1.5 Tahoma,Arial,sans-serif !important;
+ }
+}
+@media(max-width:380px){.mobile-menu-brand-row{min-height:66px !important;padding-right:24px !important;font-size:18px !important}}
