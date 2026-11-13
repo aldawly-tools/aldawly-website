@@ -1854,3 +1854,30 @@ body:has(.hero-shell) .section#categories .category-tile.all small{color:#fff}
  }
  .mobile-menu-trigger svg{stroke:#fff !important}
 }
+
+
+/* Floating contact menu: two customer-service numbers, call and WhatsApp */
+.floating-contact-widget{position:fixed;left:18px;bottom:20px;z-index:95;display:flex;flex-direction:column;align-items:flex-start;gap:12px;direction:rtl;font-family:inherit}
+.floating-contact-toggle{width:60px;height:60px;border:0;border-radius:50%;display:grid;place-items:center;background:#08c875;color:#fff;box-shadow:0 8px 24px rgba(0,0,0,.22);cursor:pointer}
+.floating-contact-toggle svg{width:29px;height:29px;fill:none;stroke:currentColor;stroke-width:2.3;stroke-linecap:round;stroke-linejoin:round}
+.floating-contact-toggle .contact-toggle-close{display:none}
+.floating-contact-toggle.is-open{background:#7d55b5}
+.floating-contact-toggle.is-open .contact-toggle-phone{display:none}
+.floating-contact-toggle.is-open .contact-toggle-close{display:block}
+.floating-contact-panel{width:min(330px,calc(100vw - 36px));padding:14px;border:1px solid #e6e9ed;border-radius:18px;background:#fff;box-shadow:0 12px 38px rgba(18,28,38,.2)}
+.floating-contact-panel[hidden]{display:none}
+.floating-contact-heading{display:grid;gap:3px;padding:2px 2px 12px}
+.floating-contact-heading strong{font-size:16px;font-weight:950;color:#202832}
+.floating-contact-heading span{font-size:11px;font-weight:700;color:#7b8490}
+.floating-contact-row{display:grid;grid-template-columns:minmax(0,1fr) auto auto;align-items:center;gap:7px;padding:10px 0;border-top:1px solid #edf0f2}
+.floating-contact-number{display:grid;gap:3px;min-width:0}
+.floating-contact-number strong{font-size:14px;font-weight:950;color:#202832;direction:ltr;text-align:right;white-space:nowrap}
+.floating-contact-number small{font-size:10px;color:#7b8490;font-weight:700}
+.floating-contact-action{min-height:36px;display:flex;align-items:center;justify-content:center;padding:0 10px;border-radius:9px;text-decoration:none;font-size:11px;font-weight:900;white-space:nowrap}
+.floating-contact-action.call{background:#eef5ff;color:#24599a}
+.floating-contact-action.wa{background:#e9fbf2;color:#07884e}
+@media(max-width:700px){
+ .floating-contact-widget{left:14px;bottom:calc(82px + env(safe-area-inset-bottom));gap:10px}
+ .floating-contact-toggle{width:56px;height:56px}
+ .floating-contact-panel{width:min(315px,calc(100vw - 28px))}
+}
