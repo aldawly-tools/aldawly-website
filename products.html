@@ -18,7 +18,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="store.css?v=stock-product-image-fit-2">
+<link rel="stylesheet" href="store.css?v=payment-options-1">
 </head>
 <body>
 <div class="benefit-bar">
@@ -124,11 +124,29 @@
   <textarea id="orderNotes" maxlength="300" rows="2" placeholder="أي تفاصيل تخص الطلب أو التوصيل"></textarea>
  </div>
  <button class="button-primary checkout" type="button" id="checkout">تأكيد البيانات وإرسال الطلب عبر واتساب</button>
+ <section class="payment-followup" id="paymentFollowup" hidden aria-labelledby="paymentFollowupTitle">
+  <h3 id="paymentFollowupTitle">الدفع بعد تأكيد الطلب</h3>
+  <p class="payment-followup-status" id="paymentFollowupStatus" aria-live="polite"></p>
+  <p class="payment-followup-note">أرسل الطلب على واتساب أولًا، وانتظر تأكيد السعر والتوفر ورسوم التوصيل من المتجر. التحويل لا يؤكد الطلب تلقائيًا.</p>
+  <label class="payment-confirm-label" for="paymentConfirmed">
+   <input id="paymentConfirmed" type="checkbox">
+   <span>أكد لي المتجر السعر والتوفر وقيمة التوصيل</span>
+  </label>
+  <div class="payment-methods" aria-label="طرق الدفع">
+   <a class="payment-method" data-payment-link href="http://vf.eg/vfcash?id=mt&amp;qrId=Jv7yf5" target="_blank" rel="noopener noreferrer" aria-disabled="true" tabindex="-1">
+    <span class="payment-method-icon payment-vodafone">VF</span><span><strong>فودافون كاش</strong><small>افتح رابط الدفع</small></span>
+   </a>
+   <a class="payment-method" data-payment-link href="https://ipn.eg/S/ycnae3087/instapay/3ZGhaU" target="_blank" rel="noopener noreferrer" aria-disabled="true" tabindex="-1">
+    <span class="payment-method-icon payment-instapay">IP</span><span><strong>إنستا باي</strong><small>افتح رابط الدفع</small></span>
+   </a>
+  </div>
+  <a class="payment-proof" id="paymentProofLink" href="#" target="_blank" rel="noopener noreferrer">إرسال رقم الطلب وإيصال الدفع عبر واتساب</a>
+ </section>
 </aside>
 <script src="products.js"></script>
 <script src="firebase-config.js?v=product-admin-2"></script>
 <script src="onesignal-init.js?v=1"></script>
-<script src="store.js?v=image-cards-2"></script>
+<script src="store.js?v=payment-options-1"></script>
 <script src="image-zoom.js?v=product-zoom-3"></script>
 <script type="module" src="product-cloud.js?v=product-admin-2"></script>
 </body></html>
