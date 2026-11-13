@@ -42,6 +42,7 @@ function buildOrderMessage(order) {
 exports.notifyOrderOnTelegram = onDocumentCreated(
   {
     document: "orders/{orderId}",
+    retry: true,
     secrets: [telegramBotToken, telegramChatId]
   },
   async (event) => {
@@ -83,7 +84,7 @@ exports.notifyOrderOnTelegram = onDocumentCreated(
         orderId: snapshot.id,
         error: error && error.name === "TimeoutError" ? "timeout" : "network error"
       });
-      return;
+      throw new Error("Telegram delivery failed due to a network error.");
     }
 
     if (!response.ok) {
@@ -91,7 +92,7 @@ exports.notifyOrderOnTelegram = onDocumentCreated(
         orderId: snapshot.id,
         httpStatus: response.status
       });
-      return;
+      throw new Error("Telegram rejected the order notification with HTTP " + response.status + ".");
     }
 
     await orderRef.update({ telegramNotifiedAt: FieldValue.serverTimestamp() });
