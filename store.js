@@ -3,6 +3,9 @@
   const grid = document.getElementById("productGrid");
   const tiles = document.getElementById("categoryTiles");
   const filterBar = document.getElementById("filterBar");
+  const brandFilterList = document.getElementById("brandFilterList");
+  const brandFilterSearch = document.getElementById("brandFilterSearch");
+  const brandFilterSummary = document.getElementById("brandFilterSummary");
   const cartCount = document.getElementById("cartCount");
   const cartItems = document.getElementById("cartItems");
   const cartDrawer = document.getElementById("cartDrawer");
@@ -222,14 +225,41 @@
         const count = products.filter(function (item) { return item.cat === name; }).length;
         return '<button class="category-tile" type="button" data-category="' + escapeHtml(name) + '"><span class="category-icon">' + categoryIcon(name) + '</span><span><strong>' + escapeHtml(name) + '</strong><small>' + count + ' منتجات</small></span></button>';
       }).join("");
-    filterBar.innerHTML = '<button class="filter-chip active" type="button" data-category="الكل">كل المنتجات</button>' +
-      categories.map(function (name) { return '<button class="filter-chip" type="button" data-category="' + escapeHtml(name) + '">' + escapeHtml(name) + '</button>'; }).join("");
+    filterBar.innerHTML = '<button class="filter-chip active" type="button" data-category="الكل">كل المنتجات <span class="filter-count">' + products.length + '</span></button>' +
+      categories.map(function (name) {
+        const count = products.filter(function (item) { return item.cat === name; }).length;
+        return '<button class="filter-chip" type="button" data-category="' + escapeHtml(name) + '">' + escapeHtml(name) + ' <span class="filter-count">' + count + '</span></button>';
+      }).join("");
+    drawBrandFilters();
     if (mobileMenuCategories) {
       mobileMenuCategories.innerHTML = categories.map(function(name) {
         return '<button type="button" data-category="' + escapeHtml(name) + '">' + escapeHtml(name) + '</button>';
       }).join("");
     }
   }
+  function drawBrandFilters() {
+    if (!brandFilterList) return;
+    const counts = new Map();
+    products.forEach(function (item) {
+      if (!item.brand || !String(item.brand).trim()) return;
+      const key = normalizeBrand(item.brand);
+      if (!key) return;
+      const entry = counts.get(key) || {label:displayBrand(item.brand), count:0};
+      entry.count += 1;
+      counts.set(key, entry);
+    });
+    const brands = Array.from(counts.entries()).sort(function (a,b) { return a[1].label.localeCompare(b[1].label, "ar"); });
+    const selectedLabel = activeBrand ? displayBrand(activeBrand) : "كل الماركات";
+    if (brandFilterSummary) brandFilterSummary.textContent = selectedLabel;
+    const search = normalizeSearchText(brandFilterSearch ? brandFilterSearch.value : "");
+    const visibleBrands = brands.filter(function (entry) { return !search || normalizeSearchText(entry[1].label).includes(search); });
+    brandFilterList.innerHTML = '<button class="brand-filter-option' + (!activeBrand ? ' active' : '') + '" type="button" data-brand-filter="الكل" aria-pressed="' + (!activeBrand) + '"><span>كل الماركات</span><span class="brand-filter-count">' + products.length + '</span></button>' +
+      visibleBrands.map(function (entry) {
+        const key = entry[0], label = entry[1].label, count = entry[1].count, selected = normalizeBrand(activeBrand) === key;
+        return '<button class="brand-filter-option' + (selected ? ' active' : '') + '" type="button" data-brand-filter="' + escapeHtml(label) + '" aria-pressed="' + selected + '"><span>' + escapeHtml(label) + '</span><span class="brand-filter-count">' + count + '</span></button>';
+      }).join("") || '<p class="brand-filter-empty">لا توجد ماركات بهذا الاسم.</p>';
+  }
+
   const listingControls = document.createElement("div");
   listingControls.className = "product-listing-controls";
   listingControls.innerHTML = '<p class="product-results-count" aria-live="polite"></p><button class="button-primary" type="button" data-load-more hidden>عرض 12 منتج إضافي</button>';
@@ -282,6 +312,7 @@
     resultsCount.textContent = filtered.length ? "عرض " + shown.length + " من " + filtered.length + " منتج" : "";
     loadMoreButton.hidden = shown.length >= filtered.length;
     loadMoreButton.textContent = "عرض " + Math.min(pageSize, filtered.length - shown.length) + " منتج إضافي";
+    drawBrandFilters();
     filterBar.querySelectorAll("[data-category]").forEach(function (button) {
       button.classList.toggle("active", button.dataset.category === activeCategory);
     });
@@ -362,6 +393,8 @@
     setDrawer(true);
   }
 
+  if (brandFilterSearch) brandFilterSearch.addEventListener("input", drawBrandFilters);
+
   document.getElementById("searchForm").addEventListener("submit", function (event) {
     event.preventDefault();
     query = document.getElementById("searchInput").value;
@@ -377,6 +410,14 @@
   document.addEventListener("click", function (event) {
     if (event.target.closest("#floatingContactToggle")) { setFloatingContact(floatingContactPanel && floatingContactPanel.hidden); return; }
     if (floatingContactPanel && !floatingContactPanel.hidden && !event.target.closest("#floatingContactWidget")) setFloatingContact(false);
+    const brandFilter = event.target.closest("[data-brand-filter]");
+    if (brandFilter) {
+      activeBrand = brandFilter.dataset.brandFilter === "الكل" ? "" : brandFilter.dataset.brandFilter;
+      visibleProductCount = pageSize;
+      drawBrandFilters();
+      renderProducts();
+      return;
+    }
     const category = event.target.closest("[data-category]");
     if (category) {
       activeCategory = category.dataset.category;
