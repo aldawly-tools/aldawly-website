@@ -1388,3 +1388,16 @@ body:has(.hero-shell) .section#work-kits{padding-top:24px}
  body:has(.hero-shell) .section#products .section-heading{align-items:flex-start}
  body:has(.hero-shell) .section#brands,body:has(.hero-shell) .section#work-kits{padding-top:19px}
 }
+
+/* Compact product thumbnails inside the cart drawer */
+.cart-product-main{display:flex;align-items:flex-start;gap:11px;min-width:0;flex:1}
+.cart-product-thumb{width:76px;height:76px;flex:0 0 76px;border:1px solid #e4e7eb;border-radius:10px;background:#f7f8fa;display:grid;place-items:center;overflow:hidden;color:#aeb5bd;font-size:28px}
+.cart-product-thumb img{width:100%;height:100%;object-fit:contain;padding:4px}
+.cart-product-copy{min-width:0;flex:1}
+.cart-product-copy strong{line-height:1.65;overflow-wrap:anywhere}
+.cart-row{align-items:flex-start}
+@media(max-width:600px){
+ .cart-product-thumb{width:68px;height:68px;flex-basis:68px}
+ .cart-product-main{gap:9px}
+ .cart-product-copy strong{font-size:14px}
+}
