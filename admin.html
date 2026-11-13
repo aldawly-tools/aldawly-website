@@ -351,7 +351,7 @@ function renderOrders(){
    return '<div class="order-product-row"><div class="order-product-thumb">'+thumb+'</div><div class="order-product-info"><strong>'+escapeHtml(i.name||"منتج")+'</strong><small>الكمية: '+Number(i.qty||0)+(i.unitPrice?' · سعر الوحدة: '+escapeHtml(i.unitPrice):"")+(i.lineTotal||i.total?' · إجمالي الصنف: '+escapeHtml(i.lineTotal||i.total):"")+'</small></div></div>';
   }).join("");
   const options=Object.keys(orderStatusLabels).map(k=>'<option value="'+k+'"'+(o.status===k?" selected":"")+'>'+orderStatusLabels[k]+'</option>').join("");
-  return '<article class="order-card"><div class="order-top"><strong>طلب '+escapeHtml(o.orderNumber||o.id)+'</strong><span class="pill">'+escapeHtml(orderStatusLabels[o.status]||"جديد")+'</span></div><p><b>العميل:</b> '+escapeHtml(o.customerName||"")+' · <b>الهاتف:</b> <a href="tel:'+escapeHtml(o.customerPhone||"")+'">'+escapeHtml(o.customerPhone||"")+'</a></p><p><b>العنوان:</b> '+escapeHtml(o.customerAddress||"")+'</p><div class="order-products-list"><b>المنتجات المطلوبة</b>'+(itemRows||'<p class="muted">لا توجد تفاصيل منتجات مسجلة.</p>')+'</div><p><b>الإجمالي:</b> '+escapeHtml(o.totalText||"يحدد عند التأكيد")+'</p>'+(o.notes?'<p><b>ملاحظات:</b> '+escapeHtml(o.notes)+'</p>':"")+'<small class="muted">'+escapeHtml(orderDate(o.createdAt))+'</small><div class="order-actions"><select data-order-status="'+escapeHtml(o.id)+'">'+options+'</select><a class="link light" href="https://wa.me/'+encodeURIComponent((function(){const n=String(o.customerPhone||"").replace(/[^0-9]/g,"");return n.startsWith("0")?"2"+n:n;})())+'" target="_blank" rel="noopener">مراسلة العميل</a><button class="light" type="button" data-copy-order="'+escapeHtml(o.id)+'">نسخ تفاصيل الطلب</button><button class="red" type="button" data-print-order="'+escapeHtml(o.id)+'">طباعة A4</button></div></article>';
+  return '<article class="order-card"><div class="order-top"><strong>طلب '+escapeHtml(o.orderNumber||o.id)+'</strong><span class="pill">'+escapeHtml(orderStatusLabels[o.status]||"جديد")+'</span></div><p><b>العميل:</b> '+escapeHtml(o.customerName||"")+' · <b>الهاتف:</b> <a href="tel:'+escapeHtml(o.customerPhone||"")+'">'+escapeHtml(o.customerPhone||"")+'</a></p><p><b>العنوان:</b> '+escapeHtml(o.customerAddress||"")+'</p><div class="order-products-list"><b>المنتجات المطلوبة</b>'+(itemRows||'<p class="muted">لا توجد تفاصيل منتجات مسجلة.</p>')+'</div><p><b>الإجمالي:</b> '+escapeHtml(o.totalText||"يحدد عند التأكيد")+'</p>'+(o.notes?'<p><b>ملاحظات:</b> '+escapeHtml(o.notes)+'</p>':"")+'<small class="muted">'+escapeHtml(orderDate(o.createdAt))+'</small><div class="order-actions"><select data-order-status="'+escapeHtml(o.id)+'">'+options+'</select><a class="link light" href="https://wa.me/'+encodeURIComponent((function(){const n=String(o.customerPhone||"").replace(/[^0-9]/g,"");return n.startsWith("0")?"2"+n:n;})())+'" target="_blank" rel="noopener">مراسلة العميل</a><button class="light" type="button" data-copy-order="'+escapeHtml(o.id)+'">نسخ تفاصيل الطلب</button><button class="light" type="button" data-order-image-share="'+escapeHtml(o.id)+'">صورة تأكيد واتساب</button><button class="red" type="button" data-print-order="'+escapeHtml(o.id)+'">طباعة A4</button></div></article>';
  }).join("")||'<p class="muted">لا توجد طلبات في هذا التصنيف.</p>';
  $("ordersList").querySelectorAll("img[data-order-image]").forEach(function(image){
   const imageId=image.dataset.orderImage;
@@ -401,7 +401,67 @@ function printCustomerOrder(order){
  '</style></head><body><main class="sheet"><header class="head"><div><div class="brand">الدولي للعدد الأصلية</div><div class="sub">فاتورة / أمر تجهيز طلب</div></div><div style="text-align:left"><b>رقم الطلب</b><br>'+escapeHtml(order.orderNumber||order.id)+'</div></header><h1 class="title">تفاصيل طلب العميل</h1><div class="meta"><div class="box"><b>اسم العميل</b><span>'+escapeHtml(order.customerName||"—")+'</span></div><div class="box"><b>رقم الهاتف</b><span>'+escapeHtml(order.customerPhone||"—")+'</span></div><div class="box"><b>عنوان التوصيل</b><span>'+escapeHtml(order.customerAddress||"—")+'</span></div><div class="box"><b>تاريخ الطلب</b><span>'+escapeHtml(orderDate(order.createdAt))+'</span></div><div class="box"><b>حالة الطلب</b><span class="status">'+escapeHtml(orderStatusLabels[order.status]||"جديد")+'</span></div></div><h3>المنتجات المطلوبة</h3><table><thead><tr><th>#</th><th>اسم المنتج</th><th>الكمية</th><th>سعر الوحدة</th><th>الإجمالي</th></tr></thead><tbody>'+rows+'</tbody></table><div class="total">إجمالي الطلب: '+escapeHtml(order.totalText||"يحدد عند التأكيد")+'</div>'+(order.notes?'<div class="notes"><b>ملاحظات العميل:</b><br>'+escapeHtml(order.notes)+'</div>':"")+'<div class="foot">شكرًا لاختياركم الدولي للعدد الأصلية</div><button class="print" onclick="window.print()">طباعة الطلب</button></main>\x3Cscript>window.onload=function(){setTimeout(function(){window.print()},350)};\x3C/script></body></html>';
  popup.document.open();popup.document.write(html);popup.document.close();
 }
+
+async function createOrderConfirmationImage(order){
+ const items=Array.isArray(order.items)?order.items:[];
+ const rowHeight=72, width=1080, height=570+items.length*rowHeight;
+ const canvas=document.createElement("canvas");canvas.width=width;canvas.height=height;
+ const ctx=canvas.getContext("2d");
+ ctx.fillStyle="#f4f5f7";ctx.fillRect(0,0,width,height);
+ ctx.fillStyle="#ffffff";ctx.fillRect(38,38,width-76,height-76);
+ ctx.fillStyle="#c8101e";ctx.fillRect(38,38,width-76,18);
+ ctx.textAlign="right";ctx.direction="rtl";
+ function write(text,x,y,size,color,weight){
+  ctx.font=(weight||"400")+" "+size+"px Tahoma, Arial, sans-serif";
+  ctx.fillStyle=color||"#20242a";ctx.fillText(String(text||""),x,y);
+ }
+ write("الدولي للعدد الأصلية",width-90,145,48,"#c8101e","bold");
+ write("تأكيد واستلام طلب العميل",width-90,205,30,"#343941","bold");
+ ctx.strokeStyle="#e5e7eb";ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(90,240);ctx.lineTo(width-90,240);ctx.stroke();
+ write("رقم الطلب: "+(order.orderNumber||order.id),width-95,300,27,"#20242a","bold");
+ write("العميل: "+(order.customerName||"—"),width-95,350,24);
+ write("الهاتف: "+(order.customerPhone||"—"),width-95,395,24);
+ write("العنوان: "+(order.customerAddress||"—"),width-95,440,22);
+ write("المنتجات المطلوبة",width-95,510,27,"#c8101e","bold");
+ let y=560;
+ items.forEach(function(item,index){
+  ctx.fillStyle=index%2?"#fafafa":"#f1f3f5";ctx.fillRect(82,y-38,width-164,58);
+  write((item.name||"منتج")+"  × "+Number(item.qty||0),width-105,y,22,"#20242a","bold");
+  const price=item.unitPrice||item.price||"";
+  const total=item.lineTotal||item.total||"";
+  write((price?"سعر الوحدة: "+price:"")+(total?"   |   الإجمالي: "+total:""),width-105,y+27,17,"#68707a");
+  y+=rowHeight;
+ });
+ y+=18;
+ ctx.fillStyle="#fff1f1";ctx.fillRect(82,y-22,width-164,86);
+ write("إجمالي الطلب: "+(order.totalText||"يحدد عند التأكيد"),width-110,y+30,30,"#b20f19","bold");
+ write("شكرًا لثقتكم بنا ❤️",width/2,height-95,25,"#555","bold");
+ write("الدولي للعدد الأصلية",width/2,height-58,19,"#c8101e","bold");
+ return await new Promise(function(resolve,reject){
+  canvas.toBlob(function(blob){if(blob)resolve(blob);else reject(new Error("تعذر إنشاء صورة الطلب."));},"image/png");
+ });
+}
+async function shareOrderConfirmation(order){
+ const blob=await createOrderConfirmationImage(order);
+ const file=new File([blob],"dawly-order-"+(order.orderNumber||order.id)+".png",{type:"image/png"});
+ const textMessage="شكرًا لطلبك من الدولي للعدد الأصلية 🔧\\nتم استلام طلبك، وهذه صورة تفاصيل الطلب رقم "+(order.orderNumber||order.id)+". سنتواصل معك لتأكيد التفاصيل.";
+ if(navigator.share&&navigator.canShare&&navigator.canShare({files:[file]})){
+  await navigator.share({files:[file],title:"تأكيد الطلب",text:textMessage});
+  $("ordersStatus").textContent="تم تجهيز صورة الطلب. اختر WhatsApp من قائمة المشاركة لإرسالها للعميل.";
+ }else{
+  const url=URL.createObjectURL(blob),a=document.createElement("a");
+  a.href=url;a.download=file.name;a.click();
+  setTimeout(function(){URL.revokeObjectURL(url);},60000);
+  const phone=String(order.customerPhone||"").replace(/[^0-9]/g,"");
+  const waPhone=phone.startsWith("0")?"2"+phone:phone;
+  window.open("https://wa.me/"+encodeURIComponent(waPhone)+"?text="+encodeURIComponent(textMessage),"_blank","noopener");
+  $("ordersStatus").textContent="تم تنزيل صورة التأكيد وفتح محادثة واتساب. أرفق الصورة التي تم تنزيلها ثم اضغط إرسال.";
+ }
+}
+
 $("ordersList").addEventListener("click",async function(e){
+ const imageShareButton=e.target.closest("[data-order-image-share]");
+ if(imageShareButton){const order=orders.find(o=>o.id===imageShareButton.dataset.orderImageShare);if(order){imageShareButton.disabled=true;try{await shareOrderConfirmation(order);}catch(error){if(error&&error.name!=="AbortError")$("ordersStatus").textContent=error.message||"تعذر تجهيز صورة الطلب.";}finally{imageShareButton.disabled=false;}}return;}
  const printButton=e.target.closest("[data-print-order]");
  if(printButton){const order=orders.find(o=>o.id===printButton.dataset.printOrder);if(order)printCustomerOrder(order);return;}
  const button=e.target.closest("[data-copy-order]");if(!button)return;
