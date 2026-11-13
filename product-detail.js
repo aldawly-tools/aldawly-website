@@ -13,6 +13,15 @@
   function cleanProductCopy(value) {
     return String(value == null ? "" : value).replace(/\uFFFD/g, "").replace(/[\u200B-\u200F\u2060\uFEFF]/g, " ").replace(/\r\n?/g, "\n").replace(/[ \t]{2,}/g, " ").trim();
   }
+  function updateMeta(attribute, key, value) {
+    let tag = document.head.querySelector('meta[' + attribute + '="' + key + '"]');
+    if (!tag) {
+      tag = document.createElement("meta");
+      tag.setAttribute(attribute, key);
+      document.head.appendChild(tag);
+    }
+    tag.content = value;
+  }
   function cleanProductName(value) {
     let text = cleanProductCopy(value).replace(/[\uFE0E\uFE0F\u200D]/g, "").replace(/[\u{1F1E6}-\u{1F1FF}]/gu, " ").replace(/\p{Extended_Pictographic}/gu, " ");
     text = text.replace(/\s+(?:لو بتدور(?:ي)?|لو عايز|لو محتاج|لو محتاجة|سرعة في الأداء|دقة في التحكم|جودة للمحترفين|شغل أنضف|اطلب الآن).*/iu, "").replace(/\s+/g, " ").trim();
@@ -56,6 +65,23 @@
     }
 
     const name = cleanProductName(item.name || "منتج من الدولي");
+    const seoDescription = cleanProductCopy(item.desc || item.specs || "تفاصيل المنتج من متجر الدولي للعدد الأصلية والمستوردة.").replace(/\s+/g, " ").slice(0, 160);
+    document.title = name + " | الدولي";
+    updateMeta("name", "description", seoDescription);
+    updateMeta("property", "og:type", "product");
+    updateMeta("property", "og:title", name + " | الدولي");
+    updateMeta("property", "og:description", seoDescription);
+    if (/^https:\/\//i.test(String(item.image || ""))) updateMeta("property", "og:image", String(item.image));
+    const canonicalUrl = new URL(window.location.pathname, window.location.origin);
+    canonicalUrl.searchParams.set("id", String(item.id));
+    updateMeta("property", "og:url", canonicalUrl.href);
+    let canonicalTag = document.head.querySelector('link[rel="canonical"]');
+    if (!canonicalTag) {
+      canonicalTag = document.createElement("link");
+      canonicalTag.rel = "canonical";
+      document.head.appendChild(canonicalTag);
+    }
+    canonicalTag.href = canonicalUrl.href;
     const imageIds = Array.isArray(item.imageIds) && item.imageIds.length ? item.imageIds : (item.imageId ? [item.imageId] : []);
     const image = item.image
       ? '<img id="detailMainImage" src="' + escapeHtml(item.image) + '" alt="' + escapeHtml(name) + '">'
