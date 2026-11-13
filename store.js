@@ -29,6 +29,7 @@
     mobileMenu.setAttribute("aria-hidden", open ? "false" : "true");
     if (openMobileMenuButton) openMobileMenuButton.setAttribute("aria-expanded", open ? "true" : "false");
     document.body.style.overflow = open ? "hidden" : "";
+    document.body.classList.toggle("mobile-category-menu-open", open);
     if (open && closeMobileMenuButton) closeMobileMenuButton.focus();
     if (!open && openMobileMenuButton) openMobileMenuButton.focus();
   }
