@@ -1,0 +1,21 @@
+{
+  "name": "الدولي للعدد الأصلية",
+  "short_name": "الدولي",
+  "description": "متجر الدولي للعدد الأصلية والمستوردة",
+  "lang": "ar",
+  "dir": "rtl",
+  "start_url": "/aldawly-website/?source=pwa",
+  "scope": "/aldawly-website/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#ffffff",
+  "theme_color": "#d71920",
+  "icons": [
+    {
+      "src": "assets/app-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
