@@ -293,7 +293,7 @@ function renderOrders(){
  $("ordersList").innerHTML=filtered.map(o=>{
   const items=(Array.isArray(o.items)?o.items:[]).map(i=>escapeHtml(i.name)+" × "+Number(i.qty||0)).join("، ");
   const options=Object.keys(orderStatusLabels).map(k=>'<option value="'+k+'"'+(o.status===k?" selected":"")+'>'+orderStatusLabels[k]+'</option>').join("");
-  return '<article class="order-card"><div class="order-top"><strong>طلب '+escapeHtml(o.orderNumber||o.id)+'</strong><span class="pill">'+escapeHtml(orderStatusLabels[o.status]||"جديد")+'</span></div><p><b>العميل:</b> '+escapeHtml(o.customerName||"")+' · <b>الهاتف:</b> <a href="tel:'+escapeHtml(o.customerPhone||"")+'">'+escapeHtml(o.customerPhone||"")+'</a></p><p><b>العنوان:</b> '+escapeHtml(o.customerAddress||"")+'</p><p><b>المنتجات:</b> '+items+'</p><p><b>الإجمالي:</b> '+escapeHtml(o.totalText||"يحدد عند التأكيد")+'</p>'+(o.notes?'<p><b>ملاحظات:</b> '+escapeHtml(o.notes)+'</p>':"")+'<small class="muted">'+escapeHtml(orderDate(o.createdAt))+'</small><div class="order-actions"><select data-order-status="'+escapeHtml(o.id)+'">'+options+'</select><a class="link light" href="https://wa.me/'+encodeURIComponent((function(){const n=String(o.customerPhone||"").replace(/[^0-9]/g,"");return n.startsWith("0")?"2"+n:n;})())+'" target="_blank" rel="noopener">مراسلة العميل</a></div></article>';
+  return '<article class="order-card"><div class="order-top"><strong>طلب '+escapeHtml(o.orderNumber||o.id)+'</strong><span class="pill">'+escapeHtml(orderStatusLabels[o.status]||"جديد")+'</span></div><p><b>العميل:</b> '+escapeHtml(o.customerName||"")+' · <b>الهاتف:</b> <a href="tel:'+escapeHtml(o.customerPhone||"")+'">'+escapeHtml(o.customerPhone||"")+'</a></p><p><b>العنوان:</b> '+escapeHtml(o.customerAddress||"")+'</p><p><b>المنتجات:</b> '+items+'</p><p><b>الإجمالي:</b> '+escapeHtml(o.totalText||"يحدد عند التأكيد")+'</p>'+(o.notes?'<p><b>ملاحظات:</b> '+escapeHtml(o.notes)+'</p>':"")+'<small class="muted">'+escapeHtml(orderDate(o.createdAt))+'</small><div class="order-actions"><select data-order-status="'+escapeHtml(o.id)+'">'+options+'</select><a class="link light" href="https://wa.me/'+encodeURIComponent((function(){const n=String(o.customerPhone||"").replace(/[^0-9]/g,"");return n.startsWith("0")?"2"+n:n;})())+'" target="_blank" rel="noopener">مراسلة العميل</a><button class="light" type="button" data-copy-order="'+escapeHtml(o.id)+'">نسخ تفاصيل الطلب</button></div></article>';
  }).join("")||'<p class="muted">لا توجد طلبات في هذا التصنيف.</p>';
 }
 function exportOrdersCsv(){
@@ -316,6 +316,30 @@ async function loadOrders(){
 $("refreshOrdersBtn").addEventListener("click",loadOrders);
 $("orderFilter").addEventListener("change",renderOrders);
 $("orderSearch").addEventListener("input",renderOrders);
+$("ordersList").addEventListener("click",async function(e){
+ const button=e.target.closest("[data-copy-order]");if(!button)return;
+ const order=orders.find(o=>o.id===button.dataset.copyOrder);if(!order)return;
+ const itemLines=(Array.isArray(order.items)?order.items:[]).map(function(item,index){
+  return (index+1)+") "+String(item.name||"منتج")+" — الكمية: "+Number(item.qty||0)+" — سعر الوحدة: "+String(item.unitPrice||"عند الاستفسار");
+ }).join("\n");
+ const summary=[
+  "طلب جديد من متجر الدولي",
+  "رقم الطلب: "+(order.orderNumber||order.id),
+  "العميل: "+(order.customerName||""),
+  "الهاتف: "+(order.customerPhone||""),
+  "العنوان: "+(order.customerAddress||""),
+  "المنتجات:",
+  itemLines,
+  "الإجمالي: "+(order.totalText||"بعد التأكيد"),
+  order.notes?"ملاحظات: "+order.notes:""
+ ].filter(Boolean).join("\n");
+ try{await navigator.clipboard.writeText(summary);$("ordersStatus").textContent="تم نسخ تفاصيل الطلب "+(order.orderNumber||order.id)+".";
+ }catch(error){
+  const field=document.createElement("textarea");field.value=summary;field.style.position="fixed";field.style.opacity="0";document.body.appendChild(field);field.select();
+  const copied=document.execCommand("copy");field.remove();
+  $("ordersStatus").textContent=copied?"تم نسخ تفاصيل الطلب.":"تعذر النسخ تلقائيًا؛ حاول فتح الصفحة في Chrome.";
+ }
+});
 $("ordersList").addEventListener("change",async function(e){
  const el=e.target.closest("[data-order-status]");if(!el)return;
  const id=el.dataset.orderStatus,statusValue=el.value;
