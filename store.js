@@ -82,6 +82,23 @@
     }
     return text || "منتج من الدولي";
   }
+  function cleanOrderProductName(value) {
+    let text = cleanProductCopy(value)
+      .replace(/[\uFE0E\uFE0F\u200D]/g, "")
+      .replace(/[\u{1F1E6}-\u{1F1FF}]/gu, " ")
+      .replace(/\p{Extended_Pictographic}/gu, " ")
+      .replace(/^\s*(?:حافظ على سلامة عينيك|حافظ على عينيك|احمِ عينيك)\s+مع\s+/iu, "")
+      .replace(/\s+(?:لو شغلك|لو بتدور(?:ي)?|لو عايز|لو محتاج|لو محتاجة|سرعة في الأداء|دقة في التحكم|جودة للمحترفين|شغل أنضف|اطلب الآن)[\s\S]*$/iu, "")
+      .replace(/\s+/g, " ")
+      .trim();
+    if (text.length > 80) {
+      let shortText = text.slice(0, 77);
+      const lastSpace = shortText.lastIndexOf(" ");
+      if (lastSpace > 45) shortText = shortText.slice(0, lastSpace);
+      text = shortText + "…";
+    }
+    return text || cleanProductName(value);
+  }
   function parsePrice(value) {
     if (typeof value === "number") return Number.isFinite(value) && value >= 0 ? value : null;
     let text = String(value == null ? "" : value).trim();
@@ -379,24 +396,48 @@
       document.getElementById("customerPhone").focus();
       return;
     }
+    const orderNumber = "DW-" + Date.now().toString().slice(-8);
     const pricing = cartPricing();
+    let itemNumber = 0;
     const lines = cart.map(function (line) {
       const item = products.find(function (entry) { return String(entry.id) === String(line.id); });
       if (!item) return "";
+      itemNumber += 1;
       const productUrl = new URL("product.html?id=" + encodeURIComponent(item.id), window.location.href).toString();
       const price = parsePrice(item.price);
-      const amount = price === null ? "السعر عند الاستفسار" : "مجموع المنتج: " + money(price * line.qty);
-      return "• " + cleanProductName(item.name) + " × " + line.qty + "\n  " + amount + "\n  الإعلان والصورة: " + productUrl;
-    }).filter(Boolean).join("\n");
+      const priceLines = price === null
+        ? "   السعر: عند الاستفسار"
+        : "   سعر الوحدة: " + money(price) + "\n   إجمالي المنتج: " + money(price * line.qty);
+      return itemNumber + ") " + cleanOrderProductName(item.name) + "\n   الكمية: " + line.qty + "\n" + priceLines + "\n   رابط التفاصيل: " + productUrl;
+    }).filter(Boolean).join("\n\n");
     const totalText = pricing.pricedCount === pricing.itemCount
-      ? "إجمالي الطلب: " + money(pricing.total)
+      ? "إجمالي المنتجات: " + money(pricing.total) + "\nرسوم التوصيل: تُحدد بعد تأكيد العنوان\nالإجمالي النهائي: بعد تأكيد التوصيل"
       : pricing.pricedCount
-        ? "المجموع الجزئي للمنتجات المسعّرة: " + money(pricing.total) + "\nباقي المنتجات سعرها عند الاستفسار."
-        : "الإجمالي يتحدد بعد تأكيد الأسعار.";
-    const message = "طلب جديد من متجر الدولي:\nالاسم: " + customerName + "\nالهاتف: " + customerPhone + "\nالعنوان: " + customerAddress + (orderNotes ? "\nملاحظات: " + orderNotes : "") + "\n\n" + lines + "\n" + totalText + "\nمن فضلكم أكدوا السعر والتوفر.";
-    const orderNumber="DW-"+Date.now().toString().slice(-8);
-    const record={orderNumber,customerName,customerPhone,customerAddress,notes:orderNotes,items:cart.map(function(line){const item=products.find(function(entry){return String(entry.id)===String(line.id);});return item?{id:String(item.id),name:cleanProductName(item.name),brand:String(item.brand||""),qty:line.qty,unitPrice:String(item.price||"السعر عند الاستفسار")}:null;}).filter(Boolean),totalText,status:"new",source:"website"};
-    window.open("https://wa.me/201024787222?text="+encodeURIComponent("رقم الطلب: "+orderNumber+"\\n"+message),"_blank","noopener");
+        ? "مجموع المنتجات المسعّرة: " + money(pricing.total) + "\nبعض المنتجات: السعر عند الاستفسار\nرسوم التوصيل: تُحدد بعد تأكيد العنوان\nالإجمالي النهائي: بعد تأكيد الأسعار والتوصيل"
+        : "إجمالي المنتجات: يتحدد بعد تأكيد الأسعار\nرسوم التوصيل: تُحدد بعد تأكيد العنوان\nالإجمالي النهائي: بعد تأكيد الأسعار والتوصيل";
+    const customerDetails = [
+      "الاسم: " + customerName,
+      "الهاتف: " + customerPhone,
+      "العنوان: " + customerAddress
+    ];
+    if (orderNotes) customerDetails.push("ملاحظات: " + orderNotes);
+    const message = [
+      "🛒 *طلب جديد من متجر الدولي*",
+      "رقم الطلب: *" + orderNumber + "*",
+      "",
+      "👤 *بيانات العميل*",
+      customerDetails.join("\n"),
+      "",
+      "📦 *المنتجات (" + pricing.itemCount + ")*",
+      lines,
+      "",
+      "💰 *ملخص الطلب*",
+      totalText,
+      "",
+      "برجاء تأكيد توفر المنتجات والسعر النهائي ورسوم التوصيل."
+    ].join("\n");
+    const record={orderNumber,customerName,customerPhone,customerAddress,notes:orderNotes,items:cart.map(function(line){const item=products.find(function(entry){return String(entry.id)===String(line.id);});return item?{id:String(item.id),name:cleanOrderProductName(item.name),brand:String(item.brand||""),qty:line.qty,unitPrice:String(item.price||"السعر عند الاستفسار")}:null;}).filter(Boolean),totalText,status:"new",source:"website"};
+    window.open("https://wa.me/201024787222?text=" + encodeURIComponent(message), "_blank", "noopener");
     try{
       const appMod=await import("https://www.gstatic.com/firebasejs/13.2.0/firebase-app.js");
       const fsMod=await import("https://www.gstatic.com/firebasejs/13.2.0/firebase-firestore.js");
