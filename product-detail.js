@@ -202,25 +202,11 @@
       "📝 التفاصيل: " + description.slice(0, 700),
       "🔗 رابط المنتج: " + productUrl,
       "الدولي للعدد الأصلية والمستوردة"
-    ].filter(Boolean).join("\\n");
+    ].filter(Boolean).join("\n");
     shareButton.disabled = true;
     try {
-      let imageUrl = item.image || item.imageUrl || "";
-      if (!imageUrl && item.imageId && typeof window.DAWLY_LOAD_PRODUCT_IMAGE === "function") {
-        imageUrl = await window.DAWLY_LOAD_PRODUCT_IMAGE(item.imageId);
-      }
-      if (!imageUrl && Array.isArray(item.imageIds) && item.imageIds[0] && typeof window.DAWLY_LOAD_PRODUCT_IMAGE === "function") {
-        imageUrl = await window.DAWLY_LOAD_PRODUCT_IMAGE(item.imageIds[0]);
-      }
-      let file = null;
-      if (imageUrl) {
-        const response = await fetch(imageUrl, {mode:"cors"});
-        if (!response.ok) throw new Error("تعذر تحميل صورة المنتج");
-        const blob = await response.blob();
-        const mime = blob.type && blob.type.startsWith("image/") ? blob.type : "image/jpeg";
-        file = new File([blob], "dawly-product-" + item.id + (mime.includes("png") ? ".png" : ".jpg"), {type:mime});
-      }
-      if (file && navigator.share && navigator.canShare && navigator.canShare({files:[file]})) {
+      const file = await window.DAWLY_CREATE_PRODUCT_SHARE_FILE(item, productUrl);
+      if (navigator.share && navigator.canShare && navigator.canShare({files:[file]})) {
         await navigator.share({files:[file], title:name, text:caption});
       } else if (navigator.share) {
         await navigator.share({title:name, text:caption});
