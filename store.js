@@ -41,12 +41,50 @@
   let query = "";
   const pageSize = 12;
   let visibleProductCount = pageSize;
+  // سلة مستقلة لكل ملف متصفح/جهاز، مع الاحتفاظ بالسلة القديمة عند أول تحديث.
   let cart = [];
+  let cartStorageKey = "dawly_cart_v2_default";
+  function normalizeCart(value) {
+    if (!Array.isArray(value)) return [];
+    const clean = [];
+    value.forEach(function(line) {
+      if (!line || line.id == null) return;
+      const qty = Number(line.qty);
+      if (!Number.isInteger(qty) || qty < 1) return;
+      const id = String(line.id);
+      const existing = clean.find(function(entry) { return String(entry.id) === id; });
+      if (existing) existing.qty = Math.min(99, existing.qty + qty);
+      else clean.push({id:line.id, qty:Math.min(99,qty)});
+    });
+    return clean;
+  }
   try {
-    const savedCart = JSON.parse(localStorage.getItem('dawly_cart_v1') || '[]');
-    if (Array.isArray(savedCart)) cart = savedCart.filter(function (line) { return line && line.id != null && Number.isInteger(Number(line.qty)) && Number(line.qty) > 0; }).map(function (line) { return {id:line.id, qty:Math.min(99,Number(line.qty))}; });
+    let deviceId = localStorage.getItem("dawly_cart_device_v1");
+    if (!deviceId) {
+      deviceId = (window.crypto && typeof window.crypto.randomUUID === "function")
+        ? window.crypto.randomUUID()
+        : "d" + Date.now().toString(36) + Math.random().toString(36).slice(2);
+      localStorage.setItem("dawly_cart_device_v1", deviceId);
+    }
+    cartStorageKey = "dawly_cart_v2_" + deviceId;
+    const currentCart = localStorage.getItem(cartStorageKey);
+    if (currentCart !== null) {
+      cart = normalizeCart(JSON.parse(currentCart));
+    } else {
+      const oldCart = localStorage.getItem("dawly_cart_v1");
+      if (oldCart) {
+        cart = normalizeCart(JSON.parse(oldCart));
+        localStorage.setItem(cartStorageKey, JSON.stringify(cart));
+        localStorage.removeItem("dawly_cart_v1");
+      }
+    }
   } catch (error) { cart = []; }
-  function persistCart() { try { localStorage.setItem('dawly_cart_v1', JSON.stringify(cart)); } catch (error) {} }
+  function persistCart() {
+    try {
+      localStorage.setItem(cartStorageKey, JSON.stringify(cart));
+      localStorage.setItem("dawly_cart_last_updated_v1", String(Date.now()));
+    } catch (error) {}
+  }
   let cloudImageObserver = null;
 
   function showProductImageFallback(image) {
@@ -370,8 +408,8 @@
     if (title) title.textContent = "منتجات " + activeBrand;
     if (subtitle) subtitle.textContent = "المنتجات المسجلة لماركة " + activeBrand;
   }
-  function renderCart() {
-    persistCart();
+  function renderCart(skipPersist) {
+    if (!skipPersist) persistCart();
     const count = cart.reduce(function (sum, line) { return sum + line.qty; }, 0);
     cartCount.textContent = String(count);
     checkout.disabled = count === 0;
@@ -412,6 +450,15 @@
       totalBox.innerHTML = '<div class="cart-total-row"><span>الإجمالي</span><strong>بعد تأكيد الأسعار</strong></div>';
     }
   }
+
+  // مزامنة التغييرات بين تبويبات الموقع المفتوحة على نفس المتصفح فقط.
+  window.addEventListener("storage", function(event) {
+    if (event.key !== cartStorageKey || event.newValue == null) return;
+    try {
+      cart = normalizeCart(JSON.parse(event.newValue));
+      renderCart(true);
+    } catch (error) {}
+  });
 
   function clearCartAfterWhatsApp() {
     cart = [];
