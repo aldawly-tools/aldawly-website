@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-app.js";
-import { collection, doc, getDoc, getDocs, getFirestore } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-firestore.js";
+import { collection, doc, getDoc, getFirestore, onSnapshot } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-firestore.js";
 
 const config = window.DAWLY_FIREBASE_CONFIG || {};
 if (!config.apiKey || config.apiKey === "PASTE_FIREBASE_WEB_API_KEY" || !config.projectId || config.projectId === "YOUR_PROJECT_ID") {
@@ -21,22 +21,26 @@ if (!config.apiKey || config.apiKey === "PASTE_FIREBASE_WEB_API_KEY" || !config.
 
     const meta = await getDoc(doc(db, "storeMeta", "catalog"));
     if (meta.exists() && meta.data().initialized === true) {
-      const snapshot = await getDocs(collection(db, "products"));
-      const products = snapshot.docs.map(function (item) {
-        const data = item.data();
-        // Keep Firestore document IDs intact; product IDs may be strings/slugs.
-        const productId = data.id !== undefined && data.id !== null && data.id !== ""
-          ? data.id
-          : item.id;
-        return Object.assign({}, data, {id:productId});
-      }).sort(function (a, b) {
-        const aNumber = Number(a.id);
-        const bNumber = Number(b.id);
-        if (Number.isFinite(aNumber) && Number.isFinite(bNumber)) return aNumber - bNumber;
-        return String(a.id).localeCompare(String(b.id), "en");
+      // Keep the storefront synchronized with the admin catalog in real time.
+      onSnapshot(collection(db, "products"), function (snapshot) {
+        const products = snapshot.docs.map(function (item) {
+          const data = item.data();
+          // Keep Firestore document IDs intact; product IDs may be strings/slugs.
+          const productId = data.id !== undefined && data.id !== null && data.id !== ""
+            ? data.id
+            : item.id;
+          return Object.assign({}, data, {id:productId});
+        }).sort(function (a, b) {
+          const aNumber = Number(a.id);
+          const bNumber = Number(b.id);
+          if (Number.isFinite(aNumber) && Number.isFinite(bNumber)) return aNumber - bNumber;
+          return String(a.id).localeCompare(String(b.id), "en");
+        });
+        window.DAWLY_PRODUCTS = products;
+        window.dispatchEvent(new CustomEvent("dawly-products-updated", {detail:products}));
+      }, function (error) {
+        console.warn("تعذر تحديث كتالوج المنتجات مباشرة من قاعدة البيانات.", error);
       });
-      window.DAWLY_PRODUCTS = products;
-      window.dispatchEvent(new CustomEvent("dawly-products-updated", {detail:products}));
     }
   } catch (error) {
     console.warn("تعذر تحميل كتالوج المنتجات من قاعدة البيانات. سيتم عرض النسخة المنشورة.", error);
