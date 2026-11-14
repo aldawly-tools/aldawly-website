@@ -1,4 +1,4 @@
-const CACHE_NAME = "aldawly-tools-v8";
+const CACHE_NAME = "aldawly-tools-v9-live-refresh";
 const APP_SHELL = [
   "/aldawly-website/",
   "/aldawly-website/index.html",
@@ -19,7 +19,7 @@ self.addEventListener("activate", event => {
 self.addEventListener("fetch", event => {
   const request = event.request;
   if (request.method !== "GET" || new URL(request.url).origin !== self.location.origin) return;
-  event.respondWith(fetch(request).then(response => {
+  event.respondWith(fetch(request, {cache:"no-store"}).then(response => {
     if (response && response.ok) {
       const copy = response.clone();
       caches.open(CACHE_NAME).then(cache => cache.put(request, copy));
