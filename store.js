@@ -588,7 +588,7 @@
     followup.scrollIntoView({behavior:"smooth",block:"nearest"});
   }
   async function createWhatsAppOrderImage(orderNumber, customerName, customerPhone, customerAddress, orderItems) {
-    const width = 1080, rowHeight = 178, headerHeight = 420, footerHeight = 150;
+    const width = 1080, rowHeight = 220, headerHeight = 420, footerHeight = 230;
     const height = headerHeight + orderItems.length * rowHeight + footerHeight;
     const canvas = document.createElement("canvas");
     canvas.width = width; canvas.height = height;
@@ -637,11 +637,17 @@
         ctx.textAlign = "center"; ctx.font = "58px Tahoma"; ctx.fillStyle = "#9aa1a9";
         ctx.fillText("🔧", 154, y + 105); ctx.textAlign = "right";
       }
-      write((i + 1) + ". " + item.name, width - 258, y + 62, 25, "#20242a", "bold", 720);
-      write("الكمية: " + item.qty + "    |    " + (item.unitPrice || "السعر عند الاستفسار"), width - 258, y + 108, 21, "#4b5560", "600", 720);
+      write((i + 1) + ". " + item.name, width - 258, y + 55, 25, "#20242a", "bold", 720);
+      write("الكمية: " + item.qty + "    |    سعر الوحدة: " + (item.unitPrice || "عند الاستفسار"), width - 258, y + 105, 21, "#4b5560", "600", 720);
+      const lineTotal = Number.isFinite(Number(item.unitPriceAmount)) ? money(Number(item.unitPriceAmount) * Number(item.qty || 0)) : "يحدد بعد تأكيد السعر";
+      write("إجمالي المنتج: " + lineTotal, width - 258, y + 155, 22, "#a71926", "bold", 720);
       y += rowHeight;
     }
-    write("شكرًا لثقتكم في الدولي للعدد الأصلية ❤️", width / 2, height - 78, 25, "#444", "bold", 900);
+    const pricedItems = orderItems.filter(function(item){ return Number.isFinite(Number(item.unitPriceAmount)); });
+    const allItemsPriced = pricedItems.length === orderItems.length;
+    const orderTotal = pricedItems.reduce(function(sum,item){ return sum + Number(item.unitPriceAmount) * Number(item.qty || 0); },0);
+    write(allItemsPriced ? "إجمالي الطلب: " + money(orderTotal) : "إجمالي المنتجات المسعّرة: " + money(orderTotal) + " — توجد أسعار تحتاج تأكيد", width / 2, height - 125, 30, "#c8101e", "bold", 900);
+    write("شكرًا لثقتكم في الدولي للعدد الأصلية ❤️", width / 2, height - 65, 23, "#444", "bold", 900);
     return await new Promise(function(resolve, reject) {
       canvas.toBlob(function(blob) { if (blob) resolve(blob); else reject(new Error("تعذر تجهيز صورة المنتجات")); }, "image/png");
     });
