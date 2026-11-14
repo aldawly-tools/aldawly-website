@@ -66,15 +66,7 @@ img{max-width:100%}
 .text-link{color:var(--red);font-weight:900;white-space:nowrap}
 .brands-strip{display:grid;grid-template-columns:repeat(6,minmax(90px,1fr));align-items:center;gap:8px;padding:11px 6px;border-block:1px solid #edf0f3;margin-top:13px}
 .brand-word{display:grid;place-items:center;min-height:45px;font:1000 clamp(16px,2vw,25px)/1 Arial,sans-serif;white-space:nowrap;color:#17191c}
-.brand-word:nth-child(1){font-style:italic}
-.brand-word:nth-child(2){color:#d71920}
-.brand-word:nth-child(3){color:#176e50}
-.brand-word:nth-child(4){color:#d71920}
-.brand-word:nth-child(5){color:#ec741b}
-.brand-word:nth-child(6){color:#111;background:#f5d91b;padding:5px 8px;max-width:max-content;margin:auto}
 .brand-word{position:relative}
-.brand-word.brand-unavailable{opacity:.42;filter:grayscale(1)}
-.brand-word.brand-unavailable:after{content:"قريبًا";position:absolute;bottom:-1px;inset-inline-end:0;font:700 9px Tahoma,Arial,sans-serif;color:#737b84;background:#f1f3f5;border-radius:999px;padding:2px 6px}
 .categories-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
 .category-tile{border:1px solid #dce1e6;background:linear-gradient(#fff,#f7f8fa);border-radius:12px;min-height:100px;padding:12px;display:flex;align-items:center;justify-content:center;gap:10px;text-align:center;box-shadow:0 3px 10px #151d2708;transition:transform .18s,border-color .18s}
 .category-tile:hover{transform:translateY(-2px);border-color:#e28a8d}
@@ -2146,21 +2138,6 @@ body:has(.hero-shell) .section#categories .category-tile.all small{color:#fff}
 @keyframes brands-marquee-move{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 @media(max-width:600px){.brands-marquee{margin-top:10px}.brands-marquee-group{gap:9px}.brand-word.brand-tile{width:126px;min-width:126px;height:66px;min-height:66px;border-radius:11px;font-size:19px}.brands-marquee:before,.brands-marquee:after{width:18px}}
 @media(prefers-reduced-motion:reduce){.brands-marquee-track{animation:none}.brands-marquee-group[aria-hidden="true"]{display:none}}
-/* Brand identities: use each manufacturer's recognizable wordmark colors */
-.brands-marquee .brands-marquee-group a.brand-word.brand-tile:nth-child(1),
-.brands-marquee .brands-marquee-group a.brand-word.brand-tile:nth-child(1):visited{color:#e30613!important;-webkit-text-fill-color:#e30613!important}
-.brands-marquee .brands-marquee-group a.brand-word.brand-tile:nth-child(2),
-.brands-marquee .brands-marquee-group a.brand-word.brand-tile:nth-child(2):visited{color:#e20015!important;-webkit-text-fill-color:#e20015!important}
-.brands-marquee .brands-marquee-group a.brand-word.brand-tile:nth-child(3),
-.brands-marquee .brands-marquee-group a.brand-word.brand-tile:nth-child(3):visited{color:#00843d!important;-webkit-text-fill-color:#00843d!important}
-.brands-marquee .brands-marquee-group a.brand-word.brand-tile:nth-child(4),
-.brands-marquee .brands-marquee-group a.brand-word.brand-tile:nth-child(4):visited{color:#d71920!important;-webkit-text-fill-color:#d71920!important}
-.brands-marquee .brands-marquee-group a.brand-word.brand-tile:nth-child(5),
-.brands-marquee .brands-marquee-group a.brand-word.brand-tile:nth-child(5):visited{color:#d71920!important;-webkit-text-fill-color:#d71920!important}
-.brands-marquee .brands-marquee-group a.brand-word.brand-tile:nth-child(6),
-.brands-marquee .brands-marquee-group a.brand-word.brand-tile:nth-child(6):visited{color:#111!important;-webkit-text-fill-color:#111!important;background:#ffd400!important}
-.brands-marquee .brands-marquee-group a.brand-word.brand-tile:hover,
-.brands-marquee .brands-marquee-group a.brand-word.brand-tile:focus{filter:brightness(.88);}
 /* Clearer header identity mark */
 .brand-mark,.brand-mark svg{width:68px;height:68px;flex:0 0 68px}
 .brand{gap:10px}
@@ -2192,31 +2169,17 @@ body:has(.hero-shell) .section#categories .category-tile.all small{color:#fff}
 .hero-copy .whatsapp-catalog-cta{display:inline-flex;align-items:center;justify-content:center;gap:8px;margin-inline-start:10px;background:#17191c;color:#fff;border:1px solid #17191c;text-decoration:none}
 .hero-copy .whatsapp-catalog-cta:hover{background:#30343a;color:#fff}
 @media(max-width:600px){.hero-copy .whatsapp-catalog-cta{margin:10px 0 0;min-height:46px}}
-/* High-contrast manufacturer colors for the scrolling brand tiles */
-html body main .brands-marquee-section .brands-marquee .brands-marquee-track a.brand-word.brand-tile,
-html body main .brands-marquee-section .brands-marquee .brands-marquee-track a.brand-word.brand-tile:link,
-html body main .brands-marquee-section .brands-marquee .brands-marquee-track a.brand-word.brand-tile:visited{
- font-weight:1000!important;text-shadow:0 1px 0 #ffffff!important;
+
+/* SINGLE SOURCE OF TRUTH: brand carousel colors and availability state */
+.brands-marquee .brand-word.brand-tile{
+ font-weight:1000!important;text-shadow:0 1px 0 #fff!important;opacity:1!important;filter:none!important;
 }
-html body main .brands-marquee-section .brands-marquee .brands-marquee-track a.brand-word.brand-tile:nth-child(1){
- color:#e30613!important;-webkit-text-fill-color:#e30613!important;background:linear-gradient(145deg,#fff,#fff0f1)!important;border-color:#f2b8bd!important;
-}
-html body main .brands-marquee-section .brands-marquee .brands-marquee-track a.brand-word.brand-tile:nth-child(2){
- color:#e20015!important;-webkit-text-fill-color:#e20015!important;background:linear-gradient(145deg,#fff,#fff0f0)!important;border-color:#f0b9bd!important;
-}
-html body main .brands-marquee-section .brands-marquee .brands-marquee-track a.brand-word.brand-tile:nth-child(3){
- color:#00843d!important;-webkit-text-fill-color:#00843d!important;background:linear-gradient(145deg,#fff,#eaf7ef)!important;border-color:#a9d9ba!important;
-}
-html body main .brands-marquee-section .brands-marquee .brands-marquee-track a.brand-word.brand-tile:nth-child(4){
- color:#d71920!important;-webkit-text-fill-color:#d71920!important;background:linear-gradient(145deg,#fff,#fff0f0)!important;border-color:#efb5b9!important;
-}
-html body main .brands-marquee-section .brands-marquee .brands-marquee-track a.brand-word.brand-tile:nth-child(5){
- color:#e66b12!important;-webkit-text-fill-color:#e66b12!important;background:linear-gradient(145deg,#fff,#fff4e9)!important;border-color:#f3c69f!important;
-}
-html body main .brands-marquee-section .brands-marquee .brands-marquee-track a.brand-word.brand-tile:nth-child(6){
- color:#111!important;-webkit-text-fill-color:#111!important;background:#ffd400!important;border-color:#e3bd00!important;
-}
-html body main .brands-marquee-section .brands-marquee .brands-marquee-track a.brand-word.brand-tile:hover,
-html body main .brands-marquee-section .brands-marquee .brands-marquee-track a.brand-word.brand-tile:focus{
- filter:saturate(1.12) brightness(.97)!important;box-shadow:0 8px 20px #17202b20!important;
-}
+.brands-marquee .brands-marquee-group a.brand-word.brand-tile:nth-child(1){color:#e30613!important;-webkit-text-fill-color:#e30613!important;background:linear-gradient(145deg,#fff,#fff0f1)!important;border-color:#f2b8bd!important}
+.brands-marquee .brands-marquee-group a.brand-word.brand-tile:nth-child(2){color:#e20015!important;-webkit-text-fill-color:#e20015!important;background:linear-gradient(145deg,#fff,#fff0f0)!important;border-color:#f0b9bd!important}
+.brands-marquee .brands-marquee-group a.brand-word.brand-tile:nth-child(3){color:#00843d!important;-webkit-text-fill-color:#00843d!important;background:linear-gradient(145deg,#fff,#eaf7ef)!important;border-color:#a9d9ba!important}
+.brands-marquee .brands-marquee-group a.brand-word.brand-tile:nth-child(4){color:#d71920!important;-webkit-text-fill-color:#d71920!important;background:linear-gradient(145deg,#fff,#fff0f0)!important;border-color:#efb5b9!important}
+.brands-marquee .brands-marquee-group a.brand-word.brand-tile:nth-child(5){color:#e66b12!important;-webkit-text-fill-color:#e66b12!important;background:linear-gradient(145deg,#fff,#fff4e9)!important;border-color:#f3c69f!important}
+.brands-marquee .brands-marquee-group a.brand-word.brand-tile:nth-child(6){color:#111!important;-webkit-text-fill-color:#111!important;background:#ffd400!important;border-color:#e3bd00!important}
+.brands-marquee .brand-word.brand-tile.brand-unavailable{opacity:1!important;filter:none!important}
+.brands-marquee .brand-word.brand-tile.brand-unavailable:after{color:#626b75!important;background:#eef1f4!important;filter:none!important}
+.brands-marquee .brand-word.brand-tile:hover,.brands-marquee .brand-word.brand-tile:focus{filter:saturate(1.12) brightness(.97)!important;box-shadow:0 8px 20px #17202b20!important}
