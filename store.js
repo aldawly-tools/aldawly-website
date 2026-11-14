@@ -543,8 +543,8 @@
     followup.hidden = false;
     followup.scrollIntoView({behavior:"smooth",block:"nearest"});
   }
-  async function createWhatsAppOrderImage(orderNumber, customerName, customerPhone, customerAddress, orderItems, totalText) {
-    const width = 1080, rowHeight = 178, headerHeight = 420, footerHeight = 260;
+  async function createWhatsAppOrderImage(orderNumber, customerName, customerPhone, customerAddress, orderItems) {
+    const width = 1080, rowHeight = 178, headerHeight = 420, footerHeight = 150;
     const height = headerHeight + orderItems.length * rowHeight + footerHeight;
     const canvas = document.createElement("canvas");
     canvas.width = width; canvas.height = height;
@@ -597,11 +597,6 @@
       write("الكمية: " + item.qty + "    |    " + (item.unitPrice || "السعر عند الاستفسار"), width - 258, y + 108, 21, "#4b5560", "600", 720);
       y += rowHeight;
     }
-    y += 28;
-    ctx.fillStyle = "#fff1f1"; ctx.fillRect(68, y, width - 136, 110);
-    ctx.strokeStyle = "#f0c9cc"; ctx.lineWidth = 2; ctx.strokeRect(68, y, width - 136, 110);
-    write("ملخص الطلب", width - 98, y + 40, 22, "#8f1821", "bold");
-    write(totalText, width - 98, y + 78, 24, "#b20f19", "bold", 850);
     write("شكرًا لثقتكم في الدولي للعدد الأصلية ❤️", width / 2, height - 78, 25, "#444", "bold", 900);
     return await new Promise(function(resolve, reject) {
       canvas.toBlob(function(blob) { if (blob) resolve(blob); else reject(new Error("تعذر تجهيز صورة المنتجات")); }, "image/png");
@@ -623,7 +618,7 @@
       }
     }
     try {
-      blob = await createWhatsAppOrderImage(orderNumber, customerName, customerPhone, customerAddress, orderItems, totalText);
+      blob = await createWhatsAppOrderImage(orderNumber, customerName, customerPhone, customerAddress, orderItems);
       file = new File([blob], "dawly-order-" + orderNumber + ".png", {type:"image/png"});
       if (navigator.share && navigator.canShare && navigator.canShare({files:[file]})) {
         await navigator.share({files:[file], title:"طلب من متجر الدولي", text:"تفاصيل الطلب " + orderNumber + " — أرسل الصورة إلى متجر الدولي."});
