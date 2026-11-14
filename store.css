@@ -2192,13 +2192,31 @@ body:has(.hero-shell) .section#categories .category-tile.all small{color:#fff}
 .hero-copy .whatsapp-catalog-cta{display:inline-flex;align-items:center;justify-content:center;gap:8px;margin-inline-start:10px;background:#17191c;color:#fff;border:1px solid #17191c;text-decoration:none}
 .hero-copy .whatsapp-catalog-cta:hover{background:#30343a;color:#fff}
 @media(max-width:600px){.hero-copy .whatsapp-catalog-cta{margin:10px 0 0;min-height:46px}}
-/* FINAL OVERRIDE: all names in the homepage brand marquee must be black */
+/* High-contrast manufacturer colors for the scrolling brand tiles */
 html body main .brands-marquee-section .brands-marquee .brands-marquee-track a.brand-word.brand-tile,
 html body main .brands-marquee-section .brands-marquee .brands-marquee-track a.brand-word.brand-tile:link,
-html body main .brands-marquee-section .brands-marquee .brands-marquee-track a.brand-word.brand-tile:visited,
+html body main .brands-marquee-section .brands-marquee .brands-marquee-track a.brand-word.brand-tile:visited{
+ font-weight:1000!important;text-shadow:0 1px 0 #ffffff!important;
+}
+html body main .brands-marquee-section .brands-marquee .brands-marquee-track a.brand-word.brand-tile:nth-child(1){
+ color:#e30613!important;-webkit-text-fill-color:#e30613!important;background:linear-gradient(145deg,#fff,#fff0f1)!important;border-color:#f2b8bd!important;
+}
+html body main .brands-marquee-section .brands-marquee .brands-marquee-track a.brand-word.brand-tile:nth-child(2){
+ color:#e20015!important;-webkit-text-fill-color:#e20015!important;background:linear-gradient(145deg,#fff,#fff0f0)!important;border-color:#f0b9bd!important;
+}
+html body main .brands-marquee-section .brands-marquee .brands-marquee-track a.brand-word.brand-tile:nth-child(3){
+ color:#00843d!important;-webkit-text-fill-color:#00843d!important;background:linear-gradient(145deg,#fff,#eaf7ef)!important;border-color:#a9d9ba!important;
+}
+html body main .brands-marquee-section .brands-marquee .brands-marquee-track a.brand-word.brand-tile:nth-child(4){
+ color:#d71920!important;-webkit-text-fill-color:#d71920!important;background:linear-gradient(145deg,#fff,#fff0f0)!important;border-color:#efb5b9!important;
+}
+html body main .brands-marquee-section .brands-marquee .brands-marquee-track a.brand-word.brand-tile:nth-child(5){
+ color:#e66b12!important;-webkit-text-fill-color:#e66b12!important;background:linear-gradient(145deg,#fff,#fff4e9)!important;border-color:#f3c69f!important;
+}
+html body main .brands-marquee-section .brands-marquee .brands-marquee-track a.brand-word.brand-tile:nth-child(6){
+ color:#111!important;-webkit-text-fill-color:#111!important;background:#ffd400!important;border-color:#e3bd00!important;
+}
 html body main .brands-marquee-section .brands-marquee .brands-marquee-track a.brand-word.brand-tile:hover,
 html body main .brands-marquee-section .brands-marquee .brands-marquee-track a.brand-word.brand-tile:focus{
- color:#000!important;
- -webkit-text-fill-color:#000!important;
- text-shadow:none!important;
+ filter:saturate(1.12) brightness(.97)!important;box-shadow:0 8px 20px #17202b20!important;
 }
