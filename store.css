@@ -2190,3 +2190,7 @@ body:has(.hero-shell) .section#categories .category-tile.all small{color:#fff}
 
 /* Product sharing action */
 .product-share-row{display:flex;justify-content:flex-start;margin-top:2px}.share-product-button{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:38px;padding:7px 13px;border:1px solid #d71920!important;color:#b80f17!important;background:#fff!important;border-radius:8px;font-size:13px;font-weight:900}.share-product-button:hover{background:#fff1f1!important}.product-detail-actions .share-product-button{width:100%;min-height:48px}
+
+/* Keep the booking deposit notice concise: fixed title and amount only */
+.booking-deposit-copy span,.booking-deposit-panel p{display:none!important}
+.booking-deposit-copy{gap:0}
