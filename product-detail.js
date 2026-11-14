@@ -186,40 +186,20 @@
   }
 
 
-  root.addEventListener("click", async function (event) {
-    const shareButton = event.target.closest("[data-share-whatsapp]");
+  root.addEventListener("click", function (event) {
+    const shareButton = event.target.closest("[data-share-product]");
     if (!shareButton) return;
-    const item = (cloudProducts || fallbackProducts).find(function (p) { return String(p.id) === String(shareButton.dataset.shareWhatsapp); });
+    const item = (cloudProducts || fallbackProducts).find(function (p) { return String(p.id) === String(shareButton.dataset.shareProduct); });
     if (!item) return;
-    const name = cleanProductName(item.name || "منتج من الدولي");
+    const name = cleanProductName(item.name || "منتج من متجر الدولي");
     const productUrl = new URL("product.html?id=" + encodeURIComponent(item.id), window.location.href).toString();
-    const message = "السلام عليكم، أريد الاستفسار عن الإعلان: " + name + "\nرابط الإعلان: " + productUrl;
-    const originalText = shareButton.textContent;
-    shareButton.disabled = true;
-    shareButton.textContent = "جارٍ تجهيز الصورة…";
-    try {
-      let imageUrl = item.image || "";
-      const imageId = (Array.isArray(item.imageIds) && item.imageIds[0]) || item.imageId;
-      if (!imageUrl && imageId && typeof window.DAWLY_LOAD_PRODUCT_IMAGE === "function") imageUrl = await window.DAWLY_LOAD_PRODUCT_IMAGE(imageId);
-      if (imageUrl && navigator.share && navigator.canShare && typeof File !== "undefined") {
-        const response = await fetch(imageUrl);
-        if (!response.ok) throw new Error("تعذر تحميل صورة المنتج");
-        const blob = await response.blob();
-        const file = new File([blob], "product-" + item.id + ".jpg", {type:blob.type || "image/jpeg"});
-        if (navigator.canShare({files:[file]})) {
-          await navigator.share({title:name, text:message, files:[file]});
-          return;
-        }
-      }
-      window.open("https://wa.me/201024787222?text=" + encodeURIComponent(message), "_blank", "noopener");
-      alert("المتصفح لا يدعم إرفاق الصورة مباشرة. تم فتح واتساب مع تفاصيل المنتج ورابط الإعلان الذي يحتوي على الصورة.");
-    } catch (error) {
-      if (error && error.name === "AbortError") return;
-      window.open("https://wa.me/201024787222?text=" + encodeURIComponent(message), "_blank", "noopener");
-      alert("لم نتمكن من إرفاق الصورة تلقائيًا. أُرفق رابط الإعلان في رسالة واتساب؛ يمكنك فتحه لمشاهدة الصورة.");
-    } finally {
-      shareButton.disabled = false;
-      shareButton.textContent = originalText;
+    const shareData = {title:name, text:"شاهد المنتج من متجر الدولي للعدد الأصلية: " + name, url:productUrl};
+    if (navigator.share) {
+      navigator.share(shareData).catch(function(error) {
+        if (!error || error.name !== "AbortError") window.open("https://wa.me/?text=" + encodeURIComponent(shareData.text + "\\n" + productUrl), "_blank");
+      });
+    } else {
+      window.open("https://wa.me/?text=" + encodeURIComponent(shareData.text + "\\n" + productUrl), "_blank");
     }
   });
 
