@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://aldawly-tools.github.io/aldawly-website/sitemap.xml
+Sitemap: https://aldawlytools.com.eg/sitemap.xml
