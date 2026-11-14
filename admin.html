@@ -144,6 +144,7 @@ button:disabled{opacity:.6;cursor:wait}
         </div>
         <div class="field"><label for="imageUrl">رابط الصورة (اختياري)</label><input id="imageUrl" type="text" placeholder="اتركه فارغًا إذا سترفع صورة من جهازك"></div>
         <div class="field"><label for="imageFile">أو اختر صورًا متعددة من الجهاز (حتى 5 صور)</label><input id="imageFile" type="file" accept=".jpg,.jpeg,.png,.webp,.gif,.bmp,.avif,image/jpeg,image/png,image/webp,image/gif,image/bmp,image/avif"><img id="imagePreview" class="image-preview hidden" alt="معاينة صورة المنتج"><button class="light" id="removeImageBtn" type="button">مسح الصورة المختارة</button><small class="muted">الصيغ المدعومة: JPG وJPEG وPNG وWEBP وGIF وBMP وAVIF. سيتم تحويل الصورة تلقائيًا إلى JPG مضغوط قبل الحفظ.</small></div>
+        <div class="field"><label style="display:flex;align-items:center;gap:9px"><input id="featured" type="checkbox" style="width:auto"> إظهار المنتج ضمن اختيارات الدولي</label><small class="muted">اختياري: يظهر المنتج في قسم المنتجات المميزة بالصفحة الرئيسية.</small></div>
         <div class="field"><label for="desc">وصف المنتج</label><textarea id="desc" rows="3" placeholder="اكتب وصفًا واضحًا للمنتج واستخدامه..."></textarea></div>
         <div class="field"><label for="specs">المواصفات الفنية (كل مواصفة في سطر)</label><textarea id="specs" rows="5" placeholder="بلد المنشأ: ألمانيا&#10;رقم الموديل: ...&#10;المقاس: ...&#10;عدد القطع: ...&#10;الخامة: ..."></textarea><small class="muted">اكتب كل سطر بهذا الشكل: اسم المواصفة: القيمة. اتركه فارغًا إذا لم تتوفر المعلومة.</small></div>
         <div class="field"><label for="tasks">الاستخدامات المناسبة للمساعد الفني</label><select id="tasks" multiple size="5"><option value="drill">تخريم</option><option value="screw">فك وربط</option><option value="cut">قطع وتجليخ</option><option value="wood">نجارة</option><option value="clean">تنظيف وصنفرة</option><option value="other">استخدامات أخرى</option></select></div>
@@ -657,6 +658,7 @@ async function editProduct(id) {
   $("cat").value = product.cat || "عدد يدوية";
   $("price").value = product.price || "";
   $("icon").value = product.icon || "🔧";
+  $("featured").checked = product.featured === true;
   imageRemoved = false;
   existingImageIds = Array.isArray(product.imageIds) ? product.imageIds.map(String) : (product.imageId ? [String(product.imageId)] : []);
   $("imageUrl").value = product.image || "";
@@ -846,6 +848,7 @@ $("productForm").addEventListener("submit", async function (event) {
       specs:$("specs").value.trim(),
       price:$("price").value.trim() || "السعر عند الاستفسار",
       icon:$("icon").value.trim() || "🔧",
+      featured:$("featured").checked,
       image:image,
       imageId:imageId,
       imageIds:imageIds,
