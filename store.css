@@ -2180,3 +2180,13 @@ body:has(.hero-shell) .section#categories .category-tile.all small{color:#fff}
 .hero-copy .whatsapp-catalog-cta{display:inline-flex;align-items:center;justify-content:center;gap:8px;margin-inline-start:10px;background:#17191c;color:#fff;border:1px solid #17191c;text-decoration:none}
 .hero-copy .whatsapp-catalog-cta:hover{background:#30343a;color:#fff}
 @media(max-width:600px){.hero-copy .whatsapp-catalog-cta{margin:10px 0 0;min-height:46px}}
+/* FINAL OVERRIDE: all names in the homepage brand marquee must be black */
+html body main .brands-marquee-section .brands-marquee .brands-marquee-track a.brand-word.brand-tile,
+html body main .brands-marquee-section .brands-marquee .brands-marquee-track a.brand-word.brand-tile:link,
+html body main .brands-marquee-section .brands-marquee .brands-marquee-track a.brand-word.brand-tile:visited,
+html body main .brands-marquee-section .brands-marquee .brands-marquee-track a.brand-word.brand-tile:hover,
+html body main .brands-marquee-section .brands-marquee .brands-marquee-track a.brand-word.brand-tile:focus{
+ color:#000!important;
+ -webkit-text-fill-color:#000!important;
+ text-shadow:none!important;
+}
