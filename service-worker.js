@@ -1,4 +1,4 @@
-const CACHE_NAME = "aldawly-tools-v13-android-share-button";
+const CACHE_NAME = "aldawly-tools-v14-one-tap-whatsapp";
 const APP_SHELL = [
   "/aldawly-website/",
   "/aldawly-website/index.html",
