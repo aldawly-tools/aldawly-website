@@ -557,19 +557,58 @@
     if (event.target.closest("#closeMobileMenu") || event.target === mobileMenuOverlay) { setMobileMenu(false); return; }
     if (event.target.closest("#mobileMenuDrawer a")) { setMobileMenu(false); return; }
   });
+  let pendingOrderShareFile = null;
+  let pendingOrderShareMessage = "";
   function showPaymentFollowup(orderNumber, saved, orderWhatsappUrl) {
     const followup = document.getElementById("paymentFollowup");
     const status = document.getElementById("paymentFollowupStatus");
     const orderLink = document.getElementById("orderWhatsappLink");
     if (!followup || !status) return;
     status.textContent = saved
-      ? "تم تسجيل طلبك بنجاح برقم " + orderNumber + ". سيتواصل معك المتجر لتأكيد التوفر والسعر والتوصيل."
+      ? "تم تسجيل طلبك بنجاح برقم " + orderNumber + ". جهّزنا صورة الطلب، اضغط زر المشاركة لإرسالها."
       : "تعذر حفظ طلبك " + orderNumber + " في لوحة المتجر. احتفظ برقم الطلب وتواصل مع المتجر.";
     if (orderLink) {
       orderLink.href = orderWhatsappUrl || "https://wa.me/201024787222?text=" + encodeURIComponent("السلام عليكم، بخصوص الطلب رقم " + orderNumber + ".");
       orderLink.hidden = !saved;
       orderLink.onclick = function () { if (saved) clearCartAfterWhatsApp(); };
     }
+    let shareButton = document.getElementById("shareOrderImageButton");
+    if (!shareButton) {
+      shareButton = document.createElement("button");
+      shareButton.id = "shareOrderImageButton";
+      shareButton.type = "button";
+      shareButton.className = "button-primary";
+      shareButton.textContent = "إرسال صورة الطلب عبر واتساب";
+      if (orderLink && orderLink.parentNode) orderLink.insertAdjacentElement("afterend", shareButton);
+      else followup.appendChild(shareButton);
+    }
+    shareButton.hidden = !saved;
+    shareButton.disabled = true;
+    shareButton.textContent = "جاري تجهيز صورة الطلب...";
+    shareButton.onclick = async function () {
+      if (!pendingOrderShareFile) {
+        alert("صورة الطلب لم تجهز بعد. انتظر لحظة ثم حاول مرة أخرى.");
+        return;
+      }
+      if (!navigator.share) {
+        const downloadUrl = URL.createObjectURL(pendingOrderShareFile);
+        const downloadLink = document.createElement("a");
+        downloadLink.href = downloadUrl;
+        downloadLink.download = pendingOrderShareFile.name;
+        downloadLink.click();
+        setTimeout(function(){ URL.revokeObjectURL(downloadUrl); }, 60000);
+        alert("المتصفح لا يدعم مشاركة الملفات مباشرة. تم تنزيل الصورة كحل بديل.");
+        return;
+      }
+      try {
+        await navigator.share({files:[pendingOrderShareFile], title:"صورة طلب من متجر الدولي", text:pendingOrderShareMessage});
+        clearCartAfterWhatsApp();
+      } catch (shareError) {
+        if (shareError && shareError.name === "AbortError") return;
+        console.warn("تعذرت مشاركة صورة الطلب:", shareError);
+        alert("لم يتم فتح المشاركة. جرّب فتح الموقع من متصفح Chrome ثم اضغط الزر مرة أخرى.");
+      }
+    };
     followup.hidden = false;
     followup.scrollIntoView({behavior:"smooth",block:"nearest"});
   }
@@ -634,60 +673,32 @@
   }
 
   async function shareWhatsAppOrderImage(orderNumber, customerName, customerPhone, customerAddress, orderItems, totalText, message, whatsappWindow) {
-    let blob = null;
-    let file = null;
-    const baseUrl = "https://wa.me/201024787222?text=" + encodeURIComponent(message);
-    function openMessage(extra) {
-      if (!whatsappWindow || whatsappWindow.closed) return false;
-      try {
-        whatsappWindow.location.replace("https://wa.me/201024787222?text=" + encodeURIComponent(message + (extra || "")));
-        return true;
-      } catch (error) {
-        try { whatsappWindow.close(); } catch (_) {}
-        return false;
-      }
-    }
     try {
-      blob = await createWhatsAppOrderImage(orderNumber, customerName, customerPhone, customerAddress, orderItems);
-      file = new File([blob], "dawly-order-" + orderNumber + ".png", {type:"image/png"});
-      // Try the native Android share sheet directly. Some Android browsers report
-      // canShare({files}) as false even though navigator.share can hand off the file.
-      if (navigator.share && typeof File !== "undefined") {
-        try {
-          await navigator.share({files:[file], title:"صورة طلب من متجر الدولي", text:message});
-          clearCartAfterWhatsApp();
-          if (whatsappWindow && !whatsappWindow.closed) whatsappWindow.close();
-          return true;
-        } catch (shareError) {
-          if (shareError && shareError.name === "AbortError") throw shareError;
-          console.warn("تعذرت المشاركة المباشرة للصورة، سيتم تنزيلها كحل بديل:", shareError);
-        }
+      const blob = await createWhatsAppOrderImage(orderNumber, customerName, customerPhone, customerAddress, orderItems);
+      pendingOrderShareFile = new File([blob], "dawly-order-" + orderNumber + ".png", {type:"image/png"});
+      pendingOrderShareMessage = message;
+      const shareButton = document.getElementById("shareOrderImageButton");
+      if (shareButton) {
+        shareButton.disabled = false;
+        shareButton.textContent = "إرسال صورة الطلب عبر واتساب";
       }
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.href = url; link.download = file.name; link.click();
-      setTimeout(function(){ URL.revokeObjectURL(url); }, 60000);
-      const whatsappOpened = openMessage("\n\nتم تنزيل صورة مجمعة للمنتجات؛ أرفقها في المحادثة قبل الإرسال.");
-      if (whatsappOpened) clearCartAfterWhatsApp();
-      if (!whatsappWindow) alert("تم حفظ الطلب وتنزيل صورة الطلب. استخدم رابط واتساب الظاهر في الصفحة، وأرفق الصورة قبل الإرسال.");
-      else alert("تم تنزيل صورة الطلب. أرفق الصورة في واتساب ثم اضغط إرسال.");
+      if (whatsappWindow && !whatsappWindow.closed) {
+        try { whatsappWindow.location.replace("https://wa.me/201024787222?text=" + encodeURIComponent(message)); }
+        catch (error) { try { whatsappWindow.close(); } catch (_) {} }
+      }
       return true;
     } catch (error) {
-      if (error && error.name === "AbortError") {
-        if (whatsappWindow && !whatsappWindow.closed) whatsappWindow.close();
-        return false;
+      console.warn("تعذر تجهيز صورة الطلب:", error);
+      const shareButton = document.getElementById("shareOrderImageButton");
+      if (shareButton) {
+        shareButton.disabled = true;
+        shareButton.textContent = "تعذر تجهيز صورة الطلب";
       }
-      console.warn("تعذرت مشاركة صورة الطلب:", error);
-      if (blob) {
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement("a");
-        link.href = url; link.download = (file && file.name) || ("dawly-order-" + orderNumber + ".png"); link.click();
-        setTimeout(function(){ URL.revokeObjectURL(url); }, 60000);
+      if (whatsappWindow && !whatsappWindow.closed) {
+        try { whatsappWindow.location.replace("https://wa.me/201024787222?text=" + encodeURIComponent(message)); }
+        catch (_) { try { whatsappWindow.close(); } catch (_) {} }
       }
-      const whatsappOpened = openMessage(blob ? "\n\nتم تنزيل صورة مجمعة للمنتجات؛ أرفقها في المحادثة قبل الإرسال." : "");
-      if (whatsappOpened) clearCartAfterWhatsApp();
-      if (!whatsappWindow) alert("تم حفظ الطلب. استخدم رابط واتساب الظاهر في الصفحة لإرسال التفاصيل.");
-      else alert(blob ? "تم تنزيل صورة الطلب. أرفق الصورة في واتساب ثم اضغط إرسال." : "تم حفظ الطلب؛ أرسل الرسالة في واتساب وأرفق صورة المنتجات إن أردت.");
+      alert("تم حفظ الطلب، لكن تعذر تجهيز الصورة. يمكنك إرسال تفاصيل الطلب من رابط واتساب.");
       return false;
     }
   }
