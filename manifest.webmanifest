@@ -4,8 +4,8 @@
   "description": "متجر الدولي للعدد الأصلية والمستوردة",
   "lang": "ar",
   "dir": "rtl",
-  "start_url": "/aldawly-website/?source=pwa",
-  "scope": "/aldawly-website/",
+  "start_url": "/?source=pwa",
+  "scope": "/",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#ffffff",
@@ -24,5 +24,5 @@
       "purpose": "any maskable"
     }
   ],
-  "id": "/aldawly-website/"
+  "id": "/"
 }
