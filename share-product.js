@@ -3,7 +3,6 @@
     return new Promise(function (resolve) {
       if (!url) return resolve(null);
       const image = new Image();
-      image.crossOrigin = "anonymous";
       image.onload = function () { resolve(image); };
       image.onerror = function () { resolve(null); };
       image.src = url;
@@ -23,9 +22,15 @@
     if (line) lines.push(line);
     return lines;
   }
-  window.DAWLY_CREATE_PRODUCT_SHARE_FILE = async function (item, productUrl) {
-    // Prefer the store's Firebase-hosted image data (usually a data URL),
-    // because external product-photo hosts may block canvas sharing with CORS.
+  window.DAWLY_CREATE_PRODUCT_SHARE_FILE = async function (item, productUrl, shareButton) {
+    // Reuse the image already rendered in the product card/detail page first.
+    const host = shareButton && (shareButton.closest(".product-card") || document.getElementById("productDetail"));
+    const visibleImage = host && host.querySelector(".product-visual img, #detailMainImage, #detailCloudImage, .product-detail-image img");
+    if (visibleImage && visibleImage.complete && visibleImage.naturalWidth > 0) {
+      // Draw the already-loaded image; Firebase data URLs remain canvas-safe.
+      var image = visibleImage;
+    }
+    // Otherwise load the Firebase-hosted image data (usually a data URL).
     let imageUrl = "";
     if (item.imageId && typeof window.DAWLY_LOAD_PRODUCT_IMAGE === "function") {
       try { imageUrl = await window.DAWLY_LOAD_PRODUCT_IMAGE(item.imageId); } catch (e) {}
@@ -34,7 +39,7 @@
       try { imageUrl = await window.DAWLY_LOAD_PRODUCT_IMAGE(item.imageIds[0]); } catch (e) {}
     }
     if (!imageUrl) imageUrl = item.image || item.imageUrl || "";
-    const image = await loadImage(imageUrl);
+    if (!image) image = await loadImage(imageUrl);
     if (!image) throw new Error("تعذر تحميل صورة المنتج لإنشاء بطاقة المشاركة");
     const canvas = document.createElement("canvas");
     canvas.width = 1080;
