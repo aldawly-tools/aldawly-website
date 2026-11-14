@@ -2194,3 +2194,23 @@ body:has(.hero-shell) .section#categories .category-tile.all small{color:#fff}
 /* Keep the booking deposit notice concise: fixed title and amount only */
 .booking-deposit-copy span,.booking-deposit-panel p{display:none!important}
 .booking-deposit-copy{gap:0}
+
+
+/* Product detail: force a true single-column layout on phones and small tablets */
+@media screen and (max-width: 1000px) {
+  body .product-detail-shell .product-detail-layout {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 18px !important;
+    padding: 14px !important;
+  }
+  body .product-detail-shell .product-detail-layout > div:first-child { order: 0 !important; width: 100% !important; }
+  body .product-detail-shell .product-detail-image { width: 100% !important; min-height: 0 !important; aspect-ratio: 1 / 1 !important; max-height: 430px !important; }
+  body .product-detail-shell .product-detail-image img { width: 100% !important; height: 100% !important; max-height: 430px !important; object-fit: contain !important; padding: 12px !important; }
+  body .product-detail-shell .product-detail-info { width: 100% !important; min-width: 0 !important; padding: 8px 4px !important; }
+  body .product-detail-shell .product-detail-title { font-size: clamp(23px, 4vw, 30px) !important; line-height: 1.5 !important; }
+  body .product-detail-shell .product-detail-description { font-size: 15px !important; line-height: 2 !important; }
+  body .product-detail-shell .product-spec-row { font-size: 14px !important; line-height: 1.8 !important; padding: 11px 13px !important; }
+  body .product-detail-shell .product-detail-actions { display: flex !important; flex-direction: column !important; gap: 10px !important; }
+  body .product-detail-shell .product-detail-actions > * { width: 100% !important; min-height: 50px !important; }
+}
