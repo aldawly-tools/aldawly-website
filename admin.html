@@ -324,7 +324,7 @@ function renderOrders(){
    return '<div class="order-product-row"><div class="order-product-thumb">'+thumb+'</div><div class="order-product-info"><strong>'+escapeHtml(i.name||"منتج")+'</strong><small>الكمية: '+Number(i.qty||0)+(i.unitPrice?' · سعر الوحدة: '+escapeHtml(i.unitPrice):"")+(i.lineTotal||i.total?' · إجمالي الصنف: '+escapeHtml(i.lineTotal||i.total):"")+'</small></div></div>';
   }).join("");
   const options=Object.keys(orderStatusLabels).map(k=>'<option value="'+k+'"'+(o.status===k?" selected":"")+'>'+orderStatusLabels[k]+'</option>').join("");
-  return '<article class="order-card"><div class="order-top"><strong>طلب '+escapeHtml(o.orderNumber||o.id)+'</strong><span class="pill">'+escapeHtml(orderStatusLabels[o.status]||"جديد")+'</span></div>'+(o.whatsappStatus?'<small class="muted">'+escapeHtml(orderWhatsappLabels[o.whatsappStatus]||"حالة واتساب غير معروفة")+'</small>':"")+'<p><b>العميل:</b> '+escapeHtml(o.customerName||"")+' · <b>الهاتف:</b> <a href="tel:'+escapeHtml(o.customerPhone||"")+'">'+escapeHtml(o.customerPhone||"")+'</a></p><p><b>العنوان:</b> '+escapeHtml(o.customerAddress||"")+'</p><div class="order-products-list"><b>المنتجات المطلوبة</b>'+(itemRows||'<p class="muted">لا توجد تفاصيل منتجات مسجلة.</p>')+'</div><p><b>الإجمالي:</b> '+escapeHtml(o.totalText||"يحدد عند التأكيد")+'</p>'+(o.notes?'<p><b>ملاحظات:</b> '+escapeHtml(o.notes)+'</p>':"")+'<small class="muted">'+escapeHtml(orderDate(o.createdAt))+'</small><div class="order-actions"><select data-order-status="'+escapeHtml(o.id)+'">'+options+'</select><a class="link light" href="https://wa.me/'+encodeURIComponent((function(){const n=String(o.customerPhone||"").replace(/[^0-9]/g,"");return n.startsWith("0")?"2"+n:n;})())+'" target="_blank" rel="noopener">مراسلة العميل</a><button class="light" type="button" data-copy-order="'+escapeHtml(o.id)+'">نسخ تفاصيل الطلب</button><button class="light" type="button" data-order-image-share="'+escapeHtml(o.id)+'">صورة تأكيد واتساب</button><button class="red" type="button" data-print-order="'+escapeHtml(o.id)+'">طباعة A4</button></div></article>';
+  return '<article class="order-card"><div class="order-top"><strong>طلب '+escapeHtml(o.orderNumber||o.id)+'</strong><span class="pill">'+escapeHtml(orderStatusLabels[o.status]||"جديد")+'</span></div>'+(o.whatsappStatus?'<small class="muted">'+escapeHtml(orderWhatsappLabels[o.whatsappStatus]||"حالة واتساب غير معروفة")+'</small>':"")+'<p><b>العميل:</b> '+escapeHtml(o.customerName||"")+' · <b>الهاتف:</b> <a href="tel:'+escapeHtml(o.customerPhone||"")+'">'+escapeHtml(o.customerPhone||"")+'</a></p><p><b>العنوان:</b> '+escapeHtml(o.customerAddress||"")+'</p><div class="order-products-list"><b>المنتجات المطلوبة</b>'+(itemRows||'<p class="muted">لا توجد تفاصيل منتجات مسجلة.</p>')+'</div><p><b>الإجمالي:</b> '+escapeHtml(o.totalText||"يحدد عند التأكيد")+'</p>'+(o.notes?'<p><b>ملاحظات:</b> '+escapeHtml(o.notes)+'</p>':"")+'<small class="muted">'+escapeHtml(orderDate(o.createdAt))+'</small><div class="order-actions"><select data-order-status="'+escapeHtml(o.id)+'">'+options+'</select><a class="link light" href="https://wa.me/'+encodeURIComponent((function(){const n=String(o.customerPhone||"").replace(/[^0-9]/g,"");return n.startsWith("0")?"2"+n:n;})())+'" target="_blank" rel="noopener">مراسلة العميل</a><button class="light" type="button" data-copy-order="'+escapeHtml(o.id)+'">نسخ تفاصيل الطلب</button><button class="light" type="button" data-order-image-share="'+escapeHtml(o.id)+'">صورة تأكيد واتساب</button><button class="red" type="button" data-delete-order="'+escapeHtml(o.id)+'">حذف الطلب</button><button class="red" type="button" data-print-order="'+escapeHtml(o.id)+'">طباعة A4</button></div></article>';
  }).join("")||'<p class="muted">لا توجد طلبات في هذا التصنيف.</p>';
  $("ordersList").querySelectorAll("img[data-order-image]").forEach(function(image){
   const imageId=image.dataset.orderImage;
@@ -479,6 +479,27 @@ async function shareOrderConfirmation(order){
 }
 
 $("ordersList").addEventListener("click",async function(e){
+ const deleteButton=e.target.closest("[data-delete-order]");
+ if(deleteButton){
+  const id=deleteButton.dataset.deleteOrder;
+  const order=orders.find(o=>o.id===id);
+  if(!order)return;
+  if(order.inventoryDeducted&&!order.inventoryRestored){$("ordersStatus").textContent="لا يمكن حذف هذا الطلب لأنه خصم من المخزون. غيّر حالته إلى «ملغي» أولًا لإرجاع الكميات، ثم احذفه.";return;}
+  const number=order.orderNumber||order.id;
+  if(!window.confirm("هل أنت متأكد من حذف الطلب "+number+" نهائيًا؟ لا يمكن التراجع عن الحذف."))return;
+  deleteButton.disabled=true;
+  try{
+   await deleteDoc(doc(db,"orders",id));
+   orders=orders.filter(o=>o.id!==id);
+   renderOrders();
+   $("ordersStatus").textContent="تم حذف الطلب "+number+" نهائيًا.";
+  }catch(error){
+   console.error("Order delete failed:",error);
+   $("ordersStatus").textContent="تعذر حذف الطلب. تحقق من صلاحيات حساب الإدارة والاتصال.";
+   deleteButton.disabled=false;
+  }
+  return;
+ }
  const imageShareButton=e.target.closest("[data-order-image-share]");
  if(imageShareButton){const order=orders.find(o=>o.id===imageShareButton.dataset.orderImageShare);if(order){imageShareButton.disabled=true;try{await shareOrderConfirmation(order);}catch(error){if(error&&error.name!=="AbortError")$("ordersStatus").textContent=error.message||"تعذر تجهيز صورة الطلب.";}finally{imageShareButton.disabled=false;}}return;}
  const printButton=e.target.closest("[data-print-order]");
