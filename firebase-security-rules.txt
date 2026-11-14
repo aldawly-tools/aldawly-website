@@ -15,6 +15,15 @@ service cloud.firestore {
       allow write: if isStoreAdmin();
     }
 
+    match /storeMeta/{metaId} {
+      allow read, write: if isStoreAdmin();
+    }
+
+    match /productImages/{imageId} {
+      allow read: if true;
+      allow write: if isStoreAdmin();
+    }
+
     match /orders/{orderId} {
       allow create: if request.resource.data.keys().hasOnly([
           "orderNumber", "customerName", "customerPhone", "customerAddress",
@@ -30,6 +39,7 @@ service cloud.firestore {
         && request.resource.data.customerName is string
         && request.resource.data.customerName.size() > 0
         && request.resource.data.customerName.size() <= 80
+        && request.resource.data.customerPhone is string
         && request.resource.data.customerPhone.matches("^[0-9]{8,15}$")
         && request.resource.data.customerAddress is string
         && request.resource.data.customerAddress.size() > 0
