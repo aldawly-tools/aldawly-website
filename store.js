@@ -604,7 +604,7 @@
       blob = await createWhatsAppOrderImage(orderNumber, customerName, customerPhone, customerAddress, orderItems);
       file = new File([blob], "dawly-order-" + orderNumber + ".png", {type:"image/png"});
       if (navigator.share && navigator.canShare && navigator.canShare({files:[file]})) {
-        await navigator.share({files:[file], title:"طلب من متجر الدولي", text:"تفاصيل الطلب " + orderNumber + " — أرسل الصورة إلى متجر الدولي."});
+        await navigator.share({files:[file], title:"طلب من متجر الدولي", text:message});
         clearCartAfterWhatsApp();
         if (whatsappWindow && !whatsappWindow.closed) whatsappWindow.close();
         return true;
