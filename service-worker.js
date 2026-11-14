@@ -1,14 +1,14 @@
-const CACHE_NAME = "aldawly-tools-v15-single-button";
+const CACHE_NAME = "aldawly-tools-v16-custom-domain";
 const APP_SHELL = [
-  "/aldawly-website/",
-  "/aldawly-website/index.html",
-  "/aldawly-website/products.html",
-  "/aldawly-website/store.css",
-  "/aldawly-website/assets/app-icon.svg",
-  "/aldawly-website/assets/app-icon-192.svg",
-  "/aldawly-website/assets/app-icon-512.svg",
-  "/aldawly-website/assets/app-icon-192.png",
-  "/aldawly-website/assets/app-icon-512.png"
+  "/",
+  "/index.html",
+  "/products.html",
+  "/store.css",
+  "/assets/app-icon.svg",
+  "/assets/app-icon-192.svg",
+  "/assets/app-icon-512.svg",
+  "/assets/app-icon-192.png",
+  "/assets/app-icon-512.png"
 ];
 self.addEventListener("install", event => {
   event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(APP_SHELL)).then(() => self.skipWaiting()));
@@ -25,5 +25,5 @@ self.addEventListener("fetch", event => {
       caches.open(CACHE_NAME).then(cache => cache.put(request, copy));
     }
     return response;
-  }).catch(() => caches.match(request).then(cached => cached || caches.match("/aldawly-website/index.html"))));
+  }).catch(() => caches.match(request).then(cached => cached || caches.match("/index.html"))));
 });
