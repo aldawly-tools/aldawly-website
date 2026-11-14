@@ -231,6 +231,23 @@
   }
 
 
+  async function copyShareCaption(text) {
+    if (navigator.clipboard && typeof navigator.clipboard.writeText === "function") {
+      try { await navigator.clipboard.writeText(text); return true; } catch (error) {}
+    }
+    const field = document.createElement("textarea");
+    field.value = text;
+    field.setAttribute("readonly", "");
+    field.style.position = "fixed";
+    field.style.opacity = "0";
+    document.body.appendChild(field);
+    field.select();
+    let copied = false;
+    try { copied = document.execCommand("copy"); } catch (error) {}
+    field.remove();
+    return copied;
+  }
+
   root.addEventListener("click", async function (event) {
     const shareButton = event.target.closest("[data-share-product]");
     if (!shareButton) return;
@@ -249,7 +266,10 @@
       "الدولي للعدد الأصلية والمستوردة"
     ].filter(Boolean).join("\n");
     shareButton.disabled = true;
+    const originalLabel = shareButton.textContent;
     try {
+      const copiedCaption = await copyShareCaption(caption);
+      shareButton.textContent = copiedCaption ? "تم نسخ التفاصيل — الصقها في فيسبوك" : "مشاركة المنتج";
       const file = await window.DAWLY_CREATE_PRODUCT_SHARE_FILE(item, productUrl, shareButton);
       if (navigator.share && navigator.canShare && navigator.canShare({files:[file]})) {
         await navigator.share({files:[file], title:name, text:caption});
@@ -266,6 +286,7 @@
       }
     } finally {
       shareButton.disabled = false;
+      shareButton.textContent = originalLabel;
     }
   });
 
