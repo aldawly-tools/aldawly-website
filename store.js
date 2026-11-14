@@ -496,17 +496,22 @@
     });
   });
   updatePaymentLinks();
-  function showPaymentFollowup(orderNumber, saved) {
+  function showPaymentFollowup(orderNumber, saved, orderWhatsappUrl) {
     const followup = document.getElementById("paymentFollowup");
     const status = document.getElementById("paymentFollowupStatus");
     const proofLink = document.getElementById("paymentProofLink");
+    const orderLink = document.getElementById("orderWhatsappLink");
     if (!followup || !status || !proofLink) return;
     if (paymentConfirmed) paymentConfirmed.checked = false;
     updatePaymentLinks();
     status.textContent = saved
-      ? "تم تسجيل طلبك برقم " + orderNumber + ". أرسل الطلب في واتساب وانتظر تأكيد المتجر قبل الدفع."
-      : "رقم طلبك " + orderNumber + ". أرسل الرسالة التي فُتحت في واتساب؛ تعذر تسجيل الطلب في لوحة المتجر.";
+      ? "تم حفظ طلبك في لوحة المتجر برقم " + orderNumber + " وحالته بانتظار إرسال العميل عبر واتساب. أرسل الرسالة وانتظر تأكيد المتجر قبل الدفع."
+      : "تعذر حفظ طلبك " + orderNumber + " في لوحة المتجر، لذلك لم تُفتح واتساب. احتفظ بسلتك وحاول مرة أخرى أو تواصل مع المتجر.";
     proofLink.href = "https://wa.me/201024787222?text=" + encodeURIComponent("السلام عليكم، أرسل إيصال مقدم جدية الحجز 200 جنيه للطلب رقم " + orderNumber + ".");
+    if (orderLink) {
+      orderLink.href = orderWhatsappUrl || "https://wa.me/201024787222?text=" + encodeURIComponent("السلام عليكم، أرسل الطلب رقم " + orderNumber + ".");
+      orderLink.hidden = !saved;
+    }
     followup.hidden = false;
     followup.scrollIntoView({behavior:"smooth",block:"nearest"});
   }
@@ -575,25 +580,41 @@
     });
   }
 
-  async function shareWhatsAppOrderImage(orderNumber, customerName, customerPhone, customerAddress, orderItems, totalText, message) {
+  async function shareWhatsAppOrderImage(orderNumber, customerName, customerPhone, customerAddress, orderItems, totalText, message, whatsappWindow) {
     let blob = null;
     let file = null;
+    const baseUrl = "https://wa.me/201024787222?text=" + encodeURIComponent(message);
+    function openMessage(extra) {
+      if (!whatsappWindow || whatsappWindow.closed) return false;
+      try {
+        whatsappWindow.location.replace("https://wa.me/201024787222?text=" + encodeURIComponent(message + (extra || "")));
+        return true;
+      } catch (error) {
+        try { whatsappWindow.close(); } catch (_) {}
+        return false;
+      }
+    }
     try {
       blob = await createWhatsAppOrderImage(orderNumber, customerName, customerPhone, customerAddress, orderItems, totalText);
       file = new File([blob], "dawly-order-" + orderNumber + ".png", {type:"image/png"});
       if (navigator.share && navigator.canShare && navigator.canShare({files:[file]})) {
         await navigator.share({files:[file], title:"طلب من متجر الدولي", text:"تفاصيل الطلب " + orderNumber + " — أرسل الصورة إلى متجر الدولي."});
+        if (whatsappWindow && !whatsappWindow.closed) whatsappWindow.close();
         return true;
       }
       const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url; link.download = file.name; link.click();
       setTimeout(function(){ URL.revokeObjectURL(url); }, 60000);
-      window.open("https://wa.me/201024787222?text=" + encodeURIComponent(message + "\\n\\nتم تنزيل صورة مجمعة للمنتجات؛ أرفقها في المحادثة قبل الإرسال."), "_blank", "noopener");
-      alert("تم تنزيل صورة الطلب. أرفق الصورة في واتساب ثم اضغط إرسال.");
+      openMessage("\n\nتم تنزيل صورة مجمعة للمنتجات؛ أرفقها في المحادثة قبل الإرسال.");
+      if (!whatsappWindow) alert("تم حفظ الطلب وتنزيل صورة الطلب. استخدم رابط واتساب الظاهر في الصفحة، وأرفق الصورة قبل الإرسال.");
+      else alert("تم تنزيل صورة الطلب. أرفق الصورة في واتساب ثم اضغط إرسال.");
       return true;
     } catch (error) {
-      if (error && error.name === "AbortError") return false;
+      if (error && error.name === "AbortError") {
+        if (whatsappWindow && !whatsappWindow.closed) whatsappWindow.close();
+        return false;
+      }
       console.warn("تعذرت مشاركة صورة الطلب:", error);
       if (blob) {
         const url = URL.createObjectURL(blob);
@@ -601,14 +622,15 @@
         link.href = url; link.download = (file && file.name) || ("dawly-order-" + orderNumber + ".png"); link.click();
         setTimeout(function(){ URL.revokeObjectURL(url); }, 60000);
       }
-      window.open("https://wa.me/201024787222?text=" + encodeURIComponent(message + (blob ? "\\n\\nتم تنزيل صورة مجمعة للمنتجات؛ أرفقها في المحادثة قبل الإرسال." : "")), "_blank", "noopener");
-      alert(blob ? "تم تنزيل صورة الطلب. أرفق الصورة في واتساب ثم اضغط إرسال." : "تعذر تجهيز صورة الطلب؛ تم فتح رسالة واتساب وبها روابط المنتجات.");
+      openMessage(blob ? "\n\nتم تنزيل صورة مجمعة للمنتجات؛ أرفقها في المحادثة قبل الإرسال." : "");
+      if (!whatsappWindow) alert("تم حفظ الطلب. استخدم رابط واتساب الظاهر في الصفحة لإرسال التفاصيل.");
+      else alert(blob ? "تم تنزيل صورة الطلب. أرفق الصورة في واتساب ثم اضغط إرسال." : "تم حفظ الطلب؛ أرسل الرسالة في واتساب وأرفق صورة المنتجات إن أردت.");
       return false;
     }
   }
 
   checkout.addEventListener("click", async function () {
-    if (!cart.length) return;
+    if (!cart.length || checkout.disabled) return;
     const customerName = document.getElementById("customerName").value.trim();
     const customerPhoneRaw = document.getElementById("customerPhone").value.trim();
     const customerAddress = document.getElementById("customerAddress").value.trim();
@@ -626,6 +648,7 @@
       document.getElementById("customerPhone").focus();
       return;
     }
+    checkout.disabled = true;
     const orderNumber = "DW-" + Date.now().toString().slice(-8);
     const pricing = cartPricing();
     let itemNumber = 0;
@@ -669,26 +692,58 @@
       "",
       "برجاء تأكيد توفر المنتجات والسعر النهائي ورسوم التوصيل."
     ].join("\n");
-    const record={orderNumber,customerName,customerPhone,customerAddress,notes:orderNotes,items:cart.map(function(line){const item=products.find(function(entry){return String(entry.id)===String(line.id);});return item?{id:String(item.id),name:cleanOrderProductName(item.name),brand:String(item.brand||""),qty:line.qty,unitPrice:String(item.price||"السعر عند الاستفسار"),image:item.image||item.imageUrl||"",imageId:(Array.isArray(item.imageIds)&&item.imageIds[0])||item.imageId||null}:null;}).filter(Boolean),totalText,depositAmount:200,depositStatus:"pending",status:"new",source:"website"};
-    const orderImageItems = cart.map(function(line) {
-      const item = products.find(function(entry){ return String(entry.id) === String(line.id); });
+    const orderItems = cart.map(function(line) {
+      const item = products.find(function(entry){return String(entry.id)===String(line.id);});
       if (!item) return null;
+      const unitPrice = parsePrice(item.price);
       return {
-        name: cleanOrderProductName(item.name),
-        qty: line.qty,
-        unitPrice: String(item.price || "السعر عند الاستفسار"),
-        image: item.image || item.imageUrl || "",
-        imageId: (Array.isArray(item.imageIds) && item.imageIds[0]) || item.imageId || null
+        id:String(item.id), name:cleanOrderProductName(item.name), brand:String(item.brand||""),
+        qty:line.qty, unitPrice:String(item.price||"السعر عند الاستفسار"),
+        unitPriceAmount:unitPrice, lineTotal:unitPrice===null?null:unitPrice*line.qty,
+        image:item.image||item.imageUrl||"",
+        imageId:(Array.isArray(item.imageIds)&&item.imageIds[0])||item.imageId||null
       };
     }).filter(Boolean);
-    shareWhatsAppOrderImage(orderNumber, customerName, customerPhone, customerAddress, orderImageItems, totalText, message);
-    try{
-      const appMod=await import("https://www.gstatic.com/firebasejs/13.2.0/firebase-app.js");
-      const fsMod=await import("https://www.gstatic.com/firebasejs/13.2.0/firebase-firestore.js");
-      const app=appMod.getApps().length?appMod.getApp():appMod.initializeApp(window.DAWLY_FIREBASE_CONFIG);
-      await fsMod.addDoc(fsMod.collection(fsMod.getFirestore(app),"orders"),Object.assign({},record,{createdAt:fsMod.serverTimestamp()}));
-      showPaymentFollowup(orderNumber,true);
-    }catch(err){console.warn("تعذر تسجيل الطلب في لوحة الإدارة.",err);showPaymentFollowup(orderNumber,false);alert("تم فتح واتساب لإرسال طلبك، لكن لم يتم تسجيله في لوحة الإدارة. يرجى إرسال الرسالة هناك.");}
+    if (!orderItems.length || orderItems.length !== cart.length) {
+      checkout.disabled = false;
+      alert("تعذر تحميل بيانات أحد المنتجات. حدّث الصفحة ثم راجع سلتك قبل إعادة الطلب.");
+      return;
+    }
+    const totalIsComplete = pricing.itemCount > 0 && pricing.pricedCount === pricing.itemCount;
+    const record = {
+      orderNumber, customerName, customerPhone, customerAddress, notes:orderNotes, items:orderItems,
+      productSubtotal:pricing.total, totalAmount:totalIsComplete?pricing.total:null, totalIsComplete,
+      totalText, depositAmount:200, depositStatus:"pending", status:"new",
+      whatsappStatus:"awaiting_customer_send", source:"website"
+    };
+    const orderImageItems = orderItems.map(function(item) {
+      return {name:item.name,qty:item.qty,unitPrice:item.unitPrice,image:item.image,imageId:item.imageId};
+    });
+    const whatsappUrl = "https://wa.me/201024787222?text=" + encodeURIComponent(message);
+    // Reserve the tab from the click gesture, but send it to WhatsApp only after Firestore confirms the save.
+    const whatsappWindow = window.open("about:blank", "_blank");
+    try {
+      const appMod = await import("https://www.gstatic.com/firebasejs/13.2.0/firebase-app.js");
+      const fsMod = await import("https://www.gstatic.com/firebasejs/13.2.0/firebase-firestore.js");
+      const app = appMod.getApps().length ? appMod.getApp() : appMod.initializeApp(window.DAWLY_FIREBASE_CONFIG);
+      await fsMod.setDoc(fsMod.doc(fsMod.getFirestore(app), "orders", orderNumber),
+        Object.assign({}, record, {createdAt:fsMod.serverTimestamp()}));
+    } catch (err) {
+      if (whatsappWindow) whatsappWindow.close();
+      console.warn("تعذر تسجيل الطلب في لوحة الإدارة.", err);
+      showPaymentFollowup(orderNumber, false);
+      checkout.disabled = cart.length === 0;
+      alert("لم يتم حفظ الطلب في لوحة المتجر، ولم تُفتح واتساب. تحقق من الاتصال وحاول مرة أخرى.");
+      return;
+    }
+    checkout.disabled = cart.length === 0;
+    showPaymentFollowup(orderNumber, true, whatsappUrl);
+    if (!whatsappWindow) alert("تم حفظ الطلب " + orderNumber + " في لوحة المتجر. إذا لم تفتح واتساب تلقائيًا، استخدم رابط إرسال الطلب الظاهر في الصفحة.");
+    try {
+      await shareWhatsAppOrderImage(orderNumber, customerName, customerPhone, customerAddress, orderImageItems, totalText, message, whatsappWindow);
+    } catch (error) {
+      console.warn("تعذر فتح مشاركة الطلب بعد حفظه.", error);
+    }
   });
   document.addEventListener("keydown", function (event) {
     if (event.key === "Escape") { setDrawer(false); setMobileMenu(false); setFloatingContact(false); }

@@ -12,32 +12,12 @@
 إذا لم تستطع الحفظ، تأكد من الدخول بحساب الإدارة نفسه. لا تشارك كلمة مرور Google أو تضعها في أي ملف. قواعد قاعدة البيانات تمنح القراءة للزوار وتسمح بالكتابة لحساب الإدارة فقط.
 
 
-إدارة طلبات العملاء
+إصلاح تسجيل الطلبات
 
-تمت إضافة قسم «طلبات العملاء» إلى لوحة الإدارة. لكي تُسجّل الطلبات في Firestore، أضف صلاحية إنشاء الطلبات للزوار مع إبقاء القراءة والتعديل لحساب الإدارة فقط.
+كان الموقع يفتح واتساب قبل حفظ الطلب، كما أن قواعد Firestore لم تتضمن مجموعة orders. أصبح المتجر يحفظ الطلب أولًا بمعرّفه ورقم الطلب والمنتجات والأسعار والإجمالي وحالة انتظار إرسال العميل، ثم يفتح شاشة مشاركة واتساب بعد نجاح الحفظ. إذا فشل الحفظ، لا ينتقل إلى واتساب وتبقى السلة قابلة للمحاولة.
 
-في Firebase Console افتح Firestore Database > Rules. داخل كتلة match /databases/{database}/documents أضف الدالة والقاعدة التالية إلى قواعدك الحالية، ولا تستبدل قواعد المنتجات الموجودة. استبدل البريد ببريد حساب Google الذي تستخدمه لدخول لوحة الإدارة:
+قواعد Firestore في لوحة المشروع wurth-29a1b تسمح للزائر بإنشاء طلب مضبوط فقط، ولا تسمح له بقراءة الطلبات أو تعديلها. قراءة الطلبات وتعديلها وحذفها للإدارة الحالية. تم الحفاظ على جميع الحسابات الإدارية الموجودة عند نشر القواعد.
 
-function isStoreAdmin() {
-  return request.auth != null && request.auth.token.email == "ضع-بريد-الإدارة-هنا";
-}
-match /orders/{orderId} {
-  allow create: if request.resource.data.keys().hasAll(["orderNumber","customerName","customerPhone","customerAddress","notes","items","totalText","status","source","createdAt"])
-    && request.resource.data.status == "new"
-    && request.resource.data.source == "website"
-    && request.resource.data.customerName is string
-    && request.resource.data.customerName.size() > 0
-    && request.resource.data.customerName.size() <= 80
-    && request.resource.data.customerPhone is string
-    && request.resource.data.customerPhone.size() >= 8
-    && request.resource.data.customerPhone.size() <= 15
-    && request.resource.data.customerAddress is string
-    && request.resource.data.customerAddress.size() > 0
-    && request.resource.data.customerAddress.size() <= 300
-    && request.resource.data.items is list
-    && request.resource.data.items.size() > 0
-    && request.resource.data.items.size() <= 50;
-  allow read, update, delete: if isStoreAdmin();
-}
+حالة واتساب تكون «بانتظار إرسال العميل» حتى بعد فتح شاشة المشاركة؛ لا يستطيع الموقع معرفة ما إذا كان العميل ضغط زر الإرسال داخل واتساب. رابط بديل لإرسال التفاصيل يظهر في صفحة السلة إذا منع المتصفح فتح نافذة المشاركة.
 
-بعد إضافة القاعدة اضغط Publish. الطلبات تحتوي بيانات شخصية (اسم وهاتف وعنوان)، لذلك لا تسمح للزوار بقراءتها أو تعديلها. جرّب طلبًا واحدًا ثم راجعه في لوحة الإدارة.
+يُحفظ إجمالي المنتجات المعروف في productSubtotal. إذا كانت كل الأسعار متاحة، يُحفظ totalAmount كقيمة رقمية ويكون totalIsComplete=true؛ وإذا وُجد منتج بلا سعر، يبقى totalAmount فارغًا مع حفظ المجموع الجزئي والنص التوضيحي.
