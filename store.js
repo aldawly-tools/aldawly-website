@@ -518,6 +518,21 @@
     renderProducts();
   });
   document.addEventListener("click", function (event) {
+    const shareButton = event.target.closest("[data-share-product]");
+    if (shareButton) {
+      const id = shareButton.dataset.shareProduct;
+      const url = new URL("product.html?id=" + encodeURIComponent(id), window.location.href).toString();
+      const title = shareButton.closest(".product-card")?.querySelector(".product-name")?.textContent || "منتج من متجر الدولي";
+      const shareData = {title:title, text:"شاهد المنتج من متجر الدولي للعدد الأصلية: " + title, url:url};
+      if (navigator.share) {
+        navigator.share(shareData).catch(function(error) {
+          if (!error || error.name !== "AbortError") window.open("https://wa.me/?text=" + encodeURIComponent(shareData.text + "\\n" + url), "_blank");
+        });
+      } else {
+        window.open("https://wa.me/?text=" + encodeURIComponent(shareData.text + "\\n" + url), "_blank");
+      }
+      return;
+    }
     if (event.target.closest("#floatingContactToggle")) { setFloatingContact(floatingContactPanel && floatingContactPanel.hidden); return; }
     if (floatingContactPanel && !floatingContactPanel.hidden && !event.target.closest("#floatingContactWidget")) setFloatingContact(false);
     const brandFilter = event.target.closest("[data-brand-filter]");
