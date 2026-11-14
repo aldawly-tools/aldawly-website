@@ -2174,3 +2174,5 @@ body:has(.hero-shell) .section#categories .category-tile.all small{color:#fff}
 .quote-submit{width:100%;min-height:48px;margin-top:14px;font-size:15px}
 .quote-privacy-note{margin:8px 0 0;color:#6c747e;font-size:11px}
 @media(max-width:760px){.quote-hub-grid{grid-template-columns:1fr;gap:14px}.quote-request-form{padding:14px}.home-shelf-card .product-visual{height:170px}.quote-form-row{grid-template-columns:1fr 1fr}}
+/* Mobile homepage flow: brand strip, cinematic hero, then catalog */
+@media(max-width:700px){main > .brands-marquee-section{order:-2}main > .hero-shell{order:-1}main > #products.section{order:0}}
