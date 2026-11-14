@@ -413,6 +413,11 @@
     }
   }
 
+  function clearCartAfterWhatsApp() {
+    cart = [];
+    renderCart();
+  }
+
   window.addEventListener("dawly-products-updated", function (event) {
     if (!Array.isArray(event.detail)) return;
     products = event.detail;
@@ -516,6 +521,7 @@
     if (orderLink) {
       orderLink.href = orderWhatsappUrl || "https://wa.me/201024787222?text=" + encodeURIComponent("السلام عليكم، بخصوص الطلب رقم " + orderNumber + ".");
       orderLink.hidden = !saved;
+      orderLink.onclick = function () { if (saved) clearCartAfterWhatsApp(); };
     }
     followup.hidden = false;
     followup.scrollIntoView({behavior:"smooth",block:"nearest"});
@@ -599,6 +605,7 @@
       file = new File([blob], "dawly-order-" + orderNumber + ".png", {type:"image/png"});
       if (navigator.share && navigator.canShare && navigator.canShare({files:[file]})) {
         await navigator.share({files:[file], title:"طلب من متجر الدولي", text:"تفاصيل الطلب " + orderNumber + " — أرسل الصورة إلى متجر الدولي."});
+        clearCartAfterWhatsApp();
         if (whatsappWindow && !whatsappWindow.closed) whatsappWindow.close();
         return true;
       }
@@ -606,7 +613,8 @@
       const link = document.createElement("a");
       link.href = url; link.download = file.name; link.click();
       setTimeout(function(){ URL.revokeObjectURL(url); }, 60000);
-      openMessage("\n\nتم تنزيل صورة مجمعة للمنتجات؛ أرفقها في المحادثة قبل الإرسال.");
+      const whatsappOpened = openMessage("\n\nتم تنزيل صورة مجمعة للمنتجات؛ أرفقها في المحادثة قبل الإرسال.");
+      if (whatsappOpened) clearCartAfterWhatsApp();
       if (!whatsappWindow) alert("تم حفظ الطلب وتنزيل صورة الطلب. استخدم رابط واتساب الظاهر في الصفحة، وأرفق الصورة قبل الإرسال.");
       else alert("تم تنزيل صورة الطلب. أرفق الصورة في واتساب ثم اضغط إرسال.");
       return true;
@@ -622,7 +630,8 @@
         link.href = url; link.download = (file && file.name) || ("dawly-order-" + orderNumber + ".png"); link.click();
         setTimeout(function(){ URL.revokeObjectURL(url); }, 60000);
       }
-      openMessage(blob ? "\n\nتم تنزيل صورة مجمعة للمنتجات؛ أرفقها في المحادثة قبل الإرسال." : "");
+      const whatsappOpened = openMessage(blob ? "\n\nتم تنزيل صورة مجمعة للمنتجات؛ أرفقها في المحادثة قبل الإرسال." : "");
+      if (whatsappOpened) clearCartAfterWhatsApp();
       if (!whatsappWindow) alert("تم حفظ الطلب. استخدم رابط واتساب الظاهر في الصفحة لإرسال التفاصيل.");
       else alert(blob ? "تم تنزيل صورة الطلب. أرفق الصورة في واتساب ثم اضغط إرسال." : "تم حفظ الطلب؛ أرسل الرسالة في واتساب وأرفق صورة المنتجات إن أردت.");
       return false;
