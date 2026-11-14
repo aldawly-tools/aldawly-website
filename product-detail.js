@@ -211,12 +211,13 @@
       } else if (navigator.share) {
         await navigator.share({title:name, text:caption});
       } else {
-        window.open("https://wa.me/?text=" + encodeURIComponent(caption), "_blank");
+        if (navigator.clipboard) await navigator.clipboard.writeText(caption);
+        alert("المتصفح لا يدعم مشاركة الصور. تم تجهيز تفاصيل المنتج؛ يمكنك نسخ النص ومشاركة الصورة يدويًا.");
       }
     } catch (error) {
       if (!error || error.name !== "AbortError") {
-        console.warn("Product share failed:", error);
-        window.open("https://wa.me/?text=" + encodeURIComponent(caption), "_blank");
+        console.error("Product share failed:", error);
+        alert("تعذر تجهيز صورة المشاركة. تأكد من تحميل صورة المنتج ثم حاول مرة أخرى.");
       }
     } finally {
       shareButton.disabled = false;
