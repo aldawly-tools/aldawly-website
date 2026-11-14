@@ -186,20 +186,54 @@
   }
 
 
-  root.addEventListener("click", function (event) {
+  root.addEventListener("click", async function (event) {
     const shareButton = event.target.closest("[data-share-product]");
     if (!shareButton) return;
     const item = (cloudProducts || fallbackProducts).find(function (p) { return String(p.id) === String(shareButton.dataset.shareProduct); });
-    if (!item) return;
+    if (!item) { alert("تعذر تحميل بيانات المنتج للمشاركة."); return; }
     const name = cleanProductName(item.name || "منتج من متجر الدولي");
     const productUrl = new URL("product.html?id=" + encodeURIComponent(item.id), window.location.href).toString();
-    const shareData = {title:name, text:"شاهد المنتج من متجر الدولي للعدد الأصلية: " + name, url:productUrl};
-    if (navigator.share) {
-      navigator.share(shareData).catch(function(error) {
-        if (!error || error.name !== "AbortError") window.open("https://wa.me/?text=" + encodeURIComponent(shareData.text + "\\n" + productUrl), "_blank");
-      });
-    } else {
-      window.open("https://wa.me/?text=" + encodeURIComponent(shareData.text + "\\n" + productUrl), "_blank");
+    const description = cleanProductCopy(item.desc || item.specs || "للاستفسار عن المواصفات والتوفر تواصل مع متجر الدولي.");
+    const caption = [
+      "🧰 " + name,
+      item.brand ? "🏷️ الماركة: " + displayBrand(item.brand) : "",
+      "💰 السعر: " + formatPrice(item.price),
+      item.cat ? "📂 القسم: " + item.cat : "",
+      "📝 التفاصيل: " + description.slice(0, 700),
+      "🔗 رابط المنتج: " + productUrl,
+      "الدولي للعدد الأصلية والمستوردة"
+    ].filter(Boolean).join("\\n");
+    shareButton.disabled = true;
+    try {
+      let imageUrl = item.image || item.imageUrl || "";
+      if (!imageUrl && item.imageId && typeof window.DAWLY_LOAD_PRODUCT_IMAGE === "function") {
+        imageUrl = await window.DAWLY_LOAD_PRODUCT_IMAGE(item.imageId);
+      }
+      if (!imageUrl && Array.isArray(item.imageIds) && item.imageIds[0] && typeof window.DAWLY_LOAD_PRODUCT_IMAGE === "function") {
+        imageUrl = await window.DAWLY_LOAD_PRODUCT_IMAGE(item.imageIds[0]);
+      }
+      let file = null;
+      if (imageUrl) {
+        const response = await fetch(imageUrl, {mode:"cors"});
+        if (!response.ok) throw new Error("تعذر تحميل صورة المنتج");
+        const blob = await response.blob();
+        const mime = blob.type && blob.type.startsWith("image/") ? blob.type : "image/jpeg";
+        file = new File([blob], "dawly-product-" + item.id + (mime.includes("png") ? ".png" : ".jpg"), {type:mime});
+      }
+      if (file && navigator.share && navigator.canShare && navigator.canShare({files:[file]})) {
+        await navigator.share({files:[file], title:name, text:caption});
+      } else if (navigator.share) {
+        await navigator.share({title:name, text:caption});
+      } else {
+        window.open("https://wa.me/?text=" + encodeURIComponent(caption), "_blank");
+      }
+    } catch (error) {
+      if (!error || error.name !== "AbortError") {
+        console.warn("Product share failed:", error);
+        window.open("https://wa.me/?text=" + encodeURIComponent(caption), "_blank");
+      }
+    } finally {
+      shareButton.disabled = false;
     }
   });
 
