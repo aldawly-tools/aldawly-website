@@ -2146,9 +2146,21 @@ body:has(.hero-shell) .section#categories .category-tile.all small{color:#fff}
 @keyframes brands-marquee-move{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 @media(max-width:600px){.brands-marquee{margin-top:10px}.brands-marquee-group{gap:9px}.brand-word.brand-tile{width:126px;min-width:126px;height:66px;min-height:66px;border-radius:11px;font-size:19px}.brands-marquee:before,.brands-marquee:after{width:18px}}
 @media(prefers-reduced-motion:reduce){.brands-marquee-track{animation:none}.brands-marquee-group[aria-hidden="true"]{display:none}}
-/* Keep every brand name in the top marquee solid black */
-.brands-marquee .brand-word.brand-tile,
-.brands-marquee .brand-word.brand-tile:nth-child(n){color:#000!important;}
+/* Brand identities: use each manufacturer's recognizable wordmark colors */
+.brands-marquee .brands-marquee-group a.brand-word.brand-tile:nth-child(1),
+.brands-marquee .brands-marquee-group a.brand-word.brand-tile:nth-child(1):visited{color:#e30613!important;-webkit-text-fill-color:#e30613!important}
+.brands-marquee .brands-marquee-group a.brand-word.brand-tile:nth-child(2),
+.brands-marquee .brands-marquee-group a.brand-word.brand-tile:nth-child(2):visited{color:#e20015!important;-webkit-text-fill-color:#e20015!important}
+.brands-marquee .brands-marquee-group a.brand-word.brand-tile:nth-child(3),
+.brands-marquee .brands-marquee-group a.brand-word.brand-tile:nth-child(3):visited{color:#00843d!important;-webkit-text-fill-color:#00843d!important}
+.brands-marquee .brands-marquee-group a.brand-word.brand-tile:nth-child(4),
+.brands-marquee .brands-marquee-group a.brand-word.brand-tile:nth-child(4):visited{color:#d71920!important;-webkit-text-fill-color:#d71920!important}
+.brands-marquee .brands-marquee-group a.brand-word.brand-tile:nth-child(5),
+.brands-marquee .brands-marquee-group a.brand-word.brand-tile:nth-child(5):visited{color:#d71920!important;-webkit-text-fill-color:#d71920!important}
+.brands-marquee .brands-marquee-group a.brand-word.brand-tile:nth-child(6),
+.brands-marquee .brands-marquee-group a.brand-word.brand-tile:nth-child(6):visited{color:#111!important;-webkit-text-fill-color:#111!important;background:#ffd400!important}
+.brands-marquee .brands-marquee-group a.brand-word.brand-tile:hover,
+.brands-marquee .brands-marquee-group a.brand-word.brand-tile:focus{filter:brightness(.88);}
 /* Clearer header identity mark */
 .brand-mark,.brand-mark svg{width:68px;height:68px;flex:0 0 68px}
 .brand{gap:10px}
