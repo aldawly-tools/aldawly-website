@@ -324,7 +324,11 @@ function renderOrders(){
    return '<div class="order-product-row"><div class="order-product-thumb">'+thumb+'</div><div class="order-product-info"><strong>'+escapeHtml(i.name||"منتج")+'</strong><small>الكمية: '+Number(i.qty||0)+(i.unitPrice?' · سعر الوحدة: '+escapeHtml(i.unitPrice):"")+(i.lineTotal||i.total?' · إجمالي الصنف: '+escapeHtml(i.lineTotal||i.total):"")+'</small></div></div>';
   }).join("");
   const options=Object.keys(orderStatusLabels).map(k=>'<option value="'+k+'"'+(o.status===k?" selected":"")+'>'+orderStatusLabels[k]+'</option>').join("");
-  return '<article class="order-card"><div class="order-top"><strong>طلب '+escapeHtml(o.orderNumber||o.id)+'</strong><span class="pill">'+escapeHtml(orderStatusLabels[o.status]||"جديد")+'</span></div>'+(o.whatsappStatus?'<small class="muted">'+escapeHtml(orderWhatsappLabels[o.whatsappStatus]||"حالة واتساب غير معروفة")+'</small>':"")+'<p><b>العميل:</b> '+escapeHtml(o.customerName||"")+' · <b>الهاتف:</b> <a href="tel:'+escapeHtml(o.customerPhone||"")+'">'+escapeHtml(o.customerPhone||"")+'</a></p><p><b>العنوان:</b> '+escapeHtml(o.customerAddress||"")+'</p><div class="order-products-list"><b>المنتجات المطلوبة</b>'+(itemRows||'<p class="muted">لا توجد تفاصيل منتجات مسجلة.</p>')+'</div><p><b>الإجمالي:</b> '+escapeHtml(o.totalText||"يحدد عند التأكيد")+'</p>'+(o.notes?'<p><b>ملاحظات:</b> '+escapeHtml(o.notes)+'</p>':"")+'<small class="muted">'+escapeHtml(orderDate(o.createdAt))+'</small><div class="order-actions"><select data-order-status="'+escapeHtml(o.id)+'">'+options+'</select><a class="link light" href="https://wa.me/'+encodeURIComponent((function(){const n=String(o.customerPhone||"").replace(/[^0-9]/g,"");return n.startsWith("0")?"2"+n:n;})())+'" target="_blank" rel="noopener">مراسلة العميل</a><button class="light" type="button" data-copy-order="'+escapeHtml(o.id)+'">نسخ تفاصيل الطلب</button><button class="light" type="button" data-order-image-share="'+escapeHtml(o.id)+'">صورة تأكيد واتساب</button><button class="red" type="button" data-print-order="'+escapeHtml(o.id)+'">طباعة A4</button></div></article>';
+  const depositLabel=o.depositStatus==="received"?"تم استلام مقدم الحجز 200 جنيه": "مقدم الحجز: بانتظار مراجعة الإيصال";
+  const depositAction=o.depositStatus==="received"
+   ?'<p class="muted">تم تسجيل استلام المقدم.</p>'
+   :'<button class="light" type="button" data-confirm-deposit="'+escapeHtml(o.id)+'">تأكيد استلام 200 جنيه وإرسال رسالة للعميل</button>';
+  return '<article class="order-card"><div class="order-top"><strong>طلب '+escapeHtml(o.orderNumber||o.id)+'</strong><span class="pill">'+escapeHtml(orderStatusLabels[o.status]||"جديد")+'</span></div><p><b>حالة الدفع:</b> '+depositLabel+'</p>'+depositAction+(o.whatsappStatus?'<small class="muted">'+escapeHtml(orderWhatsappLabels[o.whatsappStatus]||"حالة واتساب غير معروفة")+'</small>':"")+'<p><b>العميل:</b> '+escapeHtml(o.customerName||"")+' · <b>الهاتف:</b> <a href="tel:'+escapeHtml(o.customerPhone||"")+'">'+escapeHtml(o.customerPhone||"")+'</a></p><p><b>العنوان:</b> '+escapeHtml(o.customerAddress||"")+'</p><div class="order-products-list"><b>المنتجات المطلوبة</b>'+(itemRows||'<p class="muted">لا توجد تفاصيل منتجات مسجلة.</p>')+'</div><p><b>الإجمالي:</b> '+escapeHtml(o.totalText||"يحدد عند التأكيد")+'</p>'+(o.notes?'<p><b>ملاحظات:</b> '+escapeHtml(o.notes)+'</p>':"")+'<small class="muted">'+escapeHtml(orderDate(o.createdAt))+'</small><div class="order-actions"><select data-order-status="'+escapeHtml(o.id)+'">'+options+'</select><a class="link light" href="https://wa.me/'+encodeURIComponent((function(){const n=String(o.customerPhone||"").replace(/[^0-9]/g,"");return n.startsWith("0")?"2"+n:n;})())+'" target="_blank" rel="noopener">مراسلة العميل</a><button class="light" type="button" data-copy-order="'+escapeHtml(o.id)+'">نسخ تفاصيل الطلب</button><button class="light" type="button" data-order-image-share="'+escapeHtml(o.id)+'">صورة تأكيد واتساب</button><button class="red" type="button" data-print-order="'+escapeHtml(o.id)+'">طباعة A4</button></div></article>';
  }).join("")||'<p class="muted">لا توجد طلبات في هذا التصنيف.</p>';
  $("ordersList").querySelectorAll("img[data-order-image]").forEach(function(image){
   const imageId=image.dataset.orderImage;
@@ -479,6 +483,30 @@ async function shareOrderConfirmation(order){
 }
 
 $("ordersList").addEventListener("click",async function(e){
+ const depositButton=e.target.closest("[data-confirm-deposit]");
+ if(depositButton){
+  const order=orders.find(o=>o.id===depositButton.dataset.confirmDeposit);
+  if(!order)return;
+  if(order.depositStatus==="received")return;
+  const phone=String(order.customerPhone||"").replace(/[^0-9]/g,"");
+  if(!phone){$("ordersStatus").textContent="لا يوجد رقم هاتف مسجل لهذا الطلب.";return;}
+  if(!window.confirm("هل تحققت من وصول مبلغ 200 جنيه بالفعل؟ سيتم تسجيل استلام المقدم وفتح رسالة واتساب جاهزة للعميل."))return;
+  const waPhone=phone.startsWith("0")?"2"+phone:phone;
+  const waMessage="السلام عليكم "+(order.customerName||"")+"، تم تأكيد استلام مقدم الحجز 200 جنيه للطلب رقم "+(order.orderNumber||order.id)+" من متجر الدولي للعدد. تم تسجيل مقدم الحجز بنجاح، وسنتابع معك تأكيد الطلب والتجهيز والتوصيل. شكرًا لثقتك بنا.";
+  const waWindow=window.open("https://wa.me/"+encodeURIComponent(waPhone)+"?text="+encodeURIComponent(waMessage),"_blank");
+  depositButton.disabled=true;
+  try{
+   await updateDoc(doc(db,"orders",order.id),{depositStatus:"received",depositAmount:200,depositReceivedAt:serverTimestamp(),paymentConfirmationMessagePrepared:true,updatedAt:serverTimestamp()});
+   order.depositStatus="received";renderOrders();
+   $("ordersStatus").textContent="تم تسجيل استلام مقدم الحجز وفتح رسالة واتساب جاهزة. اضغط إرسال داخل واتساب لإبلاغ العميل.";
+   if(!waWindow)$("ordersStatus").textContent+=" إذا لم تفتح واتساب، استخدم زر مراسلة العميل.";
+  }catch(err){
+   if(waWindow)waWindow.close();
+   depositButton.disabled=false;
+   $("ordersStatus").textContent=err.message||"تعذر تسجيل استلام المقدم.";
+  }
+  return;
+ }
  const imageShareButton=e.target.closest("[data-order-image-share]");
  if(imageShareButton){const order=orders.find(o=>o.id===imageShareButton.dataset.orderImageShare);if(order){imageShareButton.disabled=true;try{await shareOrderConfirmation(order);}catch(error){if(error&&error.name!=="AbortError")$("ordersStatus").textContent=error.message||"تعذر تجهيز صورة الطلب.";}finally{imageShareButton.disabled=false;}}return;}
  const printButton=e.target.closest("[data-print-order]");
