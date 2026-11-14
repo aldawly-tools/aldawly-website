@@ -248,16 +248,8 @@ async function ensureCatalog() {
   const metaRef = doc(db, "storeMeta", "catalog");
   const meta = await getDoc(metaRef);
   if (meta.exists()) return;
-  const existing = await getDocs(collection(db, "products"));
-  const batch = writeBatch(db);
-  if (existing.empty) {
-    baseProducts.forEach(function (product) {
-      const record = Object.assign({}, product, {imageId:null});
-      batch.set(doc(db, "products", String(product.id)), record);
-    });
-  }
-  batch.set(metaRef, {initialized:true, updatedAt:serverTimestamp()});
-  await batch.commit();
+  // Do not seed sample or placeholder products. Only owner-added products belong in the live catalog.
+  await setDoc(metaRef, {initialized:true, updatedAt:serverTimestamp(), seeded:false});
 }
 async function loadProducts() {
   await ensureCatalog();
