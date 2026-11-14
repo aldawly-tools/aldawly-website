@@ -27,8 +27,8 @@ service cloud.firestore {
     match /orders/{orderId} {
       allow create: if request.resource.data.keys().hasOnly([
           "orderNumber", "customerName", "customerPhone", "customerAddress",
-          "notes", "items", "totalText", "depositAmount", "depositStatus",
-          "status", "source", "createdAt", "productSubtotal", "totalAmount",
+          "notes", "items", "totalText", "status", "source", "createdAt",
+          "productSubtotal", "totalAmount",
           "totalIsComplete", "whatsappStatus"
         ])
         && request.resource.data.orderNumber is string
@@ -49,8 +49,6 @@ service cloud.firestore {
         && request.resource.data.items is list
         && request.resource.data.items.size() > 0
         && request.resource.data.items.size() <= 50
-        && request.resource.data.depositAmount == 200
-        && request.resource.data.depositStatus == "pending"
         && request.resource.data.totalText is string
         && request.resource.data.totalText.size() <= 1000
         && (
