@@ -599,6 +599,7 @@ async function importProducts(file) {
       desc:String(item.desc || ""),
       specs:String(item.specs || ""),
       icon:String(item.icon || "🔧"),
+      featured:item.featured === true,
       price:String(item.price || "السعر عند الاستفسار"),
       image:image,
       imageId:image ? null : (item.imageId || previous.imageId || null),
