@@ -205,7 +205,7 @@
     ].filter(Boolean).join("\n");
     shareButton.disabled = true;
     try {
-      const file = await window.DAWLY_CREATE_PRODUCT_SHARE_FILE(item, productUrl);
+      const file = await window.DAWLY_CREATE_PRODUCT_SHARE_FILE(item, productUrl, shareButton);
       if (navigator.share && navigator.canShare && navigator.canShare({files:[file]})) {
         await navigator.share({files:[file], title:name, text:caption});
       } else if (navigator.share) {
