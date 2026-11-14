@@ -1,4 +1,4 @@
-const CACHE_NAME = "aldawly-tools-v10-network-refresh";
+const CACHE_NAME = "aldawly-tools-v11-cart-isolation";
 const APP_SHELL = [
   "/aldawly-website/",
   "/aldawly-website/index.html",
