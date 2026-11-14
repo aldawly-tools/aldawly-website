@@ -19,29 +19,32 @@ if (!config.apiKey || config.apiKey === "PASTE_FIREBASE_WEB_API_KEY" || !config.
       return url;
     };
 
-    const meta = await getDoc(doc(db, "storeMeta", "catalog"));
-    if (meta.exists() && meta.data().initialized === true) {
-      // Keep the storefront synchronized with the admin catalog in real time.
-      onSnapshot(collection(db, "products"), function (snapshot) {
-        const products = snapshot.docs.map(function (item) {
-          const data = item.data();
-          // Keep Firestore document IDs intact; product IDs may be strings/slugs.
-          const productId = data.id !== undefined && data.id !== null && data.id !== ""
-            ? data.id
-            : item.id;
-          return Object.assign({}, data, {id:productId});
-        }).sort(function (a, b) {
-          const aNumber = Number(a.id);
-          const bNumber = Number(b.id);
-          if (Number.isFinite(aNumber) && Number.isFinite(bNumber)) return aNumber - bNumber;
-          return String(a.id).localeCompare(String(b.id), "en");
-        });
-        window.DAWLY_PRODUCTS = products;
-        window.dispatchEvent(new CustomEvent("dawly-products-updated", {detail:products}));
-      }, function (error) {
-        console.warn("تعذر تحديث كتالوج المنتجات مباشرة من قاعدة البيانات.", error);
+    // Subscribe directly to the live products collection. Do not gate updates
+    // behind storeMeta: catalog edits/deletions must appear even if metadata is missing.
+    onSnapshot(collection(db, "products"), function (snapshot) {
+      const products = snapshot.docs.map(function (item) {
+        const data = item.data();
+        const productId = data.id !== undefined && data.id !== null && data.id !== ""
+          ? data.id
+          : item.id;
+        return Object.assign({}, data, {id:productId});
+      }).sort(function (a, b) {
+        const aNumber = Number(a.id);
+        const bNumber = Number(b.id);
+        if (Number.isFinite(aNumber) && Number.isFinite(bNumber)) return aNumber - bNumber;
+        return String(a.id).localeCompare(String(b.id), "en");
       });
-    }
+      window.DAWLY_PRODUCTS = products;
+      window.dispatchEvent(new CustomEvent("dawly-products-updated", {detail:products}));
+      window.dispatchEvent(new CustomEvent("dawly-catalog-sync-status", {
+        detail:{ok:true, count:products.length, updatedAt:Date.now()}
+      }));
+    }, function (error) {
+      console.error("Live product catalog subscription failed:", error);
+      window.dispatchEvent(new CustomEvent("dawly-catalog-sync-status", {
+        detail:{ok:false, error:error && (error.code || error.message) || "unknown"}
+      }));
+    });
   } catch (error) {
     console.warn("تعذر تحميل كتالوج المنتجات من قاعدة البيانات. سيتم عرض النسخة المنشورة.", error);
   }
