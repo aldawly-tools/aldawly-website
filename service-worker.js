@@ -1,4 +1,4 @@
-const CACHE_NAME = "aldawly-tools-v7";
+const CACHE_NAME = "aldawly-tools-v8";
 const APP_SHELL = [
   "/aldawly-website/",
   "/aldawly-website/index.html",
