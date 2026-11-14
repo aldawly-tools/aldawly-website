@@ -234,12 +234,33 @@
       return;
     }
     let cart = [];
+    let cartKey = "dawly_cart_v2_default";
     try {
-      const saved = JSON.parse(localStorage.getItem("dawly_cart_v1") || "[]");
+      let deviceId = localStorage.getItem("dawly_cart_device_v1");
+      if (!deviceId) {
+        deviceId = (window.crypto && typeof window.crypto.randomUUID === "function")
+          ? window.crypto.randomUUID()
+          : "d" + Date.now().toString(36) + Math.random().toString(36).slice(2);
+        localStorage.setItem("dawly_cart_device_v1", deviceId);
+      }
+      cartKey = "dawly_cart_v2_" + deviceId;
+      let savedValue = localStorage.getItem(cartKey);
+      if (savedValue === null) {
+        const legacyValue = localStorage.getItem("dawly_cart_v1");
+        if (legacyValue !== null) {
+          savedValue = legacyValue;
+          localStorage.setItem(cartKey, legacyValue);
+          localStorage.removeItem("dawly_cart_v1");
+        }
+      }
+      const saved = JSON.parse(savedValue || "[]");
       if (Array.isArray(saved)) cart = saved.filter(function (line) {
         return line && line.id != null && Number.isInteger(Number(line.qty)) && Number(line.qty) > 0;
       }).map(function (line) { return {id:line.id,qty:Math.min(99,Number(line.qty))}; });
-    } catch (error) { cart = []; }
+    } catch (error) {
+      alert("تعذر قراءة السلة المحفوظة. حدّث الصفحة وحاول مرة أخرى.");
+      return;
+    }
     const line = cart.find(function (entry) { return String(entry.id) === String(id); });
     if (line) {
       if (Number.isInteger(item.stock) && item.stock >= 0 && line.qty >= item.stock) {
@@ -251,7 +272,8 @@
       cart.push({id:item.id,qty:1});
     }
     try {
-      localStorage.setItem("dawly_cart_v1", JSON.stringify(cart));
+      localStorage.setItem(cartKey, JSON.stringify(cart));
+      localStorage.setItem("dawly_cart_last_updated_v1", String(Date.now()));
     } catch (error) {
       alert("تعذر حفظ السلة على هذا الجهاز. تأكد من إعدادات المتصفح وحاول مرة أخرى.");
       return;
