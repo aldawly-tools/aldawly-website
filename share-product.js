@@ -24,13 +24,16 @@
     return lines;
   }
   window.DAWLY_CREATE_PRODUCT_SHARE_FILE = async function (item, productUrl) {
-    let imageUrl = item.image || item.imageUrl || "";
-    if (!imageUrl && item.imageId && typeof window.DAWLY_LOAD_PRODUCT_IMAGE === "function") {
+    // Prefer the store's Firebase-hosted image data (usually a data URL),
+    // because external product-photo hosts may block canvas sharing with CORS.
+    let imageUrl = "";
+    if (item.imageId && typeof window.DAWLY_LOAD_PRODUCT_IMAGE === "function") {
       try { imageUrl = await window.DAWLY_LOAD_PRODUCT_IMAGE(item.imageId); } catch (e) {}
     }
     if (!imageUrl && Array.isArray(item.imageIds) && item.imageIds[0] && typeof window.DAWLY_LOAD_PRODUCT_IMAGE === "function") {
       try { imageUrl = await window.DAWLY_LOAD_PRODUCT_IMAGE(item.imageIds[0]); } catch (e) {}
     }
+    if (!imageUrl) imageUrl = item.image || item.imageUrl || "";
     const image = await loadImage(imageUrl);
     if (!image) throw new Error("تعذر تحميل صورة المنتج لإنشاء بطاقة المشاركة");
     const canvas = document.createElement("canvas");
