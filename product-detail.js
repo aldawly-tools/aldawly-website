@@ -104,7 +104,8 @@
         ? '<img id="detailMainImage" src="' + escapeHtml(firstGallery.url) + '" alt="' + escapeHtml(name) + '">'
         : '<img id="detailMainImage" data-cloud-image="' + escapeHtml(firstGallery.id) + '" alt="' + escapeHtml(name) + '" loading="lazy">')
       : '<span class="product-detail-placeholder" aria-hidden="true">' + escapeHtml(item.icon || "🔧") + '</span>';
-    const galleryHtml = uniqueGallery.length > 1 ? '<button class="detail-gallery-nav prev" type="button" data-gallery-step="-1" aria-label="الصورة السابقة">‹</button><button class="detail-gallery-nav next" type="button" data-gallery-step="1" aria-label="الصورة التالية">›</button><div class="detail-image-thumbs" id="detailImageThumbs" aria-label="صور المنتج"></div>' : '';
+    const galleryHtml = uniqueGallery.length > 1 ? '<div class="detail-image-thumbs" id="detailImageThumbs" aria-label="صور المنتج"></div>' : '';
+    const galleryControls = uniqueGallery.length > 1 ? '<button class="detail-gallery-nav prev" type="button" data-gallery-step="-1" hidden aria-label="الصورة السابقة">‹</button><button class="detail-gallery-nav next" type="button" data-gallery-step="1" hidden aria-label="الصورة التالية">›</button>' : '';
     const brand = item.brand ? escapeHtml(displayBrand(item.brand)) + ' · ' : "";
     const price = escapeHtml(formatPrice(item.price));
     const stockKnown = Number.isInteger(item.stock) && item.stock >= 0;
@@ -134,7 +135,7 @@
     document.title = name + " | الدولي";
     document.getElementById("detailBreadcrumb").textContent = name;
     root.innerHTML = '<article class="product-detail-layout">' +
-      '<div><div class="product-detail-image" id="detailImage" tabindex="0" role="button" aria-label="تكبير صورة ' + escapeHtml(name) + '" title="اضغط لتكبير الصورة">' + image + '</div>' + galleryHtml + '</div>' +
+      '<div><div class="product-detail-image" id="detailImage" tabindex="0" role="button" aria-label="تكبير صورة ' + escapeHtml(name) + '" title="اضغط لتكبير الصورة">' + image + galleryControls + '</div>' + galleryHtml + '</div>' +
       '<div class="product-detail-info"><span class="product-detail-category">' + brand + escapeHtml(item.cat || "منتجات") + '</span>' +
       '<h1 class="product-detail-title">' + escapeHtml(name) + '</h1>' +
       '<p class="product-detail-description">' + escapeHtml(cleanProductCopy(item.desc || "للاستفسار عن مواصفات المنتج وتفاصيله، تواصل معنا مباشرة.")) + '</p>' +
