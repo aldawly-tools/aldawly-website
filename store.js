@@ -420,6 +420,7 @@
     renderProducts();
     renderBrandAvailability();
     renderCart();
+    renderHomeShelves();
   });
   function addToCart(id) {
     const item = products.find(function (entry) { return String(entry.id) === String(id); });
