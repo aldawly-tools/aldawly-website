@@ -673,10 +673,10 @@
       return itemNumber + ") " + cleanOrderProductName(item.name) + "\n   الكمية: " + line.qty + "\n" + priceLines + "\n   صورة المنتج والتفاصيل: " + productUrl;
     }).filter(Boolean).join("\n\n");
     const totalText = pricing.pricedCount === pricing.itemCount
-      ? "إجمالي المنتجات: " + money(pricing.total) + "\nرسوم التوصيل: تُحدد بعد تأكيد العنوان\nالإجمالي النهائي: بعد تأكيد التوصيل"
+      ? "إجمالي المنتجات: " + money(pricing.total)
       : pricing.pricedCount
-        ? "مجموع المنتجات المسعّرة: " + money(pricing.total) + "\nبعض المنتجات: السعر عند الاستفسار\nرسوم التوصيل: تُحدد بعد تأكيد العنوان\nالإجمالي النهائي: بعد تأكيد الأسعار والتوصيل"
-        : "إجمالي المنتجات: يتحدد بعد تأكيد الأسعار\nرسوم التوصيل: تُحدد بعد تأكيد العنوان\nالإجمالي النهائي: بعد تأكيد الأسعار والتوصيل";
+        ? "مجموع المنتجات المسعّرة: " + money(pricing.total) + "\nبعض المنتجات: السعر عند الاستفسار"
+        : "إجمالي المنتجات: يتحدد بعد تأكيد الأسعار";
     const customerDetails = [
       "الاسم: " + customerName,
       "الهاتف: " + customerPhone,
@@ -696,7 +696,7 @@
       "💰 *ملخص الطلب*",
       totalText,
       "",
-      "برجاء تأكيد توفر المنتجات والسعر النهائي ورسوم التوصيل."
+      "برجاء تأكيد توفر المنتجات."
     ].join("\n");
     const orderItems = cart.map(function(line) {
       const item = products.find(function(entry){return String(entry.id)===String(line.id);});
