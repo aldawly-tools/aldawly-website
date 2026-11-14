@@ -2183,3 +2183,7 @@ body:has(.hero-shell) .section#categories .category-tile.all small{color:#fff}
 .brands-marquee .brand-word.brand-tile.brand-unavailable{opacity:1!important;filter:none!important}
 .brands-marquee .brand-word.brand-tile.brand-unavailable:after{color:#626b75!important;background:#eef1f4!important;filter:none!important}
 .brands-marquee .brand-word.brand-tile:hover,.brands-marquee .brand-word.brand-tile:focus{filter:saturate(1.12) brightness(.97)!important;box-shadow:0 8px 20px #17202b20!important}
+
+
+/* Keep the order WhatsApp action hidden until a valid order link is ready. */
+.payment-proof[hidden]{display:none!important}
