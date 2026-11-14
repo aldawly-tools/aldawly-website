@@ -26,8 +26,9 @@
     // Reuse the image already rendered in the product card/detail page first.
     const host = shareButton && (shareButton.closest(".product-card") || document.getElementById("productDetail"));
     const visibleImage = host && host.querySelector(".product-visual img, #detailMainImage, #detailCloudImage, .product-detail-image img");
-    if (visibleImage && visibleImage.complete && visibleImage.naturalWidth > 0) {
-      // Draw the already-loaded image; Firebase data URLs remain canvas-safe.
+    if (visibleImage && visibleImage.complete && visibleImage.naturalWidth > 0 &&
+        (visibleImage.currentSrc.indexOf("data:") === 0 || new URL(visibleImage.currentSrc, window.location.href).origin === window.location.origin)) {
+      // Reuse an already-loaded Firebase data URL or same-origin image; skip remote images that taint canvas.
       var image = visibleImage;
     }
     // Otherwise load the Firebase-hosted image data (usually a data URL).
