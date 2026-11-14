@@ -9,6 +9,83 @@ initializeApp();
 const telegramBotToken = defineSecret("TELEGRAM_BOT_TOKEN");
 const telegramChatId = defineSecret("TELEGRAM_CHAT_ID");
 
+const oneSignalRestApiKey = defineSecret("ONESIGNAL_REST_API_KEY");
+const oneSignalAppId = "d87b624d-3b5b-46a9-aac0-ff545ae24022";
+
+async function sendStorePush(title, message, url) {
+  const apiKey = oneSignalRestApiKey.value();
+  if (!apiKey) throw new Error("OneSignal REST API key is not configured.");
+  const response = await fetch("https://api.onesignal.com/notifications", {
+    method: "POST",
+    headers: {
+      "content-type": "application/json",
+      "Authorization": "Key " + apiKey
+    },
+    body: JSON.stringify({
+      app_id: oneSignalAppId,
+      target_channel: "push",
+      filters: [{ field: "tag", key: "store_admin", relation: "=", value: "true" }],
+      headings: { en: title, ar: title },
+      contents: { en: message, ar: message },
+      url: url
+    }),
+    signal: AbortSignal.timeout(10000)
+  });
+  const result = await response.json().catch(() => ({}));
+  if (!response.ok) {
+    logger.error("OneSignal rejected push notification.", {
+      status: response.status,
+      errors: result.errors || null
+    });
+    throw new Error("OneSignal notification failed with HTTP " + response.status + ".");
+  }
+  logger.info("OneSignal push sent.", { notificationId: result.id || null });
+}
+
+exports.notifyNewProductOnOneSignal = onDocumentCreated(
+  {
+    document: "products/{productId}",
+    region: "me-central1",
+    retry: true,
+    secrets: [oneSignalRestApiKey]
+  },
+  async (event) => {
+    const snapshot = event.data;
+    if (!snapshot) return;
+    const product = snapshot.data() || {};
+    const name = safeText(product.name, 120) || "منتج جديد";
+    const brand = safeText(product.brand, 80);
+    await sendStorePush(
+      "🆕 منتج جديد في متجر الدولي",
+      name + (brand ? " — " + brand : "") + " أصبح متاحًا في المتجر.",
+      "https://aldawly-website.pages.dev/products.html"
+    );
+  }
+);
+
+exports.notifyNewOrderOnOneSignal = onDocumentCreated(
+  {
+    document: "orders/{orderId}",
+    region: "me-central1",
+    retry: true,
+    secrets: [oneSignalRestApiKey]
+  },
+  async (event) => {
+    const snapshot = event.data;
+    if (!snapshot) return;
+    const order = snapshot.data() || {};
+    if (order.status !== "new" || order.source !== "website") return;
+    const orderNumber = safeText(order.orderNumber, 40) || snapshot.id;
+    const customer = safeText(order.customerName, 80);
+    await sendStorePush(
+      "🛒 طلب جديد من متجر الدولي",
+      "طلب " + orderNumber + (customer ? " من العميل " + customer : "") + " — افتح لوحة الإدارة لمراجعته.",
+      "https://aldawly-website.pages.dev/admin.html"
+    );
+  }
+);
+
+
 function safeText(value, maxLength) {
   return String(value == null ? "" : value).slice(0, maxLength);
 }
