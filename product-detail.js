@@ -104,7 +104,7 @@
         ? '<img id="detailMainImage" src="' + escapeHtml(firstGallery.url) + '" alt="' + escapeHtml(name) + '">'
         : '<img id="detailMainImage" data-cloud-image="' + escapeHtml(firstGallery.id) + '" alt="' + escapeHtml(name) + '" loading="lazy">')
       : '<span class="product-detail-placeholder" aria-hidden="true">' + escapeHtml(item.icon || "🔧") + '</span>';
-    const galleryHtml = uniqueGallery.length > 1 ? '<div class="detail-image-thumbs" id="detailImageThumbs" aria-label="صور المنتج"></div>' : '';
+    const galleryHtml = uniqueGallery.length > 1 ? '<button class="detail-gallery-nav prev" type="button" data-gallery-step="-1" aria-label="الصورة السابقة">‹</button><button class="detail-gallery-nav next" type="button" data-gallery-step="1" aria-label="الصورة التالية">›</button><div class="detail-image-thumbs" id="detailImageThumbs" aria-label="صور المنتج"></div>' : '';
     const brand = item.brand ? escapeHtml(displayBrand(item.brand)) + ' · ' : "";
     const price = escapeHtml(formatPrice(item.price));
     const stockKnown = Number.isInteger(item.stock) && item.stock >= 0;
@@ -186,16 +186,40 @@
       try { return await window.DAWLY_LOAD_PRODUCT_IMAGE(source.id); } catch (error) { return ""; }
     })).then(function (urls) {
       const valid = urls.filter(Boolean);
-      if (mainImage && mainImage.isConnected && valid.length && !mainImage.getAttribute("src")) mainImage.src = valid[0];
+      if (!valid.length) return;
+      let activeIndex = 0;
+      if (mainImage && mainImage.isConnected && !mainImage.getAttribute("src")) mainImage.src = valid[0];
+      const stepButtons = root.querySelectorAll("[data-gallery-step]");
+      function showGalleryImage(index) {
+        if (!mainImage || !valid.length) return;
+        activeIndex = (index + valid.length) % valid.length;
+        mainImage.src = valid[activeIndex];
+        if (thumbBox) {
+          const thumbs = thumbBox.querySelectorAll(".detail-image-thumb");
+          thumbs.forEach(function (thumb, thumbIndex) {
+            const active = thumbIndex === activeIndex;
+            thumb.classList.toggle("active", active);
+            if (active) thumb.setAttribute("aria-current", "true");
+            else thumb.removeAttribute("aria-current");
+          });
+          const activeThumb = thumbs[activeIndex];
+          if (activeThumb && activeThumb.scrollIntoView) activeThumb.scrollIntoView({behavior:"smooth",block:"nearest",inline:"nearest"});
+        }
+      }
       if (thumbBox && thumbBox.isConnected && valid.length > 1) {
         thumbBox.innerHTML = valid.map(function (url, index) {
-          return '<button type="button" class="detail-image-thumb' + (index === 0 ? ' active' : '') + '" data-image-url="' + escapeHtml(url) + '" aria-label="عرض الصورة ' + (index + 1) + '"><img src="' + escapeHtml(url) + '" alt=""></button>';
+          return '<button type="button" class="detail-image-thumb' + (index === 0 ? ' active' : '') + '" data-image-index="' + index + '" aria-current="' + (index === 0 ? 'true' : 'false') + '" aria-label="عرض الصورة ' + (index + 1) + '"><img src="' + escapeHtml(url) + '" alt="" loading="lazy"></button>';
         }).join("");
         thumbBox.addEventListener("click", function (event) {
-          const button = event.target.closest("[data-image-url]");
-          if (!button || !mainImage) return;
-          mainImage.src = button.dataset.imageUrl;
-          thumbBox.querySelectorAll(".detail-image-thumb").forEach(function (thumb) { thumb.classList.toggle("active", thumb === button); });
+          const button = event.target.closest("[data-image-index]");
+          if (!button) return;
+          showGalleryImage(Number(button.dataset.imageIndex));
+        });
+        stepButtons.forEach(function (button) {
+          button.hidden = false;
+          button.addEventListener("click", function () {
+            showGalleryImage(activeIndex + Number(button.dataset.galleryStep));
+          });
         });
       }
     }).catch(function () {});
