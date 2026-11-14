@@ -50,6 +50,7 @@ button:disabled{opacity:.6;cursor:wait}
 @media(max-width:380px){.dashboard-stats{gap:8px}.dashboard-stat strong{font-size:20px}}
 
 .dashboard-nav{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));position:sticky;top:4px}.dashboard-tab{background:#f1f2f4;color:#444;border:1px solid #e5e7eb;padding:12px 8px;white-space:nowrap;font-size:13px}.dashboard-tab.active{background:#d71920;color:#fff;border-color:#d71920;box-shadow:0 4px 12px #d7192030}.admin-panel{scroll-margin-top:75px}.admin-panel.hidden{display:none!important}@media(max-width:480px){.dashboard-nav{gap:5px;padding:7px}.dashboard-tab{font-size:11px;padding:11px 4px;border-radius:9px}}
+@media(max-width:700px){.dashboard-nav{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.dashboard-tab:last-child{grid-column:auto}.dashboard-tab{min-height:54px;font-size:14px;white-space:normal;line-height:1.35;touch-action:manipulation}}
 
 /* تحسين عرض لوحة الإدارة على الهاتف */
 @media(max-width:700px){
@@ -129,7 +130,7 @@ button:disabled{opacity:.6;cursor:wait}
       <div class="dashboard-stat"><span>إجمالي المنتجات</span><strong id="dashProducts">0</strong></div>
       <div class="dashboard-stat"><span>إجمالي الطلبات</span><strong id="dashOrders">0</strong></div>
     </div>
-    <div class="card">
+    <div class="card admin-panel" id="productPanel" role="tabpanel">
       <div class="actions" style="justify-content:space-between;align-items:center"><div><h2 style="margin:0 0 5px">إضافة منتج</h2><span class="muted" id="signedInAs"></span></div><button class="light" id="enablePushBtn" type="button">تفعيل إشعارات الطلبات على هذا الهاتف</button><button class="light" id="logoutBtn" type="button">تسجيل الخروج</button></div>
       <p class="status" id="saveStatus" aria-live="polite"></p><p class="status" id="pushStatus" aria-live="polite"></p>
       <form id="productForm">
@@ -171,6 +172,7 @@ import { getAuth, GoogleAuthProvider, onAuthStateChanged, signInWithPopup, signI
 import { collection, deleteDoc, doc, getDoc, getDocs, getFirestore, setDoc, serverTimestamp, writeBatch, query, orderBy, updateDoc, runTransaction } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-firestore.js";
 
 const $ = function (id) { return document.getElementById(id); };
+const ids = ["productPanel", "catalogPanel", "ordersPanel", "postPanel"];
 const config = window.DAWLY_FIREBASE_CONFIG || {};
 const status = $("status");
 const saveStatus = $("saveStatus");
