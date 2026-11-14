@@ -141,6 +141,7 @@
   document.addEventListener("click", function (event) {
     const target = event.target instanceof Element ? event.target : null;
     if (!target) return;
+    if (target.closest("[data-gallery-step]")) return;
     if (target.closest(".image-zoom-close")) {
       closeImage();
       return;
