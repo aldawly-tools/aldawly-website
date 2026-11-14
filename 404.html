@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex,follow">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>جاري تحويل الرابط — الدولي</title>
+<script>
+(function () {
+  var host = location.hostname.toLowerCase();
+  if (host === "aldawly-tools.github.io" || host.endsWith(".pages.dev")) {
+    var path = location.pathname;
+    if (host === "aldawly-tools.github.io" && path.indexOf("/aldawly-website") === 0) {
+      path = path.slice("/aldawly-website".length) || "/";
+    }
+    if (!path || path.charAt(0) !== "/") path = "/" + path;
+    location.replace("https://aldawlytools.com.eg" + path + location.search + location.hash);
+  }
+})();
+</script>
+</head>
+<body><p>الرابط غير موجود. <a href="https://aldawlytools.com.eg/">انتقل إلى متجر الدولي</a>.</p></body>
+</html>
