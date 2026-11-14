@@ -1,4 +1,4 @@
-const CACHE_NAME = "aldawly-tools-v12-android-share-image";
+const CACHE_NAME = "aldawly-tools-v13-android-share-button";
 const APP_SHELL = [
   "/aldawly-website/",
   "/aldawly-website/index.html",
