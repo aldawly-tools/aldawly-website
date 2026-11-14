@@ -534,7 +534,7 @@
         "📝 التفاصيل: " + description.slice(0, 700),
         "🔗 رابط المنتج: " + productUrl,
         "الدولي للعدد الأصلية والمستوردة"
-      ].filter(Boolean).join("\\n");
+      ].filter(Boolean).join("\n");
       (async function () {
         shareButton.disabled = true;
         const oldLabel = shareButton.textContent;
