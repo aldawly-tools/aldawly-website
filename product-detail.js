@@ -88,7 +88,7 @@
     if (item.image) gallerySources.push({url:String(item.image)});
     imageIds.forEach(function (id) { if (id != null && String(id).trim()) gallerySources.push({id:String(id)}); });
     extraImages.forEach(function (entry) {
-      if (typeof entry === "string" && /^https?:\\/\\//i.test(entry)) gallerySources.push({url:entry});
+      if (typeof entry === "string" && (entry.indexOf("https://") === 0 || entry.indexOf("http://") === 0)) gallerySources.push({url:entry});
       else if (entry && typeof entry === "object") {
         if (entry.url || entry.src || entry.image) gallerySources.push({url:String(entry.url || entry.src || entry.image)});
         else if (entry.id || entry.imageId) gallerySources.push({id:String(entry.id || entry.imageId)});
