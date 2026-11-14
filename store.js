@@ -520,17 +520,57 @@
   document.addEventListener("click", function (event) {
     const shareButton = event.target.closest("[data-share-product]");
     if (shareButton) {
-      const id = shareButton.dataset.shareProduct;
-      const url = new URL("product.html?id=" + encodeURIComponent(id), window.location.href).toString();
-      const title = shareButton.closest(".product-card")?.querySelector(".product-name")?.textContent || "منتج من متجر الدولي";
-      const shareData = {title:title, text:"شاهد المنتج من متجر الدولي للعدد الأصلية: " + title, url:url};
-      if (navigator.share) {
-        navigator.share(shareData).catch(function(error) {
-          if (!error || error.name !== "AbortError") window.open("https://wa.me/?text=" + encodeURIComponent(shareData.text + "\\n" + url), "_blank");
-        });
-      } else {
-        window.open("https://wa.me/?text=" + encodeURIComponent(shareData.text + "\\n" + url), "_blank");
-      }
+      const id = String(shareButton.dataset.shareProduct);
+      const item = products.find(function (entry) { return String(entry.id) === id; });
+      if (!item) { alert("تعذر تحميل بيانات المنتج للمشاركة."); return; }
+      const productUrl = new URL("product.html?id=" + encodeURIComponent(id), window.location.href).toString();
+      const name = cleanProductName(item.name);
+      const description = cleanProductCopy(item.desc || item.specs || "للاستفسار عن المواصفات والتوفر تواصل مع متجر الدولي.");
+      const caption = [
+        "🧰 " + name,
+        item.brand ? "🏷️ الماركة: " + displayBrand(item.brand) : "",
+        "💰 السعر: " + formatPrice(item.price),
+        item.cat ? "📂 القسم: " + item.cat : "",
+        "📝 التفاصيل: " + description.slice(0, 700),
+        "🔗 رابط المنتج: " + productUrl,
+        "الدولي للعدد الأصلية والمستوردة"
+      ].filter(Boolean).join("\\n");
+      (async function () {
+        shareButton.disabled = true;
+        const oldLabel = shareButton.textContent;
+        try {
+          let imageUrl = item.image || item.imageUrl || "";
+          if (!imageUrl && item.imageId && typeof window.DAWLY_LOAD_PRODUCT_IMAGE === "function") {
+            imageUrl = await window.DAWLY_LOAD_PRODUCT_IMAGE(item.imageId);
+          }
+          if (!imageUrl && Array.isArray(item.imageIds) && item.imageIds[0] && typeof window.DAWLY_LOAD_PRODUCT_IMAGE === "function") {
+            imageUrl = await window.DAWLY_LOAD_PRODUCT_IMAGE(item.imageIds[0]);
+          }
+          let file = null;
+          if (imageUrl) {
+            const response = await fetch(imageUrl, {mode:"cors"});
+            if (!response.ok) throw new Error("تعذر تحميل صورة المنتج");
+            const blob = await response.blob();
+            const mime = blob.type && blob.type.startsWith("image/") ? blob.type : "image/jpeg";
+            file = new File([blob], "dawly-product-" + id + (mime.includes("png") ? ".png" : ".jpg"), {type:mime});
+          }
+          if (file && navigator.share && navigator.canShare && navigator.canShare({files:[file]})) {
+            await navigator.share({files:[file], title:name, text:caption});
+          } else if (navigator.share) {
+            await navigator.share({title:name, text:caption});
+          } else {
+            window.open("https://wa.me/?text=" + encodeURIComponent(caption), "_blank");
+          }
+        } catch (error) {
+          if (!error || error.name !== "AbortError") {
+            console.warn("Product share failed:", error);
+            window.open("https://wa.me/?text=" + encodeURIComponent(caption), "_blank");
+          }
+        } finally {
+          shareButton.disabled = false;
+          shareButton.textContent = oldLabel;
+        }
+      })();
       return;
     }
     if (event.target.closest("#floatingContactToggle")) { setFloatingContact(floatingContactPanel && floatingContactPanel.hidden); return; }
