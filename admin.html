@@ -715,10 +715,28 @@ async function editProduct(id) {
   Array.from($("tasks").options).forEach(function (option) { option.selected = (product.tasks || []).includes(option.value); });
   $("saveBtn").textContent = "حفظ التعديل";
   showAdminTab("productPanel");
-  if (product.imageId) {
-    const imageDoc = await getDoc(doc(db, "productImages", String(product.imageId)));
-    if (imageDoc.exists()) showPreview(imageDoc.data().data || "");
-  } else showPreview(product.image || "");
+  if (existingImageIds.length) {
+    const firstImage = await getDoc(doc(db, "productImages", String(existingImageIds[0])));
+    if (firstImage.exists()) showPreview(firstImage.data().data || "");
+    const gallery = $("imageGalleryPreview");
+    gallery.innerHTML = "";
+    for (let index = 0; index < existingImageIds.length; index++) {
+      const imageDoc = await getDoc(doc(db, "productImages", String(existingImageIds[index])));
+      if (!imageDoc.exists() || !imageDoc.data().data) continue;
+      const thumb = document.createElement("div");
+      thumb.className = "admin-image-thumb";
+      const image = document.createElement("img");
+      image.src = imageDoc.data().data;
+      image.alt = "صورة محفوظة رقم " + (index + 1);
+      const number = document.createElement("span");
+      number.textContent = String(index + 1);
+      thumb.append(image, number);
+      gallery.appendChild(thumb);
+    }
+  } else {
+    showPreview(product.image || "");
+    $("imageGalleryPreview").innerHTML = "";
+  }
   window.scrollTo({top:0,behavior:"smooth"});
 }
 async function deleteProduct(id) {
@@ -820,7 +838,7 @@ $("importFile").addEventListener("change", async function (event) {
 $("imageFile").addEventListener("change", function () {
   const chosen = Array.from($("imageFile").files || []);
   if (!chosen.length) return;
-  if (selectedImageFiles.length + (imageRemoved ? 0 : existingImageIds.length) + chosen.length > 5) {
+  if (selectedImageFiles.length + (imageRemoved ? 0 : existingImageIds.length) + chosen.length > 8) {
     message(saveStatus, "يمكن إضافة 8 صور فقط للمنتج. امسح الصور القديمة إذا أردت استبدالها.");
     $("imageFile").value = "";
     return;
