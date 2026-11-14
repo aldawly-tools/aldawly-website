@@ -650,11 +650,18 @@
     try {
       blob = await createWhatsAppOrderImage(orderNumber, customerName, customerPhone, customerAddress, orderItems);
       file = new File([blob], "dawly-order-" + orderNumber + ".png", {type:"image/png"});
-      if (navigator.share && navigator.canShare && navigator.canShare({files:[file]})) {
-        await navigator.share({files:[file], title:"طلب من متجر الدولي", text:message});
-        clearCartAfterWhatsApp();
-        if (whatsappWindow && !whatsappWindow.closed) whatsappWindow.close();
-        return true;
+      // Try the native Android share sheet directly. Some Android browsers report
+      // canShare({files}) as false even though navigator.share can hand off the file.
+      if (navigator.share && typeof File !== "undefined") {
+        try {
+          await navigator.share({files:[file], title:"صورة طلب من متجر الدولي", text:message});
+          clearCartAfterWhatsApp();
+          if (whatsappWindow && !whatsappWindow.closed) whatsappWindow.close();
+          return true;
+        } catch (shareError) {
+          if (shareError && shareError.name === "AbortError") throw shareError;
+          console.warn("تعذرت المشاركة المباشرة للصورة، سيتم تنزيلها كحل بديل:", shareError);
+        }
       }
       const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
