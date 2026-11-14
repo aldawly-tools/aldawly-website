@@ -2146,3 +2146,6 @@ body:has(.hero-shell) .section#categories .category-tile.all small{color:#fff}
 @keyframes brands-marquee-move{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 @media(max-width:600px){.brands-marquee{margin-top:10px}.brands-marquee-group{gap:9px}.brand-word.brand-tile{width:126px;min-width:126px;height:66px;min-height:66px;border-radius:11px;font-size:19px}.brands-marquee:before,.brands-marquee:after{width:18px}}
 @media(prefers-reduced-motion:reduce){.brands-marquee-track{animation:none}.brands-marquee-group[aria-hidden="true"]{display:none}}
+/* Keep every brand name in the top marquee solid black */
+.brands-marquee .brand-word.brand-tile,
+.brands-marquee .brand-word.brand-tile:nth-child(n){color:#000!important;}
