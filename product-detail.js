@@ -83,12 +83,28 @@
     }
     canonicalTag.href = canonicalUrl.href;
     const imageIds = Array.isArray(item.imageIds) && item.imageIds.length ? item.imageIds : (item.imageId ? [item.imageId] : []);
-    const image = item.image
-      ? '<img id="detailMainImage" src="' + escapeHtml(item.image) + '" alt="' + escapeHtml(name) + '">'
-      : imageIds.length
-        ? '<img id="detailCloudImage" data-cloud-image="' + escapeHtml(imageIds[0]) + '" alt="' + escapeHtml(name) + '" loading="lazy">'
-        : '<span class="product-detail-placeholder" aria-hidden="true">' + escapeHtml(item.icon || "🔧") + '</span>';
-    const galleryHtml = imageIds.length > 1 ? '<div class="detail-image-thumbs" id="detailImageThumbs"></div>' : '';
+    const extraImages = Array.isArray(item.images) ? item.images : [];
+    const gallerySources = [];
+    if (item.image) gallerySources.push({url:String(item.image)});
+    imageIds.forEach(function (id) { if (id != null && String(id).trim()) gallerySources.push({id:String(id)}); });
+    extraImages.forEach(function (entry) {
+      if (typeof entry === "string" && /^https?:\\/\\//i.test(entry)) gallerySources.push({url:entry});
+      else if (entry && typeof entry === "object") {
+        if (entry.url || entry.src || entry.image) gallerySources.push({url:String(entry.url || entry.src || entry.image)});
+        else if (entry.id || entry.imageId) gallerySources.push({id:String(entry.id || entry.imageId)});
+      }
+    });
+    const uniqueGallery = gallerySources.filter(function (source, index, all) {
+      const key = source.url || "cloud:" + source.id;
+      return all.findIndex(function (candidate) { return (candidate.url || "cloud:" + candidate.id) === key; }) === index;
+    }).slice(0,8);
+    const firstGallery = uniqueGallery[0] || null;
+    const image = firstGallery
+      ? (firstGallery.url
+        ? '<img id="detailMainImage" src="' + escapeHtml(firstGallery.url) + '" alt="' + escapeHtml(name) + '">'
+        : '<img id="detailMainImage" data-cloud-image="' + escapeHtml(firstGallery.id) + '" alt="' + escapeHtml(name) + '" loading="lazy">')
+      : '<span class="product-detail-placeholder" aria-hidden="true">' + escapeHtml(item.icon || "🔧") + '</span>';
+    const galleryHtml = uniqueGallery.length > 1 ? '<div class="detail-image-thumbs" id="detailImageThumbs" aria-label="صور المنتج"></div>' : '';
     const brand = item.brand ? escapeHtml(displayBrand(item.brand)) + ' · ' : "";
     const price = escapeHtml(formatPrice(item.price));
     const stockKnown = Number.isInteger(item.stock) && item.stock >= 0;
@@ -162,27 +178,31 @@
       });
     }
 
-    const cloudImage = document.getElementById("detailCloudImage");
-    const mainImage = document.getElementById("detailMainImage") || cloudImage;
+    const mainImage = document.getElementById("detailMainImage");
     const thumbBox = document.getElementById("detailImageThumbs");
-    if (imageIds.length && typeof window.DAWLY_LOAD_PRODUCT_IMAGE === "function") {
-      Promise.all(imageIds.slice(0, 5).map(function (imageId) {
-        return window.DAWLY_LOAD_PRODUCT_IMAGE(imageId);
-      })).then(function (urls) {
-        const valid = urls.filter(Boolean);
-        if (!valid.length) return;
-        if (mainImage && mainImage.isConnected && !mainImage.src) mainImage.src = valid[0];
-        if (thumbBox && thumbBox.isConnected) {
-          thumbBox.innerHTML = valid.map(function (url, index) {
-            return '<button type="button" class="detail-image-thumb" data-image-url="' + escapeHtml(url) + '" aria-label="عرض الصورة ' + (index + 1) + '"><img src="' + escapeHtml(url) + '" alt=""></button>';
-          }).join("");
-          thumbBox.addEventListener("click", function (event) {
-            const button = event.target.closest("[data-image-url]");
-            if (button && mainImage) mainImage.src = button.dataset.imageUrl;
-          });
-        }
-      }).catch(function () {});
-    }
+    Promise.all(uniqueGallery.map(async function (source) {
+      if (source.url) return source.url;
+      if (typeof window.DAWLY_LOAD_PRODUCT_IMAGE !== "function") return "";
+      try { return await window.DAWLY_LOAD_PRODUCT_IMAGE(source.id); } catch (error) { return ""; }
+    })).then(function (urls) {
+      const valid = urls.filter(Boolean);
+      if (mainImage && mainImage.isConnected && valid.length && !mainImage.getAttribute("src")) mainImage.src = valid[0];
+      if (thumbBox && thumbBox.isConnected && valid.length > 1) {
+        thumbBox.innerHTML = valid.map(function (url, index) {
+          return '<button type="button" class="detail-image-thumb' + (index === 0 ? ' active' : '') + '" data-image-url="' + escapeHtml(url) + '" aria-label="عرض الصورة ' + (index + 1) + '"><img src="' + escapeHtml(url) + '" alt=""></button>';
+        }).join("");
+        thumbBox.addEventListener("click", function (event) {
+          const button = event.target.closest("[data-image-url]");
+          if (!button || !mainImage) return;
+          mainImage.src = button.dataset.imageUrl;
+          thumbBox.querySelectorAll(".detail-image-thumb").forEach(function (thumb) { thumb.classList.toggle("active", thumb === button); });
+        });
+      }
+    }).catch(function () {});
+    if (mainImage) mainImage.addEventListener("error", function () {
+      const holder = document.getElementById("detailImage");
+      if (holder) holder.innerHTML = '<span class="product-detail-placeholder" aria-hidden="true">🔧</span>';
+    }, {once:true});
   }
 
 
