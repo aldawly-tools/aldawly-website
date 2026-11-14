@@ -259,4 +259,28 @@ if ("serviceWorker" in navigator) {
 <script src="store.js?v=site-features-20261114-1"></script>
 <script src="image-zoom.js?v=live-refresh-20261114-1"></script>
 <script type="module" src="product-cloud.js?v=live-refresh-20261114-1"></script>
+<script>
+(function(){
+ const form=document.getElementById("quoteRequestForm");
+ if(!form)return;
+ form.addEventListener("submit",function(event){
+  event.preventDefault();
+  const type=document.getElementById("quoteType").value;
+  const first=document.getElementById("quoteProductOne").value.trim();
+  const second=document.getElementById("quoteProductTwo").value.trim();
+  const qty=document.getElementById("quoteQty").value.trim();
+  const business=document.getElementById("quoteBusiness").value.trim();
+  const notes=document.getElementById("quoteNotes").value.trim();
+  if(!first){alert("اكتب اسم المنتج أو الموديل الأول.");return;}
+  if(type==="مقارنة بين منتجين"&&!second){alert("اكتب اسم المنتج الثاني للمقارنة.");return;}
+  const lines=["السلام عليكم، أرسل استفسارًا من موقع الدولي للعدد.","نوع الطلب: "+type,"المنتج الأول: "+first];
+  if(second)lines.push("المنتج الثاني: "+second);
+  if(qty)lines.push("الكمية المطلوبة: "+qty);
+  if(business)lines.push("الشركة/الورشة: "+business);
+  if(notes)lines.push("تفاصيل إضافية: "+notes);
+  lines.push("برجاء إفادتي بالسعر والتوفر والمواصفات.");
+  window.open("https://wa.me/201024787222?text="+encodeURIComponent(lines.join("\n")),"_blank","noopener");
+ });
+})();
+</script>
 </body></html>
