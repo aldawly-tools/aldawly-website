@@ -563,9 +563,18 @@
     const orderLink = document.getElementById("orderWhatsappLink");
     if (!followup || !status) return;
     status.textContent = saved
-      ? "تم تسجيل طلبك رقم " + orderNumber + ". بعد تجهيز الصورة اضغط نفس زر الطلب لإرسالها مع التفاصيل."
+      ? "تم تسجيل طلبك رقم " + orderNumber + ". اضغط فتح رسالة الطلب لإرسال التفاصيل عبر واتساب، ويمكنك استخدام زر الطلب لإرسال صورة المنتجات."
       : "تعذر حفظ الطلب " + orderNumber + " في لوحة المتجر. تواصل مع المتجر للتأكد من استلامه.";
-    if (orderLink) { orderLink.hidden = true; orderLink.removeAttribute("href"); }
+    if (orderLink) {
+      if (saved && orderWhatsappUrl) {
+        orderLink.href = orderWhatsappUrl;
+        orderLink.hidden = false;
+        orderLink.setAttribute("aria-label", "فتح رسالة الطلب رقم " + orderNumber + " عبر واتساب");
+      } else {
+        orderLink.hidden = true;
+        orderLink.removeAttribute("href");
+      }
+    }
     followup.hidden = false;
     followup.scrollIntoView({behavior:"smooth",block:"nearest"});
   }
