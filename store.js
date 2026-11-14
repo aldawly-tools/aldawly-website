@@ -505,39 +505,16 @@
     if (event.target.closest("#closeMobileMenu") || event.target === mobileMenuOverlay) { setMobileMenu(false); return; }
     if (event.target.closest("#mobileMenuDrawer a")) { setMobileMenu(false); return; }
   });
-  const paymentConfirmed = document.getElementById("paymentConfirmed");
-  const paymentLinks = Array.from(document.querySelectorAll("[data-payment-link]"));
-  function updatePaymentLinks() {
-    const enabled = Boolean(paymentConfirmed && paymentConfirmed.checked);
-    paymentLinks.forEach(function (link) {
-      link.setAttribute("aria-disabled", enabled ? "false" : "true");
-      link.tabIndex = enabled ? 0 : -1;
-    });
-  }
-  if (paymentConfirmed) paymentConfirmed.addEventListener("change", updatePaymentLinks);
-  paymentLinks.forEach(function (link) {
-    link.addEventListener("click", function (event) {
-      if (!paymentConfirmed || !paymentConfirmed.checked) {
-        event.preventDefault();
-        if (paymentConfirmed) paymentConfirmed.focus();
-      }
-    });
-  });
-  updatePaymentLinks();
   function showPaymentFollowup(orderNumber, saved, orderWhatsappUrl) {
     const followup = document.getElementById("paymentFollowup");
     const status = document.getElementById("paymentFollowupStatus");
-    const proofLink = document.getElementById("paymentProofLink");
     const orderLink = document.getElementById("orderWhatsappLink");
-    if (!followup || !status || !proofLink) return;
-    if (paymentConfirmed) paymentConfirmed.checked = false;
-    updatePaymentLinks();
+    if (!followup || !status) return;
     status.textContent = saved
-      ? "تم حفظ طلبك في لوحة المتجر برقم " + orderNumber + " وحالته بانتظار إرسال العميل عبر واتساب. أرسل الرسالة وانتظر تأكيد المتجر قبل الدفع."
-      : "تعذر حفظ طلبك " + orderNumber + " في لوحة المتجر، لذلك لم تُفتح واتساب. احتفظ بسلتك وحاول مرة أخرى أو تواصل مع المتجر.";
-    proofLink.href = "https://wa.me/201024787222?text=" + encodeURIComponent("السلام عليكم، أرسل إيصال مقدم جدية الحجز 200 جنيه للطلب رقم " + orderNumber + ".");
+      ? "تم تسجيل طلبك بنجاح برقم " + orderNumber + ". سيتواصل معك المتجر لتأكيد التوفر والسعر والتوصيل."
+      : "تعذر حفظ طلبك " + orderNumber + " في لوحة المتجر. احتفظ برقم الطلب وتواصل مع المتجر.";
     if (orderLink) {
-      orderLink.href = orderWhatsappUrl || "https://wa.me/201024787222?text=" + encodeURIComponent("السلام عليكم، أرسل الطلب رقم " + orderNumber + ".");
+      orderLink.href = orderWhatsappUrl || "https://wa.me/201024787222?text=" + encodeURIComponent("السلام عليكم، بخصوص الطلب رقم " + orderNumber + ".");
       orderLink.hidden = !saved;
     }
     followup.hidden = false;
@@ -710,8 +687,6 @@
       "💰 *ملخص الطلب*",
       totalText,
       "",
-      "🔒 *مقدم جدية الحجز: 200 جنيه* (يُخصم من إجمالي الفاتورة).",
-      "",
       "برجاء تأكيد توفر المنتجات والسعر النهائي ورسوم التوصيل."
     ].join("\n");
     const orderItems = cart.map(function(line) {
@@ -735,7 +710,7 @@
     const record = {
       orderNumber, customerName, customerPhone, customerAddress, notes:orderNotes, items:orderItems,
       productSubtotal:pricing.total, totalAmount:totalIsComplete?pricing.total:null, totalIsComplete,
-      totalText, depositAmount:200, depositStatus:"pending", status:"new",
+      totalText, status:"new",
       whatsappStatus:"awaiting_customer_send", source:"website"
     };
     const orderImageItems = orderItems.map(function(item) {
