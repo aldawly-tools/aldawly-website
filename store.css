@@ -2153,3 +2153,7 @@ body:has(.hero-shell) .section#categories .category-tile.all small{color:#fff}
 .brand-mark,.brand-mark svg{width:68px;height:68px;flex:0 0 68px}
 .brand{gap:10px}
 @media(max-width:700px){.brand-mark,.brand-mark svg{width:58px;height:58px;flex-basis:58px}.brand{gap:8px}}
+/* Homepage hero workshop video */
+.hero-photo.hero-video{position:relative;overflow:hidden;background:#15191d}
+.hero-photo.hero-video video{display:block;width:100%;height:100%;min-height:280px;max-height:520px;object-fit:cover;object-position:center}
+@media(max-width:700px){.hero-photo.hero-video video{min-height:220px;max-height:340px}}
