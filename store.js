@@ -563,12 +563,9 @@
     const orderLink = document.getElementById("orderWhatsappLink");
     if (!followup || !status) return;
     status.textContent = saved
-      ? "تم تسجيل طلبك رقم " + orderNumber + ". إذا لم تكتمل المشاركة، يمكنك فتح رسالة الطلب من الرابط."
+      ? "تم تسجيل طلبك رقم " + orderNumber + ". بعد تجهيز الصورة اضغط نفس زر الطلب لإرسالها مع التفاصيل."
       : "تعذر حفظ الطلب " + orderNumber + " في لوحة المتجر. تواصل مع المتجر للتأكد من استلامه.";
-    if (orderLink) {
-      orderLink.href = orderWhatsappUrl || "https://wa.me/201024787222?text=" + encodeURIComponent("السلام عليكم، بخصوص الطلب رقم " + orderNumber + ".");
-      orderLink.hidden = !saved;
-    }
+    if (orderLink) { orderLink.hidden = true; orderLink.removeAttribute("href"); }
     followup.hidden = false;
     followup.scrollIntoView({behavior:"smooth",block:"nearest"});
   }
@@ -632,34 +629,36 @@
     });
   }
 
-  async function shareWhatsAppOrderImage(orderNumber, customerName, customerPhone, customerAddress, orderItems, totalText, message, whatsappWindow) {
-    try {
-      const blob = await createWhatsAppOrderImage(orderNumber, customerName, customerPhone, customerAddress, orderItems);
-      const file = new File([blob], "dawly-order-" + orderNumber + ".png", {type:"image/png"});
-      if (navigator.share) {
-        await navigator.share({files:[file], title:"طلب من متجر الدولي", text:message});
-        clearCartAfterWhatsApp();
-        if (whatsappWindow && !whatsappWindow.closed) whatsappWindow.close();
-        return true;
-      }
-      throw new Error("المتصفح لا يدعم مشاركة الصورة");
-    } catch (error) {
-      if (error && error.name === "AbortError") {
-        if (whatsappWindow && !whatsappWindow.closed) whatsappWindow.close();
-        return false;
-      }
-      console.warn("تعذرت مشاركة صورة الطلب مباشرة:", error);
-      if (whatsappWindow && !whatsappWindow.closed) {
-        try { whatsappWindow.location.replace("https://wa.me/201024787222?text=" + encodeURIComponent(message)); }
-        catch (_) { try { whatsappWindow.close(); } catch (_) {} }
-      }
-      alert("لم يستطع الهاتف إرفاق الصورة تلقائيًا. فتحنا رسالة الطلب كحل بديل.");
-      return false;
-    }
+  let readyOrderShareFile = null;
+  let readyOrderShareMessage = "";
+  async function prepareWhatsAppOrderImage(orderNumber, customerName, customerPhone, customerAddress, orderItems, message) {
+    const blob = await createWhatsAppOrderImage(orderNumber, customerName, customerPhone, customerAddress, orderItems);
+    readyOrderShareFile = new File([blob], "dawly-order-" + orderNumber + ".png", {type:"image/png"});
+    readyOrderShareMessage = message;
+    checkout.disabled = false;
+    checkout.textContent = "إرسال الطلب والصورة عبر واتساب";
+    checkout.dataset.shareReady = "true";
   }
 
   checkout.addEventListener("click", async function () {
-    if (!cart.length || checkout.disabled) return;
+    if (checkout.disabled) return;
+    if (checkout.dataset.shareReady === "true" && readyOrderShareFile) {
+      checkout.disabled = true;
+      try {
+        if (!navigator.share) throw new Error("المتصفح لا يدعم مشاركة الملفات");
+        await navigator.share({files:[readyOrderShareFile], title:"طلب من متجر الدولي", text:readyOrderShareMessage});
+        clearCartAfterWhatsApp();
+        checkout.textContent = "تم إرسال الطلب";
+        checkout.dataset.shareReady = "false";
+      } catch (shareError) {
+        if (shareError && shareError.name === "AbortError") { checkout.disabled = false; return; }
+        console.warn("تعذرت مشاركة الطلب:", shareError);
+        checkout.disabled = false;
+        alert("تعذر فتح مشاركة الصورة. جرّب الضغط مرة أخرى أو افتح الموقع من Chrome.");
+      }
+      return;
+    }
+    if (!cart.length) return;
     const customerName = document.getElementById("customerName").value.trim();
     const customerPhoneRaw = document.getElementById("customerPhone").value.trim();
     const customerAddress = document.getElementById("customerAddress").value.trim();
@@ -747,29 +746,28 @@
     });
     const whatsappUrl = "https://wa.me/201024787222?text=" + encodeURIComponent(message);
     // Start saving in the background, then immediately prepare the native share from this single button action.
-    const savePromise = (async function() {
+    try {
       const appMod = await import("https://www.gstatic.com/firebasejs/13.2.0/firebase-app.js");
       const fsMod = await import("https://www.gstatic.com/firebasejs/13.2.0/firebase-firestore.js");
       const app = appMod.getApps().length ? appMod.getApp() : appMod.initializeApp(window.DAWLY_FIREBASE_CONFIG);
       await fsMod.setDoc(fsMod.doc(fsMod.getFirestore(app), "orders", orderNumber),
         Object.assign({}, record, {createdAt:fsMod.serverTimestamp()}));
-    })();
-    const whatsappWindow = null;
-    let shareCompleted = false;
-    try {
-      shareCompleted = await shareWhatsAppOrderImage(orderNumber, customerName, customerPhone, customerAddress, orderImageItems, totalText, message, whatsappWindow);
-    } catch (shareError) {
-      console.warn("تعذرت مشاركة الطلب:", shareError);
-    }
-    try {
-      await savePromise;
       showPaymentFollowup(orderNumber, true, whatsappUrl);
     } catch (err) {
       console.warn("تعذر تسجيل الطلب في لوحة الإدارة.", err);
       showPaymentFollowup(orderNumber, false);
-      alert("تعذرت مشاركة أو تسجيل الطلب بالكامل. احتفظ برقم الطلب " + orderNumber + " وتواصل مع المتجر للتأكد.");
+      checkout.disabled = false;
+      alert("تعذر تسجيل الطلب في لوحة المتجر. احتفظ برقم الطلب " + orderNumber + " وتواصل مع المتجر.");
+      return;
     }
-    checkout.disabled = cart.length === 0;
+    try {
+      await prepareWhatsAppOrderImage(orderNumber, customerName, customerPhone, customerAddress, orderImageItems, message);
+    } catch (shareError) {
+      console.warn("تعذر تجهيز صورة الطلب:", shareError);
+      checkout.disabled = false;
+      checkout.textContent = "إعادة تجهيز صورة الطلب";
+      alert("تم تسجيل الطلب، لكن تعذر تجهيز الصورة. حاول مرة أخرى.");
+    }
   });
   document.addEventListener("keydown", function (event) {
     if (event.key === "Escape") { setDrawer(false); setMobileMenu(false); setFloatingContact(false); }
