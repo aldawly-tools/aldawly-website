@@ -465,6 +465,15 @@
     renderCart();
   }
 
+  // تفريغ السلة عند ضغط العميل على رابط إرسال تفاصيل الطلب إلى واتساب.
+  // لا نفرغها بمجرد إنشاء الطلب في Firestore؛ ننتظر فعل العميل بفتح واتساب.
+  document.addEventListener("click", function (event) {
+    const whatsappLink = event.target.closest("#orderWhatsappLink");
+    if (whatsappLink && whatsappLink.href && !whatsappLink.hidden) {
+      clearCartAfterWhatsApp();
+    }
+  });
+
   window.addEventListener("dawly-products-updated", function (event) {
     if (!Array.isArray(event.detail)) return;
     products = event.detail;
