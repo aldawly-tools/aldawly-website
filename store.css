@@ -2149,3 +2149,7 @@ body:has(.hero-shell) .section#categories .category-tile.all small{color:#fff}
 /* Keep every brand name in the top marquee solid black */
 .brands-marquee .brand-word.brand-tile,
 .brands-marquee .brand-word.brand-tile:nth-child(n){color:#000!important;}
+/* Clearer header identity mark */
+.brand-mark,.brand-mark svg{width:68px;height:68px;flex:0 0 68px}
+.brand{gap:10px}
+@media(max-width:700px){.brand-mark,.brand-mark svg{width:58px;height:58px;flex-basis:58px}.brand{gap:8px}}
