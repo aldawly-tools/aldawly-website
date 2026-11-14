@@ -752,7 +752,7 @@
     }
     const totalIsComplete = pricing.itemCount > 0 && pricing.pricedCount === pricing.itemCount;
     const record = {
-      orderNumber, customerName, customerPhone, customerAddress, items:orderItems,
+      orderNumber, customerName, customerPhone, customerAddress, notes:"", items:orderItems,
       productSubtotal:pricing.total, totalAmount:totalIsComplete?pricing.total:null, totalIsComplete,
       totalText, status:"new",
       whatsappStatus:"awaiting_customer_send", source:"website"
