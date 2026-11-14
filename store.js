@@ -96,12 +96,13 @@
     image.parentNode.replaceChild(placeholder, image);
   }
 
-  grid.addEventListener("error", function (event) {
-    if (event.target && event.target.tagName === "IMG") showProductImageFallback(event.target);
+  document.addEventListener("error", function (event) {
+    const image = event.target;
+    if (image && image.tagName === "IMG" && image.closest(".product-grid")) showProductImageFallback(image);
   }, true);
 
   function observeCloudImages() {
-    const images = grid.querySelectorAll("img[data-cloud-image]");
+    const images = document.querySelectorAll("#productGrid img[data-cloud-image], #featuredProductsGrid img[data-cloud-image], #newArrivalsGrid img[data-cloud-image]");
     if (!images.length) return;
     function loadImage(image) {
       if (typeof window.DAWLY_LOAD_PRODUCT_IMAGE !== "function") {
@@ -295,6 +296,8 @@
       }).slice(0,4);
       arrivalsGrid.innerHTML = latest.length ? latest.map(card).join("") : '<div class="catalog-empty-note">الكتالوج فارغ حاليًا. أضف منتجاتك الأصلية من لوحة الإدارة لتظهر هنا تلقائيًا.</div>';
     }
+    // Load Firebase-hosted images in the featured and latest-product shelves too.
+    observeCloudImages();
   }
 
   function drawCategories() {
@@ -473,6 +476,10 @@
     if (whatsappLink && whatsappLink.href && !whatsappLink.hidden) {
       clearCartAfterWhatsApp();
     }
+  });
+
+  window.addEventListener("dawly-catalog-ready", function () {
+    observeCloudImages();
   });
 
   window.addEventListener("dawly-products-updated", function (event) {
