@@ -18,7 +18,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="store.css?v=instant-publish-20261114-1">
+<link rel="stylesheet" href="store.css?v=cache-refresh-20261114-6">
 
 <link rel="manifest" href="manifest.webmanifest?v=png-real-20261113">
 <link rel="icon" href="assets/app-icon.svg" type="image/svg+xml">
@@ -27,8 +27,8 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 
 <script>
-/* Prevent stale offline copies from replacing the live storefront. */
-window.addEventListener("load", function () {
+/* Immediately remove old offline workers and caches so visitors get the current storefront. */
+(function () {
   if ("serviceWorker" in navigator) {
     navigator.serviceWorker.getRegistrations().then(function (registrations) {
       return Promise.all(registrations.filter(function (registration) {
@@ -43,7 +43,7 @@ window.addEventListener("load", function () {
       }).map(function (key) { return caches.delete(key); }));
     }).catch(function (error) { console.warn("Cache cleanup:", error); });
   }
-});
+})();
 </script>
 </head>
 <body>
@@ -226,7 +226,7 @@ window.addEventListener("load", function () {
 <script src="products.js?v=live-refresh-20261114-1"></script>
 <script src="firebase-config.js?v=live-refresh-20261114-1"></script>
 <script src="onesignal-init.js?v=live-refresh-20261114-1"></script>
-<script src="store.js?v=single-button-20261114-5"></script>
+<script src="store.js?v=cache-refresh-20261114-6"></script>
 <script src="image-zoom.js?v=live-refresh-20261114-1"></script>
 <script type="module" src="product-cloud.js?v=live-refresh-20261114-1"></script>
 </body></html>
