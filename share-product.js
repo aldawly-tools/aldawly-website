@@ -1,15 +1,25 @@
 (function () {
   function loadImage(url) {
     return new Promise(function (resolve) {
-      if (!url) return resolve(null);
+      if (!url || typeof url !== "string") return resolve(null);
       const image = new Image();
-      image.onload = function () { resolve(image); };
+      // Cross-origin images must explicitly request CORS before assigning src,
+      // otherwise drawing them can taint the canvas and prevent sharing.
+      try {
+        const parsed = new URL(url, window.location.href);
+        if (/^https?:$/.test(parsed.protocol) && parsed.origin !== window.location.origin) {
+          image.crossOrigin = "anonymous";
+        }
+      } catch (e) { return resolve(null); }
+      image.onload = function () {
+        resolve(image.naturalWidth > 0 && image.naturalHeight > 0 ? image : null);
+      };
       image.onerror = function () { resolve(null); };
       image.src = url;
     });
   }
   function wrapText(ctx, text, maxWidth) {
-    const words = String(text || "").split(/\s+/);
+    const words = String(text || "").split(/\\s+/);
     const lines = [];
     let line = "";
     words.forEach(function (word) {
@@ -22,30 +32,51 @@
     if (line) lines.push(line);
     return lines;
   }
-  window.DAWLY_CREATE_PRODUCT_SHARE_FILE = async function (item, productUrl, shareButton) {
-    // Reuse the image already rendered in the product card/detail page first.
+  async function getProductImage(item, shareButton) {
     const host = shareButton && (shareButton.closest(".product-card") || document.getElementById("productDetail"));
-    const visibleImage = host && host.querySelector(".product-visual img, #detailMainImage, #detailCloudImage, .product-detail-image img");
-    if (visibleImage && visibleImage.complete && visibleImage.naturalWidth > 0 &&
-        (visibleImage.currentSrc.indexOf("data:") === 0 || new URL(visibleImage.currentSrc, window.location.href).origin === window.location.origin)) {
-      // Reuse an already-loaded Firebase data URL or same-origin image; skip remote images that taint canvas.
-      var image = visibleImage;
+    const visible = host && host.querySelector(".product-visual img, #detailMainImage, #detailCloudImage, .product-detail-image img");
+    const candidates = [];
+    if (visible) {
+      const visibleUrl = visible.currentSrc || visible.src || visible.getAttribute("src");
+      if (visibleUrl) candidates.push(visibleUrl);
     }
-    // Otherwise load the Firebase-hosted image data (usually a data URL).
-    let imageUrl = "";
-    if (item.imageId && typeof window.DAWLY_LOAD_PRODUCT_IMAGE === "function") {
-      try { imageUrl = await window.DAWLY_LOAD_PRODUCT_IMAGE(item.imageId); } catch (e) {}
+    // Firebase image documents are preferred over arbitrary external URLs.
+    const ids = [];
+    if (item.imageId) ids.push(item.imageId);
+    if (Array.isArray(item.imageIds)) item.imageIds.forEach(function (id) { if (id) ids.push(id); });
+    if (Array.isArray(item.images)) item.images.forEach(function (entry) {
+      if (entry && typeof entry === "object" && (entry.id || entry.imageId)) ids.push(entry.id || entry.imageId);
+    });
+    if (typeof window.DAWLY_LOAD_PRODUCT_IMAGE === "function") {
+      for (const id of ids) {
+        try {
+          const url = await window.DAWLY_LOAD_PRODUCT_IMAGE(id);
+          if (url) candidates.push(url);
+        } catch (e) {}
+      }
     }
-    if (!imageUrl && Array.isArray(item.imageIds) && item.imageIds[0] && typeof window.DAWLY_LOAD_PRODUCT_IMAGE === "function") {
-      try { imageUrl = await window.DAWLY_LOAD_PRODUCT_IMAGE(item.imageIds[0]); } catch (e) {}
+    if (item.image) candidates.push(item.image);
+    if (item.imageUrl) candidates.push(item.imageUrl);
+    if (Array.isArray(item.images)) item.images.forEach(function (entry) {
+      if (typeof entry === "string") candidates.push(entry);
+      else if (entry && typeof entry === "object") candidates.push(entry.url || entry.src || entry.image || "");
+    });
+    const seen = new Set();
+    for (const url of candidates) {
+      if (!url || seen.has(url)) continue;
+      seen.add(url);
+      const image = await loadImage(url);
+      if (image) return image;
     }
-    if (!imageUrl) imageUrl = item.image || item.imageUrl || "";
-    if (!image) image = await loadImage(imageUrl);
-    if (!image) throw new Error("تعذر تحميل صورة المنتج لإنشاء بطاقة المشاركة");
+    return null;
+  }
+  window.DAWLY_CREATE_PRODUCT_SHARE_FILE = async function (item, productUrl, shareButton) {
+    const image = await getProductImage(item, shareButton);
     const canvas = document.createElement("canvas");
     canvas.width = 1080;
     canvas.height = 1350;
     const ctx = canvas.getContext("2d");
+    if (!ctx) throw new Error("تعذر إنشاء بطاقة المشاركة على هذا المتصفح");
     ctx.fillStyle = "#ffffff";
     ctx.fillRect(0, 0, 1080, 1350);
     ctx.fillStyle = "#c8101e";
@@ -59,13 +90,24 @@
     ctx.fillText("العدد الأصلية والمستوردة", 1010, 132);
     ctx.fillStyle = "#f5f6f7";
     ctx.fillRect(35, 205, 1010, 665);
-    const scale = Math.min(950 / image.width, 610 / image.height);
-    const iw = image.width * scale, ih = image.height * scale;
-    ctx.drawImage(image, 540 - iw / 2, 535 - ih / 2, iw, ih);
+    if (image) {
+      const scale = Math.min(950 / image.naturalWidth, 610 / image.naturalHeight);
+      const iw = image.naturalWidth * scale, ih = image.naturalHeight * scale;
+      ctx.drawImage(image, 540 - iw / 2, 535 - ih / 2, iw, ih);
+    } else {
+      // Still create a shareable branded card if an external image blocks CORS.
+      ctx.fillStyle = "#6b7280";
+      ctx.textAlign = "center";
+      ctx.font = "bold 46px Tahoma, Arial";
+      ctx.fillText("صورة المنتج", 540, 500);
+      ctx.font = "28px Tahoma, Arial";
+      ctx.fillText("يمكنك مشاهدة الصورة من رابط المنتج", 540, 555);
+      ctx.textAlign = "right";
+    }
     ctx.fillStyle = "#20242a";
     ctx.textAlign = "right";
     ctx.direction = "rtl";
-    const name = String(item.name || "منتج من الدولي").replace(/\s+/g, " ").trim();
+    const name = String(item.name || "منتج من الدولي").replace(/\\s+/g, " ").trim();
     ctx.font = "bold 43px Tahoma, Arial";
     const nameLines = wrapText(ctx, name, 990).slice(0, 2);
     let y = 940;
@@ -79,7 +121,7 @@
     ctx.font = "bold 27px Tahoma, Arial";
     const brand = item.brand ? "الماركة: " + String(item.brand) : "";
     if (brand) { ctx.fillText(brand, 1015, y); y += 43; }
-    const desc = String(item.desc || item.specs || "للاستفسار عن المواصفات والتوفر تواصل معنا").replace(/\s+/g, " ").trim();
+    const desc = String(item.desc || item.specs || "للاستفسار عن المواصفات والتوفر تواصل معنا").replace(/\\s+/g, " ").trim();
     ctx.font = "25px Tahoma, Arial";
     wrapText(ctx, desc, 990).slice(0, 2).forEach(function (line) { ctx.fillText(line, 1015, y); y += 38; });
     ctx.fillStyle = "#c8101e";
@@ -90,9 +132,14 @@
     ctx.font = "18px Arial";
     ctx.textAlign = "left";
     ctx.direction = "ltr";
-    ctx.fillText(new URL(productUrl).host, 65, 1320);
+    ctx.fillText(new URL(productUrl, window.location.href).host, 65, 1320);
     const blob = await new Promise(function (resolve, reject) {
-      canvas.toBlob(function (value) { value ? resolve(value) : reject(new Error("تعذر تجهيز صورة المشاركة")); }, "image/jpeg", 0.92);
+      try {
+        canvas.toBlob(function (value) {
+          if (value) resolve(value);
+          else reject(new Error("تعذر تحويل بطاقة المشاركة إلى صورة"));
+        }, "image/jpeg", 0.92);
+      } catch (error) { reject(error); }
     });
     return new File([blob], "aldawly-product-" + String(item.id || "share") + ".jpg", {type:"image/jpeg"});
   };
