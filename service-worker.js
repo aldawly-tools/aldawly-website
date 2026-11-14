@@ -1,4 +1,4 @@
-const CACHE_NAME = "aldawly-tools-v11-cart-isolation";
+const CACHE_NAME = "aldawly-tools-v12-android-share-image";
 const APP_SHELL = [
   "/aldawly-website/",
   "/aldawly-website/index.html",
