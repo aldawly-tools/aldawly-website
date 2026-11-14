@@ -125,7 +125,7 @@
       '<div class="product-detail-price">' + price + '<small>' + (formatPrice(item.price).includes("ج.م") ? 'السعر بالجنيه المصري · التوفر عند التواصل' : 'السعر والتوفر عند التواصل') + '</small></div>' + stockHtml +
       '<div class="product-detail-actions">' +
       '<button class="button-primary detail-add-cart" type="button" data-detail-add="' + escapeHtml(item.id) + '"' + (stockKnown && item.stock === 0 ? ' disabled aria-disabled="true"' : '') + '>' + (stockKnown && item.stock === 0 ? 'غير متاح حاليًا' : 'أضف إلى السلة') + '</button>' +
-      '<button class="button-outline" type="button" data-share-whatsapp="' + escapeHtml(item.id) + '">إرسال صورة المنتج وتفاصيله عبر واتساب</button>' +
+      '<button class="button-outline share-product-button" type="button" data-share-product="' + escapeHtml(item.id) + '">مشاركة المنتج على أي منصة ↗</button>' +
       '<a class="button-outline" href="products.html">العودة إلى المنتجات</a></div>' + specsHtml + '</div></article>';
 
 
