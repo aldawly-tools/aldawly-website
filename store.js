@@ -680,7 +680,6 @@
     const customerName = document.getElementById("customerName").value.trim();
     const customerPhoneRaw = document.getElementById("customerPhone").value.trim();
     const customerAddress = document.getElementById("customerAddress").value.trim();
-    const orderNotes = document.getElementById("orderNotes").value.trim();
     const customerPhone = customerPhoneRaw
       .replace(/[٠-٩]/g, function (digit) { return String("٠١٢٣٤٥٦٧٨٩".indexOf(digit)); })
       .replace(/[۰-۹]/g, function (digit) { return String("۰۱۲۳۴۵۶۷۸۹".indexOf(digit)); })
@@ -719,7 +718,6 @@
       "الهاتف: " + customerPhone,
       "العنوان: " + customerAddress
     ];
-    if (orderNotes) customerDetails.push("ملاحظات: " + orderNotes);
     const message = [
       "🛒 *طلب جديد من متجر الدولي*",
       "رقم الطلب: *" + orderNumber + "*",
@@ -754,7 +752,7 @@
     }
     const totalIsComplete = pricing.itemCount > 0 && pricing.pricedCount === pricing.itemCount;
     const record = {
-      orderNumber, customerName, customerPhone, customerAddress, notes:orderNotes, items:orderItems,
+      orderNumber, customerName, customerPhone, customerAddress, items:orderItems,
       productSubtotal:pricing.total, totalAmount:totalIsComplete?pricing.total:null, totalIsComplete,
       totalText, status:"new",
       whatsappStatus:"awaiting_customer_send", source:"website"
