@@ -3682,3 +3682,56 @@ body { background:#f7f8fa; color:#14191f; }
   .section#categories .categories-grid { gap:8px !important; }
   .section#categories .category-copy { padding:8px 7px 10px !important; }
 }
+
+
+/* TABLET WIDTH POLISH — category cards and hero service readability */
+@media (min-width:701px) and (max-width:1100px) {
+  .section#categories .categories-grid {
+    display:grid !important;
+    grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+    gap:12px !important;
+    align-items:stretch !important;
+  }
+  .section#categories .category-tile {
+    min-width:0 !important;
+    width:100% !important;
+  }
+  .section#categories .category-photo {
+    height:clamp(105px,17vw,155px) !important;
+  }
+  .section#categories .category-copy {
+    min-height:92px !important;
+    padding:11px 12px !important;
+  }
+  .hero-shell .hero-grid > .hero-copy {
+    padding:26px 24px !important;
+  }
+  .hero-shell .hero-grid > .hero-copy h1 {
+    font-size:clamp(36px,4.5vw,48px) !important;
+  }
+  .hero-shell .hero-grid > .hero-copy h2 {
+    font-size:clamp(21px,2.7vw,27px) !important;
+  }
+  .hero-shell .hero-grid > .hero-copy p {
+    font-size:clamp(15px,1.7vw,18px) !important;
+    line-height:1.8 !important;
+  }
+  .hero-shell .hero-grid > .hero-services {
+    padding:12px !important;
+    gap:10px !important;
+    min-height:0 !important;
+  }
+  .hero-shell .hero-grid > .hero-services .service-card {
+    min-height:76px !important;
+    padding:12px 14px !important;
+    font-size:clamp(14px,1.6vw,17px) !important;
+  }
+}
+/* Remove leftover forced hero height that can leave a blank dark block */
+@media (max-width:1100px) {
+  .hero-shell .hero-grid,
+  .hero-shell .hero-grid > .hero-services {
+    height:auto !important;
+    min-height:0 !important;
+  }
+}
