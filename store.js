@@ -447,6 +447,14 @@
     if (subtitle) subtitle.textContent = "المنتجات المسجلة لماركة " + activeBrand;
   }
   function renderCart(skipPersist) {
+    // إزالة أي معرّفات قديمة/روابط منتجات لم تعد موجودة من السلة بعد تحميل الكتالوج.
+    // لا ننظف السلة عندما تكون قائمة المنتجات فارغة مؤقتًا أثناء بدء تحميل الصفحة.
+    if (products.length) {
+      const validIds = new Set(products.map(function (item) { return String(item.id); }));
+      const before = cart.length;
+      cart = cart.filter(function (line) { return validIds.has(String(line.id)); });
+      if (cart.length !== before) skipPersist = false;
+    }
     if (!skipPersist) persistCart();
     const count = cart.reduce(function (sum, line) { return sum + line.qty; }, 0);
     cartCount.textContent = String(count);
