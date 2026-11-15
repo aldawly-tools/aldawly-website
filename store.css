@@ -4484,3 +4484,29 @@ body{background:#f4f6f8}
 
 /* Brand links: land a little farther down so product cards are immediately visible. */
 #productGrid { scroll-margin-top: -88px; }
+
+/* Product cards refresh: larger product photography and clearer hierarchy */
+#productGrid .product-card{overflow:hidden;border:1px solid #e5e9ee;border-radius:16px;background:#fff;box-shadow:0 5px 18px rgba(24,39,56,.07);transition:transform .22s ease,box-shadow .22s ease,border-color .22s ease}
+#productGrid .product-card:hover{transform:translateY(-4px);border-color:#e3b4b8;box-shadow:0 13px 28px rgba(24,39,56,.13)}
+#productGrid .product-visual{height:230px;display:flex;align-items:center;justify-content:center;padding:14px;background:linear-gradient(180deg,#fff 0%,#f7f8fa 100%);border-bottom:1px solid #edf0f3}
+#productGrid .product-visual img{width:100%;height:100%;object-fit:contain;transition:transform .28s ease}
+#productGrid .product-card:hover .product-visual img{transform:scale(1.045)}
+#productGrid .product-info{padding:16px;gap:9px}
+#productGrid .product-category{color:#b5121b;font-size:12px;font-weight:900}
+#productGrid .product-name{font-size:16px;line-height:1.65;min-height:50px}
+#productGrid .product-description{color:#697481;font-size:12px;line-height:1.7;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+#productGrid .product-details-link{font-weight:850;color:#9f1018}
+#productGrid .product-meta{align-items:center;gap:10px;padding-top:11px;border-top:1px solid #edf0f3}
+#productGrid .product-price{font-size:18px;font-weight:950;color:#202a35}
+#productGrid .product-meta .button-primary{min-height:42px;border-radius:10px;font-weight:900}
+@media(max-width:700px){
+#productGrid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+#productGrid .product-visual{height:174px;padding:10px}
+#productGrid .product-info{padding:11px;gap:7px}
+#productGrid .product-name{font-size:13px;line-height:1.55;min-height:42px}
+#productGrid .product-description{font-size:11px}
+#productGrid .product-price{font-size:15px}
+#productGrid .product-meta{align-items:stretch;flex-direction:column}
+#productGrid .product-meta .button-primary{width:100%;min-height:39px;font-size:12px}
+}
+@media(max-width:380px){#productGrid{gap:9px}#productGrid .product-visual{height:150px}#productGrid .product-info{padding:9px}}
