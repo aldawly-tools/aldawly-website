@@ -3430,12 +3430,13 @@ body { background:#f7f8fa; color:#14191f; }
 .brands-marquee-section .brands-marquee::-webkit-scrollbar{display:none!important}
 .brands-marquee-section .brands-marquee:active{cursor:grabbing!important}
 .brands-marquee-section .brands-marquee-track{
-  animation:none!important;
-  transform:none!important;
+  animation:brands-marquee-move 22s linear infinite!important;
+  animation-play-state:running!important;
+  transform:translateX(0);
   transition:none!important;
   width:max-content!important;
   min-width:max-content!important;
-  will-change:auto!important;
+  will-change:transform!important;
 }
 .brands-marquee-section .brands-marquee-group{
   flex:0 0 auto!important;
@@ -4357,12 +4358,12 @@ body{background:#f4f6f8}
  position:relative;isolation:isolate;overflow:hidden;
  background:linear-gradient(145deg,#fff 0%,#f7fbff 48%,#fff4f4 100%);
 }
-.brands-marquee .brand-word.brand-tile::before,
-.brands-marquee .brand-word.brand-tile::after{
+.brands-marquee-section .brands-marquee .brand-word.brand-tile::before,
+.brands-marquee-section .brands-marquee-section .brands-marquee .brand-word.brand-tile::after{
  content:"";position:absolute;inset:-28% -10%;pointer-events:none;z-index:0;
  background-repeat:repeat;will-change:transform,background-position;
 }
-.brands-marquee .brand-word.brand-tile::before{
+.brands-marquee-section .brands-marquee .brand-word.brand-tile::before{
  background-image:
   radial-gradient(circle at 18px 22px,rgba(255,255,255,1) 0 3px,rgba(80,175,215,.48) 4px,transparent 10px),
   radial-gradient(circle at 65px 76px,rgba(255,255,255,.98) 0 4px,rgba(80,175,215,.4) 5px,transparent 12px),
