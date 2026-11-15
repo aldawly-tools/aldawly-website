@@ -54,7 +54,19 @@
 })();
 </script>
  <script src="site-routing.js?v=cart-no-transfer-20261115-2"></script>
-<link rel="stylesheet" href="footer-text-contrast.css?v=bold-footer-20261115">
+<link rel="stylesheet" href="footer-text-contrast.css?v=bold-footer-20261115-2">
+<style id="footer-readable-override">
+/* Strong footer text contrast override */
+footer.footer, footer.footer * { text-shadow: 0 1px 2px rgba(0,0,0,.45); }
+footer.footer h3, footer.footer .footer-grid h3 { color:#fff !important; font-weight:1000 !important; }
+footer.footer p, footer.footer .footer-links, footer.footer .footer-links a,
+footer.footer p a, footer.footer a:not(.button-primary) {
+  color:#fff !important; font-weight:900 !important; opacity:1 !important;
+}
+footer.footer p { font-size:15px !important; line-height:2 !important; }
+footer.footer .footer-links { font-size:15px !important; line-height:2 !important; }
+footer.footer .button-primary { color:#fff !important; font-weight:1000 !important; }
+</style>
 </head>
 <body>
 <div class="benefit-bar">
