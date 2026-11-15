@@ -41,9 +41,9 @@
   let query = "";
   const pageSize = 12;
   let visibleProductCount = pageSize;
-  // سلة مستقلة لكل ملف متصفح/جهاز، مع الاحتفاظ بالسلة القديمة عند أول تحديث.
+  // سلة جديدة مستقلة؛ لا تستورد أي بيانات قديمة أو تنتقل عبر روابط المنتجات.
   let cart = [];
-  let cartStorageKey = "dawly_cart_v2_default";
+  let cartStorageKey = "dawly_cart_v3_default";
   function normalizeCart(value) {
     if (!Array.isArray(value)) return [];
     const clean = [];
@@ -66,7 +66,7 @@
         : "d" + Date.now().toString(36) + Math.random().toString(36).slice(2);
       localStorage.setItem("dawly_cart_device_v1", deviceId);
     }
-    cartStorageKey = "dawly_cart_v2_" + deviceId;
+    cartStorageKey = "dawly_cart_v3_" + deviceId;
     const currentCart = localStorage.getItem(cartStorageKey);
     if (currentCart !== null) {
       cart = normalizeCart(JSON.parse(currentCart));
