@@ -191,7 +191,7 @@
     let total = 0;
     let pricedCount = 0;
     cart.forEach(function (line) {
-      const item = products.find(function (entry) { return String(entry.id) === String(line.id); });
+      const item = products.find(function (entry) { return String(entry.id) === String(line.id) || (entry._docId !== undefined && String(entry._docId) === String(line.id)); });
       if (!item) return;
       const price = parsePrice(item.price);
       if (price === null) return;
@@ -450,7 +450,11 @@
     // إزالة أي معرّفات قديمة/روابط منتجات لم تعد موجودة من السلة بعد تحميل الكتالوج.
     // لا ننظف السلة عندما تكون قائمة المنتجات فارغة مؤقتًا أثناء بدء تحميل الصفحة.
     if (products.length) {
-      const validIds = new Set(products.map(function (item) { return String(item.id); }));
+      const validIds = new Set();
+      products.forEach(function (item) {
+        validIds.add(String(item.id));
+        if (item._docId !== undefined && item._docId !== null) validIds.add(String(item._docId));
+      });
       const before = cart.length;
       cart = cart.filter(function (line) { return validIds.has(String(line.id)); });
       if (cart.length !== before) skipPersist = false;
