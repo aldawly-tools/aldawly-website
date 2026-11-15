@@ -32,6 +32,11 @@ header .wrap{max-width:1120px}
 .dashboard-stat{background:#fff;border:1px solid #e5e7eb;border-radius:15px;padding:15px;box-shadow:0 4px 14px #11108}
 .dashboard-stat span{display:block;color:#707782;font-size:12px;margin-bottom:8px}
 .dashboard-stat strong{font-size:25px;color:#222;line-height:1.2}
+.dashboard-stat-action{width:100%;text-align:right;font:inherit;cursor:pointer;transition:transform .15s,border-color .15s,box-shadow .15s}
+.dashboard-stat-action:hover,.dashboard-stat-action:focus-visible{border-color:#d71920;box-shadow:0 5px 16px #d7192020;outline:2px solid #d7192030;outline-offset:2px}
+.dashboard-stat-action:active{transform:scale(.99)}
+.dashboard-stat-action small{display:block;margin-top:7px;color:#b20f19;font-size:11px;font-weight:700}
+
 .card{border-radius:17px;padding:20px;box-shadow:0 5px 20px #11110a}
 .card h2{font-size:19px}
 #productForm{border-top:1px solid #eceef0;margin-top:16px;padding-top:10px}
@@ -130,7 +135,7 @@ button:disabled{opacity:.6;cursor:wait}
     </nav>
     <div class="dashboard-stats" aria-label="ملخص المتجر">
       <div class="dashboard-stat"><span>إجمالي المنتجات</span><strong id="dashProducts">0</strong></div>
-      <div class="dashboard-stat"><span>إجمالي الطلبات</span><strong id="dashOrders">0</strong></div>
+      <button type="button" class="dashboard-stat dashboard-stat-action" id="dashOrdersCard" aria-label="فتح الطلبات لعرضها وتعديلها"><span>إجمالي الطلبات</span><strong id="dashOrders">0</strong><small>اضغط لعرض الطلبات وتعديلها</small></button>
     </div>
     <div class="card admin-panel" id="productPanel" role="tabpanel">
       <div class="actions" style="justify-content:space-between;align-items:center"><div><h2 style="margin:0 0 5px">إضافة منتج</h2><span class="muted" id="signedInAs"></span></div><button class="light" id="enablePushBtn" type="button">تفعيل إشعارات الطلبات على هذا الهاتف</button><button class="light" id="logoutBtn" type="button">تسجيل الخروج</button></div>
@@ -202,7 +207,15 @@ function showAdminTab(panelId) {
     const panel = $(id);
     if (panel) panel.classList.toggle("hidden", id !== panelId);
   });
-  document.querySelectorAll(".dashboard-tab").forEach(function(button) {
+  const dashOrdersCard = $("dashOrdersCard");
+if(dashOrdersCard){
+ dashOrdersCard.addEventListener("click",function(){
+  showAdminTab("ordersPanel");
+  window.scrollTo({top:0,behavior:"smooth"});
+  if(typeof loadOrders==="function")loadOrders();
+ });
+}
+document.querySelectorAll(".dashboard-tab").forEach(function(button) {
     const active = button.dataset.tab === panelId;
     button.classList.toggle("active", active);
     button.setAttribute("aria-selected", active ? "true" : "false");
