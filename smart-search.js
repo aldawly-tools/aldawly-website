@@ -27,6 +27,12 @@
     .dawly-search-suggestions{position:absolute!important;top:calc(100% + 8px);left:0;right:0;width:100%;box-sizing:border-box;z-index:10040;max-height:min(66vh,430px);overflow:auto;background:#fff;border:1px solid #e2e7ec;border-radius:15px;box-shadow:0 16px 42px rgba(20,32,45,.18);padding:7px;direction:rtl}
     .dawly-search-suggestions[hidden]{display:none!important}
     .dawly-search-suggestion{display:flex;align-items:center;gap:11px;width:100%;padding:10px;border:0;border-radius:10px;background:#fff;text-align:right;color:#202a35;cursor:pointer}
+    .search-form .dawly-search-suggestion{display:flex!important;position:relative!important;align-items:center!important;justify-content:flex-start!important;gap:11px!important;width:100%!important;min-width:0!important;max-width:none!important;height:auto!important;min-height:68px!important;flex:0 0 auto!important;padding:10px!important;border:0!important;border-radius:10px!important;background:#fff!important;color:#202a35!important;box-shadow:none!important;text-align:right!important;white-space:normal!important;}
+    .search-form .dawly-search-suggestion:hover,.search-form .dawly-search-suggestion[aria-selected="true"]{background:#fff1f2!important}
+    .dawly-search-thumb{flex:0 0 56px!important;width:56px!important;height:56px!important}
+    .dawly-search-copy{flex:1 1 auto!important;width:auto!important;min-width:0!important;text-align:right!important}
+    .dawly-search-name,.dawly-search-meta{display:block!important;width:100%!important;white-space:normal!important;color:#202a35!important}
+    .dawly-search-meta{color:#77818c!important}
     .dawly-search-suggestion:hover,.dawly-search-suggestion[aria-selected="true"]{background:#fff1f2}
     .dawly-search-thumb{width:48px;height:48px;flex:0 0 48px;border:1px solid #edf0f3;border-radius:9px;background:#f7f8fa;display:grid;place-items:center;overflow:hidden;font-size:23px}
     .dawly-search-thumb img{width:100%;height:100%;object-fit:contain}
@@ -88,7 +94,7 @@
       panel.innerHTML='<div class="dawly-search-empty">مفيش اقتراح مطابق حاليًا. جرّب اسم الماركة أو رقم الصنف أو كلمة أبسط.</div>';
     } else {
       panel.innerHTML=matches.map(function(x,i){
-        var p=x.p, image=p.image?'<img src="'+esc(p.image)+'" alt="" loading="lazy">':(p.icon||"🔧");
+        var p=x.p, image=(p.image||p.imageUrl||p.photo||p.thumbnail)?'<img src="'+esc(p.image||p.imageUrl||p.photo||p.thumbnail)+'" alt="" loading="lazy">':'<img src="'+esc(p.image)+'" alt="" loading="lazy">':(p.icon||"🔧");
         var brand=p.brand||p.brandName||p.manufacturer||p.cat||"منتجات";
         return '<button type="button" class="dawly-search-suggestion" role="option" aria-selected="false" data-smart-index="'+i+'"><span class="dawly-search-thumb">'+image+'</span><span class="dawly-search-copy"><span class="dawly-search-name">'+esc(p.name||"منتج")+'</span><span class="dawly-search-meta">'+esc(brand)+' · '+(p.price==null||p.price===""?"السعر عند التواصل":esc(p.price)+" جنيه")+'</span></span></button>';
       }).join("")+'<div class="dawly-search-footer">اختار المنتج لفتح التفاصيل • أو اضغط بحث لعرض كل النتائج</div>';
