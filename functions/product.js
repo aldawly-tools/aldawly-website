@@ -1,4 +1,4 @@
-import { getProductById, htmlEscape, productImageResponse } from "./_lib/product-og.js";
+import { getProductById, htmlEscape } from "./_lib/product-og.js";
 
 export async function onRequest(context) {
   const url = new URL(context.request.url);
@@ -38,7 +38,9 @@ export async function onRequest(context) {
       '<meta name="twitter:description" content="' + htmlEscape(description) + '">',
       '<meta name="twitter:image" content="' + htmlEscape(imageUrl) + '">'
     ].join("\n");
-    const html = (await page.text()).replace("</head>", tags + "\n</head>");
+    const socialKeys = /(?:property|name)=["'](?:og:type|og:title|og:description|og:url|og:image|og:image:secure_url|og:image:alt|twitter:card|twitter:title|twitter:description|twitter:image)["']/i;
+    const baseHtml = (await page.text()).replace(/<meta\b[^>]*>/gi, function(tag) { return socialKeys.test(tag) ? "" : tag; });
+    const html = baseHtml.replace("</head>", tags + "\n</head>");
     return new Response(html, {
       status: page.status,
       headers: { "content-type": "text/html; charset=utf-8", "cache-control": "public, max-age=300, s-maxage=900" }
