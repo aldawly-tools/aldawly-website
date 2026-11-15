@@ -367,6 +367,27 @@
       const searchMatch = !terms.length || terms.every(function (term) { return searchable.includes(term); });
       return categoryMatch && brandMatch && searchMatch;
     });
+    if (terms.length) {
+      function relevance(item) {
+        const name = normalizeSearchText(item.name);
+        const brand = normalizeSearchText(productBrand(item));
+        const code = normalizeSearchText([item.sku, item.code, item.model, item.partNumber, item.id].filter(Boolean).join(" "));
+        const description = normalizeSearchText([item.desc, item.specs, item.cat].filter(Boolean).join(" "));
+        let score = 0;
+        terms.forEach(function(term) {
+          if (code === term) score += 120;
+          else if (code.split(" ").some(function(part){ return part === term; })) score += 90;
+          else if (code.includes(term)) score += 65;
+          if (name === term) score += 55;
+          else if (name.startsWith(term)) score += 35;
+          else if (name.includes(term)) score += 25;
+          if (brand.includes(term)) score += 18;
+          if (description.includes(term)) score += 5;
+        });
+        return score;
+      }
+      filtered.sort(function(a,b) { return relevance(b) - relevance(a); });
+    }
     const emptyMessage = activeBrand
       ? 'لا توجد منتجات مسجلة لماركة ' + escapeHtml(activeBrand) + ' حاليًا.'
       : "لا توجد منتجات مطابقة.";
