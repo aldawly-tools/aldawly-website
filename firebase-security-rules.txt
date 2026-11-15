@@ -24,6 +24,20 @@ service cloud.firestore {
       allow write: if isStoreAdmin();
     }
 
+    match /productReviews/{productId}/reviews/{reviewId} {
+      allow read: if true;
+      allow create: if request.resource.data.keys().hasOnly(["rating", "name", "text", "createdAt"])
+        && request.resource.data.rating is int
+        && request.resource.data.rating >= 1
+        && request.resource.data.rating <= 5
+        && request.resource.data.name is string
+        && request.resource.data.name.size() <= 40
+        && request.resource.data.text is string
+        && request.resource.data.text.size() <= 500
+        && request.resource.data.createdAt == request.time;
+      allow update, delete: if isStoreAdmin();
+    }
+
     match /orders/{orderId} {
       allow create: if request.resource.data.keys().hasOnly([
           "orderNumber", "customerName", "customerPhone", "customerAddress",
