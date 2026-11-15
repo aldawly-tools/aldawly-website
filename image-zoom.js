@@ -158,7 +158,9 @@
     if (!container) return;
     const image = container.querySelector("img");
     if (!image) return;
-    if (cardLink) event.preventDefault();
+    // Product-card images are real navigation links. Let the browser open
+    // the product detail page; reserve zoom for the gallery on the detail page.
+    if (cardLink) return;
     hideHoverPreview();
     openImage(image);
   }
