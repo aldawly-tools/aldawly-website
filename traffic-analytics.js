@@ -15,12 +15,18 @@ import { getFirestore, collection, doc, setDoc, serverTimestamp } from "https://
   if(params.get("utm_source"))source=String(params.get("utm_source")).toLowerCase().slice(0,40);
   else if(sourceRaw!=="direct"){try{const host=new URL(sourceRaw).hostname.toLowerCase();source=/facebook|fb\./.test(host)?"facebook":/google/.test(host)?"google":/whatsapp|wa\.me/.test(host)?"whatsapp":/instagram/.test(host)?"instagram":/tiktok/.test(host)?"tiktok":"other";}catch(e){}}
   const sourceId=visitorId+"_"+day;
-  setDoc(doc(db,"trafficSources",sourceId),{visitorId,day,source,createdAt:serverTimestamp()},{merge:true}).catch(e=>console.warn("Traffic analytics:",e));
+  const sourceFlag="aldawly_source_logged_"+day;
+  if(!localStorage.getItem(sourceFlag)){
+   setDoc(doc(db,"trafficSources",sourceId),{visitorId,day,source,createdAt:serverTimestamp()}).then(()=>localStorage.setItem(sourceFlag,"1")).catch(e=>console.warn("Traffic analytics:",e));
+  }
   const match=location.pathname.match(/product\.html$/i);
   const productId=match?params.get("id"):"";
   if(productId){
    const id=String(productId).replace(/[^a-zA-Z0-9_-]/g,"").slice(0,80);
-   if(id)setDoc(doc(db,"productViews",visitorId+"_"+day+"_"+id),{visitorId,day,productId:id,createdAt:serverTimestamp()},{merge:true}).catch(e=>console.warn("Product view analytics:",e));
+   const viewFlag="aldawly_product_view_"+day+"_"+id;
+   if(id&&!localStorage.getItem(viewFlag)){
+    setDoc(doc(db,"productViews",visitorId+"_"+day+"_"+id),{visitorId,day,productId:id,createdAt:serverTimestamp()}).then(()=>localStorage.setItem(viewFlag,"1")).catch(e=>console.warn("Product view analytics:",e));
+   }
   }
  }catch(error){console.warn("Analytics tracker unavailable:",error);}
 })();
