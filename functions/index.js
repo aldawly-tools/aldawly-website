@@ -183,10 +183,10 @@ exports.notifyOrderOnTelegram = onDocumentCreated(
 const { onRequest } = require("firebase-functions/v2/https");
 const { getAuth } = require("firebase-admin/auth");
 const geminiApiKey = defineSecret("GEMINI_API_KEY");
-const storeAdminEmails = defineSecret("STORE_ADMIN_EMAILS");
+const storeAdminEmails = ["elgoharemahmoud@gmail.com"];
 
 exports.analyzeProductImage = onRequest(
-  { region: "me-central1", cors: ["https://aldawly-website.pages.dev"], secrets: [geminiApiKey, storeAdminEmails], timeoutSeconds: 60, memory: "512MiB" },
+  { region: "me-central1", cors: ["https://aldawly-website.pages.dev"], secrets: [geminiApiKey], timeoutSeconds: 60, memory: "512MiB" },
   async (req, res) => {
     res.set("Cache-Control", "no-store");
     if (req.method !== "POST") return res.status(405).json({ error: "الطلب غير مدعوم." });
@@ -197,7 +197,7 @@ exports.analyzeProductImage = onRequest(
       const match = authorization.match(/^Bearer (.+)$/);
       if (!match) return res.status(401).json({ error: "سجّل الدخول أولًا." });
       const decoded = await getAuth().verifyIdToken(match[1]);
-      const allowed = storeAdminEmails.value().split(",").map(x => x.trim().toLowerCase()).filter(Boolean);
+      const allowed = storeAdminEmails;
       if (!decoded.email || decoded.email_verified !== true || !allowed.includes(decoded.email.toLowerCase())) {
         return res.status(403).json({ error: "هذا الحساب غير مصرح له بتحليل صور المنتجات." });
       }
