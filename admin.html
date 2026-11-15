@@ -143,6 +143,7 @@ button:disabled{opacity:.6;cursor:wait}
           <div class="field"><label for="cat">القسم</label><select id="cat"><option>عدد يدوية</option><option>عدد كهربائية</option><option>مستلزمات الورش</option><option>قياس</option></select></div>
           <div class="field"><label for="price">السعر</label><input id="price" placeholder="السعر عند الاستفسار"></div>
           <div class="field"><label for="barcode">رقم الباركود (EAN / UPC)</label><input id="barcode" inputmode="numeric" autocomplete="off" placeholder="امسح الباركود أو اكتب الرقم يدويًا"><small class="muted">اكتب رقم الباركود الموجود على عبوة المنتج؛ سيستخدمه البحث والماسح في صفحة المتجر.</small></div>
+          <div class="field"><label for="productLink">رابط صفحة المنتج</label><div class="actions" style="gap:8px"><input id="productLink" type="url" readonly dir="ltr" style="flex:1;min-width:0;background:#f7f8fa"><button class="light" id="copyProductLinkBtn" type="button">نسخ الرابط</button></div><small class="muted">الرابط يتولد تلقائيًا من رقم المنتج، ويتحدث بعد الحفظ. يمكنك إرساله للعميل أو استخدامه في QR.</small></div>
           <div class="field"><label for="icon">رمز بديل</label><input id="icon" value="🔧"></div>
         </div>
         <div class="field"><label for="imageUrl">رابط الصورة (اختياري)</label><input id="imageUrl" type="text" placeholder="اتركه فارغًا إذا سترفع صورة من جهازك"></div>
@@ -216,6 +217,18 @@ function escapeHtml(value) {
 function readyConfig() {
   return config.apiKey && config.apiKey !== "PASTE_FIREBASE_WEB_API_KEY" && config.authDomain && config.projectId && config.projectId !== "YOUR_PROJECT_ID" && config.appId;
 }
+function getProductPageUrl(id) { return new URL("product.html?id=" + encodeURIComponent(String(id)), window.location.href).href; }
+function updateProductPageLink() {
+  const currentId = $("pid").value || (Math.max(0, ...products.map(function (item) { return Number(item.id) || 0; })) + 1);
+  $("productLink").value = getProductPageUrl(currentId);
+}
+$("copyProductLinkBtn").addEventListener("click", async function () {
+  updateProductPageLink();
+  const value = $("productLink").value;
+  try { await navigator.clipboard.writeText(value); message(saveStatus, "تم نسخ رابط المنتج."); }
+  catch (error) { $("productLink").focus(); $("productLink").select(); message(saveStatus, "حدد الرابط وانسخه يدويًا."); }
+});
+$("pid").addEventListener("input", updateProductPageLink);
 function resetForm() {
   $("productForm").reset();
   imageRemoved = false;
@@ -223,6 +236,7 @@ function resetForm() {
   selectedImageFiles = [];
   $("pid").value = "";
   $("icon").value = "🔧";
+  updateProductPageLink();
   $("saveBtn").textContent = "حفظ المنتج";
   $("imagePreview").classList.add("hidden");
   $("imagePreview").removeAttribute("src");
@@ -706,6 +720,7 @@ async function editProduct(id) {
   $("cat").value = product.cat || "عدد يدوية";
   $("price").value = product.price || "";
   $("barcode").value = product.barcode || product.ean || product.gtin || product.upc || "";
+  updateProductPageLink();
   $("icon").value = product.icon || "🔧";
   $("featured").checked = product.featured === true;
   imageRemoved = false;
@@ -928,7 +943,7 @@ $("productForm").addEventListener("submit", async function (event) {
     products = products.filter(function (item) { return String(item.id) !== String(id); }).concat([product]).sort(function (a, b) { return a.id - b.id; });
     renderProducts();
     resetForm();
-    message(saveStatus, "تم حفظ المنتج، وسيظهر للزوار عند تحديث الصفحة.");
+    message(saveStatus, "تم حفظ المنتج، وسيظهر للزوار عند تحديث الصفحة. رابط المنتج: " + getProductPageUrl(id));
   } catch (error) {
     message(saveStatus, error && error.message ? error.message : "تعذر الحفظ. تحقق من إعدادات Firebase والاتصال.");
   } finally { $("saveBtn").disabled = false; }
