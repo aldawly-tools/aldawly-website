@@ -475,7 +475,7 @@
       const brandMatch = !activeBrand || normalizeBrand(brand) === normalizeBrand(activeBrand);
       const searchable = normalizeSearchText([
         item.name, brand, item.brand, item.cat, item.desc, item.specs,
-        item.sku, item.code, item.model, item.partNumber, item.id
+        item.sku, item.code, item.model, item.partNumber, item.barcode, item.ean, item.gtin, item.upc, item.id
       ].join(" "));
       const searchMatch = !terms.length || terms.every(function (term) { return searchable.includes(term); });
       return categoryMatch && brandMatch && searchMatch;
