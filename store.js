@@ -550,8 +550,8 @@
       requestAnimationFrame(function () {
         const productsSection = document.getElementById("products");
         if (productsSection) {
-          productsSection.scrollIntoView({behavior:"smooth", block:"start"});
-          window.setTimeout(function () { window.scrollBy({top: 90, behavior: "smooth"}); }, 260);
+          const targetTop = productsSection.getBoundingClientRect().top + window.pageYOffset + 150;
+          window.scrollTo({top: targetTop, behavior: "smooth"});
         }
       });
     });
