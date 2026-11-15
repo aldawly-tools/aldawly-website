@@ -794,8 +794,8 @@
   }
   let readyOrderShareFile = null;
   let readyOrderShareMessage = "";
-  async function prepareWhatsAppOrderImage(orderNumber, customerName, customerPhone, customerAddress, orderItems, message) {
-    const blob = await createWhatsAppOrderImage(orderNumber, customerName, customerPhone, customerAddress, orderItems);
+  async function prepareWhatsAppOrderImage(orderNumber, customerName, customerPhone, customerAddress, orderItems, message, orderSummary) {
+    const blob = await createWhatsAppOrderImage(orderNumber, customerName, customerPhone, customerAddress, orderItems, orderSummary);
     readyOrderShareFile = new File([blob], "dawly-order-" + orderNumber + ".png", {type:"image/png"});
     readyOrderShareMessage = message;
     checkout.disabled = false;
