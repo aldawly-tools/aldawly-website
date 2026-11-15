@@ -535,6 +535,25 @@
     renderCart();
     renderHomeShelves();
   });
+  // Direct mobile category-menu handler: keep taps reliable on touch browsers.
+  if (mobileMenuCategories) {
+    mobileMenuCategories.addEventListener("click", function (event) {
+      const button = event.target.closest("button[data-category]");
+      if (!button || !mobileMenuCategories.contains(button)) return;
+      event.preventDefault();
+      event.stopPropagation();
+      activeCategory = button.dataset.category || "الكل";
+      visibleProductCount = pageSize;
+      syncCategorySelection();
+      renderProducts();
+      setMobileMenu(false);
+      requestAnimationFrame(function () {
+        const productsSection = document.getElementById("products");
+        if (productsSection) productsSection.scrollIntoView({behavior:"smooth", block:"start"});
+      });
+    });
+  }
+
   function addToCart(id) {
     const item = products.find(function (entry) { return String(entry.id) === String(id); });
     if (!item) return;
