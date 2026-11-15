@@ -13,7 +13,7 @@
   panel.setAttribute("role", "listbox");
   panel.setAttribute("aria-label", "اقتراحات المنتجات");
   panel.hidden = true;
-  form.classList.add("dawly-search-enhanced");
+  form.classList.add("dawly-search-enhanced");\n  form.style.setProperty("overflow", "visible", "important");
   form.appendChild(panel);
   input.setAttribute("autocomplete", "off");
   input.setAttribute("aria-autocomplete", "list");
@@ -22,8 +22,8 @@
 
   var style = document.createElement("style");
   style.textContent = `
-    .dawly-search-enhanced{position:relative!important;z-index:30}
-    .dawly-search-suggestions{position:absolute;top:calc(100% + 8px);inset-inline:0;z-index:10020;max-height:min(66vh,430px);overflow:auto;background:#fff;border:1px solid #e2e7ec;border-radius:15px;box-shadow:0 16px 42px rgba(20,32,45,.18);padding:7px;direction:rtl}
+    .dawly-search-enhanced{position:relative!important;z-index:10030!important;overflow:visible!important;flex-shrink:0}
+    .dawly-search-suggestions{position:absolute!important;top:calc(100% + 8px);left:0;right:0;width:100%;box-sizing:border-box;z-index:10040;max-height:min(66vh,430px);overflow:auto;background:#fff;border:1px solid #e2e7ec;border-radius:15px;box-shadow:0 16px 42px rgba(20,32,45,.18);padding:7px;direction:rtl}
     .dawly-search-suggestions[hidden]{display:none!important}
     .dawly-search-suggestion{display:flex;align-items:center;gap:11px;width:100%;padding:10px;border:0;border-radius:10px;background:#fff;text-align:right;color:#202a35;cursor:pointer}
     .dawly-search-suggestion:hover,.dawly-search-suggestion[aria-selected="true"]{background:#fff1f2}
