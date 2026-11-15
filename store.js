@@ -280,7 +280,7 @@
           ? '<img data-cloud-image="' + escapeHtml(item.imageId) + '" alt="' + escapeHtml(name) + '" loading="lazy">'
           : '<span class="product-placeholder" aria-hidden="true">' + escapeHtml(item.icon || "🔧") + '</span>';
       const soldOut = Number.isInteger(item.stock) && item.stock === 0;
-      return '<article class="product-card home-shelf-card"><a class="product-visual product-open-link" href="' + url + '">' + image + '</a><div class="product-info"><span class="product-category">' + escapeHtml(displayBrand(productBrand(item)) || item.cat || "منتجات") + '</span><h3 class="product-name"><a href="' + url + '">' + escapeHtml(name) + '</a></h3><span class="product-price">' + escapeHtml(formatPrice(item.price)) + '<small>' + (item.price === null || item.price === undefined || item.price === "" ? 'السعر عند التواصل' : 'التوفر عند التواصل') + '</small></span><a class="product-details-link" href="' + url + '">التفاصيل والسعر والتوفر ←</a><button class="button-primary home-shelf-add" type="button" data-add="' + escapeHtml(item.id) + '"' + (soldOut ? ' disabled aria-disabled="true"' : '') + '>' + (soldOut ? 'غير متاح حاليًا' : 'أضف إلى السلة') + '</button></div></article>';
+      return '<article class="product-card home-shelf-card"><a class="product-visual product-open-link" href="' + url + '">' + image + '</a><div class="product-info"><span class="product-category">' + escapeHtml(displayBrand(productBrand(item)) || item.cat || "منتجات") + '</span><h3 class="product-name"><a href="' + url + '">' + escapeHtml(name) + '</a></h3><span class="product-price">' + escapeHtml(formatPrice(item.price)) + '<small>' + (item.price === null || item.price === undefined || item.price === "" ? 'السعر عند التواصل' : 'التوفر عند التواصل') + '</small></span><a class="product-details-link" href="' + url + '">التفاصيل والسعر والتوفر ←</a><button class="quick-view-trigger" type="button" data-quick-view="' + escapeHtml(item.id) + '">معاينة سريعة</button><button class="button-primary home-shelf-add" type="button" data-add="' + escapeHtml(item.id) + '"' + (soldOut ? ' disabled aria-disabled="true"' : '') + '>' + (soldOut ? 'غير متاح حاليًا' : 'أضف إلى السلة') + '</button></div></article>';
     }
     const featuredGrid = document.getElementById("featuredProductsGrid");
     if (featuredGrid) {
@@ -423,6 +423,7 @@
         '<h3 class="product-name"><a class="product-name-link" href="' + detailUrl + '">' + escapeHtml(name) + '</a></h3>' +
         '<p class="product-description">' + escapeHtml(description) + '</p>' + stockLabel +
         '<a class="product-details-link" href="' + detailUrl + '">عرض الإعلان والتفاصيل ←</a>' +
+        '<button class="quick-view-trigger" type="button" data-quick-view="' + escapeHtml(item.id) + '">معاينة سريعة</button>' +
         '<div class="product-share-row"><button class="button-outline share-product-button" type="button" data-share-product="' + escapeHtml(item.id) + '">مشاركة المنتج ↗</button></div>' +
         '<div class="product-meta"><span class="product-price">' + escapeHtml(formatPrice(item.price)) + (discountPercent ? '<del>' + escapeHtml(money(compareAtPrice)) + '</del><em class="product-discount">خصم ' + discountPercent + '%</em>' : '') + '<small>' + (currentPrice === null ? 'السعر والتوفر عند التواصل' : 'التوفر عند التواصل') + '</small></span>' +
         '<button class="button-primary" type="button" data-add="' + escapeHtml(item.id) + '"' + (stockOut ? ' disabled aria-disabled="true"' : '') + '>' + (stockOut ? 'غير متاح حاليًا' : 'أضف إلى السلة') + '</button></div></div></article>';
@@ -590,8 +591,53 @@
     visibleProductCount = pageSize;
     renderProducts();
   });
+
   document.addEventListener("click", function (event) {
+    const quickViewButton = event.target.closest("[data-quick-view]");
+    if (quickViewButton) {
+      const item = products.find(function (entry) { return String(entry.id) === String(quickViewButton.dataset.quickView); });
+      if (!item) { alert("تعذر تحميل بيانات المنتج."); return; }
+      let modal = document.getElementById("quickViewModal");
+      if (!modal) {
+        modal = document.createElement("div");
+        modal.id = "quickViewModal";
+        modal.className = "quick-view-modal";
+        modal.innerHTML = '<div class="quick-view-backdrop" data-quick-close></div><section class="quick-view-dialog" role="dialog" aria-modal="true" aria-labelledby="quickViewTitle"><button class="quick-view-close" type="button" aria-label="إغلاق" data-quick-close>×</button><div class="quick-view-content"></div></section>';
+        document.body.appendChild(modal);
+      }
+      const name = cleanProductName(item.name);
+      const description = cleanProductCopy(item.desc || item.specs || "للاستفسار عن المواصفات والتوفر تواصل معنا.");
+      const image = item.image
+        ? '<img src="' + escapeHtml(item.image) + '" alt="' + escapeHtml(name) + '">'
+        : item.imageId
+          ? '<img data-cloud-image="' + escapeHtml(item.imageId) + '" alt="' + escapeHtml(name) + '">'
+          : '<div class="quick-view-placeholder">🔧</div>';
+      const brand = displayBrand(productBrand(item) || item.brand || "");
+      const specs = cleanProductCopy(item.specs || "");
+      const soldOut = Number.isInteger(item.stock) && item.stock === 0;
+      modal.querySelector(".quick-view-content").innerHTML =
+        '<div class="quick-view-image">' + image + '</div><div class="quick-view-info">' +
+        (brand ? '<span class="quick-view-brand">' + escapeHtml(brand) + '</span>' : '') +
+        '<h2 id="quickViewTitle">' + escapeHtml(name) + '</h2>' +
+        '<p class="quick-view-description">' + escapeHtml(description) + '</p>' +
+        (specs ? '<div class="quick-view-specs">' + escapeHtml(specs) + '</div>' : '') +
+        '<div class="quick-view-price">' + escapeHtml(formatPrice(item.price)) + '</div>' +
+        '<div class="quick-view-actions"><a class="quick-view-details" href="product.html?id=' + encodeURIComponent(String(item.id)) + '">عرض التفاصيل الكاملة</a>' +
+        '<button class="button-primary" type="button" data-add="' + escapeHtml(item.id) + '"' + (soldOut ? ' disabled' : '') + '>' + (soldOut ? 'غير متاح حاليًا' : 'أضف إلى السلة') + '</button></div></div>';
+      modal.classList.add("is-open");
+      document.body.classList.add("quick-view-open");
+      observeCloudImages();
+      modal.querySelector("[data-quick-close]").focus();
+      return;
+    }
+    if (event.target.closest("[data-quick-close]")) {
+      const modal = document.getElementById("quickViewModal");
+      if (modal) modal.classList.remove("is-open");
+      document.body.classList.remove("quick-view-open");
+      return;
+    }
     const shareButton = event.target.closest("[data-share-product]");
+
     if (shareButton) {
       const id = String(shareButton.dataset.shareProduct);
       const item = products.find(function (entry) { return String(entry.id) === id; });
