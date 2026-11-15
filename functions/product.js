@@ -29,8 +29,8 @@ export async function onRequest(context) {
     const name = String(product.name || "منتج من الدولي").slice(0, 120);
     const brand = String(product.brand || product.brandName || "");
     const description = String(product.desc || product.specs ||
-      "تفاصيل المنتج من الدولي للعدد الأصلية والمستوردة").replace(/\\s+/g, " ").slice(0, 220);
-    const imageUrl = product.image && /^https?:\\/\\//i.test(String(product.image))
+      "تفاصيل المنتج من الدولي للعدد الأصلية والمستوردة").replace(/\s+/g, " ").slice(0, 220);
+    const imageUrl = product.image && /^https?:\/\//i.test(String(product.image))
       ? String(product.image)
       : new URL("/fb-product-image?id=" + encodeURIComponent(id), requestUrl.origin).toString();
     const canonical = new URL("/product?id=" + encodeURIComponent(id), requestUrl.origin).toString();
@@ -47,12 +47,12 @@ export async function onRequest(context) {
       '<meta name="twitter:title" content="' + htmlEscape(name + " | الدولي") + '">',
       '<meta name="twitter:description" content="' + htmlEscape(description) + '">',
       '<meta name="twitter:image" content="' + htmlEscape(imageUrl) + '">'
-    ].join("\\n");
+    ].join("\n");
 
     const socialKeys = /(?:property|name)=["'](?:og:type|og:title|og:description|og:url|og:image|og:image:secure_url|og:image:alt|twitter:card|twitter:title|twitter:description|twitter:image)["']/i;
     const html = (await page.text())
-      .replace(/<meta\\b[^>]*>/gi, tag => socialKeys.test(tag) ? "" : tag)
-      .replace("</head>", tags + "\\n</head>");
+      .replace(/<meta\b[^>]*>/gi, tag => socialKeys.test(tag) ? "" : tag)
+      .replace("</head>", tags + "\n</head>");
 
     return new Response(html, {
       status: 200,
