@@ -1,0 +1,20 @@
+/* Light, high-contrast benefit strip */
+.benefit-bar{
+  background:#f4f6f8 !important;
+  border-bottom:1px solid #dfe4e9 !important;
+  color:#26313b !important;
+}
+.benefit-bar .benefit{
+  color:#26313b !important;
+  border-left-color:#d7dde3 !important;
+  font-weight:800 !important;
+}
+.benefit-bar .benefit svg{
+  stroke:#c8101e !important;
+  color:#c8101e !important;
+}
+@media(max-width:700px){
+  .benefit-bar{background:#f4f6f8 !important}
+  .benefit-bar .benefits{background:transparent !important}
+  .benefit-bar .benefit{color:#26313b !important}
+}
