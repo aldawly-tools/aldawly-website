@@ -2750,3 +2750,40 @@ body:has(.hero-shell) .section#categories .category-tile.all small{color:#fff}
   .home-shelf-card .product-name { font-size: 12px; }
   .home-shelf-card .product-price { font-size: 13px; }
 }
+
+
+/* Cart order summary: clear item and unit counts */
+.cart-summary-count {
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  margin-bottom:11px;
+  padding:9px 11px;
+  border:1px solid #e6e9ed;
+  border-radius:9px;
+  background:#f7f8fa;
+  color:#59616b;
+  font-size:12px;
+}
+.cart-summary-count strong { color:#20252b; font-weight:1000; }
+.cart-total .cart-total-row {
+  padding:7px 0 2px;
+  font-size:15px;
+  font-weight:900;
+}
+.cart-total .cart-total-row strong {
+  font-size:21px;
+  letter-spacing:-.3px;
+}
+.cart-delivery-note {
+  display:block;
+  margin-top:7px;
+  color:#737b85;
+  font-size:11px;
+  line-height:1.7;
+}
+@media(max-width:600px) {
+  .cart-summary-count { font-size:11px; padding:8px; }
+  .cart-total .cart-total-row { font-size:14px; }
+  .cart-total .cart-total-row strong { font-size:19px; }
+}
