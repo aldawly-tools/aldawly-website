@@ -317,16 +317,46 @@ footer.footer .button-primary { color:#fff !important; font-weight:1000 !importa
   track.style.setProperty('min-width','max-content','important');
   track.style.setProperty('animation','none','important');
   track.style.setProperty('transform','translate3d(0,0,0)','important');
-  var offset=0, last=0, distance=0;
-  function measure(){ distance=groups[0].getBoundingClientRect().width; }
+  var offset=0, last=0, distance=0, dragging=false, startX=0, startOffset=0, moved=false;
+  track.style.setProperty('touch-action','pan-y','important');
+  track.style.setProperty('cursor','grab','important');
+  function paint(){ if(distance>0){ offset=((offset%distance)+distance)%distance; track.style.setProperty('transform','translate3d('+(-offset)+'px,0,0)','important'); } }
+  function measure(){ distance=groups[0].getBoundingClientRect().width; paint(); }
   measure();
   window.addEventListener('resize',measure,{passive:true});
+  track.addEventListener('pointerdown',function(e){
+   if(e.pointerType==='mouse' && e.button!==0) return;
+   dragging=true; moved=false; startX=e.clientX; startOffset=offset; last=0;
+   track.style.setProperty('cursor','grabbing','important');
+   try{track.setPointerCapture(e.pointerId);}catch(_){}
+  });
+  track.addEventListener('pointermove',function(e){
+   if(!dragging) return;
+   var dx=e.clientX-startX;
+   if(Math.abs(dx)>4) moved=true;
+   offset=startOffset-dx; paint();
+  });
+  function endDrag(){
+   if(!dragging) return;
+   dragging=false;
+   track.style.setProperty('cursor','grab','important');
+   if(moved){
+    track.dataset.suppressClick='1';
+    setTimeout(function(){delete track.dataset.suppressClick;},350);
+   }
+  }
+  track.addEventListener('pointerup',endDrag);
+  track.addEventListener('pointercancel',endDrag);
+  track.addEventListener('lostpointercapture',endDrag);
+  track.addEventListener('click',function(e){
+   if(track.dataset.suppressClick==='1'){e.preventDefault();e.stopPropagation();delete track.dataset.suppressClick;}
+  },true);
   function frame(now){
    if(!last) last=now;
    var dt=Math.min((now-last)/1000,.05); last=now;
-   if(!document.hidden && distance>0){
+   if(!document.hidden && !dragging && distance>0){
     offset=(offset+26*dt)%distance;
-    track.style.setProperty('transform','translate3d('+(-offset)+'px,0,0)','important');
+    paint();
    }
    requestAnimationFrame(frame);
   }
