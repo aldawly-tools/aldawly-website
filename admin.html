@@ -172,6 +172,16 @@ button:disabled{opacity:.6;cursor:wait}
       </div>
       <h3 style="margin:18px 0 10px">حركة الزيارات — آخر 7 أيام</h3>
       <div class="analytics-chart" id="analyticsChart" aria-label="رسم بياني للزيارات اليومية"></div>
+      <div class="analytics-grid" style="margin-top:18px">
+        <div class="analytics-card"><span>مصدر فيسبوك</span><strong id="sourceFacebook">—</strong></div>
+        <div class="analytics-card"><span>مصدر جوجل</span><strong id="sourceGoogle">—</strong></div>
+        <div class="analytics-card"><span>مصدر واتساب</span><strong id="sourceWhatsapp">—</strong></div>
+        <div class="analytics-card"><span>مصادر أخرى / مباشر</span><strong id="sourceOther">—</strong></div>
+      </div>
+      <h3 style="margin:20px 0 10px">مصادر دخول الزوار</h3>
+      <div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;min-width:300px"><thead><tr><th style="text-align:right;padding:9px">المصدر</th><th style="text-align:right;padding:9px">عدد الزيارات</th><th style="text-align:right;padding:9px">النسبة</th></tr></thead><tbody id="analyticsSourcesRows"><tr><td colspan="3">جارٍ التحميل…</td></tr></tbody></table></div>
+      <h3 style="margin:20px 0 10px">المنتجات الأكثر مشاهدة</h3>
+      <div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;min-width:360px"><thead><tr><th style="text-align:right;padding:9px">المنتج</th><th style="text-align:right;padding:9px">الماركة</th><th style="text-align:right;padding:9px">المشاهدات</th></tr></thead><tbody id="analyticsTopProductsRows"><tr><td colspan="3">جارٍ التحميل…</td></tr></tbody></table></div>
       <p class="analytics-note">ملاحظة: الإحصائيات تعتمد على سجلات الزيارات الموجودة حاليًا في Firestore. يتم احتساب الزيارة مرة واحدة لكل متصفح في اليوم؛ لا يتم جمع أسماء أو أرقام هواتف أو عناوين IP. هذه البيانات لا تعرض مصدر الزيارة أو مدة التصفح أو المنتجات الأكثر مشاهدة لأنها غير مسجلة حاليًا.</p>
     </section>
     <div class="card admin-panel" id="productPanel" role="tabpanel">
@@ -331,10 +341,14 @@ function renderProducts() {
 function analyticsFormat(value){return Number(value||0).toLocaleString("ar-EG");}
 async function loadAnalytics(){
  const statusNode=$("analyticsStatus");
- if(statusNode)statusNode.textContent="جارٍ تحميل بيانات الزيارات…";
+ if(statusNode)statusNode.textContent="جارٍ تحميل بيانات الزيارات والمشاهدات…";
  try{
-  const snapshot=await getDocs(collection(db,"siteVisits"));
-  const records=snapshot.docs.map(d=>d.data()).filter(v=>/^\d{4}-\d{2}-\d{2}$/.test(String(v.day||"")));
+  const [visitSnap,sourceSnap,viewSnap]=await Promise.all([
+   getDocs(collection(db,"siteVisits")),
+   getDocs(collection(db,"trafficSources")),
+   getDocs(collection(db,"productViews"))
+  ]);
+  const records=visitSnap.docs.map(d=>d.data()).filter(v=>/^\d{4}-\d{2}-\d{2}$/.test(String(v.day||"")));
   const unique=new Set(records.map(v=>String(v.visitorId||"")).filter(Boolean));
   const today=egyptDayKey(new Date());
   const shiftDay=(base,offset)=>{const d=new Date(base+"T12:00:00");d.setDate(d.getDate()+offset);return egyptDayKey(d);};
@@ -357,10 +371,28 @@ async function loadAnalytics(){
    const value=countDay(day),height=Math.max(3,Math.round(value/max*100));
    return '<div class="analytics-day"><b>'+analyticsFormat(value)+'</b><div class="analytics-bar-wrap"><i class="analytics-bar" style="height:'+height+'%"></i></div><small>'+day.slice(5)+'</small></div>';
   }).join("");
+  const sourceLabels={facebook:"فيسبوك",google:"جوجل",whatsapp:"واتساب",instagram:"إنستجرام",tiktok:"تيك توك",direct:"دخول مباشر",other:"مصادر أخرى"};
+  const sourceCounts={};
+  sourceSnap.docs.forEach(d=>{const src=String(d.data().source||"other");sourceCounts[src]=(sourceCounts[src]||0)+1;});
+  const sourceRows=Object.entries(sourceCounts).sort((a,b)=>b[1]-a[1]);
+  const sourceTotal=sourceRows.reduce((sum,row)=>sum+row[1],0);
+  const countSource=key=>sourceCounts[key]||0;
+  $("sourceFacebook").textContent=analyticsFormat(countSource("facebook"));
+  $("sourceGoogle").textContent=analyticsFormat(countSource("google"));
+  $("sourceWhatsapp").textContent=analyticsFormat(countSource("whatsapp"));
+  $("sourceOther").textContent=analyticsFormat(sourceTotal-countSource("facebook")-countSource("google")-countSource("whatsapp"));
+  $("analyticsSourcesRows").innerHTML=sourceRows.length?sourceRows.map(([key,value])=>'<tr><td style="padding:9px">'+escapeHtml(sourceLabels[key]||key)+'</td><td style="padding:9px">'+analyticsFormat(value)+'</td><td style="padding:9px">'+(sourceTotal?Math.round(value/sourceTotal*100):0)+'%</td></tr>').join(""):'<tr><td colspan="3" style="padding:9px">لا توجد بيانات مصادر حتى الآن.</td></tr>';
+  const views={};
+  viewSnap.docs.forEach(d=>{const v=d.data(),id=String(v.productId||"");if(id)views[id]=(views[id]||0)+1;});
+  const top=Object.entries(views).sort((a,b)=>b[1]-a[1]).slice(0,10);
+  $("analyticsTopProductsRows").innerHTML=top.length?top.map(([id,count])=>{
+   const p=products.find(item=>String(item.id)===id);
+   return '<tr><td style="padding:9px">'+escapeHtml(p?p.name:"منتج رقم "+id)+'</td><td style="padding:9px">'+escapeHtml(p&&p.brand||"—")+'</td><td style="padding:9px"><b>'+analyticsFormat(count)+'</b></td></tr>';
+  }).join(""):'<tr><td colspan="3" style="padding:9px">لا توجد مشاهدات مسجلة بعد.</td></tr>';
   if(statusNode)statusNode.textContent="تم تحديث الإحصائيات بنجاح. آخر تحديث: "+new Date().toLocaleTimeString("ar-EG",{timeZone:EGYPT_TIME_ZONE});
  }catch(error){
   console.error("Analytics load failed:",error);
-  if(statusNode)statusNode.textContent="تعذر تحميل إحصائيات الزيارات: "+(error.code||error.message||"خطأ غير معروف");
+  if(statusNode)statusNode.textContent="تعذر تحميل الإحصائيات: "+(error.code||error.message||"خطأ غير معروف")+". تأكد من نشر قواعد Firebase المحدثة.";
  }
 }
 $("refreshAnalyticsBtn").addEventListener("click",loadAnalytics);
