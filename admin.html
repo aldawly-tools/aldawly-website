@@ -55,6 +55,20 @@ header .wrap{max-width:1120px}
 button:disabled{opacity:.6;cursor:wait}
 @media(max-width:700px){.dashboard-stats{grid-template-columns:repeat(2,minmax(0,1fr))}.dashboard-stat{padding:12px}.dashboard-stat strong{font-size:22px}.order-stats{grid-template-columns:repeat(3,minmax(0,1fr))}.card{padding:15px}.dashboard-nav{margin:8px 0}}
 @media(max-width:380px){.dashboard-stats{gap:8px}.dashboard-stat strong{font-size:20px}}
+/* Store analytics dashboard */
+.analytics-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:14px 0}
+.analytics-card{background:linear-gradient(145deg,#fff,#fafbfc);border:1px solid #e5e7eb;border-radius:15px;padding:16px;min-width:0}
+.analytics-card span{display:block;color:#68707a;font-size:13px;font-weight:700;line-height:1.6}
+.analytics-card strong{display:block;color:#b20f19;font-size:27px;font-weight:1000;margin-top:7px;overflow-wrap:anywhere}
+.analytics-card small{display:block;color:#858c95;font-size:11px;margin-top:5px}
+.analytics-chart{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:10px;align-items:end;min-height:190px;padding:18px 8px 8px;border:1px solid #edf0f2;border-radius:13px;background:linear-gradient(#fff,#fafbfc)}
+.analytics-day{display:flex;flex-direction:column;align-items:center;justify-content:end;gap:7px;height:155px;min-width:0}
+.analytics-day b{font-size:12px;color:#9d111a}
+.analytics-bar-wrap{height:112px;width:min(100%,34px);display:flex;align-items:end;background:#f0f1f3;border-radius:8px 8px 3px 3px;overflow:hidden}
+.analytics-bar{display:block;width:100%;min-height:3px;background:linear-gradient(180deg,#ed343d,#b20f19);border-radius:7px 7px 0 0}
+.analytics-day small{font-size:11px;color:#68707a;white-space:nowrap}
+.analytics-note{padding:12px;border-radius:10px;background:#fff8e8;color:#725a20;font-size:12px;line-height:1.8;margin-top:12px}
+@media(max-width:700px){.analytics-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.analytics-card{padding:13px}.analytics-card strong{font-size:23px}.analytics-chart{gap:4px;padding-inline:4px}.analytics-day small{font-size:10px}}
 
 .dashboard-nav{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));position:sticky;top:4px}.dashboard-tab{background:#f1f2f4;color:#444;border:1px solid #e5e7eb;padding:12px 8px;white-space:nowrap;font-size:13px}.dashboard-tab.active{background:#d71920;color:#fff;border-color:#d71920;box-shadow:0 4px 12px #d7192030}.admin-panel{scroll-margin-top:75px}.admin-panel.hidden{display:none!important}@media(max-width:480px){.dashboard-nav{gap:5px;padding:7px}.dashboard-tab{font-size:11px;padding:11px 4px;border-radius:9px}}
 @media(max-width:700px){.dashboard-nav{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.dashboard-tab:last-child{grid-column:auto}.dashboard-tab{min-height:54px;font-size:14px;white-space:normal;line-height:1.35;touch-action:manipulation}}
@@ -134,11 +148,32 @@ button:disabled{opacity:.6;cursor:wait}
       <button type="button" class="dashboard-tab" data-tab="ordersPanel" role="tab" aria-selected="false">الطلبات</button>
       <button type="button" class="dashboard-tab" data-tab="ordersPanel" data-filter="cancelled" role="tab" aria-selected="false">الطلبات الملغية</button>
       <button type="button" class="dashboard-tab" data-tab="postPanel" role="tab" aria-selected="false">منشئ البوستات</button>
+      <button type="button" class="dashboard-tab" data-tab="analyticsPanel" role="tab" aria-selected="false">📊 الإحصائيات</button>
     </nav>
     <div class="dashboard-stats" aria-label="ملخص المتجر">
       <button type="button" class="dashboard-stat dashboard-stat-action" id="dashProductsCard" aria-label="فتح المنتجات لعرضها وتعديلها"><span>إجمالي المنتجات</span><strong id="dashProducts">0</strong><small>اضغط لعرض المنتجات وتعديلها</small></button>
       <button type="button" class="dashboard-stat dashboard-stat-action" id="dashOrdersCard" aria-label="فتح الطلبات لعرضها وتعديلها"><span>إجمالي الطلبات</span><strong id="dashOrders">0</strong><small>اضغط لعرض الطلبات وتعديلها</small></button>
     </div>
+    <section class="card admin-panel hidden" id="analyticsPanel" role="tabpanel">
+      <div class="actions" style="justify-content:space-between;align-items:center">
+        <div><h2 style="margin:0">إحصائيات المتجر</h2><p class="muted" style="margin:5px 0 0">متابعة الزيارات اليومية والإجمالية وأداء الطلبات من بيانات المتجر المسجلة.</p></div>
+        <button class="light" id="refreshAnalyticsBtn" type="button">تحديث الإحصائيات</button>
+      </div>
+      <p class="status" id="analyticsStatus" aria-live="polite">جارٍ تجهيز الإحصائيات…</p>
+      <div class="analytics-grid">
+        <div class="analytics-card"><span>إجمالي الزيارات المسجلة</span><strong id="analyticsTotalVisits">—</strong><small>كل سجلات الزيارة اليومية</small></div>
+        <div class="analytics-card"><span>زوار فريدون تقديريًا</span><strong id="analyticsUniqueVisitors">—</strong><small>متصفح واحد يُحسب كزائر واحد</small></div>
+        <div class="analytics-card"><span>زيارات اليوم</span><strong id="analyticsToday">—</strong><small id="analyticsTodayDate">بتوقيت القاهرة</small></div>
+        <div class="analytics-card"><span>زيارات آخر 7 أيام</span><strong id="analyticsWeek">—</strong><small>مجموع السجلات خلال أسبوع</small></div>
+        <div class="analytics-card"><span>زيارات آخر 30 يومًا</span><strong id="analyticsMonth">—</strong><small>مجموع السجلات خلال 30 يومًا</small></div>
+        <div class="analytics-card"><span>زيارات أمس</span><strong id="analyticsYesterday">—</strong><small>مقارنة باليوم الحالي</small></div>
+        <div class="analytics-card"><span>إجمالي الطلبات</span><strong id="analyticsOrders">—</strong><small>من الطلبات المسجلة في المتجر</small></div>
+        <div class="analytics-card"><span>طلبات غير ملغية</span><strong id="analyticsActiveOrders">—</strong><small>جديد أو مؤكد أو مشحون أو تم التسليم</small></div>
+      </div>
+      <h3 style="margin:18px 0 10px">حركة الزيارات — آخر 7 أيام</h3>
+      <div class="analytics-chart" id="analyticsChart" aria-label="رسم بياني للزيارات اليومية"></div>
+      <p class="analytics-note">ملاحظة: الإحصائيات تعتمد على سجلات الزيارات الموجودة حاليًا في Firestore. يتم احتساب الزيارة مرة واحدة لكل متصفح في اليوم؛ لا يتم جمع أسماء أو أرقام هواتف أو عناوين IP. هذه البيانات لا تعرض مصدر الزيارة أو مدة التصفح أو المنتجات الأكثر مشاهدة لأنها غير مسجلة حاليًا.</p>
+    </section>
     <div class="card admin-panel" id="productPanel" role="tabpanel">
       <div class="actions" style="justify-content:space-between;align-items:center"><div><h2 style="margin:0 0 5px">إضافة منتج</h2><span class="muted" id="signedInAs"></span></div><button class="light" id="enablePushBtn" type="button">تفعيل إشعارات الطلبات على هذا الهاتف</button><button class="light" id="logoutBtn" type="button">تسجيل الخروج</button></div>
       <p class="status" id="saveStatus" aria-live="polite"></p><p class="status" id="pushStatus" aria-live="polite"></p>
@@ -191,7 +226,7 @@ import { getAuth, GoogleAuthProvider, onAuthStateChanged, signInWithPopup, signI
 import { collection, deleteDoc, doc, getDoc, getDocs, getFirestore, setDoc, serverTimestamp, writeBatch, query, orderBy, updateDoc, runTransaction } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-firestore.js";
 
 const $ = function (id) { return document.getElementById(id); };
-const ids = ["productPanel", "catalogPanel", "ordersPanel", "postPanel"];
+const ids = ["productPanel", "catalogPanel", "ordersPanel", "postPanel", "analyticsPanel"];
 const config = window.DAWLY_FIREBASE_CONFIG || {};
 const ADMIN_EMAILS = new Set(["elgoharemahmoud@gmail.com", "ahmedelgohare90@gmail.com"]);
 function isAuthorizedAdmin(user) {
@@ -293,6 +328,42 @@ function renderProducts() {
     return '<div class="product"><div><strong>' + escapeHtml(product.name) + '</strong><small>' + escapeHtml(product.brand || "بدون ماركة") + ' · ' + escapeHtml(product.cat || "") + ' · ' + escapeHtml(product.price || "السعر عند الاستفسار") + ' · رقم: ' + escapeHtml(product.id) + '</small>' + (product.imageId ? '<span class="pill">صورة محفوظة</span>' : "") + '</div><div class="actions"><button class="light" type="button" data-edit="' + escapeHtml(product.id) + '">تعديل</button><button class="danger" type="button" data-delete="' + escapeHtml(product.id) + '">حذف</button></div></div>';
   }).join("") || '<p class="muted">' + (term ? "لا توجد نتائج مطابقة للبحث." : "لا توجد منتجات حاليًا.") + '</p>';
 }
+function analyticsFormat(value){return Number(value||0).toLocaleString("ar-EG");}
+async function loadAnalytics(){
+ const statusNode=$("analyticsStatus");
+ if(statusNode)statusNode.textContent="جارٍ تحميل بيانات الزيارات…";
+ try{
+  const snapshot=await getDocs(collection(db,"siteVisits"));
+  const records=snapshot.docs.map(d=>d.data()).filter(v=>/^\\d{4}-\\d{2}-\\d{2}$/.test(String(v.day||"")));
+  const unique=new Set(records.map(v=>String(v.visitorId||"")).filter(Boolean));
+  const today=egyptDayKey(new Date());
+  const shiftDay=(base,offset)=>{const d=new Date(base+"T12:00:00");d.setDate(d.getDate()+offset);return egyptDayKey(d);};
+  const countDay=day=>records.filter(v=>v.day===day).length;
+  const weekDays=Array.from({length:7},(_,i)=>shiftDay(today,i-6));
+  const week=weekDays.reduce((sum,day)=>sum+countDay(day),0);
+  const monthStart=shiftDay(today,-29);
+  const month=records.filter(v=>v.day>=monthStart&&v.day<=today).length;
+  $("analyticsTotalVisits").textContent=analyticsFormat(records.length);
+  $("analyticsUniqueVisitors").textContent=analyticsFormat(unique.size);
+  $("analyticsToday").textContent=analyticsFormat(countDay(today));
+  $("analyticsTodayDate").textContent="اليوم: "+today+" — القاهرة";
+  $("analyticsWeek").textContent=analyticsFormat(week);
+  $("analyticsMonth").textContent=analyticsFormat(month);
+  $("analyticsYesterday").textContent=analyticsFormat(countDay(shiftDay(today,-1)));
+  $("analyticsOrders").textContent=analyticsFormat(orders.length);
+  $("analyticsActiveOrders").textContent=analyticsFormat(orders.filter(o=>o.status!=="cancelled").length);
+  const max=Math.max(1,...weekDays.map(countDay));
+  $("analyticsChart").innerHTML=weekDays.map(day=>{
+   const value=countDay(day),height=Math.max(3,Math.round(value/max*100));
+   return '<div class="analytics-day"><b>'+analyticsFormat(value)+'</b><div class="analytics-bar-wrap"><i class="analytics-bar" style="height:'+height+'%"></i></div><small>'+day.slice(5)+'</small></div>';
+  }).join("");
+  if(statusNode)statusNode.textContent="تم تحديث الإحصائيات بنجاح. آخر تحديث: "+new Date().toLocaleTimeString("ar-EG",{timeZone:EGYPT_TIME_ZONE});
+ }catch(error){
+  console.error("Analytics load failed:",error);
+  if(statusNode)statusNode.textContent="تعذر تحميل إحصائيات الزيارات: "+(error.code||error.message||"خطأ غير معروف");
+ }
+}
+$("refreshAnalyticsBtn").addEventListener("click",loadAnalytics);
 async function ensureCatalog() {
   const metaRef = doc(db, "storeMeta", "catalog");
   const meta = await getDoc(metaRef);
@@ -1205,7 +1276,7 @@ if (!readyConfig()) {
       $("loginCard").classList.add("hidden");
       $("manager").classList.remove("hidden");
       $("signedInAs").textContent = "تم تسجيل الدخول: " + user.email;
-      try { await loadProducts(); await loadOrders(); }
+      try { await loadProducts(); await loadOrders(); await loadAnalytics(); }
       catch (error) { console.error("Admin data load failed:", error); message(saveStatus, "تعذر تحميل المنتجات: " + (error && (error.code || error.message) ? (error.code || error.message) : "خطأ غير معروف") + "."); }
     });
   } catch (error) { console.error("Firebase initialization error:", error); message(status, "تعذر تهيئة Firebase (" + (error.code || error.message || "خطأ غير معروف") + "). راجع إعدادات Firebase."); }
