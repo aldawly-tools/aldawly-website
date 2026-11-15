@@ -1,0 +1,129 @@
+/* DESKTOP HERO REPAIR — explicit three-column layout; mobile rules remain untouched */
+@media (min-width:821px){
+  .hero-shell{padding:28px 0 16px!important}
+  .hero-shell .hero-grid{
+    display:grid!important;
+    direction:ltr!important;
+    grid-template-columns:minmax(360px,1.2fr) minmax(330px,1fr) minmax(220px,.72fr)!important;
+    grid-template-areas:"photo copy services"!important;
+    grid-auto-flow:initial!important;
+    align-items:stretch!important;
+    gap:0!important;
+    width:100%!important;
+    min-height:430px!important;
+    height:auto!important;
+    overflow:hidden!important;
+    border-radius:22px!important;
+    background:#111820!important;
+  }
+  .hero-shell .hero-photo{
+    grid-area:photo!important;
+    position:relative!important;
+    inset:auto!important;
+    display:block!important;
+    width:100%!important;
+    height:100%!important;
+    min-height:430px!important;
+    aspect-ratio:auto!important;
+    overflow:hidden!important;
+    border-radius:0!important;
+    background:#080c10!important;
+  }
+  .hero-shell .hero-photo video,
+  .hero-shell .hero-photo img{
+    position:absolute!important;
+    inset:0!important;
+    display:block!important;
+    width:100%!important;
+    height:100%!important;
+    min-height:100%!important;
+    object-fit:cover!important;
+    object-position:center!important;
+  }
+  .hero-shell .hero-photo:after{
+    background:linear-gradient(90deg,rgba(8,12,17,.04),rgba(8,12,17,.18))!important;
+  }
+  .hero-shell .hero-copy{
+    grid-area:copy!important;
+    position:relative!important;
+    z-index:1!important;
+    display:flex!important;
+    flex-direction:column!important;
+    align-items:stretch!important;
+    justify-content:center!important;
+    width:100%!important;
+    max-width:none!important;
+    min-height:430px!important;
+    height:auto!important;
+    margin:0!important;
+    padding:clamp(26px,3vw,46px)!important;
+    direction:rtl!important;
+    text-align:right!important;
+    background:linear-gradient(145deg,#1b2530,#111820)!important;
+    color:#fff!important;
+  }
+  .hero-shell .hero-copy h1{font-size:clamp(42px,4vw,62px)!important}
+  .hero-shell .hero-copy h2{font-size:clamp(22px,2vw,30px)!important}
+  .hero-shell .hero-copy p{max-width:540px!important;font-size:15px!important;line-height:1.95!important}
+  .hero-shell .hero-copy .hero-cta,
+  .hero-shell .hero-copy .whatsapp-catalog-cta{
+    align-self:stretch!important;
+    width:100%!important;
+    max-width:320px!important;
+    min-width:0!important;
+    min-height:50px!important;
+    margin:12px 0 0!important;
+    justify-content:center!important;
+  }
+  .hero-shell .hero-services{
+    grid-area:services!important;
+    position:relative!important;
+    inset:auto!important;
+    z-index:1!important;
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr)!important;
+    grid-template-rows:repeat(4,minmax(68px,1fr))!important;
+    align-content:center!important;
+    align-items:stretch!important;
+    width:100%!important;
+    min-height:430px!important;
+    height:100%!important;
+    padding:22px 16px!important;
+    gap:10px!important;
+    direction:rtl!important;
+    background:#111820!important;
+  }
+  .hero-shell .hero-services .service-card{
+    display:flex!important;
+    flex-direction:row!important;
+    align-items:center!important;
+    justify-content:flex-start!important;
+    min-width:0!important;
+    min-height:68px!important;
+    padding:12px!important;
+    gap:10px!important;
+    border:1px solid #ffffff26!important;
+    border-radius:12px!important;
+    background:linear-gradient(135deg,#202a35,#18212a)!important;
+    color:#f5f7f9!important;
+    font-size:13px!important;
+    line-height:1.55!important;
+    text-align:right!important;
+    white-space:normal!important;
+  }
+  .hero-shell .hero-services .service-icon{
+    width:34px!important;height:34px!important;flex:0 0 34px!important;
+    color:#ff5964!important;
+  }
+  .hero-shell .hero-services .service-icon svg{width:29px!important;height:29px!important}
+}
+@media (min-width:821px) and (max-width:1100px){
+  .hero-shell .hero-grid{
+    grid-template-columns:minmax(280px,1.05fr) minmax(270px,1fr) minmax(185px,.72fr)!important;
+    min-height:390px!important;
+  }
+  .hero-shell .hero-photo,.hero-shell .hero-copy,.hero-shell .hero-services{min-height:390px!important}
+  .hero-shell .hero-services{padding:16px 10px!important;gap:8px!important}
+  .hero-shell .hero-services .service-card{font-size:12px!important;padding:9px!important}
+  .hero-shell .hero-copy{padding:25px!important}
+}
