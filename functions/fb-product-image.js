@@ -8,7 +8,7 @@ export async function onRequest(context) {
     const product = await getProductById(id);
     if (!product) return new Response("Product not found", { status: 404 });
     const direct = product.image || product.imageUrl || product.photo || "";
-    if (direct && /^https?:\\/\\//i.test(String(direct))) {
+    if (direct && /^https?:\/\//i.test(String(direct))) {
       return Response.redirect(String(direct), 302);
     }
     const imageId = (Array.isArray(product.imageIds) && product.imageIds[0]) || product.imageId;
