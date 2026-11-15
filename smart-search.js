@@ -94,13 +94,24 @@
       panel.innerHTML='<div class="dawly-search-empty">مفيش اقتراح مطابق حاليًا. جرّب اسم الماركة أو رقم الصنف أو كلمة أبسط.</div>';
     } else {
       panel.innerHTML=matches.map(function(x,i){
-        var p=x.p, image=(p.image||p.imageUrl||p.photo||p.thumbnail)?'<img src="'+esc(p.image||p.imageUrl||p.photo||p.thumbnail)+'" alt="" loading="lazy">' :(p.icon||"🔧");
+        var p=x.p, directImage=p.image||p.imageUrl||p.photo||p.thumbnail||"", cloudImage=(Array.isArray(p.imageIds)&&p.imageIds[0])||p.imageId||"", image=directImage?'<img src="'+esc(directImage)+'" alt="" loading="lazy">' : cloudImage?'<img data-smart-cloud="'+esc(cloudImage)+'" alt="" loading="lazy">' :(p.icon||"🔧");
         var brand=p.brand||p.brandName||p.manufacturer||p.cat||"منتجات";
         return '<button type="button" class="dawly-search-suggestion" role="option" aria-selected="false" data-smart-index="'+i+'"><span class="dawly-search-thumb">'+image+'</span><span class="dawly-search-copy"><span class="dawly-search-name">'+esc(p.name||"منتج")+'</span><span class="dawly-search-meta">'+esc(brand)+' · '+(p.price==null||p.price===""?"السعر عند التواصل":esc(p.price)+" جنيه")+'</span></span></button>';
       }).join("")+'<div class="dawly-search-footer">اختار المنتج لفتح التفاصيل • أو اضغط بحث لعرض كل النتائج</div>';
       panel._matches=matches;
     }
     panel.hidden=false; input.setAttribute("aria-expanded","true");
+    panel.querySelectorAll("img[data-smart-cloud]").forEach(function(img){
+      var cloudId=img.getAttribute("data-smart-cloud");
+      if(img.dataset.loading==="1")return;
+      img.dataset.loading="1";
+      if(typeof window.DAWLY_LOAD_PRODUCT_IMAGE==="function"){
+        window.DAWLY_LOAD_PRODUCT_IMAGE(cloudId).then(function(url){
+          if(url&&img.isConnected){img.src=url;img.removeAttribute("data-smart-cloud");}
+          else if(img.isConnected){img.replaceWith(document.createTextNode("🔧"));}
+        }).catch(function(){if(img.isConnected)img.replaceWith(document.createTextNode("🔧"));});
+      }
+    });
   }
   input.addEventListener("input",render);
   input.addEventListener("focus",function(){if(input.value.trim())render();});
