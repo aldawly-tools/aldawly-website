@@ -292,7 +292,8 @@
         : item.imageId
           ? '<img data-cloud-image="' + escapeHtml(item.imageId) + '" alt="' + escapeHtml(name) + '" loading="lazy">'
           : '<span class="product-placeholder" aria-hidden="true">' + escapeHtml(item.icon || "🔧") + '</span>';
-      return '<article class="product-card home-shelf-card"><a class="product-visual product-open-link" href="' + url + '">' + image + '</a><div class="product-info"><span class="product-category">' + escapeHtml(displayBrand(productBrand(item)) || item.cat || "منتجات") + '</span><h3 class="product-name"><a href="' + url + '">' + escapeHtml(name) + '</a></h3><span class="product-price">' + escapeHtml(formatPrice(item.price)) + '</span><a class="product-details-link" href="' + url + '">التفاصيل والسعر والتوفر ←</a></div></article>';
+      const soldOut = Number.isInteger(item.stock) && item.stock === 0;
+      return '<article class="product-card home-shelf-card"><a class="product-visual product-open-link" href="' + url + '">' + image + '</a><div class="product-info"><span class="product-category">' + escapeHtml(displayBrand(productBrand(item)) || item.cat || "منتجات") + '</span><h3 class="product-name"><a href="' + url + '">' + escapeHtml(name) + '</a></h3><span class="product-price">' + escapeHtml(formatPrice(item.price)) + '<small>' + (item.price === null || item.price === undefined || item.price === "" ? 'السعر عند التواصل' : 'التوفر عند التواصل') + '</small></span><a class="product-details-link" href="' + url + '">التفاصيل والسعر والتوفر ←</a><button class="button-primary home-shelf-add" type="button" data-add="' + escapeHtml(item.id) + '"' + (soldOut ? ' disabled aria-disabled="true"' : '') + '>' + (soldOut ? 'غير متاح حاليًا' : 'أضف إلى السلة') + '</button></div></article>';
     }
     const featuredGrid = document.getElementById("featuredProductsGrid");
     if (featuredGrid) {
