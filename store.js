@@ -700,7 +700,11 @@
       return;
     }
     const add = event.target.closest("[data-add]");
-    if (add) { addToCart(add.dataset.add); return; }
+    if (add) {
+      const quickModal = document.getElementById("quickViewModal");
+      if (quickModal && quickModal.classList.contains("is-open")) { quickModal.classList.remove("is-open"); document.body.classList.remove("quick-view-open"); }
+      addToCart(add.dataset.add); return;
+    }
     const quantity = event.target.closest("[data-qty]");
     if (quantity) {
       const line = cart.find(function (entry) { return String(entry.id) === String(quantity.dataset.qty); });
