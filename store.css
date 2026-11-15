@@ -4347,46 +4347,53 @@ body{background:#f4f6f8}
 
 
 
-/* Refined slow water bubbles with a soft glass shimmer */
+
+/* Always-moving brand carousel and clearly visible water bubbles */
+.brands-marquee .brands-marquee-track{
+ animation:brands-marquee-move 22s linear infinite !important;
+ animation-play-state:running !important;
+}
 .brands-marquee .brand-word.brand-tile{
  position:relative;isolation:isolate;overflow:hidden;
- background:linear-gradient(145deg,#fff 0%,#f9fcff 48%,#fff5f5 100%);
+ background:linear-gradient(145deg,#fff 0%,#f7fbff 48%,#fff4f4 100%);
 }
 .brands-marquee .brand-word.brand-tile::before,
 .brands-marquee .brand-word.brand-tile::after{
- content:"";position:absolute;inset:-25% -10%;pointer-events:none;z-index:0;
- background-repeat:repeat;
+ content:"";position:absolute;inset:-28% -10%;pointer-events:none;z-index:0;
+ background-repeat:repeat;will-change:transform,background-position;
 }
 .brands-marquee .brand-word.brand-tile::before{
  background-image:
-  radial-gradient(circle at 18px 22px,rgba(255,255,255,.98) 0 2px,rgba(139,205,226,.34) 3px,rgba(255,255,255,.12) 6px,transparent 9px),
-  radial-gradient(circle at 65px 76px,rgba(255,255,255,.95) 0 3px,rgba(139,205,226,.28) 4px,transparent 9px),
-  radial-gradient(circle at 112px 38px,rgba(255,255,255,.92) 0 2px,rgba(139,205,226,.25) 3px,transparent 8px);
- background-size:148px 124px;
- animation:brand-water-bubbles 13s linear infinite;
- opacity:.62;
+  radial-gradient(circle at 18px 22px,rgba(255,255,255,1) 0 3px,rgba(80,175,215,.48) 4px,transparent 10px),
+  radial-gradient(circle at 65px 76px,rgba(255,255,255,.98) 0 4px,rgba(80,175,215,.4) 5px,transparent 12px),
+  radial-gradient(circle at 112px 38px,rgba(255,255,255,.95) 0 3px,rgba(80,175,215,.36) 4px,transparent 10px);
+ background-size:116px 94px;
+ animation:brand-water-bubbles 4.2s linear infinite !important;
+ opacity:.9;
 }
 .brands-marquee .brand-word.brand-tile::after{
  background-image:
-  radial-gradient(ellipse at 30% 30%,rgba(255,255,255,.38),transparent 42%),
-  linear-gradient(112deg,transparent 32%,rgba(255,255,255,.52) 48%,transparent 61%);
- background-size:100% 100%,220% 100%;
- background-position:center,-130% 0;
- animation:brand-water-shimmer 8s ease-in-out infinite;
- opacity:.52;
+  linear-gradient(110deg,transparent 25%,rgba(255,255,255,.78) 48%,transparent 68%),
+  radial-gradient(circle at 28px 64px,rgba(255,255,255,.95) 0 2px,rgba(80,175,215,.3) 3px,transparent 8px);
+ background-size:180% 100%,92px 76px;
+ background-position:-140% 0,0 0;
+ animation:brand-water-shimmer 4.8s ease-in-out infinite !important;
+ opacity:.7;
 }
 .brands-marquee .brand-word.brand-tile .brand-logo,
 .brands-marquee .brand-word.brand-tile .brand-name-sr{position:relative;z-index:1}
-.brands-marquee .brand-word.brand-tile:hover::before{opacity:.82}
 @keyframes brand-water-bubbles{
- 0%{transform:translate3d(0,22px,0)}
- 100%{transform:translate3d(0,-32px,0)}
+ 0%{transform:translate3d(0,30px,0)}
+ 100%{transform:translate3d(0,-48px,0)}
 }
 @keyframes brand-water-shimmer{
- 0%,35%{background-position:center,-130% 0}
- 75%,100%{background-position:center,130% 0}
+ 0%{background-position:-140% 0,0 0}
+ 100%{background-position:140% 0,28px -18px}
 }
+/* Keep the requested motion active even when the device requests reduced motion. */
 @media(prefers-reduced-motion:reduce){
- .brands-marquee .brand-word.brand-tile::before,
- .brands-marquee .brand-word.brand-tile::after{animation:none}
+ .brands-marquee .brands-marquee-track{animation:brands-marquee-move 22s linear infinite !important}
+ .brands-marquee .brand-word.brand-tile::before{animation:brand-water-bubbles 4.2s linear infinite !important}
+ .brands-marquee .brand-word.brand-tile::after{animation:brand-water-shimmer 4.8s ease-in-out infinite !important}
+ .brands-marquee .brands-marquee-group[aria-hidden="true"]{display:flex !important}
 }
