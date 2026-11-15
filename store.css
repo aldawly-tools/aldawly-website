@@ -2454,7 +2454,7 @@ body:has(.hero-shell) .section#categories .category-tile.all small{color:#fff}
 /* Category cards: editorial photo tiles with custom SVG icons */
 .categories-grid{
   display:grid;
-  grid-template-columns:repeat(3,minmax(0,1fr));
+  grid-template-columns:repeat(4,minmax(0,1fr));
   gap:16px;
   align-items:stretch;
 }
@@ -2647,3 +2647,7 @@ body:has(.hero-shell) .section#categories .category-tile.all small{color:#fff}
   .product-price { font-size: 12px; }
   .product-meta .button-primary { font-size: 10px; padding-inline: 7px; }
 }
+
+/* Four category tiles fit together on desktop; two balanced columns on phones */
+@media (min-width: 901px) { .categories-grid { grid-template-columns: repeat(4, minmax(0, 1fr)) !important; } }
+@media (max-width: 900px) { .categories-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; } }
