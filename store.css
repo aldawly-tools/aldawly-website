@@ -2337,3 +2337,18 @@ body:has(.hero-shell) .section#categories .category-tile.all small{color:#fff}
   #products.section{padding-top:18px}
   #products .section-title{font-size:21px}
 }
+
+
+/* Mobile floating actions: keep them at the screen edge, clear of homepage service cards */
+@media(max-width:700px){
+  .floating-contact-widget{
+    left:14px!important;
+    bottom:max(14px,env(safe-area-inset-bottom))!important;
+    z-index:95!important;
+  }
+  .mobile-menu-trigger{
+    right:14px!important;
+    bottom:max(14px,env(safe-area-inset-bottom))!important;
+    z-index:94!important;
+  }
+}
