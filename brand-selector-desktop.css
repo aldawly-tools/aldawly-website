@@ -19,3 +19,20 @@
  .brands-marquee-section .brand-word.brand-tile{height:78px!important;min-height:78px!important;padding:10px!important}
  .brands-marquee-section .brand-word.brand-tile .brand-logo{max-height:48px!important}
 }
+
+/* Restore the gentle side-to-side swing on each brand logo */
+@keyframes brandLogoSwing {
+  0%, 100% { transform: rotate(-4deg); }
+  50% { transform: rotate(4deg); }
+}
+.brands-marquee-section .brand-word.brand-tile .brand-logo {
+  transform-origin: 50% 50%;
+  animation: brandLogoSwing 2.8s ease-in-out infinite;
+  will-change: transform;
+}
+.brands-marquee-section .brand-word.brand-tile:hover .brand-logo {
+  animation-play-state: paused;
+}
+@media (prefers-reduced-motion: reduce) {
+  .brands-marquee-section .brand-word.brand-tile .brand-logo { animation: none; }
+}
