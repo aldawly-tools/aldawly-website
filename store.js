@@ -16,6 +16,119 @@
   const mobileMenuCategories = document.getElementById("mobileMenuCategories");
   const openMobileMenuButton = document.getElementById("openMobileMenu");
   const closeMobileMenuButton = document.getElementById("closeMobileMenu");
+
+  // البحث بالباركود أو QR من كاميرا الهاتف، مع إدخال يدوي للأجهزة غير المدعومة.
+  const searchForm = document.getElementById("searchForm");
+  const searchInput = document.getElementById("searchInput");
+  if (searchForm && searchInput && !document.getElementById("barcodeScanButton")) {
+    const scanButton = document.createElement("button");
+    scanButton.type = "button";
+    scanButton.id = "barcodeScanButton";
+    scanButton.className = "barcode-scan-button";
+    scanButton.setAttribute("aria-label", "امسح باركود المنتج");
+    scanButton.textContent = "▦";
+    scanButton.title = "امسح باركود أو QR";
+    searchForm.appendChild(scanButton);
+
+    const scanDialog = document.createElement("div");
+    scanDialog.className = "barcode-scan-dialog";
+    scanDialog.id = "barcodeScanDialog";
+    scanDialog.setAttribute("aria-hidden", "true");
+    scanDialog.innerHTML = '<div class="barcode-scan-panel" role="dialog" aria-modal="true" aria-labelledby="barcodeScanTitle"><button type="button" class="barcode-scan-close" aria-label="إغلاق">×</button><h2 id="barcodeScanTitle">امسح باركود المنتج</h2><p>وجّه كاميرا الهاتف إلى الباركود أو رمز QR الموجود على العبوة</p><video id="barcodeScanVideo" playsinline muted></video><p class="barcode-scan-status" id="barcodeScanStatus" aria-live="polite">جارٍ تجهيز الكاميرا…</p><div class="barcode-manual"><label for="barcodeManualInput">أو اكتب رقم الباركود يدويًا</label><div><input id="barcodeManualInput" inputmode="numeric" autocomplete="off" placeholder="اكتب رقم الباركود"><button type="button" id="barcodeManualSearch">بحث</button></div></div></div>';
+    document.body.appendChild(scanDialog);
+    const style = document.createElement("style");
+    style.textContent = '.barcode-scan-button{flex:0 0 44px;width:44px;min-width:44px;border:0;border-inline-start:1px solid #e5e7eb;background:#fff;color:#c8101e;font-size:27px;font-weight:900;cursor:pointer}.barcode-scan-dialog{position:fixed;inset:0;z-index:9999;background:#101318d9;display:none;place-items:center;padding:16px}.barcode-scan-dialog.open{display:grid}.barcode-scan-panel{position:relative;width:min(100%,460px);max-height:92dvh;overflow:auto;background:#fff;border-radius:18px;padding:22px;box-shadow:0 20px 60px #0005;text-align:center}.barcode-scan-panel h2{margin:4px 0 8px;font-size:22px}.barcode-scan-panel p{color:#626b75;line-height:1.7}.barcode-scan-panel video{display:block;width:100%;max-height:300px;min-height:180px;object-fit:cover;background:#17191c;border-radius:12px}.barcode-scan-close{position:absolute;top:10px;inset-inline-end:12px;border:0;background:#f1f2f4;border-radius:50%;width:36px;height:36px;font-size:24px;cursor:pointer}.barcode-scan-status{font-weight:700;color:#c8101e!important}.barcode-manual{text-align:right;margin-top:14px}.barcode-manual label{display:block;font-weight:700;margin-bottom:7px}.barcode-manual div{display:flex;gap:8px}.barcode-manual input{min-width:0;flex:1;border:1px solid #d9dee4;border-radius:9px;padding:12px;font:inherit}.barcode-manual button{border:0;border-radius:9px;padding:0 18px;background:#c8101e;color:#fff;font-weight:800}@media(max-width:520px){.barcode-scan-button{height:44px}.barcode-scan-panel{padding:18px}}';
+    document.head.appendChild(style);
+    const video = scanDialog.querySelector("#barcodeScanVideo");
+    const status = scanDialog.querySelector("#barcodeScanStatus");
+    const manualInput = scanDialog.querySelector("#barcodeManualInput");
+    let scanStream = null;
+    let scanFrame = 0;
+    let detector = null;
+    let scanning = false;
+    function stopBarcodeCamera() {
+      scanning = false;
+      if (scanFrame) cancelAnimationFrame(scanFrame);
+      scanFrame = 0;
+      if (scanStream) scanStream.getTracks().forEach(function (track) { track.stop(); });
+      scanStream = null;
+      video.pause();
+      video.srcObject = null;
+    }
+    function closeBarcodeDialog() {
+      stopBarcodeCamera();
+      scanDialog.classList.remove("open");
+      scanDialog.setAttribute("aria-hidden", "true");
+    }
+    function applyBarcode(value) {
+      const code = String(value || "").trim();
+      if (!code) return;
+      closeBarcodeDialog();
+      searchInput.value = code;
+      searchInput.dispatchEvent(new Event("input", {bubbles:true}));
+      searchInput.focus();
+      const result = products.find(function (item) {
+        return [item.barcode,item.ean,item.gtin,item.upc,item.sku,item.code,item.partNumber].some(function (field) {
+          return field != null && String(field).replace(/\\s/g,"").toLowerCase() === code.replace(/\\s/g,"").toLowerCase();
+        });
+      });
+      if (result) {
+        searchInput.value = String(result.barcode || result.ean || result.gtin || result.upc || result.sku || result.code || result.partNumber || code);
+        searchInput.dispatchEvent(new Event("input", {bubbles:true}));
+        status.textContent = "";
+      }
+    }
+    async function scanBarcodeFrame() {
+      if (!scanning || !detector || video.readyState < 2) {
+        if (scanning) scanFrame = requestAnimationFrame(scanBarcodeFrame);
+        return;
+      }
+      try {
+        const found = await detector.detect(video);
+        if (found && found.length && found[0].rawValue) {
+          applyBarcode(found[0].rawValue);
+          return;
+        }
+      } catch (error) {}
+      if (scanning) scanFrame = requestAnimationFrame(scanBarcodeFrame);
+    }
+    async function openBarcodeDialog() {
+      scanDialog.classList.add("open");
+      scanDialog.setAttribute("aria-hidden", "false");
+      status.textContent = "جارٍ تشغيل الكاميرا…";
+      manualInput.value = "";
+      if (!("BarcodeDetector" in window) || !navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        status.textContent = "المسح بالكاميرا غير مدعوم في هذا المتصفح. اكتب رقم الباركود يدويًا.";
+        return;
+      }
+      try {
+        const supported = await window.BarcodeDetector.getSupportedFormats();
+        const wanted = ["ean_13","ean_8","upc_a","upc_e","code_128","code_39","itf","qr_code","data_matrix"];
+        detector = new window.BarcodeDetector({formats:wanted.filter(function (format) { return supported.includes(format); })});
+        if (!detector) throw new Error("Barcode detector unavailable");
+        scanStream = await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:"environment"}},audio:false});
+        video.srcObject = scanStream;
+        await video.play();
+        scanning = true;
+        status.textContent = "الكاميرا تعمل — قرّب الباركود داخل الإطار";
+        scanFrame = requestAnimationFrame(scanBarcodeFrame);
+      } catch (error) {
+        stopBarcodeCamera();
+        status.textContent = "تعذر تشغيل الكاميرا. اسمح بالوصول للكاميرا أو اكتب رقم الباركود يدويًا.";
+      }
+    }
+    scanButton.addEventListener("click", openBarcodeDialog);
+    scanDialog.querySelector(".barcode-scan-close").addEventListener("click", closeBarcodeDialog);
+    scanDialog.addEventListener("click", function (event) { if (event.target === scanDialog) closeBarcodeDialog(); });
+    scanDialog.querySelector("#barcodeManualSearch").addEventListener("click", function () {
+      const value = manualInput.value.trim();
+      if (value) applyBarcode(value);
+      else status.textContent = "اكتب رقم الباركود أولًا.";
+    });
+    manualInput.addEventListener("keydown", function (event) { if (event.key === "Enter") scanDialog.querySelector("#barcodeManualSearch").click(); });
+    document.addEventListener("keydown", function (event) { if (event.key === "Escape" && scanDialog.classList.contains("open")) closeBarcodeDialog(); });
+  }
+
   const floatingContactToggle = document.getElementById("floatingContactToggle");
   const floatingContactPanel = document.getElementById("floatingContactPanel");
   function setFloatingContact(open) {
