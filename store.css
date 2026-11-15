@@ -4510,3 +4510,37 @@ body{background:#f4f6f8}
 #productGrid .product-meta .button-primary{width:100%;min-height:39px;font-size:12px}
 }
 @media(max-width:380px){#productGrid{gap:9px}#productGrid .product-visual{height:150px}#productGrid .product-info{padding:9px}}
+
+
+/* Apply the refreshed product-card look to homepage shelves as well as the catalog. */
+.home-products-shelf .home-shelf-card{
+  overflow:hidden;border:1px solid #e5e9ee;border-radius:16px;background:#fff;
+  box-shadow:0 5px 18px rgba(24,39,56,.07);
+  transition:transform .22s ease,box-shadow .22s ease,border-color .22s ease;
+}
+.home-products-shelf .home-shelf-card:hover{
+  transform:translateY(-4px);border-color:#e3b4b8;
+  box-shadow:0 13px 28px rgba(24,39,56,.13);
+}
+.home-products-shelf .home-shelf-card .product-visual{
+  height:210px;padding:14px;display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(180deg,#fff 0%,#f7f8fa 100%);
+  border-bottom:1px solid #edf0f3;
+}
+.home-products-shelf .home-shelf-card .product-visual img{
+  width:100%;height:100%;object-fit:contain;transition:transform .28s ease;
+}
+.home-products-shelf .home-shelf-card:hover .product-visual img{transform:scale(1.045)}
+.home-products-shelf .home-shelf-card .product-info{padding:15px;gap:9px}
+.home-products-shelf .home-shelf-card .product-category{color:#b5121b;font-size:12px;font-weight:900}
+.home-products-shelf .home-shelf-card .product-name{font-size:15px;line-height:1.6;min-height:48px}
+.home-products-shelf .home-shelf-card .product-price{font-size:18px;font-weight:950;color:#202a35}
+.home-products-shelf .home-shelf-card .product-details-link{font-weight:850;color:#9f1018}
+.home-products-shelf .home-shelf-card .home-shelf-add{min-height:42px;border-radius:10px;font-weight:900}
+@media(max-width:600px){
+  .home-products-shelf .home-shelf-card .product-visual{height:175px;padding:10px}
+  .home-products-shelf .home-shelf-card .product-info{padding:11px;gap:7px}
+  .home-products-shelf .home-shelf-card .product-name{font-size:13px;line-height:1.55;min-height:42px}
+  .home-products-shelf .home-shelf-card .product-price{font-size:15px}
+  .home-products-shelf .home-shelf-card .home-shelf-add{min-height:39px;font-size:12px}
+}
