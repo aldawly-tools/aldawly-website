@@ -2874,3 +2874,12 @@ html body #cartDrawer.cart-drawer.open {
     border-radius: 16px 0 0 16px !important;
   }
 }
+
+
+/* Expand cart drawer across mobile and tablet viewport widths */
+@media screen and (max-width: 1024px) {
+  html body #cartDrawer.cart-drawer {
+    width: min(620px, 96vw) !important;
+    max-width: 96vw !important;
+  }
+}
