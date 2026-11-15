@@ -50,6 +50,7 @@ header .wrap{max-width:1120px}
 .order-stat{background:#f7f8fa;border:1px solid #eceef0;border-radius:11px;padding:10px;text-align:center}
 .order-stat b{display:block;font-size:20px;color:#a90f18}
 .order-stat span{font-size:12px;color:#626a73}
+.order-stat-action{width:100%;font:inherit;cursor:pointer;transition:border-color .15s,box-shadow .15s}.order-stat-action:hover,.order-stat-action:focus-visible{border-color:#d71920;box-shadow:0 3px 12px #d7192020;outline:2px solid #d7192030;outline-offset:1px}.order-stat-action small{display:block;margin-top:5px;color:#b20f19;font-size:10px;font-weight:700}
 #catalogCard,#ordersCard,#inventoryAlertsCard{scroll-margin-top:80px}
 button:disabled{opacity:.6;cursor:wait}
 @media(max-width:700px){.dashboard-stats{grid-template-columns:repeat(2,minmax(0,1fr))}.dashboard-stat{padding:12px}.dashboard-stat strong{font-size:22px}.order-stats{grid-template-columns:repeat(3,minmax(0,1fr))}.card{padding:15px}.dashboard-nav{margin:8px 0}}
@@ -424,7 +425,7 @@ function renderOrders(){
  });
  $("ordersCount").textContent=String(orders.length);
  if($("dashOrders"))$("dashOrders").textContent=String(orders.length);
- $("orderStats").innerHTML=Object.keys(orderStatusLabels).map(k=>'<div class="order-stat"><b>'+orders.filter(o=>o.status===k).length+'</b><span>'+orderStatusLabels[k]+'</span></div>').join("");
+ $("orderStats").innerHTML=Object.keys(orderStatusLabels).map(k=>'<button type="button" class="order-stat order-stat-action" data-order-status="'+escapeHtml(k)+'" aria-label="عرض طلبات: '+escapeHtml(orderStatusLabels[k])+'"><b>'+orders.filter(o=>o.status===k).length+'</b><span>'+orderStatusLabels[k]+'</span><small>اضغط لعرض الطلبات</small></button>').join("");
  updateSalesSummary();
  $("ordersList").innerHTML=filtered.map(o=>{
   const itemRows=(Array.isArray(o.items)?o.items:[]).map(i=>{
@@ -505,6 +506,16 @@ $("deleteAllOrdersBtn").addEventListener("click",async function(){
  }
 });
 
+$("orderStats").addEventListener("click",function(event){
+ const card=event.target.closest("[data-order-status]");
+ if(!card)return;
+ $("orderFilter").value=card.dataset.orderStatus;
+ $("orderSearch").value="";
+ $("orderDateFrom").value="";
+ $("orderDateTo").value="";
+ renderOrders();
+ $("ordersList").scrollIntoView({behavior:"smooth",block:"start"});
+});
 $("orderFilter").addEventListener("change",renderOrders);
 $("orderSearch").addEventListener("input",renderOrders);
 $("orderDateFrom").addEventListener("change",renderOrders);
