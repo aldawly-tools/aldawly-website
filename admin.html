@@ -308,7 +308,13 @@ async function loadProducts() {
 const orderStatusLabels={new:"جديد",confirmed:"تم التأكيد",shipped:"تم الشحن",delivered:"تم التسليم",cancelled:"ملغي"};
 const orderWhatsappLabels={awaiting_customer_send:"بانتظار إرسال العميل عبر واتساب"};
 let orders=[];
-function orderDate(value){if(!value)return "التاريخ غير متاح";const d=value.toDate?value.toDate():new Date(value);return Number.isNaN(d.getTime())?"التاريخ غير متاح":d.toLocaleString("ar-EG");}
+const EGYPT_TIME_ZONE="Africa/Cairo";
+function egyptDayKey(date){
+ const parts=new Intl.DateTimeFormat("en-CA",{timeZone:EGYPT_TIME_ZONE,year:"numeric",month:"2-digit",day:"2-digit"}).formatToParts(date);
+ const part=type=>parts.find(p=>p.type===type).value;
+ return part("year")+"-"+part("month")+"-"+part("day");
+}
+function orderDate(value){if(!value)return "التاريخ غير متاح";const d=value.toDate?value.toDate():new Date(value);return Number.isNaN(d.getTime())?"التاريخ غير متاح":d.toLocaleString("ar-EG",{timeZone:EGYPT_TIME_ZONE,hour12:false});}
 const orderImageCache=new Map();
 function orderAmount(order){
  const direct=[order.totalAmount,order.grandTotal,order.total,order.amount].find(v=>typeof v==="number"&&Number.isFinite(v));
@@ -362,9 +368,9 @@ function renderProductSalesAnalysis(){
  if(productRows)productRows.innerHTML=top.length?top.map(p=>'<tr><td>'+escapeHtml(p.name)+'</td><td>'+escapeHtml(p.brand)+'</td><td>'+fmt(p.qty)+'</td><td>'+fmt(p.value)+' ج.م</td></tr>').join(""):'<tr><td colspan="4">لا توجد بيانات منتجات كافية.</td></tr>';
 }
 function updateSalesSummary(){
- const now=new Date(),today=now.getFullYear()+"-"+String(now.getMonth()+1).padStart(2,"0")+"-"+String(now.getDate()).padStart(2,"0");
+ const today=egyptDayKey(new Date());
  const month=today.slice(0,7);
- const dated=orders.map(o=>{const d=o.createdAt&&o.createdAt.toDate?o.createdAt.toDate():new Date(o.createdAt||0);const day=Number.isNaN(d.getTime())?"":d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");return {o,day};});
+ const dated=orders.map(o=>{const d=o.createdAt&&o.createdAt.toDate?o.createdAt.toDate():new Date(o.createdAt||0);const day=Number.isNaN(d.getTime())?"":egyptDayKey(d);return {o,day};});
  const todayOrders=dated.filter(x=>x.day===today),monthOrders=dated.filter(x=>x.day&&x.day.slice(0,7)===month);
  const saleStatuses=["confirmed","shipped","delivered"];
  const money=list=>list.filter(x=>saleStatuses.includes(x.o.status)).reduce((sum,x)=>sum+orderAmount(x.o),0);
@@ -383,7 +389,7 @@ function printSalesSummary(){
  const from=$("orderDateFrom").value,to=$("orderDateTo").value;
  const chosen=orders.filter(o=>{
   const d=o.createdAt&&o.createdAt.toDate?o.createdAt.toDate():new Date(o.createdAt||0);
-  const day=Number.isNaN(d.getTime())?"":d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+  const day=Number.isNaN(d.getTime())?"":egyptDayKey(d);
   return (!from||(day&&day>=from))&&(!to||(day&&day<=to));
  }).sort((a,b)=>{
   const da=a.createdAt&&a.createdAt.toDate?a.createdAt.toDate():new Date(a.createdAt||0);
@@ -419,7 +425,7 @@ function renderOrders(){
  const dateFrom=$("orderDateFrom").value,dateTo=$("orderDateTo").value;
  const filtered=orders.filter(o=>{
   const d=o.createdAt&&o.createdAt.toDate?o.createdAt.toDate():new Date(o.createdAt||0);
-  const day=Number.isNaN(d.getTime())?"":d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+  const day=Number.isNaN(d.getTime())?"":egyptDayKey(d);
   const matchesText=!term||[o.orderNumber,o.id,o.customerName,o.customerPhone,o.customerAddress].join(" ").toLocaleLowerCase("ar").includes(term);
   return (filter==="all"||o.status===filter)&&matchesText&&(!dateFrom||(day&&day>=dateFrom))&&(!dateTo||(day&&day<=dateTo));
  });
