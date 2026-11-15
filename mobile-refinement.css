@@ -203,3 +203,21 @@
   }
   .hero-shell .hero-grid{box-shadow:0 12px 28px rgba(15,23,32,.14)!important}
 }
+
+
+/* Mobile cart must sit above the fixed call/category dock so checkout fields remain tappable. */
+@media (max-width: 820px) {
+  .cart-overlay { z-index: 10040 !important; }
+  .cart-drawer {
+    z-index: 10050 !important;
+    height: 100dvh !important;
+    max-height: 100dvh !important;
+    padding-bottom: calc(24px + env(safe-area-inset-bottom)) !important;
+    overscroll-behavior-y: contain;
+  }
+  .cart-drawer input,
+  .cart-drawer textarea,
+  .cart-drawer select,
+  .cart-drawer button { pointer-events: auto; }
+  .cart-drawer .checkout-fields { position: relative; z-index: 1; }
+}
