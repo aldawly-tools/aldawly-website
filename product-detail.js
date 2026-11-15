@@ -302,7 +302,7 @@
       return;
     }
     let cart = [];
-    let cartKey = "dawly_cart_v2_default";
+    let cartKey = "dawly_cart_v3_default";
     try {
       let deviceId = localStorage.getItem("dawly_cart_device_v1");
       if (!deviceId) {
@@ -311,17 +311,8 @@
           : "d" + Date.now().toString(36) + Math.random().toString(36).slice(2);
         localStorage.setItem("dawly_cart_device_v1", deviceId);
       }
-      cartKey = "dawly_cart_v2_" + deviceId;
-      let savedValue = localStorage.getItem(cartKey);
-      if (savedValue === null) {
-        const legacyValue = localStorage.getItem("dawly_cart_v1");
-        if (legacyValue !== null) {
-          savedValue = legacyValue;
-          localStorage.setItem(cartKey, legacyValue);
-          localStorage.removeItem("dawly_cart_v1");
-        }
-      }
-      const saved = JSON.parse(savedValue || "[]");
+      cartKey = "dawly_cart_v3_" + deviceId;
+      const saved = JSON.parse(localStorage.getItem(cartKey) || "[]");
       if (Array.isArray(saved)) cart = saved.filter(function (line) {
         return line && line.id != null && Number.isInteger(Number(line.qty)) && Number(line.qty) > 0;
       }).map(function (line) { return {id:line.id,qty:Math.min(99,Number(line.qty))}; });
