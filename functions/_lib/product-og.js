@@ -46,9 +46,9 @@ export async function productImageResponse(id) {
   const fields = decodeFields(doc.fields || {});
   let data = String(fields.data || fields.image || "");
   let mime = "image/jpeg";
-  const match = data.match(/^data:(image\\/[a-zA-Z0-9.+-]+);base64,/);
+  const match = data.match(/^data:(image\/[a-zA-Z0-9.+-]+);base64,/);
   if (match) { mime = match[1]; data = data.slice(match[0].length); }
-  data = data.replace(/\\s/g, "");
+  data = data.replace(/\s/g, "");
   if (!data || data.length > 12_000_000 || !/^[A-Za-z0-9+/]*={0,2}$/.test(data)) {
     return new Response("Invalid image data", { status: 404 });
   }
