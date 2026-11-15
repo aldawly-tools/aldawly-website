@@ -4480,3 +4480,7 @@ body{background:#f4f6f8}
  .home-products-track .product-visual{height:155px}
  .shelf-arrow{width:34px;height:34px}
 }
+
+
+/* Brand links: land a little farther down so product cards are immediately visible. */
+#productGrid { scroll-margin-top: -88px; }
