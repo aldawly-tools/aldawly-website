@@ -4544,3 +4544,26 @@ body{background:#f4f6f8}
   .home-products-shelf .home-shelf-card .product-price{font-size:15px}
   .home-products-shelf .home-shelf-card .home-shelf-add{min-height:39px;font-size:12px}
 }
+
+
+/* Tighten catalog cards: keep price and cart action directly after product content. */
+#productGrid.product-grid{
+  grid-auto-rows:auto!important;
+  align-items:start!important;
+}
+#productGrid .product-card{
+  height:auto!important;
+  min-height:0!important;
+  align-self:start!important;
+}
+#productGrid .product-info{
+  flex:0 1 auto!important;
+  min-height:0!important;
+}
+#productGrid .product-meta{
+  margin-top:8px!important;
+}
+@media(max-width:700px){
+  #productGrid .product-info{justify-content:flex-start!important}
+  #productGrid .product-meta{margin-top:8px!important}
+}
