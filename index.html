@@ -19,7 +19,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="store.css?v=rtl-cart-wide-mobile-20261115-8">
+<link rel="stylesheet" href="store.css?v=cart-sticky-footer-20261115-9">
 
 <link rel="manifest" href="manifest.webmanifest?v=png-real-20261113">
 <link rel="icon" href="assets/app-icon.svg" type="image/svg+xml">
@@ -225,7 +225,10 @@
 <aside class="cart-drawer" id="cartDrawer" aria-label="سلة المشتريات" aria-modal="true" role="dialog">
  <div class="drawer-head"><h2>سلة المشتريات</h2><button class="drawer-close" type="button" id="closeCart">إغلاق ✕</button></div>
  <div class="cart-items" id="cartItems"></div>
- <div class="cart-total" id="cartTotal" aria-live="polite"></div>
+ <div class="cart-sticky-footer">
+  <div class="cart-total" id="cartTotal" aria-live="polite"></div>
+  <button class="button-primary checkout" type="button" id="checkout">تأكيد البيانات وإرسال الطلب عبر واتساب</button>
+ </div>
  <div class="checkout-fields" aria-label="بيانات العميل">
   <h3>بيانات التوصيل</h3>
   <label for="customerName">الاسم بالكامل <span>*</span></label>
@@ -235,7 +238,6 @@
   <label for="customerAddress">العنوان بالتفصيل <span>*</span></label>
   <textarea id="customerAddress" autocomplete="street-address" maxlength="300" rows="2" placeholder="المحافظة - المدينة - الشارع - أقرب علامة مميزة" required></textarea>
  </div>
-  <button class="button-primary checkout" type="button" id="checkout">تأكيد البيانات وإرسال الطلب عبر واتساب</button>
   <section class="payment-followup" id="paymentFollowup" hidden aria-labelledby="paymentFollowupTitle">
    <h3 id="paymentFollowupTitle">حالة طلبك</h3>
    <p class="payment-followup-status" id="paymentFollowupStatus" aria-live="polite"></p>
