@@ -192,7 +192,8 @@ exports.analyzeProductImage = onRequest(
     if (req.method !== "POST") return res.status(405).json({ error: "الطلب غير مدعوم." });
     try {
       const origin = req.get("origin") || "";
-      if (origin && origin !== "https://aldawly-website.pages.dev") return res.status(403).json({ error: "مصدر الطلب غير مسموح." });
+      const allowedOrigins = ["https://aldawly-website.pages.dev", "https://aldawlytools.com.eg", "https://www.aldawlytools.com.eg"];
+      if (origin && !allowedOrigins.includes(origin)) return res.status(403).json({ error: "مصدر الطلب غير مسموح." });
       const authorization = String(req.get("authorization") || "");
       const match = authorization.match(/^Bearer (.+)$/);
       if (!match) return res.status(401).json({ error: "سجّل الدخول أولًا." });
