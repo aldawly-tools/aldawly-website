@@ -94,7 +94,7 @@
       panel.innerHTML='<div class="dawly-search-empty">مفيش اقتراح مطابق حاليًا. جرّب اسم الماركة أو رقم الصنف أو كلمة أبسط.</div>';
     } else {
       panel.innerHTML=matches.map(function(x,i){
-        var p=x.p, image=(p.image||p.imageUrl||p.photo||p.thumbnail)?'<img src="'+esc(p.image||p.imageUrl||p.photo||p.thumbnail)+'" alt="" loading="lazy">':'<img src="'+esc(p.image)+'" alt="" loading="lazy">':(p.icon||"🔧");
+        var p=x.p, image=(p.image||p.imageUrl||p.photo||p.thumbnail)?'<img src="'+esc(p.image||p.imageUrl||p.photo||p.thumbnail)+'" alt="" loading="lazy">' :(p.icon||"🔧");
         var brand=p.brand||p.brandName||p.manufacturer||p.cat||"منتجات";
         return '<button type="button" class="dawly-search-suggestion" role="option" aria-selected="false" data-smart-index="'+i+'"><span class="dawly-search-thumb">'+image+'</span><span class="dawly-search-copy"><span class="dawly-search-name">'+esc(p.name||"منتج")+'</span><span class="dawly-search-meta">'+esc(brand)+' · '+(p.price==null||p.price===""?"السعر عند التواصل":esc(p.price)+" جنيه")+'</span></span></button>';
       }).join("")+'<div class="dawly-search-footer">اختار المنتج لفتح التفاصيل • أو اضغط بحث لعرض كل النتائج</div>';
