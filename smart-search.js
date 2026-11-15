@@ -13,7 +13,8 @@
   panel.setAttribute("role", "listbox");
   panel.setAttribute("aria-label", "اقتراحات المنتجات");
   panel.hidden = true;
-  form.classList.add("dawly-search-enhanced");\n  form.style.setProperty("overflow", "visible", "important");
+  form.classList.add("dawly-search-enhanced");
+  form.style.setProperty("overflow", "visible", "important");
   form.appendChild(panel);
   input.setAttribute("autocomplete", "off");
   input.setAttribute("aria-autocomplete", "list");
@@ -40,11 +41,11 @@
 
   function norm(value) {
     return String(value == null ? "" : value).toLocaleLowerCase("ar").normalize("NFD")
-      .replace(/[\\u064B-\\u065F\\u0670\\u0640]/g, "")
+      .replace(/[\u064B-\u065F\u0670\u0640]/g, "")
       .replace(/[أإآٱ]/g, "ا").replace(/ى/g, "ي").replace(/ة/g, "ه")
       .replace(/[٠-٩]/g, function(d){return String("٠١٢٣٤٥٦٧٨٩".indexOf(d));})
       .replace(/[۰-۹]/g, function(d){return String("۰۱۲۳۴۵۶۷۸۹".indexOf(d));})
-      .replace(/[^\\p{L}\\p{N}]+/gu, " ").trim().replace(/\\s+/g, " ");
+      .replace(/[^\p{L}\p{N}]+/gu, " ").trim().replace(/\s+/g, " ");
   }
   function esc(value) {
     return String(value == null ? "" : value).replace(/[&<>"']/g,function(c){
