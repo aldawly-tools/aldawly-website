@@ -177,3 +177,67 @@ exports.notifyOrderOnTelegram = onDocumentCreated(
     logger.info("Telegram order notification sent.", { orderId: snapshot.id });
   }
 );
+
+
+// Secure product-photo analysis. Gemini key and admin allowlist stay server-side.
+const { onRequest } = require("firebase-functions/v2/https");
+const { getAuth } = require("firebase-admin/auth");
+const geminiApiKey = defineSecret("GEMINI_API_KEY");
+const storeAdminEmails = defineSecret("STORE_ADMIN_EMAILS");
+
+exports.analyzeProductImage = onRequest(
+  { region: "me-central1", cors: ["https://aldawly-website.pages.dev"], secrets: [geminiApiKey, storeAdminEmails], timeoutSeconds: 60, memory: "512MiB" },
+  async (req, res) => {
+    res.set("Cache-Control", "no-store");
+    if (req.method !== "POST") return res.status(405).json({ error: "الطلب غير مدعوم." });
+    try {
+      const origin = req.get("origin") || "";
+      if (origin && origin !== "https://aldawly-website.pages.dev") return res.status(403).json({ error: "مصدر الطلب غير مسموح." });
+      const authorization = String(req.get("authorization") || "");
+      const match = authorization.match(/^Bearer (.+)$/);
+      if (!match) return res.status(401).json({ error: "سجّل الدخول أولًا." });
+      const decoded = await getAuth().verifyIdToken(match[1]);
+      const allowed = storeAdminEmails.value().split(",").map(x => x.trim().toLowerCase()).filter(Boolean);
+      if (!decoded.email || decoded.email_verified !== true || !allowed.includes(decoded.email.toLowerCase())) {
+        return res.status(403).json({ error: "هذا الحساب غير مصرح له بتحليل صور المنتجات." });
+      }
+      const image = req.body && req.body.image;
+      const mimeType = String(req.body && req.body.mimeType || "");
+      if (!["image/jpeg", "image/png", "image/webp"].includes(mimeType) || typeof image !== "string" || image.length > 11_500_000) {
+        return res.status(400).json({ error: "الصورة غير صالحة أو حجمها أكبر من المسموح." });
+      }
+      const encoded = image.match(/^data:image\/(jpeg|png|webp);base64,([A-Za-z0-9+/=]+)$/);
+      if (!encoded) return res.status(400).json({ error: "تعذر قراءة صيغة الصورة." });
+      const prompt = "أنت خبير في العدد اليدوية والكهربائية ومستلزمات الورش والمعدات الصناعية. حلل صورة المنتج فقط. أعد JSON بالعربية بالمفاتيح: name (اسم مقترح قصير)، brand (الماركة فقط إذا كان الشعار مقروءا بوضوح وإلا فارغ)، category (واحدة من: عدد يدوية، عدد كهربائية، مستلزمات الورش، قياس)، description (وصف تسويقي واقعي دون اختلاق)، specifications (مصفوفة عناصر name/value للمعلومات المقروءة أو المؤكدة بصريا فقط)، notes (تنبيه مختصر لأي شيء غير مؤكد). لا تخمن الموديل أو بلد المنشأ أو المقاسات أو عدد القطع. إذا لم تتضح معلومة فاتركها فارغة.";
+      const apiUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=" + encodeURIComponent(geminiApiKey.value());
+      const aiResponse = await fetch(apiUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: prompt }, { inline_data: { mime_type: mimeType, data: encoded[2] } }] }],
+          generationConfig: { responseMimeType: "application/json", temperature: 0.2, maxOutputTokens: 1200 }
+        }),
+        signal: AbortSignal.timeout(45000)
+      });
+      const aiData = await aiResponse.json().catch(() => ({}));
+      if (!aiResponse.ok) {
+        logger.error("Gemini image analysis failed", { status: aiResponse.status });
+        return res.status(502).json({ error: "خدمة تحليل الصور لم تستجب. راجع تفعيل المفتاح وحدود الاستخدام." });
+      }
+      const textOutput = aiData.candidates && aiData.candidates[0] && aiData.candidates[0].content && aiData.candidates[0].content.parts
+        ? aiData.candidates[0].content.parts.map(p => p.text || "").join("") : "";
+      const parsed = JSON.parse(textOutput);
+      return res.status(200).json({ product: {
+        name: safeText(parsed.name, 140),
+        brand: safeText(parsed.brand, 80),
+        category: ["عدد يدوية", "عدد كهربائية", "مستلزمات الورش", "قياس"].includes(parsed.category) ? parsed.category : "مستلزمات الورش",
+        description: safeText(parsed.description, 1200),
+        specifications: Array.isArray(parsed.specifications) ? parsed.specifications.slice(0, 12).map(x => ({ name: safeText(x.name, 60), value: safeText(x.value, 120) })).filter(x => x.name && x.value) : [],
+        notes: safeText(parsed.notes, 300)
+      }});
+    } catch (error) {
+      logger.error("Product image analysis request failed", { message: safeText(error && error.message, 180) });
+      return res.status(500).json({ error: "حدث خطأ أثناء تحليل الصورة. حاول مرة أخرى." });
+    }
+  }
+);
