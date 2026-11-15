@@ -306,6 +306,14 @@
     observeCloudImages();
   }
 
+  function syncCategorySelection() {
+    document.querySelectorAll("#filterBar .filter-chip, #categoryTiles .category-tile").forEach(function (button) {
+      const selected = button.dataset.category === activeCategory;
+      button.classList.toggle("active", selected);
+      button.setAttribute("aria-pressed", selected ? "true" : "false");
+    });
+  }
+
   function drawCategories() {
     const categories = Array.from(new Set(products.map(function (item) { return item.cat; }).filter(Boolean)));
     tiles.innerHTML = '<button class="category-tile all" type="button" data-category="الكل"><span class="category-photo"><img src="' + categoryImage("ورش") + '" alt="" loading="lazy"><span class="category-photo-shade"></span><span class="category-icon">' + categoryIcon("ورش") + '</span></span><span class="category-copy"><strong>جميع الأقسام</strong><small>تصفح كل المنتجات</small><b>' + products.length + ' منتج</b></span></button>' +
@@ -324,6 +332,7 @@
         return '<button type="button" data-category="' + escapeHtml(name) + '">' + escapeHtml(name) + '</button>';
       }).join("");
     }
+    syncCategorySelection();
   }
   function drawBrandFilters() {
     if (!brandFilterList) return;
@@ -621,6 +630,7 @@
     const category = event.target.closest("[data-category]");
     if (category) {
       activeCategory = category.dataset.category;
+      syncCategorySelection();
       visibleProductCount = pageSize;
       renderProducts();
       if (category.classList.contains("category-tile") || category.closest("#mobileMenuCategories")) document.getElementById("products").scrollIntoView({behavior:"smooth"});
