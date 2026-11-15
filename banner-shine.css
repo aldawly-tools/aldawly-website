@@ -1,94 +1,89 @@
-/* Premium hero highlight: continuous visible metallic sweep with red edge glow */
-@keyframes dawlyHeroSweep {
-  0% { transform: translateX(-145%) skewX(-18deg); opacity: 0; }
-  12% { opacity: .95; }
-  48% { transform: translateX(430%) skewX(-18deg); opacity: .55; }
-  62% { opacity: 0; }
-  100% { transform: translateX(430%) skewX(-18deg); opacity: 0; }
-}
+/* Refined premium shine: keep the beam strictly inside the hero video */
 @keyframes dawlyHeroGlow {
-  0%,100% { box-shadow: 0 0 0 1px rgba(220,18,38,.65), 0 0 16px rgba(220,18,38,.22), 0 18px 44px rgba(15,23,32,.18); }
-  50% { box-shadow: 0 0 0 2px rgba(255,48,60,.95), 0 0 32px rgba(220,18,38,.55), 0 18px 48px rgba(15,23,32,.22); }
+  0%,100% { box-shadow: 0 0 0 1px rgba(220,18,38,.58), 0 0 13px rgba(220,18,38,.18), 0 18px 44px rgba(15,23,32,.18); }
+  50% { box-shadow: 0 0 0 1.5px rgba(255,48,60,.82), 0 0 23px rgba(220,18,38,.38), 0 18px 48px rgba(15,23,32,.22); }
+}
+@keyframes dawlyVideoBeam {
+  0%,12% { transform: translateX(-180%) skewX(-16deg); opacity:0; }
+  20% { opacity:.48; }
+  55% { transform: translateX(980%) skewX(-16deg); opacity:.22; }
+  68%,100% { transform: translateX(980%) skewX(-16deg); opacity:0; }
 }
 .hero-shell .hero-grid {
-  position: relative !important;
-  isolation: isolate !important;
-  overflow: hidden !important;
-  border: 1px solid rgba(225,20,38,.8) !important;
-  animation: dawlyHeroGlow 3.8s ease-in-out infinite !important;
+  position:relative!important;
+  isolation:isolate!important;
+  overflow:hidden!important;
+  border:1px solid rgba(225,20,38,.72)!important;
+  animation:dawlyHeroGlow 4.8s ease-in-out infinite!important;
 }
-.hero-shell .hero-grid::after {
-  content: "" !important;
-  display: block !important;
-  position: absolute !important;
-  z-index: 999 !important;
-  top: -12% !important;
-  bottom: -12% !important;
-  left: -35% !important;
-  width: 42% !important;
-  pointer-events: none !important;
-  background: linear-gradient(105deg,
-    transparent 0%,
-    rgba(255,255,255,.10) 20%,
-    rgba(255,255,255,.82) 48%,
-    rgba(255,255,255,.22) 65%,
-    transparent 100%) !important;
-  mix-blend-mode: screen !important;
-  transform: translateX(-145%) skewX(-18deg);
-  animation: dawlyHeroSweep 3.8s linear 0s infinite !important;
-  will-change: transform, opacity;
-}
+/* Remove the old oversized beam that crossed the copy and buttons */
+.hero-shell .hero-grid::after { content:none!important; display:none!important; }
 .hero-shell .hero-photo {
-  position: relative !important;
-  isolation: isolate !important;
-  overflow: hidden !important;
-  background: radial-gradient(ellipse at 60% 55%, #5c111b 0%, #111820 62%, #080c10 100%) !important;
+  position:relative!important;
+  isolation:isolate!important;
+  overflow:hidden!important;
 }
-.hero-shell .hero-photo video {
-  position: relative !important;
-  z-index: 1 !important;
-  filter: saturate(1.08) contrast(1.04) !important;
+.hero-shell .hero-photo .dawly-hero-beam {
+  position:absolute!important;
+  z-index:5!important;
+  top:-15%!important;
+  bottom:-15%!important;
+  left:-14%!important;
+  width:9%!important;
+  display:block!important;
+  pointer-events:none!important;
+  background:linear-gradient(90deg,
+    transparent 0%,
+    rgba(255,255,255,.10) 22%,
+    rgba(255,255,255,.48) 50%,
+    rgba(255,255,255,.10) 78%,
+    transparent 100%)!important;
+  filter:blur(2px)!important;
+  transform:translateX(-180%) skewX(-16deg);
+  animation:dawlyVideoBeam 6s ease-in-out infinite!important;
+  will-change:transform,opacity;
 }
+.hero-shell .hero-photo video,
+.hero-shell .hero-photo img { position:relative!important; z-index:1!important; }
 .hero-shell .hero-copy,
-.hero-shell .hero-services {
-  position: relative !important;
-  z-index: 3 !important;
-}
+.hero-shell .hero-services { position:relative!important; z-index:3!important; }
+
+/* Restrained red glow and narrow sweep for other promotional banners */
 .business-cta-inner,
 .promo-banner,
 .ad-banner,
 .campaign-banner,
 .banner-card {
-  position: relative !important;
-  isolation: isolate !important;
-  overflow: hidden !important;
-  animation: dawlyHeroGlow 4.5s ease-in-out infinite !important;
+  position:relative!important;
+  isolation:isolate!important;
+  overflow:hidden!important;
+  animation:dawlyHeroGlow 5.5s ease-in-out infinite!important;
 }
 .business-cta-inner::after,
 .promo-banner::after,
 .ad-banner::after,
 .campaign-banner::after,
 .banner-card::after {
-  content: "" !important;
-  position: absolute !important;
-  z-index: 999 !important;
-  top: -12% !important;
-  bottom: -12% !important;
-  left: -35% !important;
-  width: 42% !important;
-  pointer-events: none !important;
-  background: linear-gradient(105deg, transparent, rgba(255,255,255,.72), transparent) !important;
-  mix-blend-mode: screen !important;
-  transform: translateX(-145%) skewX(-18deg);
-  animation: dawlyHeroSweep 4.5s linear 0s infinite !important;
+  content:""!important;
+  position:absolute!important;
+  z-index:20!important;
+  top:-15%!important;
+  bottom:-15%!important;
+  left:-14%!important;
+  width:9%!important;
+  pointer-events:none!important;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.42),transparent)!important;
+  filter:blur(2px)!important;
+  transform:translateX(-180%) skewX(-16deg);
+  animation:dawlyVideoBeam 6.5s ease-in-out infinite!important;
 }
-@media (prefers-reduced-motion: reduce) {
+@media(prefers-reduced-motion:reduce) {
   .hero-shell .hero-grid,
-  .hero-shell .hero-grid::after,
+  .hero-shell .hero-photo .dawly-hero-beam,
   .business-cta-inner,
   .business-cta-inner::after,
   .promo-banner::after,
   .ad-banner::after,
   .campaign-banner::after,
-  .banner-card::after { animation: none !important; }
+  .banner-card::after { animation:none!important; }
 }
