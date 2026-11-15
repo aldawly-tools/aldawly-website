@@ -159,3 +159,22 @@
     scroll-margin-block: 90px 120px;
   }
 }
+
+/* Keep product photos contained in their own cards: disable hover zoom/movement. */
+.product-card .product-visual,
+.product-card .product-visual img,
+.product-card:hover .product-visual,
+.product-card:hover .product-visual img,
+.product-visual img:hover {
+  transform: none !important;
+  scale: none !important;
+  transition: none !important;
+}
+.product-card .product-visual {
+  position: relative;
+  z-index: 0;
+  overflow: hidden !important;
+}
+.product-card:hover {
+  z-index: 0 !important;
+}
