@@ -183,10 +183,10 @@ exports.notifyOrderOnTelegram = onDocumentCreated(
 const { onRequest } = require("firebase-functions/v2/https");
 const { getAuth } = require("firebase-admin/auth");
 const geminiApiKey = defineSecret("GEMINI_API_KEY");
-const storeAdminEmails = ["elgoharemahmoud@gmail.com"];
+const storeAdminEmails = ["elgoharemahmoud@gmail.com", "ahmedelgohare90@gmail.com"];
 
 exports.analyzeProductImage = onRequest(
-  { region: "me-central1", cors: ["https://aldawly-website.pages.dev"], secrets: [geminiApiKey], timeoutSeconds: 60, memory: "512MiB" },
+  { region: "me-central1", cors: ["https://aldawly-website.pages.dev", "https://aldawlytools.com.eg", "https://www.aldawlytools.com.eg"], secrets: [geminiApiKey], timeoutSeconds: 60, memory: "512MiB" },
   async (req, res) => {
     res.set("Cache-Control", "no-store");
     if (req.method !== "POST") return res.status(405).json({ error: "الطلب غير مدعوم." });
