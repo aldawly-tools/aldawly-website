@@ -2352,3 +2352,63 @@ body:has(.hero-shell) .section#categories .category-tile.all small{color:#fff}
     z-index:94!important;
   }
 }
+
+
+/* Homepage brand selector: larger, clearer brand tiles with direct catalog filters */
+.brands-marquee-section{
+  margin-top:4px;
+  padding-block:20px 24px;
+  background:linear-gradient(180deg,#fff 0%,#fafafa 100%);
+  border-block:1px solid #eceff2;
+}
+.brands-marquee-section .section-heading{margin-bottom:14px}
+.brands-marquee-section .brands-marquee{
+  margin-top:0;
+  padding:13px 0;
+  border-block:0;
+}
+.brands-marquee-section .brands-marquee-group{gap:14px;padding-inline:8px}
+.brands-marquee-section .brand-word.brand-tile{
+  width:164px;
+  min-width:164px;
+  height:84px;
+  min-height:84px;
+  border-width:1px;
+  border-radius:14px;
+  font-size:25px;
+  font-weight:1000;
+  letter-spacing:-.6px;
+}
+.brands-marquee-section .brand-word.brand-tile:nth-child(7){
+  color:#e31837!important;-webkit-text-fill-color:#e31837!important;
+  background:linear-gradient(145deg,#fff,#fff0f2)!important;border-color:#f0b7c1!important;
+}
+.brands-marquee-section .brand-word.brand-tile:nth-child(8){
+  color:#16833b!important;-webkit-text-fill-color:#16833b!important;
+  background:linear-gradient(145deg,#fff,#edf8f0)!important;border-color:#b6ddc1!important;
+}
+.brands-marquee-section .brand-word.brand-tile.brand-unavailable{
+  opacity:.48!important;
+  filter:grayscale(.65)!important;
+  cursor:not-allowed;
+}
+.brands-marquee-section .brand-word.brand-tile.brand-unavailable:after{
+  content:"قريبًا";
+  position:absolute;
+  inset:auto 0 4px;
+  text-align:center;
+  font:800 9px Tahoma,Arial,sans-serif;
+  color:#656d76;
+}
+@media(max-width:700px){
+  .brands-marquee-section{padding-block:15px 18px}
+  .brands-marquee-section .section-heading{align-items:center}
+  .brands-marquee-section .section-title{font-size:20px}
+  .brands-marquee-section .section-subtitle{font-size:11px;line-height:1.6}
+  .brands-marquee-section .brands-marquee{padding:7px 0}
+  .brands-marquee-section .brands-marquee-group{gap:9px;padding-inline:5px}
+  .brands-marquee-section .brand-word.brand-tile{
+    width:138px;min-width:138px;height:72px;min-height:72px;
+    border-radius:12px;font-size:21px;padding:8px;
+  }
+}
