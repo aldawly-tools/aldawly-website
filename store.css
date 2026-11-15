@@ -2854,3 +2854,23 @@ body:has(.hero-shell) .section#categories .category-tile.all small{color:#fff}
     transform: translate3d(0, 0, 0) !important;
   }
 }
+
+
+/* RTL cart drawer: anchor to the right edge at every viewport width */
+html body #cartDrawer.cart-drawer {
+  left: auto !important;
+  right: 0 !important;
+  transform: translate3d(103%, 0, 0) !important;
+}
+html body #cartDrawer.cart-drawer.open {
+  left: auto !important;
+  right: 0 !important;
+  transform: translate3d(0, 0, 0) !important;
+}
+@media (max-width: 600px) {
+  html body #cartDrawer.cart-drawer {
+    width: min(520px, 96vw) !important;
+    max-width: 96vw !important;
+    border-radius: 16px 0 0 16px !important;
+  }
+}
