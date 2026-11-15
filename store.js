@@ -688,8 +688,8 @@
     followup.hidden = false;
     followup.scrollIntoView({behavior:"smooth",block:"nearest"});
   }
-  async function createWhatsAppOrderImage(orderNumber, customerName, customerPhone, customerAddress, orderItems) {
-    const width = 1080, rowHeight = 220, headerHeight = 420, footerHeight = 230;
+  async function createWhatsAppOrderImage(orderNumber, customerName, customerPhone, customerAddress, orderItems, orderSummary) {
+    const width = 1080, rowHeight = 250, headerHeight = 430, footerHeight = 310;
     const height = headerHeight + orderItems.length * rowHeight + footerHeight;
     const canvas = document.createElement("canvas");
     canvas.width = width; canvas.height = height;
@@ -701,7 +701,23 @@
     function write(text, x, y, size, color, weight, maxWidth) {
       ctx.font = (weight || "600") + " " + size + "px Tahoma, Arial, sans-serif";
       ctx.fillStyle = color || "#20242a";
-      ctx.fillText(String(text || ""), x, y, maxWidth || 850);
+      ctx.fillText(String(text == null ? "" : text), x, y, maxWidth || 850);
+    }
+    function wrapText(text, x, y, maxWidth, lineHeight, size, color, weight, maxLines) {
+      ctx.font = (weight || "600") + " " + size + "px Tahoma, Arial, sans-serif";
+      ctx.fillStyle = color || "#20242a";
+      const words = String(text == null ? "" : text).split(/\s+/);
+      const lines = [];
+      let line = "";
+      words.forEach(function(word) {
+        const candidate = line ? line + " " + word : word;
+        if (line && ctx.measureText(candidate).width > maxWidth) { lines.push(line); line = word; }
+        else line = candidate;
+      });
+      if (line) lines.push(line);
+      const visible = lines.slice(0, maxLines || 3);
+      visible.forEach(function(value, index) { ctx.fillText(value, x, y + index * lineHeight); });
+      return visible.length;
     }
     function loadImage(src) {
       return new Promise(function(resolve) {
@@ -713,18 +729,18 @@
         img.src = src;
       });
     }
-    write("الدولي للعدد الأصلية", width - 86, 130, 48, "#c8101e", "bold");
+    write("الدولي للعدد الأصلية والمستوردة", width - 86, 130, 46, "#c8101e", "bold", 900);
     write("تفاصيل طلب جديد", width - 86, 195, 32, "#252b33", "bold");
     write("رقم الطلب: " + orderNumber, width - 86, 255, 27, "#20242a", "bold");
-    write("العميل: " + customerName, width - 86, 310, 24, "#343d47", "600");
-    write("الهاتف: " + customerPhone, width - 86, 355, 24, "#343d47", "600");
-    write("العنوان: " + customerAddress, width - 86, 400, 22, "#343d47", "600", 850);
+    write("العميل: " + customerName, width - 86, 310, 24, "#343d47", "600", 900);
+    write("الهاتف: " + customerPhone, width - 86, 355, 24, "#343d47", "600", 900);
+    wrapText("العنوان: " + customerAddress, width - 86, 400, 900, 28, 21, "#343d47", "600", 2);
     let y = headerHeight;
     for (let i = 0; i < orderItems.length; i++) {
       const item = orderItems[i];
       ctx.fillStyle = i % 2 ? "#fafafa" : "#f1f3f5";
       ctx.fillRect(68, y, width - 136, rowHeight - 12);
-      ctx.fillStyle = "#fff"; ctx.fillRect(86, y + 18, 136, 136);
+      ctx.fillStyle = "#fff"; ctx.fillRect(86, y + 42, 136, 136);
       let src = item.image || "";
       if (!src && item.imageId && typeof window.DAWLY_LOAD_PRODUCT_IMAGE === "function") {
         try { src = await window.DAWLY_LOAD_PRODUCT_IMAGE(item.imageId); } catch (e) { src = ""; }
@@ -733,27 +749,49 @@
       if (img) {
         const scale = Math.min(120 / img.width, 120 / img.height);
         const iw = img.width * scale, ih = img.height * scale;
-        ctx.drawImage(img, 94 + (120 - iw) / 2, y + 26 + (120 - ih) / 2, iw, ih);
+        ctx.drawImage(img, 94 + (120 - iw) / 2, y + 50 + (120 - ih) / 2, iw, ih);
       } else {
         ctx.textAlign = "center"; ctx.font = "58px Tahoma"; ctx.fillStyle = "#9aa1a9";
-        ctx.fillText("🔧", 154, y + 105); ctx.textAlign = "right";
+        ctx.fillText("🔧", 154, y + 130); ctx.textAlign = "right";
       }
-      write((i + 1) + ". " + item.name, width - 258, y + 55, 25, "#20242a", "bold", 720);
-      write("الكمية: " + item.qty + "    |    سعر الوحدة: " + (item.unitPrice || "عند الاستفسار"), width - 258, y + 105, 21, "#4b5560", "600", 720);
-      const lineTotal = Number.isFinite(Number(item.unitPriceAmount)) ? money(Number(item.unitPriceAmount) * Number(item.qty || 0)) : "يحدد بعد تأكيد السعر";
-      write("إجمالي المنتج: " + lineTotal, width - 258, y + 155, 22, "#a71926", "bold", 720);
+      const textX = width - 258, textWidth = 560;
+      const nameLines = wrapText((i + 1) + ". " + item.name, textX, y + 58, textWidth, 31, 23, "#20242a", "bold", 3);
+      const detailY = y + 68 + Math.max(1, nameLines) * 31;
+      write("الكمية: " + item.qty + "   |   سعر الوحدة: " + (item.unitPrice || "عند الاستفسار"), textX, detailY, 19, "#4b5560", "600", textWidth);
+      const hasUnitPrice = typeof item.unitPriceAmount === "number" && Number.isFinite(item.unitPriceAmount);
+      const lineTotal = hasUnitPrice ? money(item.unitPriceAmount * Number(item.qty || 0)) : "يحدد بعد تأكيد السعر";
+      write("إجمالي المنتج: " + lineTotal, textX, detailY + 42, 20, "#a71926", "bold", textWidth);
       y += rowHeight;
     }
-    const pricedItems = orderItems.filter(function(item){ return Number.isFinite(Number(item.unitPriceAmount)); });
-    const allItemsPriced = pricedItems.length === orderItems.length;
-    const orderTotal = pricedItems.reduce(function(sum,item){ return sum + Number(item.unitPriceAmount) * Number(item.qty || 0); },0);
-    write(allItemsPriced ? "إجمالي الطلب: " + money(orderTotal) : "إجمالي المنتجات المسعّرة: " + money(orderTotal) + " — توجد أسعار تحتاج تأكيد", width / 2, height - 125, 30, "#c8101e", "bold", 900);
-    write("شكرًا لثقتكم في الدولي للعدد الأصلية ❤️", width / 2, height - 65, 23, "#444", "bold", 900);
+    const allItemsPriced = orderItems.length > 0 && orderItems.every(function(item) {
+      return typeof item.unitPriceAmount === "number" && Number.isFinite(item.unitPriceAmount);
+    });
+    const orderTotal = orderItems.reduce(function(sum, item) {
+      return sum + (typeof item.unitPriceAmount === "number" && Number.isFinite(item.unitPriceAmount)
+        ? item.unitPriceAmount * Number(item.qty || 0) : 0);
+    }, 0);
+    const summaryY = y + 22;
+    ctx.fillStyle = "#fff1f1"; ctx.fillRect(68, summaryY, width - 136, 118);
+    ctx.strokeStyle = "#efc9cc"; ctx.lineWidth = 2; ctx.strokeRect(68, summaryY, width - 136, 118);
+    ctx.textAlign = "center"; ctx.font = "bold 27px Tahoma, Arial, sans-serif"; ctx.fillStyle = "#a71926";
+    const summaryText = allItemsPriced
+      ? "إجمالي الطلب: " + money(orderTotal)
+      : "إجمالي المنتجات المسعّرة: " + money(orderTotal) + " — توجد منتجات تحتاج تأكيد السعر";
+    const summaryWords = summaryText.split(/\s+/), summaryLines = [];
+    let summaryLine = "";
+    summaryWords.forEach(function(word) {
+      const candidate = summaryLine ? summaryLine + " " + word : word;
+      if (summaryLine && ctx.measureText(candidate).width > 900) { summaryLines.push(summaryLine); summaryLine = word; }
+      else summaryLine = candidate;
+    });
+    if (summaryLine) summaryLines.push(summaryLine);
+    summaryLines.slice(0, 2).forEach(function(line, index) { ctx.fillText(line, width / 2, summaryY + 47 + index * 36); });
+    ctx.font = "bold 22px Tahoma, Arial, sans-serif"; ctx.fillStyle = "#444";
+    ctx.fillText("شكرًا لثقتكم في الدولي للعدد الأصلية والمستوردة ❤️", width / 2, summaryY + 168);
     return await new Promise(function(resolve, reject) {
       canvas.toBlob(function(blob) { if (blob) resolve(blob); else reject(new Error("تعذر تجهيز صورة المنتجات")); }, "image/png");
     });
   }
-
   let readyOrderShareFile = null;
   let readyOrderShareMessage = "";
   async function prepareWhatsAppOrderImage(orderNumber, customerName, customerPhone, customerAddress, orderItems, message) {
@@ -865,7 +903,7 @@
       whatsappStatus:"awaiting_customer_send", source:"website"
     };
     const orderImageItems = orderItems.map(function(item) {
-      return {name:item.name,qty:item.qty,unitPrice:item.unitPrice,image:item.image,imageId:item.imageId};
+      return {name:item.name,qty:item.qty,unitPrice:item.unitPrice,unitPriceAmount:item.unitPriceAmount,lineTotal:item.lineTotal,image:item.image,imageId:item.imageId};
     });
     const whatsappUrl = "https://wa.me/201024787222?text=" + encodeURIComponent(message);
     // Start saving in the background, then immediately prepare the native share from this single button action.
@@ -884,7 +922,7 @@
       return;
     }
     try {
-      await prepareWhatsAppOrderImage(orderNumber, customerName, customerPhone, customerAddress, orderImageItems, message);
+      await prepareWhatsAppOrderImage(orderNumber, customerName, customerPhone, customerAddress, orderImageItems, message, {totalAmount:record.totalAmount,totalIsComplete:record.totalIsComplete,totalText:record.totalText});
     } catch (shareError) {
       console.warn("تعذر تجهيز صورة الطلب:", shareError);
       checkout.disabled = false;
