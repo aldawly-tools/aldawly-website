@@ -5,8 +5,8 @@ service cloud.firestore {
       return request.auth != null
         && request.auth.token.email_verified == true
         && (
-          request.auth.token.email == "YOUR_GOOGLE_EMAIL@example.com"
-          || request.auth.token.email == "YOUR_SECOND_ADMIN_EMAIL@example.com"
+          request.auth.token.email == "elgoharemahmoud@gmail.com"
+          || request.auth.token.email == "ahmedelgohare90@gmail.com"
         );
     }
 
