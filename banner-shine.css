@@ -1,0 +1,51 @@
+/* Dawly premium banner shine: subtle diagonal light sweep */
+@keyframes dawlyBannerShine {
+  0%, 72% { transform: translateX(-160%) skewX(-18deg); opacity: 0; }
+  76% { opacity: .55; }
+  92% { opacity: .22; }
+  100% { transform: translateX(460%) skewX(-18deg); opacity: 0; }
+}
+.hero-shell .hero-grid,
+.business-cta-inner,
+.promo-banner,
+.ad-banner,
+.campaign-banner,
+.banner-card {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+.hero-shell .hero-grid::after,
+.business-cta-inner::after,
+.promo-banner::after,
+.ad-banner::after,
+.campaign-banner::after,
+.banner-card::after {
+  content: "";
+  position: absolute;
+  z-index: 20;
+  top: -20%;
+  bottom: -20%;
+  left: -38%;
+  width: 30%;
+  pointer-events: none;
+  background: linear-gradient(105deg,
+    transparent 0%,
+    rgba(255,255,255,.04) 28%,
+    rgba(255,255,255,.30) 50%,
+    rgba(255,255,255,.06) 72%,
+    transparent 100%);
+  transform: translateX(-160%) skewX(-18deg);
+  animation: dawlyBannerShine 6.5s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-shell .hero-grid::after,
+  .business-cta-inner::after,
+  .promo-banner::after,
+  .ad-banner::after,
+  .campaign-banner::after,
+  .banner-card::after {
+    animation: none !important;
+    display: none !important;
+  }
+}
