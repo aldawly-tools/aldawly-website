@@ -1,0 +1,44 @@
+/* Footer readability refinement — stronger contrast and bold Arabic text */
+.footer {
+  color: #ffffff;
+}
+.footer h3 {
+  color: #ffffff;
+  font-weight: 1000;
+  font-size: 17px;
+  line-height: 1.7;
+  text-shadow: 0 1px 2px #0008;
+}
+.footer p {
+  color: #f3f5f7;
+  font-size: 14px;
+  font-weight: 800;
+  line-height: 2;
+  text-shadow: 0 1px 2px #0008;
+}
+.footer-links {
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 800;
+  line-height: 2;
+}
+.footer a:not(.button-primary) {
+  color: #ffffff;
+  font-weight: 900;
+  text-shadow: 0 1px 2px #0008;
+}
+.footer a:not(.button-primary):hover {
+  color: #ffb8bc;
+}
+.footer .button-primary {
+  font-weight: 1000;
+  text-shadow: none;
+}
+.footer p a {
+  color: #ffffff;
+  font-weight: 1000;
+}
+@media (max-width: 600px) {
+  .footer h3 { font-size: 18px; }
+  .footer p, .footer-links { font-size: 14px; }
+}
