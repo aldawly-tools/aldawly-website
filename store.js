@@ -91,11 +91,11 @@
 
   document.addEventListener("error", function (event) {
     const image = event.target;
-    if (image && image.tagName === "IMG" && image.closest(".product-grid")) showProductImageFallback(image);
+    if (image && image.tagName === "IMG" && (image.closest(".product-grid") || image.closest(".quick-view-image"))) showProductImageFallback(image);
   }, true);
 
   function observeCloudImages() {
-    const images = document.querySelectorAll("#productGrid img[data-cloud-image], #featuredProductsGrid img[data-cloud-image], #newArrivalsGrid img[data-cloud-image]");
+    const images = document.querySelectorAll("#productGrid img[data-cloud-image], #featuredProductsGrid img[data-cloud-image], #newArrivalsGrid img[data-cloud-image], #quickViewModal img[data-cloud-image]");
     if (!images.length) return;
     function loadImage(image) {
       if (typeof window.DAWLY_LOAD_PRODUCT_IMAGE !== "function") {
