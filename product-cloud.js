@@ -27,7 +27,7 @@ if (!config.apiKey || config.apiKey === "PASTE_FIREBASE_WEB_API_KEY" || !config.
         const productId = data.id !== undefined && data.id !== null && data.id !== ""
           ? data.id
           : item.id;
-        return Object.assign({}, data, {id:productId});
+        return Object.assign({}, data, {id:productId, _docId:item.id});
       }).sort(function (a, b) {
         const aNumber = Number(a.id);
         const bNumber = Number(b.id);
