@@ -19,7 +19,7 @@ import { getFirestore, collection, doc, setDoc, serverTimestamp } from "https://
   if(!localStorage.getItem(sourceFlag)){
    setDoc(doc(db,"trafficSources",sourceId),{visitorId,day,source,createdAt:serverTimestamp()}).then(()=>localStorage.setItem(sourceFlag,"1")).catch(e=>console.warn("Traffic analytics:",e));
   }
-  const match=location.pathname.match(/product\.html$/i);
+  const match=location.pathname.match(/(?:^|\/)product(?:\.html)?\/?$/i);
   const productId=match?params.get("id"):"";
   if(productId){
    const id=String(productId).replace(/[^a-zA-Z0-9_-]/g,"").slice(0,80);
