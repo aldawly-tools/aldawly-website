@@ -193,6 +193,10 @@ import { collection, deleteDoc, doc, getDoc, getDocs, getFirestore, setDoc, serv
 const $ = function (id) { return document.getElementById(id); };
 const ids = ["productPanel", "catalogPanel", "ordersPanel", "postPanel"];
 const config = window.DAWLY_FIREBASE_CONFIG || {};
+const ADMIN_EMAILS = new Set(["elgoharemahmoud@gmail.com", "ahmedelgohare90@gmail.com"]);
+function isAuthorizedAdmin(user) {
+  return !!(user && user.email && user.emailVerified === true && ADMIN_EMAILS.has(user.email.toLowerCase()));
+}
 const status = $("status");
 const saveStatus = $("saveStatus");
 const baseProducts = Array.isArray(window.DAWLY_PRODUCTS) ? window.DAWLY_PRODUCTS.map(function (item) { return Object.assign({}, item); }) : [];
@@ -1187,6 +1191,15 @@ if (!readyConfig()) {
       if (!user) {
         $("manager").classList.add("hidden");
         $("loginCard").classList.remove("hidden");
+        $("loginBtn").disabled = false;
+        return;
+      }
+      if (!isAuthorizedAdmin(user)) {
+        $("manager").classList.add("hidden");
+        $("loginCard").classList.remove("hidden");
+        message(status, "هذا الحساب غير مصرح له بدخول لوحة الإدارة. استخدم أحد حسابَي الإدارة المعتمدين.");
+        await signOut(auth);
+        $("loginBtn").disabled = false;
         return;
       }
       $("loginCard").classList.add("hidden");
