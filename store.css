@@ -2919,3 +2919,54 @@ html body #cartDrawer.cart-drawer.open {
     font-size: 20px;
   }
 }
+
+
+/* True fixed-bottom cart footer: cart items and delivery form scroll above it */
+.cart-drawer {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden !important;
+}
+.cart-drawer .drawer-head {
+  flex: 0 0 auto;
+}
+.cart-scroll-area {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 12px;
+}
+.cart-scroll-area .cart-items {
+  overflow: visible;
+}
+.cart-scroll-area .checkout-fields {
+  margin-bottom: 14px;
+}
+.cart-sticky-footer {
+  position: relative;
+  inset: auto;
+  flex: 0 0 auto;
+  margin: 0 -15px;
+  padding: 10px 15px max(12px, env(safe-area-inset-bottom));
+  background: #fff;
+  border-top: 1px solid #e3e7eb;
+  box-shadow: 0 -8px 22px #17202b18;
+  z-index: 15;
+}
+.cart-sticky-footer .cart-total {
+  border-top: 0;
+  padding: 0 0 5px;
+}
+.cart-sticky-footer .checkout {
+  position: static !important;
+  margin: 4px 0 0;
+  width: 100%;
+  min-height: 48px;
+}
+@media (max-width: 600px) {
+  .cart-sticky-footer {
+    padding-bottom: max(12px, env(safe-area-inset-bottom));
+  }
+}
