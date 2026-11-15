@@ -153,6 +153,7 @@ button:disabled{opacity:.6;cursor:wait}
         </div>
         <div class="field"><label for="imageUrl">رابط الصورة (اختياري)</label><input id="imageUrl" type="text" placeholder="اتركه فارغًا إذا سترفع صورة من جهازك"></div>
         <div class="field"><label for="imageFile">أو اختر صورًا متعددة من الجهاز (حتى 8 صور)</label><input id="imageFile" type="file" multiple accept=".jpg,.jpeg,.png,.webp,.gif,.bmp,.avif,image/jpeg,image/png,image/webp,image/gif,image/bmp,image/avif"><img id="imagePreview" class="image-preview hidden" alt="معاينة صورة المنتج"><div id="imageGalleryPreview" class="image-gallery-preview" aria-live="polite"></div><button class="light" id="removeImageBtn" type="button">مسح الصورة المختارة</button><small class="muted">الصيغ المدعومة: JPG وJPEG وPNG وWEBP وGIF وBMP وAVIF. سيتم تحويل الصورة تلقائيًا إلى JPG مضغوط قبل الحفظ.</small></div>
+        <div class="field"><button class="light" id="analyzeImageBtn" type="button">✨ تحليل صورة المنتج بالذكاء الاصطناعي</button><small class="muted">حلّل أول صورة مختارة لإنشاء اقتراحات للاسم والماركة والقسم والوصف والمواصفات. راجع النتائج قبل الحفظ.</small></div>
         <div class="field"><label style="display:flex;align-items:center;gap:9px"><input id="featured" type="checkbox" style="width:auto"> إظهار المنتج ضمن اختيارات الدولي</label><small class="muted">اختياري: يظهر المنتج في قسم المنتجات المميزة بالصفحة الرئيسية.</small></div>
         <div class="field"><label for="desc">وصف المنتج</label><textarea id="desc" rows="3" placeholder="اكتب وصفًا واضحًا للمنتج واستخدامه..."></textarea></div>
         <div class="field"><label for="specs">المواصفات الفنية (كل مواصفة في سطر)</label><textarea id="specs" rows="5" placeholder="بلد المنشأ: ألمانيا&#10;رقم الموديل: ...&#10;المقاس: ...&#10;عدد القطع: ...&#10;الخامة: ..."></textarea><small class="muted">اكتب كل سطر بهذا الشكل: اسم المواصفة: القيمة. اتركه فارغًا إذا لم تتوفر المعلومة.</small></div>
@@ -1055,6 +1056,45 @@ function renderSelectedImagePreviews() {
   }).join("");
   message(saveStatus, "الصور الجديدة المختارة: " + selectedImageFiles.length + " من 8.");
 }
+$("analyzeImageBtn").addEventListener("click", async function () {
+  const button = $("analyzeImageBtn");
+  const file = selectedImageFiles[0];
+  if (!file) { message(saveStatus, "اختار صورة واحدة على الأقل من الجهاز أولًا."); return; }
+  if (!auth || !auth.currentUser) { message(saveStatus, "سجّل الدخول بحساب إدارة المتجر أولًا."); return; }
+  if (!/^image\/(jpeg|png|webp)$/i.test(file.type)) { message(saveStatus, "التحليل يدعم JPG وPNG وWEBP فقط. اختار صورة بهذه الصيغ."); return; }
+  if (file.size > 8 * 1024 * 1024) { message(saveStatus, "حجم الصورة كبير. اختار صورة أقل من 8 ميجابايت."); return; }
+  button.disabled = true;
+  message(saveStatus, "جارٍ تحليل الصورة… قد يستغرق ذلك عدة ثوانٍ.");
+  try {
+    const token = await auth.currentUser.getIdToken();
+    const dataUrl = await new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(String(reader.result || ""));
+      reader.onerror = () => reject(new Error("تعذر قراءة الصورة من الجهاز."));
+      reader.readAsDataURL(file);
+    });
+    const response = await fetch("https://me-central1-" + config.projectId + ".cloudfunctions.net/analyzeProductImage", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "Authorization": "Bearer " + token },
+      body: JSON.stringify({ image: dataUrl, mimeType: file.type })
+    });
+    const result = await response.json().catch(() => ({}));
+    if (!response.ok) throw new Error(result.error || "تعذر تحليل الصورة. تحقق من إعداد خدمة الذكاء الاصطناعي.");
+    const p = result.product || {};
+    if (p.name) $("name").value = p.name;
+    if (p.brand) $("brand").value = p.brand;
+    if (p.category) {
+      const categoryMap = {"عدد يدوية":"عدد يدوية","عدد كهربائية":"عدد كهربائية","مستلزمات الورش":"مستلزمات الورش","قياس":"قياس"};
+      $("cat").value = categoryMap[p.category] || "مستلزمات الورش";
+    }
+    if (p.description) $("desc").value = p.description;
+    if (Array.isArray(p.specifications) && p.specifications.length) $("specs").value = p.specifications.map(x => String(x.name || "مواصفة") + ": " + String(x.value || "غير واضح")).join("\n");
+    message(saveStatus, "تم تحليل الصورة. راجع الاسم والماركة والمواصفات والوصف ثم احفظ المنتج بنفسك. " + (p.notes || ""));
+  } catch (error) {
+    console.error("Product image analysis failed:", error);
+    message(saveStatus, error && error.message ? error.message : "حدث خطأ أثناء تحليل الصورة.");
+  } finally { button.disabled = false; }
+});
 $("removeImageBtn").addEventListener("click", function () {
   $("imageFile").value = "";
   $("imageUrl").value = "";
