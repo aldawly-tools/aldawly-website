@@ -3412,3 +3412,35 @@ body { background:#f7f8fa; color:#14191f; }
   content:none!important;
   display:none!important;
 }
+
+
+/* Brand logos: manual horizontal swipe/scroll on touch and desktop */
+.brands-marquee-section .brands-marquee{
+  overflow-x:auto!important;
+  overflow-y:hidden!important;
+  width:100%!important;
+  max-width:100%!important;
+  -webkit-overflow-scrolling:touch!important;
+  overscroll-behavior-x:contain!important;
+  touch-action:pan-x pan-y!important;
+  scroll-behavior:smooth!important;
+  scrollbar-width:none!important;
+  cursor:grab!important;
+}
+.brands-marquee-section .brands-marquee::-webkit-scrollbar{display:none!important}
+.brands-marquee-section .brands-marquee:active{cursor:grabbing!important}
+.brands-marquee-section .brands-marquee-track{
+  animation:none!important;
+  transform:none!important;
+  transition:none!important;
+  width:max-content!important;
+  min-width:max-content!important;
+  will-change:auto!important;
+}
+.brands-marquee-section .brands-marquee-group{
+  flex:0 0 auto!important;
+}
+.brands-marquee-section .brand-word.brand-tile{
+  flex:0 0 auto!important;
+  scroll-snap-align:start!important;
+}
