@@ -131,10 +131,11 @@ button:disabled{opacity:.6;cursor:wait}
       <button type="button" class="dashboard-tab active" data-tab="productPanel" role="tab" aria-selected="true">＋ إضافة منتج</button>
       <button type="button" class="dashboard-tab" data-tab="catalogPanel" role="tab" aria-selected="false">المنتجات</button>
       <button type="button" class="dashboard-tab" data-tab="ordersPanel" role="tab" aria-selected="false">الطلبات</button>
+      <button type="button" class="dashboard-tab" data-tab="ordersPanel" data-filter="cancelled" role="tab" aria-selected="false">الطلبات الملغية</button>
       <button type="button" class="dashboard-tab" data-tab="postPanel" role="tab" aria-selected="false">منشئ البوستات</button>
     </nav>
     <div class="dashboard-stats" aria-label="ملخص المتجر">
-      <div class="dashboard-stat"><span>إجمالي المنتجات</span><strong id="dashProducts">0</strong></div>
+      <button type="button" class="dashboard-stat dashboard-stat-action" id="dashProductsCard" aria-label="فتح المنتجات لعرضها وتعديلها"><span>إجمالي المنتجات</span><strong id="dashProducts">0</strong><small>اضغط لعرض المنتجات وتعديلها</small></button>
       <button type="button" class="dashboard-stat dashboard-stat-action" id="dashOrdersCard" aria-label="فتح الطلبات لعرضها وتعديلها"><span>إجمالي الطلبات</span><strong id="dashOrders">0</strong><small>اضغط لعرض الطلبات وتعديلها</small></button>
     </div>
     <div class="card admin-panel" id="productPanel" role="tabpanel">
@@ -207,24 +208,42 @@ function showAdminTab(panelId) {
     const panel = $(id);
     if (panel) panel.classList.toggle("hidden", id !== panelId);
   });
-  const dashOrdersCard = $("dashOrdersCard");
-if(dashOrdersCard){
- dashOrdersCard.addEventListener("click",function(){
-  showAdminTab("ordersPanel");
-  window.scrollTo({top:0,behavior:"smooth"});
-  if(typeof loadOrders==="function")loadOrders();
- });
-}
 document.querySelectorAll(".dashboard-tab").forEach(function(button) {
     const active = button.dataset.tab === panelId;
     button.classList.toggle("active", active);
     button.setAttribute("aria-selected", active ? "true" : "false");
   });
 }
+const dashProductsCard = $("dashProductsCard");
+if(dashProductsCard){
+ dashProductsCard.addEventListener("click",function(){
+  showAdminTab("catalogPanel");
+  window.scrollTo({top:0,behavior:"smooth"});
+  if(typeof loadProducts==="function")loadProducts();
+ });
+}
+const dashOrdersCard = $("dashOrdersCard");
+if(dashOrdersCard){
+ dashOrdersCard.addEventListener("click",function(){
+  showAdminTab("ordersPanel");
+  $("orderFilter").value="all";
+  renderOrders();
+  window.scrollTo({top:0,behavior:"smooth"});
+  if(typeof loadOrders==="function")loadOrders();
+ });
+}
 document.querySelectorAll(".dashboard-tab").forEach(function(button) {
   button.addEventListener("click", function() {
     showAdminTab(button.dataset.tab);
+    if(button.dataset.filter){
+      $("orderFilter").value=button.dataset.filter;
+      renderOrders();
+    }else if(button.dataset.tab==="ordersPanel"){
+      $("orderFilter").value="all";
+      renderOrders();
+    }
     window.scrollTo({top:0,behavior:"smooth"});
+    if(button.dataset.tab==="ordersPanel"&&typeof loadOrders==="function")loadOrders();
   });
 });
 function message(target, text) { target.textContent = text || ""; }
