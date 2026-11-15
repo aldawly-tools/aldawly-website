@@ -682,7 +682,7 @@ function printCustomerOrder(order){
 
 async function createOrderConfirmationImage(order){
  const items=Array.isArray(order.items)?order.items:[];
- const width=1080,rowHeight=112,topRows=570,footerSpace=310;
+ const width=1080,rowHeight=112,topRows=570,footerSpace=470;
  const height=topRows+items.length*rowHeight+footerSpace;
  const canvas=document.createElement("canvas");canvas.width=width;canvas.height=height;
  const ctx=canvas.getContext("2d");
@@ -761,6 +761,17 @@ async function createOrderConfirmationImage(order){
  ctx.strokeStyle="#e5e7eb";ctx.beginPath();ctx.moveTo(180,footerY-32);ctx.lineTo(width-180,footerY-32);ctx.stroke();
  write("شكرًا لثقتكم في الدولي للعدد الأصلية ❤️",width/2,footerY+8,28,"#444","bold",920);
  write("نسعد دائمًا بخدمتكم",width/2,footerY+48,21,"#777","400",920);
+ // Gold handshake thank-you emblem at the bottom of the WhatsApp order image.
+ const badgeY=footerY+150,badgeR=62;
+ const gold=ctx.createRadialGradient(width/2-18,badgeY-22,8,width/2,badgeY,badgeR);
+ gold.addColorStop(0,"#fff2b0");gold.addColorStop(.45,"#d6a632");gold.addColorStop(1,"#80520c");
+ ctx.beginPath();ctx.arc(width/2,badgeY,badgeR,0,Math.PI*2);ctx.fillStyle="#111";ctx.fill();
+ ctx.lineWidth=8;ctx.strokeStyle=gold;ctx.stroke();
+ ctx.beginPath();ctx.arc(width/2,badgeY,badgeR-12,0,Math.PI*2);ctx.lineWidth=2;ctx.strokeStyle="#e8c66b";ctx.stroke();
+ ctx.textAlign="center";ctx.textBaseline="middle";ctx.font="64px Arial";ctx.fillStyle="#f4d47b";ctx.fillText("🤝",width/2,badgeY+2);
+ ctx.textBaseline="alphabetic";
+ ctx.fillStyle="#b20f19";ctx.fillRect(150,footerY+238,width-300,5);
+ write("شكرًا لتعاملكم مع الدولي للعدد الأصلية والمستوردة",width/2,footerY+282,24,"#8f1821","bold",920);
  return await new Promise(function(resolve,reject){
   canvas.toBlob(function(blob){if(blob)resolve(blob);else reject(new Error("تعذر إنشاء صورة الطلب."));},"image/png");
  });
