@@ -2,7 +2,7 @@
   const overlay = document.createElement("div");
   overlay.className = "image-zoom-overlay";
   overlay.setAttribute("aria-hidden", "true");
-  overlay.innerHTML = '<div class="image-zoom-dialog" role="dialog" aria-modal="true" aria-label="صورة المنتج مكبرة"><button class="image-zoom-close" type="button" aria-label="إغلاق الصورة المكبرة">×</button><img alt=""></div>';
+  overlay.innerHTML = '<div class="image-zoom-dialog" role="dialog" aria-modal="true" aria-label="معرض صور المنتج"><button class="image-zoom-close" type="button" aria-label="إغلاق الصورة المكبرة">×</button><button class="image-zoom-nav prev" type="button" aria-label="الصورة السابقة">‹</button><img alt=""><button class="image-zoom-nav next" type="button" aria-label="الصورة التالية">›</button><div class="image-zoom-count" aria-live="polite"></div></div>';
   document.body.appendChild(overlay);
   const hoverPreview = document.createElement("div");
   hoverPreview.className = "image-hover-preview";
@@ -13,6 +13,12 @@
 
   const zoomImage = overlay.querySelector("img");
   const closeButton = overlay.querySelector(".image-zoom-close");
+  const prevButton = overlay.querySelector(".image-zoom-nav.prev");
+  const nextButton = overlay.querySelector(".image-zoom-nav.next");
+  const countLabel = overlay.querySelector(".image-zoom-count");
+  let zoomGallery = [];
+  let zoomIndex = 0;
+  let touchStartX = 0;
   let previousFocus = null;
   let previousOverflow = "";
   let hoverContainer = null;
@@ -72,29 +78,64 @@
     }
   }
 
-  function displayImage(source, alt) {
+  function displayImage(source, alt, gallery, startIndex) {
     if (!source) return;
     previousFocus = document.activeElement;
     previousOverflow = document.body.style.overflow;
-    zoomImage.src = source;
-    zoomImage.alt = alt || "صورة المنتج";
+    zoomGallery = Array.isArray(gallery) && gallery.length ? gallery : [{src:source,alt:alt || "صورة المنتج"}];
+    zoomIndex = Math.max(0, Math.min(Number(startIndex) || 0, zoomGallery.length - 1));
+    zoomImage.src = zoomGallery[zoomIndex].src || source;
+    zoomImage.alt = zoomGallery[zoomIndex].alt || alt || "صورة المنتج";
+    updateZoomGalleryControls();
     overlay.classList.add("open");
     overlay.setAttribute("aria-hidden", "false");
     document.body.style.overflow = "hidden";
     closeButton.focus();
   }
 
+  function updateZoomGalleryControls() {
+    const multiple = zoomGallery.length > 1;
+    prevButton.hidden = !multiple;
+    nextButton.hidden = !multiple;
+    countLabel.hidden = !multiple;
+    countLabel.textContent = multiple ? (zoomIndex + 1) + " / " + zoomGallery.length : "";
+  }
+
+  function stepZoomGallery(direction) {
+    if (zoomGallery.length < 2) return;
+    zoomIndex = (zoomIndex + direction + zoomGallery.length) % zoomGallery.length;
+    const item = zoomGallery[zoomIndex];
+    zoomImage.src = item.src;
+    zoomImage.alt = item.alt || "صورة المنتج";
+    updateZoomGalleryControls();
+  }
+
+  function getDetailGallery(image) {
+    const container = image.closest(".product-detail-image");
+    if (!container) return null;
+    const thumbs = document.querySelectorAll("#detailImageThumbs .detail-image-thumb img");
+    if (!thumbs.length) return null;
+    const gallery = Array.from(thumbs).map(function (thumb) {
+      return {src:thumb.currentSrc || thumb.getAttribute("src"),alt:image.alt || "صورة المنتج"};
+    }).filter(function (item) { return !!item.src; });
+    const active = document.querySelector("#detailImageThumbs .detail-image-thumb.active");
+    const index = active ? Number(active.dataset.imageIndex) : 0;
+    return gallery.length ? {gallery:gallery,index:index} : null;
+  }
+
   function openImage(image) {
     const source = image.getAttribute("src");
+    const detailGallery = getDetailGallery(image);
     if (source) {
-      displayImage(image.currentSrc || source, image.alt);
+      displayImage(image.currentSrc || source, image.alt, detailGallery && detailGallery.gallery, detailGallery && detailGallery.index);
       return;
     }
     if (image.dataset.cloudImage && typeof window.DAWLY_LOAD_PRODUCT_IMAGE === "function") {
       window.DAWLY_LOAD_PRODUCT_IMAGE(image.dataset.cloudImage).then(function (url) {
         if (!url) return;
         image.src = url;
-        displayImage(url, image.alt);
+        const detailGallery = getDetailGallery(image);
+        displayImage(url, image.alt, detailGallery && detailGallery.gallery, detailGallery && detailGallery.index);
       }).catch(function () {});
     }
   }
@@ -104,6 +145,8 @@
     overlay.classList.remove("open");
     overlay.setAttribute("aria-hidden", "true");
     zoomImage.removeAttribute("src");
+    zoomGallery = [];
+    zoomIndex = 0;
     document.body.style.overflow = previousOverflow;
     if (previousFocus && typeof previousFocus.focus === "function") previousFocus.focus();
   }
@@ -142,6 +185,8 @@
     const target = event.target instanceof Element ? event.target : null;
     if (!target) return;
     if (target.closest("[data-gallery-step]")) return;
+    if (target.closest(".image-zoom-nav.prev")) { stepZoomGallery(-1); return; }
+    if (target.closest(".image-zoom-nav.next")) { stepZoomGallery(1); return; }
     if (target.closest(".image-zoom-close")) {
       closeImage();
       return;
@@ -154,7 +199,19 @@
     activateImage(target, event);
   });
 
+  overlay.addEventListener("touchstart", function (event) {
+    if (!overlay.classList.contains("open") || !event.touches || !event.touches.length) return;
+    touchStartX = event.touches[0].clientX;
+  }, {passive:true});
+  overlay.addEventListener("touchend", function (event) {
+    if (!overlay.classList.contains("open") || !event.changedTouches || !event.changedTouches.length) return;
+    const delta = event.changedTouches[0].clientX - touchStartX;
+    if (Math.abs(delta) > 45) stepZoomGallery(delta > 0 ? -1 : 1);
+  }, {passive:true});
+
   document.addEventListener("keydown", function (event) {
+    if (overlay.classList.contains("open") && event.key === "ArrowLeft") { stepZoomGallery(1); return; }
+    if (overlay.classList.contains("open") && event.key === "ArrowRight") { stepZoomGallery(-1); return; }
     if (event.key === "Escape") {
       closeImage();
       return;
