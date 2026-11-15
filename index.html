@@ -198,14 +198,6 @@ footer.footer .button-primary { color:#fff !important; font-weight:1000 !importa
  <div class="section-heading"><div><h2 class="section-title">اختيارات الدولي</h2><p class="section-subtitle">منتجات مميزة من الكتالوج الفعلي، مع تفاصيلها وتوفرها عند التواصل</p></div><a class="text-link" href="products.html">كل المنتجات ←</a></div>
  <div class="product-grid" id="featuredProductsGrid"><div class="catalog-empty-note">أضف المنتجات المميزة من لوحة الإدارة لتظهر هنا.</div></div>
 </div></section>
-<section class="section new-arrivals" id="new-arrivals"><div class="container">
- <div class="section-heading"><div><h2 class="section-title">وصل حديثًا</h2><p class="section-subtitle">أحدث المنتجات المضافة فعليًا إلى المتجر</p></div><a class="text-link" href="products.html">اكتشف الكتالوج ←</a></div>
- <div class="product-grid" id="newArrivalsGrid"><div class="catalog-empty-note">سيظهر هنا أحدث ما تتم إضافته إلى الكتالوج.</div></div>
-</div></section>
-
-
-
-
 <section class="section" id="about"><div class="container">
  <div class="section-heading"><div><h2 class="section-title">عن الدولي</h2></div></div>
  <div class="about-box">في الدولي للعدد الأصلية والمستوردة، نوفر لك تشكيلة من الأدوات اليدوية والكهربائية ومستلزمات الورش. هدفنا مساعدتك في اختيار الأداة المناسبة، مع إمكانية الاستفسار عن السعر والتوفر قبل الطلب.</div>
@@ -384,7 +376,7 @@ footer.footer .button-primary { color:#fff !important; font-weight:1000 !importa
   function paint(){track.style.transform='translate3d('+(-offset)+'px,0,0)';}
   new ResizeObserver(measure).observe(view);
   new ResizeObserver(measure).observe(track);
-  view.addEventListener('pointerdown',function(e){if(e.pointerType==='mouse'&&e.button!==0)return;drag=true;startX=e.clientX;startOffset=offset;view.classList.add('is-dragging');try{view.setPointerCapture(e.pointerId);}catch(_){}});
+  view.addEventListener('pointerdown',function(e){if(e.pointerType==='mouse'&&e.button!==0)return;if(e.target&&e.target.closest&&e.target.closest('a,button'))return;drag=true;startX=e.clientX;startOffset=offset;view.classList.add('is-dragging');try{view.setPointerCapture(e.pointerId);}catch(_){}});
   view.addEventListener('pointermove',function(e){if(!drag)return;offset=Math.max(0,Math.min(max,startOffset+(startX-e.clientX)));paint();});
   function end(){drag=false;view.classList.remove('is-dragging');last=0;}
   view.addEventListener('pointerup',end);view.addEventListener('pointercancel',end);view.addEventListener('lostpointercapture',end);
