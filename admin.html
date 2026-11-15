@@ -306,19 +306,28 @@ function printSalesSummary(){
   const d=o.createdAt&&o.createdAt.toDate?o.createdAt.toDate():new Date(o.createdAt||0);
   const day=Number.isNaN(d.getTime())?"":d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
   return (!from||(day&&day>=from))&&(!to||(day&&day<=to));
+ }).sort((a,b)=>{
+  const da=a.createdAt&&a.createdAt.toDate?a.createdAt.toDate():new Date(a.createdAt||0);
+  const db=b.createdAt&&b.createdAt.toDate?b.createdAt.toDate():new Date(b.createdAt||0);
+  return db-da;
  });
- const valid=chosen.filter(o=>["confirmed","shipped","delivered"].includes(o.status));
+ const saleStatuses=["confirmed","shipped","delivered"];
+ const valid=chosen.filter(o=>saleStatuses.includes(o.status));
  const total=valid.reduce((sum,o)=>sum+orderAmount(o),0);
- const cancelled=chosen.filter(o=>o.status==="cancelled").length;
  const fmt=n=>Number(n||0).toLocaleString("ar-EG");
- const rows=chosen.map((o,i)=>'<tr><td>'+(i+1)+'</td><td>'+escapeHtml(o.orderNumber||o.id)+'</td><td>'+escapeHtml(o.customerName||"—")+'</td><td>'+escapeHtml(orderDate(o.createdAt))+'</td><td>'+escapeHtml(orderStatusLabels[o.status]||"جديد")+'</td><td>'+escapeHtml(o.totalText||"يحدد عند التأكيد")+'</td></tr>').join("");
+ const statusCards=Object.keys(orderStatusLabels).map(k=>'<div class="stat"><b>'+fmt(chosen.filter(o=>o.status===k).length)+'</b>'+escapeHtml(orderStatusLabels[k])+'</div>').join("");
+ const rows=chosen.map((o,i)=>{
+  const items=(Array.isArray(o.items)?o.items:[]).map(item=>escapeHtml(item.name||"منتج")+' × '+fmt(Number(item.qty||0))).join("<br>")||"تفاصيل المنتجات غير متاحة";
+  const amount=orderAmount(o);
+  return '<tr><td>'+fmt(i+1)+'</td><td><b>'+escapeHtml(o.orderNumber||o.id)+'</b><small>'+escapeHtml(orderDate(o.createdAt))+'</small></td><td>'+escapeHtml(o.customerName||"—")+'<small>'+escapeHtml(o.customerPhone||"—")+'</small></td><td>'+items+'</td><td>'+escapeHtml(orderStatusLabels[o.status]||"جديد")+'</td><td><b>'+(amount>0?fmt(amount)+" ج.م":"غير مسجل")+'</b></td></tr>';
+ }).join("");
  const title=escapeHtml(($("salesReportTitle").value||"تقرير ملخص المبيعات").trim());
  const notes=escapeHtml(($("salesReportNotes").value||"").trim()).replace(/\n/g,"<br>");
  const period=(from||"البداية")+(to?" إلى "+to:" إلى الآن");
- const popup=window.open("","_blank","width=900,height=700");
+ const popup=window.open("","_blank","width=1000,height=750");
  if(!popup){$("ordersStatus").textContent="اسمح بالنوافذ المنبثقة لطباعة التقرير.";return;}
- popup.document.write('<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><title>'+title+'</title><style>@page{size:A4;margin:14mm}body{font-family:Tahoma,Arial,sans-serif;color:#222;font-size:12px;line-height:1.7}.head{border-bottom:3px solid #c8101e;padding-bottom:12px;display:flex;justify-content:space-between}.brand{font-size:22px;font-weight:bold;color:#c8101e}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:18px 0}.stat{border:1px solid #ccc;padding:10px;text-align:center;border-radius:6px}.stat b{display:block;font-size:18px}table{width:100%;border-collapse:collapse;margin-top:16px}th,td{border:1px solid #ccc;padding:7px;text-align:right}th{background:#eee}.notes{margin-top:18px;padding:10px;border:1px dashed #aaa}.print{margin:12px 0;padding:9px 18px;background:#c8101e;color:white;border:0}@media print{.print{display:none}}</style></head><body><header class="head"><div><div class="brand">الدولي للعدد الأصلية</div><div>'+title+'</div></div><div>فترة التقرير: '+escapeHtml(period)+'<br>تاريخ الطباعة: '+escapeHtml(new Date().toLocaleDateString("ar-EG"))+'</div></header><div class="stats"><div class="stat"><b>'+fmt(chosen.length)+'</b>إجمالي الطلبات</div><div class="stat"><b>'+fmt(valid.length)+'</b>طلبات مؤكدة / مشحونة / مسلّمة</div><div class="stat"><b>'+fmt(total)+' ج.م</b>قيمة المبيعات المؤكدة</div><div class="stat"><b>'+fmt(cancelled)+'</b>طلبات ملغية</div></div><h3>تفاصيل الطلبات</h3><table><thead><tr><th>#</th><th>رقم الطلب</th><th>العميل</th><th>التاريخ</th><th>الحالة</th><th>القيمة</th></tr></thead><tbody>'+rows+'</tbody></table>'+(notes?'<div class="notes"><b>ملاحظات:</b><br>'+notes+'</div>':"")+'<button class="print" onclick="window.print()">طباعة التقرير</button></body></html>');
- popup.document.close();
+ const report='<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><title>'+title+'</title><style>@page{size:A4 portrait;margin:12mm}body{font-family:Tahoma,Arial,sans-serif;color:#20242a;font-size:10px;line-height:1.6}.head{border-bottom:3px solid #c8101e;padding-bottom:10px;display:flex;justify-content:space-between}.brand{font-size:21px;font-weight:bold;color:#c8101e}.meta{text-align:left;color:#555}.stats{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin:14px 0}.stat{border:1px solid #ddd;padding:8px 4px;text-align:center;border-radius:6px}.stat b{display:block;font-size:17px;color:#b20f19}table{width:100%;border-collapse:collapse;margin-top:12px;table-layout:fixed}th,td{border:1px solid #d8dce1;padding:6px 5px;text-align:right;vertical-align:top;overflow-wrap:anywhere}th{background:#f0f2f4}td small{display:block;color:#68707a;font-size:8px}.total{margin:12px 0;padding:10px;background:#fff4f4;border:1px solid #efc9cc;font-weight:bold}.total strong{font-size:18px;color:#b20f19}.notes{margin-top:12px;padding:9px;border:1px dashed #aaa}.print{margin:12px 0;padding:9px 18px;background:#c8101e;color:white;border:0}@media print{.print{display:none}tr{break-inside:avoid}thead{display:table-header-group}}</style></head><body><header class="head"><div><div class="brand">الدولي للعدد الأصلية</div><b>'+title+'</b></div><div class="meta">الفترة: '+escapeHtml(period)+'<br>تاريخ الطباعة: '+escapeHtml(new Date().toLocaleDateString("ar-EG"))+'</div></header><div class="stats">'+statusCards+'</div><div class="total">إجمالي المبيعات المؤكدة: <strong>'+fmt(total)+' ج.م</strong><br>يشمل الطلبات المؤكدة والمشحونة والمسلّمة فقط.</div><h3>تفاصيل الطلبات ('+fmt(chosen.length)+')</h3><table><thead><tr><th>م</th><th>الطلب والتاريخ</th><th>العميل والهاتف</th><th>المنتجات والكميات</th><th>الحالة</th><th>القيمة</th></tr></thead><tbody>'+rows+'</tbody></table>'+(notes?'<div class="notes"><b>ملاحظات:</b><br>'+notes+'</div>':"")+'<button class="print" onclick="window.print()">طباعة التقرير A4</button></body></html>';
+ popup.document.open();popup.document.write(report);popup.document.close();
 }
 $("printSalesSummaryBtn").addEventListener("click",printSalesSummary);
 
