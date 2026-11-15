@@ -3367,3 +3367,40 @@ body { background:#f7f8fa; color:#14191f; }
     z-index:96 !important;
   }
 }
+
+
+/* ORIGINAL BRAND LOGOS — preserve existing brand filter links */
+.brands-marquee-section .brand-word.brand-tile{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  position:relative!important;
+  overflow:hidden!important;
+  background:#fff!important;
+  padding:12px!important;
+  font-size:0!important;
+  color:transparent!important;
+  -webkit-text-fill-color:transparent!important;
+}
+.brands-marquee-section .brand-word.brand-tile .brand-logo{
+  display:block!important;
+  width:auto!important;
+  height:auto!important;
+  max-width:88%!important;
+  max-height:54px!important;
+  object-fit:contain!important;
+  object-position:center!important;
+  filter:none!important;
+  opacity:1!important;
+}
+.brands-marquee-section .brand-word.brand-tile .brand-name-sr{
+  position:absolute!important;
+  width:1px!important;height:1px!important;
+  padding:0!important;margin:-1px!important;
+  overflow:hidden!important;clip:rect(0,0,0,0)!important;
+  white-space:nowrap!important;border:0!important;
+}
+@media(max-width:700px){
+ .brands-marquee-section .brand-word.brand-tile{padding:9px!important}
+ .brands-marquee-section .brand-word.brand-tile .brand-logo{max-width:90%!important;max-height:44px!important}
+}
