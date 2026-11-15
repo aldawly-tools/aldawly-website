@@ -729,9 +729,20 @@
         img.src = src;
       });
     }
-    // Store logo at the left side of the RTL order header.
-    const storeLogo = await loadImage("/assets/app-icon-192.png");
-    if (storeLogo) ctx.drawImage(storeLogo, 82, 68, 118, 118);
+    // Draw the store emblem directly on canvas so it never disappears if an image URL fails.
+    ctx.save();
+    ctx.translate(142, 128);
+    ctx.fillStyle = "#d71920";
+    ctx.beginPath(); ctx.arc(0, 0, 57, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = "#fff";
+    ctx.beginPath(); ctx.arc(0, 0, 40, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = "#171b20";
+    ctx.beginPath(); ctx.arc(0, 0, 29, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = "#fff";
+    ctx.beginPath(); ctx.arc(0, 0, 17, 0, Math.PI * 2); ctx.fill();
+    ctx.strokeStyle = "#171b20"; ctx.lineWidth = 17; ctx.lineCap = "round";
+    ctx.beginPath(); ctx.moveTo(4, 18); ctx.lineTo(48, 60); ctx.stroke();
+    ctx.restore();
     write("الدولي للعدد الأصلية والمستوردة", width - 86, 130, 46, "#c8101e", "bold", 760);
     write("تفاصيل طلب جديد", width - 86, 195, 32, "#252b33", "bold");
     write("رقم الطلب: " + orderNumber, width - 86, 255, 27, "#20242a", "bold");
@@ -794,9 +805,9 @@
 
     // Repeat the store name diagonally as a faint watermark across the entire image.
     ctx.save();
-    ctx.globalAlpha = 0.055;
+    ctx.globalAlpha = 0.13;
     ctx.fillStyle = "#c8101e";
-    ctx.font = "bold 38px Tahoma, Arial, sans-serif";
+    ctx.font = "bold 42px Tahoma, Arial, sans-serif";
     ctx.textAlign = "center";
     ctx.direction = "rtl";
     ctx.translate(width / 2, height / 2);
