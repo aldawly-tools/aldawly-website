@@ -70,13 +70,6 @@
     const currentCart = localStorage.getItem(cartStorageKey);
     if (currentCart !== null) {
       cart = normalizeCart(JSON.parse(currentCart));
-    } else {
-      const oldCart = localStorage.getItem("dawly_cart_v1");
-      if (oldCart) {
-        cart = normalizeCart(JSON.parse(oldCart));
-        localStorage.setItem(cartStorageKey, JSON.stringify(cart));
-        localStorage.removeItem("dawly_cart_v1");
-      }
     }
   } catch (error) { cart = []; }
   function persistCart() {
