@@ -384,4 +384,17 @@ footer.footer .button-primary { color:#fff !important; font-weight:1000 !importa
  observer.observe(document.documentElement,{childList:true,subtree:true});
 })();
 </script>
+<script>
+/* Duplicate the brand row once to create a seamless automatic loop. */
+(function(){
+ var track=document.querySelector('.brands-marquee-section .brands-marquee-track');
+ var group=track&&track.querySelector('.brands-marquee-group');
+ if(!track||!group||track.dataset.loopReady==='1')return;
+ var clone=group.cloneNode(true);
+ clone.setAttribute('aria-hidden','true');
+ clone.querySelectorAll('a').forEach(function(link){link.setAttribute('tabindex','-1');});
+ track.appendChild(clone);
+ track.dataset.loopReady='1';
+})();
+</script>
 </body></html>
