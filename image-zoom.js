@@ -163,20 +163,8 @@
     openImage(image);
   }
 
-  document.addEventListener("pointerover", function (event) {
-    if (event.pointerType !== "mouse") return;
-    const target = event.target instanceof Element ? event.target : null;
-    const container = target && target.closest(".product-visual");
-    if (container && container !== hoverContainer) showHoverPreview(container);
-  });
-
-  document.addEventListener("pointerout", function (event) {
-    if (event.pointerType !== "mouse") return;
-    const target = event.target instanceof Element ? event.target : null;
-    const container = target && target.closest(".product-visual");
-    const next = event.relatedTarget instanceof Element ? event.relatedTarget : null;
-    if (container && !container.contains(next)) hideHoverPreview();
-  });
+  // Disabled: hovering over a product image must not create a floating preview.
+  // Product images remain clickable to open the full-screen gallery.
 
   window.addEventListener("scroll", hideHoverPreview, {passive:true});
   window.addEventListener("resize", hideHoverPreview);
