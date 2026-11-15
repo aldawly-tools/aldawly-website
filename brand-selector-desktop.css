@@ -1,38 +1,17 @@
-/* Brand selector: stable responsive grid, reliable desktop clicks */
-.brands-marquee-section{overflow:visible!important;padding:24px 0 28px!important;background:linear-gradient(180deg,#fff 0%,#f8f9fb 100%)!important}
-.brands-marquee-section .brands-marquee{overflow:visible!important;width:100%!important;margin:0!important;padding:8px 0!important;border:0!important;cursor:default!important}
-.brands-marquee-section .brands-marquee-track{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:14px!important;width:100%!important;min-width:0!important;transform:none!important;animation:none!important;will-change:auto!important}
-.brands-marquee-section .brands-marquee-group{display:contents!important}
-.brands-marquee-section .brand-word.brand-tile{display:flex!important;width:auto!important;min-width:0!important;height:100px!important;min-height:100px!important;margin:0!important;padding:16px!important;border:1px solid #e1e5e9!important;border-radius:14px!important;background:#fff!important;box-shadow:0 4px 14px rgba(17,24,32,.06)!important;cursor:pointer!important;transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease!important}
-.brands-marquee-section .brand-word.brand-tile:hover{transform:translateY(-3px)!important;border-color:#d71920!important;box-shadow:0 9px 22px rgba(17,24,32,.12)!important}
-.brands-marquee-section .brand-word.brand-tile .brand-logo{max-width:92%!important;max-height:58px!important;pointer-events:none!important}
-.brands-marquee-section .brand-word.brand-tile::before,
-.brands-marquee-section .brand-word.brand-tile::after{pointer-events:none!important}
-.brands-marquee-section .brands-marquee::before,
-.brands-marquee-section .brands-marquee::after{display:none!important}
-@media(max-width:900px){
- .brands-marquee-section .brands-marquee-track{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:10px!important}
- .brands-marquee-section .brand-word.brand-tile{height:86px!important;min-height:86px!important}
-}
-@media(max-width:560px){
- .brands-marquee-section .brands-marquee-track{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:9px!important}
- .brands-marquee-section .brand-word.brand-tile{height:78px!important;min-height:78px!important;padding:10px!important}
- .brands-marquee-section .brand-word.brand-tile .brand-logo{max-height:48px!important}
-}
-
-/* Restore the gentle side-to-side swing on each brand logo */
-@keyframes brandLogoSwing {
-  0%, 100% { transform: rotate(-4deg); }
-  50% { transform: rotate(4deg); }
-}
-.brands-marquee-section .brand-word.brand-tile .brand-logo {
-  transform-origin: 50% 50%;
-  animation: brandLogoSwing 2.8s ease-in-out infinite;
-  will-change: transform;
-}
-.brands-marquee-section .brand-word.brand-tile:hover .brand-logo {
-  animation-play-state: paused;
-}
-@media (prefers-reduced-motion: reduce) {
-  .brands-marquee-section .brand-word.brand-tile .brand-logo { animation: none; }
-}
+/* Automatic horizontal brand carousel with individual logo swing */
+.brands-marquee-section{overflow:hidden!important;padding:24px 0 28px!important;background:linear-gradient(180deg,#fff 0%,#f8f9fb 100%)!important}
+.brands-marquee-section .brands-marquee{overflow:hidden!important;width:100%!important;margin:0!important;padding:12px 0!important;border:0!important;cursor:default!important}
+.brands-marquee-section .brands-marquee-track{display:flex!important;flex-wrap:nowrap!important;align-items:center!important;gap:14px!important;width:max-content!important;min-width:max-content!important;transform:none!important;animation:brandTrackScroll 38s linear infinite!important;will-change:transform!important;direction:ltr!important}
+.brands-marquee-section .brands-marquee-group{display:flex!important;flex:0 0 auto!important;align-items:center!important;gap:14px!important;width:max-content!important;direction:ltr!important}
+.brands-marquee-section .brand-word.brand-tile{display:flex!important;flex:0 0 190px!important;width:190px!important;min-width:190px!important;height:100px!important;min-height:100px!important;margin:0!important;padding:16px!important;border:1px solid #e1e5e9!important;border-radius:14px!important;background:#fff!important;box-shadow:0 4px 14px rgba(17,24,32,.06)!important;cursor:pointer!important;transition:border-color .18s ease,box-shadow .18s ease!important;direction:rtl!important}
+.brands-marquee-section .brand-word.brand-tile:hover{border-color:#d71920!important;box-shadow:0 9px 22px rgba(17,24,32,.12)!important}
+.brands-marquee-section .brand-word.brand-tile .brand-logo{max-width:92%!important;max-height:58px!important;pointer-events:none!important;transform-origin:50% 50%;animation:brandLogoSwing 2.8s ease-in-out infinite;will-change:transform}
+.brands-marquee-section .brand-word.brand-tile:hover .brand-logo{animation-play-state:paused}
+.brands-marquee-section .brand-word.brand-tile::before,.brands-marquee-section .brand-word.brand-tile::after{pointer-events:none!important}
+.brands-marquee-section .brands-marquee::before,.brands-marquee-section .brands-marquee::after{display:none!important}
+.brands-marquee-section .brands-marquee:hover .brands-marquee-track{animation-play-state:paused!important}
+@keyframes brandTrackScroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@keyframes brandLogoSwing{0%,100%{transform:rotate(-4deg)}50%{transform:rotate(4deg)}}
+@media(max-width:900px){.brands-marquee-section .brand-word.brand-tile{flex-basis:165px!important;width:165px!important;min-width:165px!important;height:86px!important;min-height:86px!important}.brands-marquee-section .brands-marquee-track,.brands-marquee-section .brands-marquee-group{gap:10px!important}}
+@media(max-width:560px){.brands-marquee-section .brand-word.brand-tile{flex-basis:145px!important;width:145px!important;min-width:145px!important;height:78px!important;min-height:78px!important;padding:10px!important}.brands-marquee-section .brand-word.brand-tile .brand-logo{max-height:48px!important}.brands-marquee-section .brands-marquee-track{animation-duration:32s!important}}
+@media(prefers-reduced-motion:reduce){.brands-marquee-section .brands-marquee-track{animation:none!important}.brands-marquee-section .brand-word.brand-tile .brand-logo{animation:none!important}}
