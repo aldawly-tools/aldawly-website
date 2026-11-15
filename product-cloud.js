@@ -3,7 +3,8 @@ import { collection, doc, getDoc, getFirestore, onSnapshot } from "https://www.g
 
 const config = window.DAWLY_FIREBASE_CONFIG || {};
 if (!config.apiKey || config.apiKey === "PASTE_FIREBASE_WEB_API_KEY" || !config.projectId || config.projectId === "YOUR_PROJECT_ID") {
-  // The storefront continues using products.js until the one-time Firebase setup is complete.
+  // No live catalog is configured; allow the detail page to finish using products.js.
+  window.dispatchEvent(new Event("dawly-catalog-ready"));
 } else {
   try {
     const app = initializeApp(config);
@@ -44,10 +45,10 @@ if (!config.apiKey || config.apiKey === "PASTE_FIREBASE_WEB_API_KEY" || !config.
       window.dispatchEvent(new CustomEvent("dawly-catalog-sync-status", {
         detail:{ok:false, error:error && (error.code || error.message) || "unknown"}
       }));
+      window.dispatchEvent(new Event("dawly-catalog-ready"));
     });
   } catch (error) {
     console.warn("تعذر تحميل كتالوج المنتجات من قاعدة البيانات. سيتم عرض النسخة المنشورة.", error);
+    window.dispatchEvent(new Event("dawly-catalog-ready"));
   }
 }
-
-window.dispatchEvent(new Event("dawly-catalog-ready"));
