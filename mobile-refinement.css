@@ -138,3 +138,24 @@
   }
   .brand-logo { max-width: 82% !important; max-height: 34px !important; }
 }
+
+
+/* Mobile checkout: keep fields visible above the on-screen keyboard. */
+@media (max-width: 820px) {
+  .cart-drawer {
+    height: 100dvh;
+    max-height: 100dvh;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    scroll-padding-block: 24px 40px;
+    overscroll-behavior-y: contain;
+  }
+  .checkout-fields input,
+  .checkout-fields textarea {
+    font-size: 16px !important;
+    scroll-margin-block: 90px 120px;
+  }
+  .checkout-fields label {
+    scroll-margin-block: 90px 120px;
+  }
+}
