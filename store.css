@@ -2883,3 +2883,39 @@ html body #cartDrawer.cart-drawer.open {
     max-width: 96vw !important;
   }
 }
+
+
+/* Sticky cart summary and checkout action stay visible while the cart scrolls */
+.cart-sticky-footer {
+  position: sticky;
+  bottom: 0;
+  z-index: 12;
+  margin: 12px -15px 0;
+  padding: 10px 15px max(12px, env(safe-area-inset-bottom));
+  background: linear-gradient(180deg, #ffffffed, #fff 24%);
+  border-top: 1px solid #e7eaee;
+  box-shadow: 0 -9px 22px #17202b12;
+}
+.cart-sticky-footer .cart-total {
+  border-top: 0;
+  padding: 2px 0 6px;
+}
+.cart-sticky-footer .checkout {
+  position: static !important;
+  width: 100%;
+  min-height: 50px;
+  margin: 4px 0 0;
+  border-radius: 11px;
+}
+.cart-drawer {
+  padding-bottom: max(18px, env(safe-area-inset-bottom));
+}
+@media (max-width: 600px) {
+  .cart-sticky-footer {
+    margin-inline: -15px;
+    padding-inline: 15px;
+  }
+  .cart-sticky-footer .cart-total-row strong {
+    font-size: 20px;
+  }
+}
