@@ -20,8 +20,8 @@ export async function onRequest(context) {
     if (!product) return page;
     const name = String(product.name || "منتج من الدولي").slice(0, 120);
     const brand = String(product.brand || product.brandName || "");
-    const description = String(product.desc || product.specs || "تفاصيل المنتج من الدولي للعدد الأصلية والمستوردة").replace(/\\s+/g, " ").slice(0, 220);
-    const imageUrl = product.image && /^https?:\\/\\//i.test(product.image)
+    const description = String(product.desc || product.specs || "تفاصيل المنتج من الدولي للعدد الأصلية والمستوردة").replace(/\s+/g, " ").slice(0, 220);
+    const imageUrl = product.image && /^https?:\/\//i.test(product.image)
       ? product.image
       : "https://aldawly-website.pages.dev/fb-product-image?id=" + encodeURIComponent(id);
     const canonical = "https://aldawly-website.pages.dev/product?id=" + encodeURIComponent(id);
@@ -37,8 +37,8 @@ export async function onRequest(context) {
       '<meta name="twitter:title" content="' + htmlEscape(name + " | الدولي") + '">',
       '<meta name="twitter:description" content="' + htmlEscape(description) + '">',
       '<meta name="twitter:image" content="' + htmlEscape(imageUrl) + '">'
-    ].join("\\n");
-    const html = (await page.text()).replace("</head>", tags + "\\n</head>");
+    ].join("\n");
+    const html = (await page.text()).replace("</head>", tags + "\n</head>");
     return new Response(html, {
       status: page.status,
       headers: { "content-type": "text/html; charset=utf-8", "cache-control": "public, max-age=300, s-maxage=900" }
