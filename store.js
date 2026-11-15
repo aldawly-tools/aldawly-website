@@ -288,6 +288,24 @@
       featuredGrid.innerHTML = featured.length ? featured.map(card).join("") : '<div class="catalog-empty-note">لا توجد منتجات مميزة مضافة حاليًا. يمكنك اختيار المنتجات المميزة من بيانات المنتج في لوحة الإدارة.</div>';
     }
     const arrivalsGrid = document.getElementById("newArrivalsGrid");
+    if (arrivalsGrid && !arrivalsGrid.dataset.productNavigationReady) {
+      arrivalsGrid.dataset.productNavigationReady = "true";
+      // Capture clicks in the desktop latest-products shelf before image zoom
+      // or other delegated handlers can consume them.
+      arrivalsGrid.addEventListener("click", function(event) {
+        const link = event.target.closest("a.product-open-link, a.product-name a, a.product-details-link");
+        if (!link || !arrivalsGrid.contains(link)) return;
+        const card = link.closest(".home-shelf-card");
+        if (!card) return;
+        event.preventDefault();
+        event.stopPropagation();
+        if (typeof event.stopImmediatePropagation === "function") event.stopImmediatePropagation();
+        const match = String(link.getAttribute("href") || "").match(/[?&]id=([^&]+)/);
+        if (!match) return;
+        const id = decodeURIComponent(match[1]);
+        window.location.assign("/product?id=" + encodeURIComponent(id));
+      }, true);
+    }
     if (arrivalsGrid) {
       const latest = products.slice().sort(function(a,b){
         const da = a.createdAt && (a.createdAt.seconds || Date.parse(a.createdAt) / 1000) || 0;
