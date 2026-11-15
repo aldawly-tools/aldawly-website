@@ -203,11 +203,23 @@
     }).length};
   }
   function categoryIcon(name) {
-    if (name.includes("كهرب")) return "⚡";
-    if (name.includes("يدوي")) return "🔧";
-    if (name.includes("قياس")) return "📏";
-    if (name.includes("ورش")) return "🧰";
-    return "🛠️";
+    const value = normalizeSearchText(name);
+    let paths = '<path d="M14.5 6.5 17.5 3.5a5 5 0 0 1 3 6l-5 5-3-3 5-5"/><path d="m13 11-8 8a2.1 2.1 0 0 1-3-3l8-8"/><path d="m5 7 4-4 4 4-4 4z"/>';
+    if (/كهرب|power|شنيور|صاروخ/.test(value)) paths = '<path d="m13 2-9 12h7l-1 8 10-13h-7z"/>';
+    else if (/قياس|measurement|اختبار|كهرباء/.test(value)) paths = '<path d="M3 21h18M5 17l4-4 3 3 7-9"/><path d="M5 4v5M9 4v3M13 4v5M17 4v3M21 4v5"/>';
+    else if (/مفك|ربط|بت|لقم/.test(value)) paths = '<path d="m14 3 7 7-3 3-7-7z"/><path d="m11 6-8 8 7 7 8-8"/><path d="m3 14 7 7"/>';
+    else if (/كماش|زراديه|قط|قص/.test(value)) paths = '<path d="m8 3 4 7 4-7 3 2-4 8 3 8-4 1-3-7-3 7-4-1 3-8-4-8z"/>';
+    else if (/تخزين|شنط|صندوق|حفظ|ورش/.test(value)) paths = '<rect x="3" y="7" width="18" height="14" rx="2"/><path d="M8 7V4h8v3M3 12h18M10 12v2h4v-2"/>';
+    else if (/قطع|منشار|تخريم|ثقب/.test(value)) paths = '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3"/><path d="M12 3v3M21 12h-3M12 21v-3M3 12h3"/>';
+    return '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">' + paths + '</svg>';
+  }
+  function categoryImage(name) {
+    const value = normalizeSearchText(name);
+    if (/كهرب|power|شنيور|صاروخ|منشار/.test(value)) return 'https://i5.walmartimages.com/asr/b846b5a5-0ff3-4b10-9017-d234aa05dc2a.abbc77afaed3fa74c2519f1151a3e0fb.jpeg';
+    if (/قياس|measurement|اختبار|كهرباء/.test(value)) return 'https://media.licdn.com/dms/image/v2/D4D22AQEVwdnRkVs5TA/feedshare-shrink_800/B4DZzPZOS0KAAc-/0/1773006022130?e=2147483647&t=6GAGG3-7C6ftLgrbesyazuqtOaSiedpjWMWAuGtq2NY&v=beta';
+    if (/تخزين|شنط|صندوق|حفظ|ورش/.test(value)) return 'https://interbosch.nl/cdn/shop/collections/Impressie_foto_Gereedschapskarren_kopie.webp?v=1766153113&width=1296';
+    if (/مفك|ربط|بت|لقم|كماش|زراديه|قط|قص|يدوي/.test(value)) return 'https://cdn.askul.co.jp/img/product/3L1/EP86599_3L1.jpg';
+    return 'https://www.homebase.co.uk/assets/bWFzdGVyfGltYWdlc3wyMzM1MDF8aW1hZ2UvanBlZ3xoYzEvaGZiLzkzNDA4MDM2NzgyMzgvMDU0MTY2Nl8yLmpwZ3xhOTE3ZjhjZGNiYzYzNWY2NTgzYWU3YjIxODYzM2M5ZjhiOWMzNTBiOTI3ZTQ2YzY1ZDdkNDBmMTI3NzM2OWVh/0541666-2.jpg';
   }
   function normalizeSearchText(value) {
     return String(value == null ? "" : value)
@@ -302,10 +314,10 @@
 
   function drawCategories() {
     const categories = Array.from(new Set(products.map(function (item) { return item.cat; }).filter(Boolean)));
-    tiles.innerHTML = '<button class="category-tile all" type="button" data-category="الكل"><span class="category-icon">▦</span><span><strong>جميع الأقسام</strong><small>تصفح كل المنتجات</small></span></button>' +
+    tiles.innerHTML = '<button class="category-tile all" type="button" data-category="الكل"><span class="category-photo"><img src="' + categoryImage("ورش") + '" alt="" loading="lazy"><span class="category-photo-shade"></span><span class="category-icon">' + categoryIcon("ورش") + '</span></span><span class="category-copy"><strong>جميع الأقسام</strong><small>تصفح كل المنتجات</small><b>' + products.length + ' منتج</b></span></button>' +
       categories.map(function (name) {
         const count = products.filter(function (item) { return item.cat === name; }).length;
-        return '<button class="category-tile" type="button" data-category="' + escapeHtml(name) + '"><span class="category-icon">' + categoryIcon(name) + '</span><span><strong>' + escapeHtml(name) + '</strong><small>' + count + ' منتجات</small></span></button>';
+        return '<button class="category-tile" type="button" data-category="' + escapeHtml(name) + '"><span class="category-photo"><img src="' + categoryImage(name) + '" alt="" loading="lazy"><span class="category-photo-shade"></span><span class="category-icon">' + categoryIcon(name) + '</span></span><span class="category-copy"><strong>' + escapeHtml(name) + '</strong><small>اكتشف الأدوات المتاحة</small><b>' + count + ' منتج</b></span></button>';
       }).join("");
     filterBar.innerHTML = '<button class="filter-chip active" type="button" data-category="الكل">كل المنتجات <span class="filter-count">' + products.length + '</span></button>' +
       categories.map(function (name) {
