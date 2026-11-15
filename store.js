@@ -64,19 +64,35 @@
       const code = String(value || "").trim();
       if (!code) return;
       closeBarcodeDialog();
-      searchInput.value = code;
-      searchInput.dispatchEvent(new Event("input", {bubbles:true}));
-      searchInput.focus();
+
+      // QR may contain the product's direct URL. Only accept links on this store's own domain.
+      try {
+        const scannedUrl = new URL(code);
+        const isProductPage = scannedUrl.origin === window.location.origin &&
+          /(^|\\/)product\\.html$/.test(scannedUrl.pathname) &&
+          scannedUrl.searchParams.has("id");
+        if (isProductPage) {
+          window.location.href = scannedUrl.href;
+          return;
+        }
+      } catch (error) {}
+
+      const normalizedCode = code.replace(/\\s/g, "").toLowerCase();
       const result = products.find(function (item) {
         return [item.barcode,item.ean,item.gtin,item.upc,item.sku,item.code,item.partNumber].some(function (field) {
-          return field != null && String(field).replace(/\\s/g,"").toLowerCase() === code.replace(/\\s/g,"").toLowerCase();
+          return field != null && String(field).replace(/\\s/g,"").toLowerCase() === normalizedCode;
         });
       });
       if (result) {
-        searchInput.value = String(result.barcode || result.ean || result.gtin || result.upc || result.sku || result.code || result.partNumber || code);
-        searchInput.dispatchEvent(new Event("input", {bubbles:true}));
-        status.textContent = "";
+        const productUrl = new URL("product.html?id=" + encodeURIComponent(String(result.id)), window.location.href);
+        window.location.href = productUrl.href;
+        return;
       }
+
+      searchInput.value = code;
+      searchInput.dispatchEvent(new Event("input", {bubbles:true}));
+      searchInput.focus();
+      status.textContent = "لم نعثر على منتج مرتبط بهذا الباركود. تم عرض نتائج البحث بدلًا من ذلك.";
     }
     async function scanBarcodeFrame() {
       if (!scanning || !detector || video.readyState < 2) {
