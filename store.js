@@ -478,14 +478,16 @@
     });
     const totalBox = document.getElementById("cartTotal");
     const pricing = cartPricing();
+    const summary = '<div class="cart-summary-count"><span>عدد المنتجات: <strong>' + pricing.itemCount + '</strong></span><span>إجمالي القطع: <strong>' + count + '</strong></span></div>';
+    const deliveryNote = '<small class="cart-delivery-note">تكلفة الشحن تُحدد عند تأكيد العنوان مع المتجر.</small>';
     if (!count) {
       totalBox.innerHTML = "";
     } else if (pricing.pricedCount === pricing.itemCount) {
-      totalBox.innerHTML = '<div class="cart-total-row"><span>إجمالي الطلب</span><strong>' + escapeHtml(money(pricing.total)) + '</strong></div>';
+      totalBox.innerHTML = summary + '<div class="cart-total-row"><span>إجمالي المنتجات</span><strong>' + escapeHtml(money(pricing.total)) + '</strong></div>' + deliveryNote;
     } else if (pricing.pricedCount) {
-      totalBox.innerHTML = '<div class="cart-total-row"><span>مجموع المنتجات المسعّرة</span><strong>' + escapeHtml(money(pricing.total)) + '</strong></div><small>يوجد منتج سعره عند الاستفسار؛ يتحدد الإجمالي بعد تأكيد سعره.</small>';
+      totalBox.innerHTML = summary + '<div class="cart-total-row"><span>مجموع المنتجات المسعّرة</span><strong>' + escapeHtml(money(pricing.total)) + '</strong></div><small>يوجد منتج سعره عند الاستفسار؛ يتحدد الإجمالي بعد تأكيد سعره.</small>' + deliveryNote;
     } else {
-      totalBox.innerHTML = '<div class="cart-total-row"><span>الإجمالي</span><strong>بعد تأكيد الأسعار</strong></div>';
+      totalBox.innerHTML = summary + '<div class="cart-total-row"><span>الإجمالي</span><strong>بعد تأكيد الأسعار</strong></div>' + deliveryNote;
     }
   }
 
