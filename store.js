@@ -273,7 +273,7 @@
   function renderHomeShelves() {
     function card(item) {
       const name = cleanProductName(item.name);
-      const url = "product.html?id=" + encodeURIComponent(String(item.id));
+      const url = "product?id=" + encodeURIComponent(String(item.id));
       const image = item.image
         ? '<img src="' + escapeHtml(item.image) + '" alt="' + escapeHtml(name) + '" loading="lazy">'
         : item.imageId
@@ -409,7 +409,7 @@
         : item.imageId
           ? '<img data-cloud-image="' + escapeHtml(item.imageId) + '" alt="' + escapeHtml(name) + '" loading="lazy">'
           : '<span class="product-placeholder" aria-hidden="true">' + escapeHtml(item.icon || "🔧") + '</span>';
-      const detailUrl = "product.html?id=" + encodeURIComponent(String(item.id));
+      const detailUrl = "product?id=" + encodeURIComponent(String(item.id));
       const currentPrice = parsePrice(item.price);
       const compareAtPrice = parsePrice(item.oldPrice ?? item.compareAtPrice ?? item.originalPrice);
       const discountPercent = currentPrice !== null && compareAtPrice !== null && compareAtPrice > currentPrice
@@ -622,7 +622,7 @@
         '<p class="quick-view-description">' + escapeHtml(description) + '</p>' +
         (specs ? '<div class="quick-view-specs">' + escapeHtml(specs) + '</div>' : '') +
         '<div class="quick-view-price">' + escapeHtml(formatPrice(item.price)) + '</div>' +
-        '<div class="quick-view-actions"><a class="quick-view-details" href="product.html?id=' + encodeURIComponent(String(item.id)) + '">عرض التفاصيل الكاملة</a>' +
+        '<div class="quick-view-actions"><a class="quick-view-details" href="product?id=' + encodeURIComponent(String(item.id)) + '">عرض التفاصيل الكاملة</a>' +
         '<button class="button-primary" type="button" data-add="' + escapeHtml(item.id) + '"' + (soldOut ? ' disabled' : '') + '>' + (soldOut ? 'غير متاح حاليًا' : 'أضف إلى السلة') + '</button></div></div>';
       modal.classList.add("is-open");
       document.body.classList.add("quick-view-open");
@@ -642,7 +642,7 @@
       const id = String(shareButton.dataset.shareProduct);
       const item = products.find(function (entry) { return String(entry.id) === id; });
       if (!item) { alert("تعذر تحميل بيانات المنتج للمشاركة."); return; }
-      const productUrl = new URL("product.html?id=" + encodeURIComponent(id), window.location.href).toString();
+      const productUrl = new URL("product?id=" + encodeURIComponent(id), window.location.href).toString();
       const name = cleanProductName(item.name);
       const description = cleanProductCopy(item.desc || item.specs || "للاستفسار عن المواصفات والتوفر تواصل مع متجر الدولي.");
       const caption = [
@@ -943,7 +943,7 @@
       const item = products.find(function (entry) { return String(entry.id) === String(line.id); });
       if (!item) return "";
       itemNumber += 1;
-      const productUrl = new URL("product.html?id=" + encodeURIComponent(item.id), window.location.href).toString();
+      const productUrl = new URL("product?id=" + encodeURIComponent(item.id), window.location.href).toString();
       const price = parsePrice(item.price);
       const priceLines = price === null
         ? "   السعر: عند الاستفسار"
