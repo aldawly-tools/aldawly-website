@@ -4344,3 +4344,12 @@ body{background:#f4f6f8}
 @media(prefers-reduced-motion:reduce){
  *,*:before,*:after{scroll-behavior:auto!important;transition:none!important;animation:none!important}
 }
+
+
+/* Desktop category rail: keep all four available categories on one balanced row */
+@media (min-width: 1101px){
+  #categories .categories-grid{
+    grid-template-columns:repeat(4,minmax(0,1fr))!important;
+    align-items:stretch!important;
+  }
+}
