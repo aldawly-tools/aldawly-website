@@ -57,3 +57,13 @@ body > .benefit-bar .benefit{
     padding-block:5px !important;
   }
 }
+
+/* Mobile screenshot fix: pull the first benefits strip up over the unexplained
+   40px blank region visible above it; keep the following header in place. */
+@media(max-width:700px){
+  body > .benefit-bar{
+    margin-top:-40px !important;
+    position:relative !important;
+    z-index:2 !important;
+  }
+}
