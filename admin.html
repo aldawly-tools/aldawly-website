@@ -645,18 +645,41 @@ $("ordersList").addEventListener("click",async function(e){
   const id=deleteButton.dataset.deleteOrder;
   const order=orders.find(o=>o.id===id);
   if(!order)return;
-  if(order.inventoryDeducted&&!order.inventoryRestored){$("ordersStatus").textContent="لا يمكن حذف هذا الطلب لأنه خصم من المخزون. غيّر حالته إلى «ملغي» أولًا لإرجاع الكميات، ثم احذفه.";return;}
+  if(order.inventoryDeducted&&!order.inventoryRestored&&order.status!=="cancelled"){$("ordersStatus").textContent="لا يمكن حذف الطلب قبل إلغائه وإعادة الكميات إلى المخزون.";return;}
   const number=order.orderNumber||order.id;
-  if(!window.confirm("هل أنت متأكد من حذف الطلب "+number+" نهائيًا؟ لا يمكن التراجع عن الحذف."))return;
+  if(!window.confirm("هل أنت متأكد من حذف الطلب "+number+" نهائيًا؟"+(order.inventoryDeducted&&!order.inventoryRestored?" سيتم إرجاع الكميات إلى المخزون أولًا.":" لا يمكن التراجع عن الحذف.")))return;
   deleteButton.disabled=true;
   try{
-   await deleteDoc(doc(db,"orders",id));
+   await runTransaction(db,async function(transaction){
+    const orderRef=doc(db,"orders",id);
+    const orderSnap=await transaction.get(orderRef);
+    if(!orderSnap.exists())throw new Error("الطلب غير موجود أو تم حذفه بالفعل.");
+    const latest=orderSnap.data();
+    if(latest.inventoryDeducted&&!latest.inventoryRestored){
+     if(latest.status!=="cancelled")throw new Error("لا يمكن حذف طلب مؤكد قبل إلغائه.");
+     const items=Array.isArray(latest.items)?latest.items:[];
+     const productReads=[];
+     for(const item of items){
+      const productId=String(item.id||""),qty=Number(item.qty);
+      if(!productId||!Number.isInteger(qty)||qty<1)throw new Error("بيانات كمية أو رقم منتج غير صحيحة؛ لم يتم حذف الطلب.");
+      const productRef=doc(db,"products",productId);
+      const productSnap=await transaction.get(productRef);
+      if(!productSnap.exists())throw new Error("المنتج رقم "+productId+" غير موجود؛ لم يتم حذف الطلب.");
+      productReads.push({ref:productRef,data:productSnap.data(),qty:qty});
+     }
+     productReads.forEach(function(entry){
+      const stock=entry.data.stock;
+      if(Number.isInteger(stock)&&stock>=0)transaction.update(entry.ref,{stock:stock+entry.qty,updatedAt:serverTimestamp()});
+     });
+    }
+    transaction.delete(orderRef);
+   });
    orders=orders.filter(o=>o.id!==id);
    renderOrders();
    $("ordersStatus").textContent="تم حذف الطلب "+number+" نهائيًا.";
   }catch(error){
    console.error("Order delete failed:",error);
-   $("ordersStatus").textContent="تعذر حذف الطلب. تحقق من صلاحيات حساب الإدارة والاتصال.";
+   $("ordersStatus").textContent=error.message||"تعذر حذف الطلب. تحقق من صلاحيات حساب الإدارة والاتصال.";
    deleteButton.disabled=false;
   }
   return;
