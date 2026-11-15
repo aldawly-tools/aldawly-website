@@ -882,6 +882,27 @@
       alert("تم تسجيل الطلب، لكن تعذر تجهيز الصورة. حاول مرة أخرى.");
     }
   });
+  // Keep the active checkout field visible when the mobile keyboard opens.
+  function keepCheckoutFieldVisible(field) {
+    if (!field || !cartDrawer || !cartDrawer.classList.contains("open")) return;
+    window.setTimeout(function () {
+      if (!field.isConnected || document.activeElement !== field) return;
+      field.scrollIntoView({behavior:"smooth", block:"center", inline:"nearest"});
+    }, 180);
+  }
+  cartDrawer.addEventListener("focusin", function (event) {
+    if (event.target && event.target.matches(".checkout-fields input, .checkout-fields textarea")) {
+      keepCheckoutFieldVisible(event.target);
+    }
+  });
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener("resize", function () {
+      const active = document.activeElement;
+      if (active && active.matches && active.matches(".checkout-fields input, .checkout-fields textarea")) {
+        keepCheckoutFieldVisible(active);
+      }
+    });
+  }
   document.addEventListener("keydown", function (event) {
     if (event.key === "Escape") { setDrawer(false); setMobileMenu(false); setFloatingContact(false); }
   });
