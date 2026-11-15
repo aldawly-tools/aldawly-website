@@ -18,3 +18,12 @@
   .benefit-bar .benefits{background:transparent !important}
   .benefit-bar .benefit{color:#26313b !important}
 }
+
+/* Remove any inherited top offset above the benefits strip */
+html, body {
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+}
+body > .benefit-bar {
+  margin-top: 0 !important;
+}
