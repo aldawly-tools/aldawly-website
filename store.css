@@ -3404,3 +3404,11 @@ body { background:#f7f8fa; color:#14191f; }
  .brands-marquee-section .brand-word.brand-tile{padding:9px!important}
  .brands-marquee-section .brand-word.brand-tile .brand-logo{max-width:90%!important;max-height:44px!important}
 }
+
+
+/* Remove the "قريبًا" badge from every brand tile */
+.brands-marquee-section .brand-word.brand-tile.brand-unavailable::after,
+.brands-marquee .brand-word.brand-tile.brand-unavailable::after{
+  content:none!important;
+  display:none!important;
+}
