@@ -250,24 +250,18 @@
     return match ? match[1] : "";
   }
   function renderBrandAvailability() {
+    // Brand cards must always open the filtered products page. Do not turn a
+    // valid brand link into an in-page #brands jump while cloud products load
+    // or when a product's brand label uses a different spelling.
     document.querySelectorAll(".brand-word").forEach(function (link) {
-      if (!link.dataset.brandTarget) link.dataset.brandTarget = link.getAttribute("href") || "#brands";
-      let target = "";
-      try { target = new URL(link.dataset.brandTarget, window.location.href).searchParams.get("brand") || link.textContent; } catch (error) { target = link.textContent; }
-      const available = products.some(function (item) { return productBrand(item) && normalizeBrand(productBrand(item)) === normalizeBrand(target); });
-      if (available) {
-        link.href = link.dataset.brandTarget;
-        link.classList.remove("brand-unavailable");
-        link.removeAttribute("aria-disabled");
-        link.removeAttribute("tabindex");
-        link.removeAttribute("title");
-      } else {
-        link.href = "#brands";
-        link.classList.add("brand-unavailable");
-        link.setAttribute("aria-disabled", "true");
-        link.setAttribute("tabindex", "-1");
-        link.setAttribute("title", "قريبًا، لم تُضف منتجات لهذه الماركة بعد");
+      if (!link.dataset.brandTarget) {
+        link.dataset.brandTarget = link.getAttribute("href") || "#brands";
       }
+      link.href = link.dataset.brandTarget;
+      link.classList.remove("brand-unavailable");
+      link.removeAttribute("aria-disabled");
+      link.removeAttribute("tabindex");
+      link.removeAttribute("title");
     });
   }
   function setDrawer(open) {
