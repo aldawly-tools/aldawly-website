@@ -1,0 +1,37 @@
+/* WhatsApp catalog CTA and selected category state */
+.hero-shell .whatsapp-catalog-cta{
+  display:flex!important;align-items:center!important;justify-content:center!important;gap:12px!important;
+  min-height:58px!important;padding:15px 22px!important;margin-top:12px!important;
+  border:1px solid #b90d19!important;border-radius:14px!important;
+  background:linear-gradient(135deg,#e51d2a 0%,#c8101e 58%,#a90d18 100%)!important;
+  color:#fff!important;-webkit-text-fill-color:#fff!important;
+  font-weight:900!important;text-decoration:none!important;
+  box-shadow:0 9px 22px rgba(200,16,30,.24)!important;
+  transition:background .22s ease,box-shadow .22s ease,transform .22s ease!important;
+}
+.hero-shell .whatsapp-catalog-cta:hover{
+  background:linear-gradient(135deg,#f02a36 0%,#d71920 58%,#b80f19 100%)!important;
+  color:#fff!important;box-shadow:0 12px 26px rgba(200,16,30,.3)!important;
+  transform:translateY(-1px)!important;
+}
+#filterBar .filter-chip{
+  border:1px solid #dfe3e8!important;background:#fff!important;color:#343b44!important;
+  transition:background .22s ease,color .22s ease,border-color .22s ease,box-shadow .22s ease!important;
+}
+#filterBar .filter-chip.active,
+#categoryTiles .category-tile.active{
+  background:#c8101e!important;border-color:#c8101e!important;color:#fff!important;
+  box-shadow:0 7px 18px rgba(200,16,30,.2)!important;
+}
+#filterBar .filter-chip.active .filter-count,
+#categoryTiles .category-tile.active .category-copy,
+#categoryTiles .category-tile.active .category-copy strong,
+#categoryTiles .category-tile.active .category-copy small,
+#categoryTiles .category-tile.active .category-copy b{color:#fff!important}
+#filterBar .filter-chip.active .filter-count{
+  background:rgba(255,255,255,.18)!important;border-color:rgba(255,255,255,.28)!important;
+}
+#categoryTiles .category-tile{transition:background .22s ease,border-color .22s ease,box-shadow .22s ease!important}
+@media(prefers-reduced-motion:reduce){
+ .hero-shell .whatsapp-catalog-cta,#filterBar .filter-chip,#categoryTiles .category-tile{transition:none!important}
+}
