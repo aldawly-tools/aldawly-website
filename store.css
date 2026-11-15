@@ -2651,3 +2651,12 @@ body:has(.hero-shell) .section#categories .category-tile.all small{color:#fff}
 /* Four category tiles fit together on desktop; two balanced columns on phones */
 @media (min-width: 901px) { .categories-grid { grid-template-columns: repeat(4, minmax(0, 1fr)) !important; } }
 @media (max-width: 900px) { .categories-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; } }
+
+
+/* Improve contrast for the product count on the red "all categories" tile */
+.category-tile.all .category-copy b {
+  color: #fff !important;
+  background: #8f0b13;
+  border-radius: 999px;
+  padding: 3px 9px;
+}
