@@ -729,7 +729,10 @@
         img.src = src;
       });
     }
-    write("الدولي للعدد الأصلية والمستوردة", width - 86, 130, 46, "#c8101e", "bold", 900);
+    // Store logo at the left side of the RTL order header.
+    const storeLogo = await loadImage("/assets/app-icon-192.png");
+    if (storeLogo) ctx.drawImage(storeLogo, 82, 68, 118, 118);
+    write("الدولي للعدد الأصلية والمستوردة", width - 86, 130, 46, "#c8101e", "bold", 760);
     write("تفاصيل طلب جديد", width - 86, 195, 32, "#252b33", "bold");
     write("رقم الطلب: " + orderNumber, width - 86, 255, 27, "#20242a", "bold");
     write("العميل: " + customerName, width - 86, 310, 24, "#343d47", "600", 900);
@@ -788,6 +791,23 @@
     summaryLines.slice(0, 2).forEach(function(line, index) { ctx.fillText(line, width / 2, summaryY + 47 + index * 36); });
     ctx.font = "bold 22px Tahoma, Arial, sans-serif"; ctx.fillStyle = "#444";
     ctx.fillText("شكرًا لثقتكم في الدولي للعدد الأصلية والمستوردة ❤️", width / 2, summaryY + 168);
+
+    // Repeat the store name diagonally as a faint watermark across the entire image.
+    ctx.save();
+    ctx.globalAlpha = 0.055;
+    ctx.fillStyle = "#c8101e";
+    ctx.font = "bold 38px Tahoma, Arial, sans-serif";
+    ctx.textAlign = "center";
+    ctx.direction = "rtl";
+    ctx.translate(width / 2, height / 2);
+    ctx.rotate(-Math.PI / 6);
+    const watermarkText = "الدولي للعدد الأصلية والمستوردة";
+    for (let wy = -height; wy <= height; wy += 230) {
+      for (let wx = -width; wx <= width; wx += 620) {
+        ctx.fillText(watermarkText, wx, wy, 590);
+      }
+    }
+    ctx.restore();
     return await new Promise(function(resolve, reject) {
       canvas.toBlob(function(blob) { if (blob) resolve(blob); else reject(new Error("تعذر تجهيز صورة المنتجات")); }, "image/png");
     });
