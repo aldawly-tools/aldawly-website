@@ -130,7 +130,7 @@
         specsRows.map(function (spec) { return '<div class="product-spec-row"><strong>' + escapeHtml(spec.label) + '</strong><span>' + escapeHtml(spec.value) + '</span></div>'; }).join("") +
         '</div></section>'
       : "";
-    const productUrl = new URL("product.html?id=" + encodeURIComponent(item.id), window.location.href).toString();
+    const productUrl = new URL("product?id=" + encodeURIComponent(item.id), window.location.href).toString();
     const message = "السلام عليكم، أريد الاستفسار عن الإعلان: " + name + "\nرابط الإعلان والصورة للتوضيح: " + productUrl;
 
     document.title = name + " | الدولي";
@@ -168,7 +168,7 @@
             : product.imageId
               ? '<img data-related-image="' + escapeHtml(product.imageId) + '" alt="' + escapeHtml(relatedName) + '" loading="lazy">'
               : '<span>' + escapeHtml(product.icon || "🔧") + '</span>';
-          return '<a class="related-card" href="product.html?id=' + encodeURIComponent(product.id) + '"><div class="related-visual">' + relatedImage + '</div><div class="related-info"><small>' + escapeHtml(product.brand ? displayBrand(product.brand) : product.cat || "منتجات") + '</small><strong>' + escapeHtml(relatedName) + '</strong><span>' + escapeHtml(formatPrice(product.price)) + '</span></div></a>';
+          return '<a class="related-card" href="product?id=' + encodeURIComponent(product.id) + '"><div class="related-visual">' + relatedImage + '</div><div class="related-info"><small>' + escapeHtml(product.brand ? displayBrand(product.brand) : product.cat || "منتجات") + '</small><strong>' + escapeHtml(relatedName) + '</strong><span>' + escapeHtml(formatPrice(product.price)) + '</span></div></a>';
         }).join("") + '</div></section>'
       : "";
     root.insertAdjacentHTML("beforeend", relatedHtml);
@@ -255,7 +255,7 @@
     const item = (cloudProducts || fallbackProducts).find(function (p) { return String(p.id) === String(shareButton.dataset.shareProduct); });
     if (!item) { alert("تعذر تحميل بيانات المنتج للمشاركة."); return; }
     const name = cleanProductName(item.name || "منتج من متجر الدولي");
-    const productUrl = new URL("product.html?id=" + encodeURIComponent(item.id), window.location.href).toString();
+    const productUrl = new URL("product?id=" + encodeURIComponent(item.id), window.location.href).toString();
     const description = cleanProductCopy(item.desc || item.specs || "للاستفسار عن المواصفات والتوفر تواصل مع متجر الدولي.");
     const caption = [
       "🧰 " + name,
