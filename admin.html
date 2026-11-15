@@ -153,7 +153,7 @@ button:disabled{opacity:.6;cursor:wait}
         <div class="actions form-actions"><button class="red" id="saveBtn" type="submit">حفظ المنتج</button><button class="light" id="resetBtn" type="button">منتج جديد</button></div>
       </form>
     </div>
-    <section class="card admin-panel hidden" id="ordersPanel" role="tabpanel"><div class="actions" style="justify-content:space-between;align-items:center"><div><h2 style="margin:0">طلبات العملاء (<span id="ordersCount">0</span>)</h2><p class="muted" style="margin:5px 0 0">الطلبات المسجلة من الموقع، مع تحديث حالة كل طلب.</p></div><div class="actions"><button class="light" id="exportOrdersBtn" type="button">تصدير الطلبات CSV</button><button class="light" id="exportSalesBtn" type="button">تقرير المبيعات CSV</button><button class="light" id="refreshOrdersBtn" type="button">تحديث الطلبات</button></div></div><p class="status" id="ordersStatus" aria-live="polite"></p><div class="order-stats" id="orderStats"></div><div class="card" style="margin:14px 0;padding:14px;background:#fafafa"><div class="actions" style="justify-content:space-between;align-items:center"><h3 style="margin:0 0 10px">ملخص المبيعات</h3><button class="red" id="printSalesSummaryBtn" type="button">طباعة ملخص المبيعات A4</button></div><div class="field"><label for="salesReportTitle">عنوان التقرير (قابل للتعديل)</label><input id="salesReportTitle" value="تقرير ملخص المبيعات"></div><div class="field"><label for="salesReportNotes">ملاحظات التقرير (قابلة للتعديل)</label><textarea id="salesReportNotes" rows="2" placeholder="اكتب ملاحظات أو توضيحات تظهر في ورقة الطباعة..."></textarea></div><div class="order-stats"><div class="order-stat"><b id="salesTodayCount">0</b><span>طلبات اليوم</span></div><div class="order-stat"><b id="salesTodayValue">0 ج.م</b><span>قيمة المؤكد اليوم</span></div><div class="order-stat"><b id="salesMonthCount">0</b><span>طلبات الشهر</span></div><div class="order-stat"><b id="salesMonthValue">0 ج.م</b><span>قيمة المؤكد هذا الشهر</span></div><div class="order-stat"><b id="salesCancelled">0</b><span>طلبات ملغية</span></div><div class="order-stat"><b id="salesNewValue">0 ج.م</b><span>قيمة الطلبات الجديدة</span></div><div class="order-stat"><b id="salesCancelledValue">0 ج.م</b><span>قيمة الطلبات الملغية</span></div></div><small class="muted">القيمة محسوبة للطلبات المؤكدة أو المشحونة أو المسلّمة فقط، وتُعرض إذا كان مبلغ الطلب محفوظًا كرقم.</small></div><section class="card" id="productSalesAnalysis" style="margin:14px 0;padding:14px;background:#fff">
+    <section class="card admin-panel hidden" id="ordersPanel" role="tabpanel"><div class="actions" style="justify-content:space-between;align-items:center"><div><h2 style="margin:0">طلبات العملاء (<span id="ordersCount">0</span>)</h2><p class="muted" style="margin:5px 0 0">الطلبات المسجلة من الموقع، مع تحديث حالة كل طلب.</p></div><div class="actions"><button class="light" id="exportOrdersBtn" type="button">تصدير الطلبات CSV</button><button class="light" id="exportSalesBtn" type="button">تقرير المبيعات CSV</button><button class="light" id="refreshOrdersBtn" type="button">تحديث الطلبات</button><button class="danger" id="deleteAllOrdersBtn" type="button">مسح جميع الطلبات</button></div></div><p class="status" id="ordersStatus" aria-live="polite"></p><div class="order-stats" id="orderStats"></div><div class="card" style="margin:14px 0;padding:14px;background:#fafafa"><div class="actions" style="justify-content:space-between;align-items:center"><h3 style="margin:0 0 10px">ملخص المبيعات</h3><button class="red" id="printSalesSummaryBtn" type="button">طباعة ملخص المبيعات A4</button></div><div class="field"><label for="salesReportTitle">عنوان التقرير (قابل للتعديل)</label><input id="salesReportTitle" value="تقرير ملخص المبيعات"></div><div class="field"><label for="salesReportNotes">ملاحظات التقرير (قابلة للتعديل)</label><textarea id="salesReportNotes" rows="2" placeholder="اكتب ملاحظات أو توضيحات تظهر في ورقة الطباعة..."></textarea></div><div class="order-stats"><div class="order-stat"><b id="salesTodayCount">0</b><span>طلبات اليوم</span></div><div class="order-stat"><b id="salesTodayValue">0 ج.م</b><span>قيمة المؤكد اليوم</span></div><div class="order-stat"><b id="salesMonthCount">0</b><span>طلبات الشهر</span></div><div class="order-stat"><b id="salesMonthValue">0 ج.م</b><span>قيمة المؤكد هذا الشهر</span></div><div class="order-stat"><b id="salesCancelled">0</b><span>طلبات ملغية</span></div><div class="order-stat"><b id="salesNewValue">0 ج.م</b><span>قيمة الطلبات الجديدة</span></div><div class="order-stat"><b id="salesCancelledValue">0 ج.م</b><span>قيمة الطلبات الملغية</span></div></div><small class="muted">القيمة محسوبة للطلبات المؤكدة أو المشحونة أو المسلّمة فقط، وتُعرض إذا كان مبلغ الطلب محفوظًا كرقم.</small></div><section class="card" id="productSalesAnalysis" style="margin:14px 0;padding:14px;background:#fff">
  <div class="actions" style="justify-content:space-between;align-items:center"><h3 style="margin:0">تحليل الطلبات حسب الماركة والمنتج</h3><small class="muted">يستبعد الطلبات الملغية</small></div>
  <div class="order-stats" id="productSalesHighlights"></div>
  <div style="overflow-x:auto;margin-top:12px"><table style="width:100%;border-collapse:collapse;min-width:480px"><thead><tr><th>الماركة</th><th>عدد القطع</th><th>قيمة الطلبات</th></tr></thead><tbody id="brandSalesRows"><tr><td colspan="3">لا توجد بيانات بعد</td></tr></tbody></table></div>
@@ -438,6 +438,41 @@ async function loadOrders(){
  catch(e){console.error("Orders load failed:",e);$("ordersStatus").textContent="تعذر تحميل الطلبات: "+(e.code||"")+(e.message?" — "+e.message:"");$("ordersList").innerHTML="";}
 }
 $("refreshOrdersBtn").addEventListener("click",loadOrders);
+$("deleteAllOrdersBtn").addEventListener("click",async function(){
+ const button=$("deleteAllOrdersBtn");
+ if(!db){$("ordersStatus").textContent="قاعدة البيانات غير متصلة. سجّل الدخول ثم أعد المحاولة.";return;}
+ button.disabled=true;
+ try{
+  const snapshot=await getDocs(collection(db,"orders"));
+  const docs=snapshot.docs;
+  if(!docs.length){orders=[];renderOrders();$("ordersStatus").textContent="لا توجد طلبات لحذفها.";return;}
+  const blocked=docs.filter(d=>{const o=d.data();return o.inventoryDeducted===true&&o.inventoryRestored!==true;});
+  if(blocked.length){
+   $("ordersStatus").textContent="تم إيقاف الحذف الآمن: يوجد "+blocked.length+" طلبًا خصم من المخزون ولم تُسترد كمياته. ألغِ هذه الطلبات أولًا لإرجاع المخزون، ثم أعد المحاولة.";
+   return;
+  }
+  const approved=window.confirm("تنبيه: سيتم حذف جميع الطلبات وعددها "+docs.length+" نهائيًا من قاعدة البيانات. لن يتم حذف المنتجات أو بيانات المتجر الأخرى. هل تريد المتابعة؟");
+  if(!approved)return;
+  let deleted=0;
+  for(let i=0;i<docs.length;i+=400){
+   const batch=writeBatch(db);
+   docs.slice(i,i+400).forEach(d=>batch.delete(d.ref));
+   await batch.commit();
+   deleted+=Math.min(400,docs.length-i);
+   $("ordersStatus").textContent="جارٍ حذف الطلبات… "+deleted+" من "+docs.length;
+  }
+  orders=[];
+  renderOrders();
+  updateSalesSummary();
+  $("ordersStatus").textContent="تم حذف جميع الطلبات بنجاح ("+deleted+" طلب). المنتجات وباقي بيانات المتجر لم تتأثر.";
+ }catch(error){
+  console.error("Bulk order deletion failed:",error);
+  $("ordersStatus").textContent="تعذر إكمال حذف الطلبات: "+(error.code||error.message||"خطأ غير معروف")+". حدّث الطلبات للتحقق من الحالة.";
+ }finally{
+  button.disabled=false;
+ }
+});
+
 $("orderFilter").addEventListener("change",renderOrders);
 $("orderSearch").addEventListener("input",renderOrders);
 $("orderDateFrom").addEventListener("change",renderOrders);
