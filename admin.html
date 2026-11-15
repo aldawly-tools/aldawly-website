@@ -1191,7 +1191,7 @@ $("analyzeImageBtn").addEventListener("click", async function () {
       reader.onerror = () => reject(new Error("تعذر قراءة الصورة من الجهاز."));
       reader.readAsDataURL(file);
     });
-    const response = await fetch("https://me-central1-" + config.projectId + ".cloudfunctions.net/analyzeProductImage", {
+    const response = await fetch("/api/analyze-product-image", {
       method: "POST",
       headers: { "Content-Type": "application/json", "Authorization": "Bearer " + token },
       body: JSON.stringify({ image: dataUrl, mimeType: file.type })
