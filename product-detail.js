@@ -64,6 +64,7 @@
       return;
     }
 
+    if (typeof window.DAWLY_RECORD_VIEWED_PRODUCT === "function") window.DAWLY_RECORD_VIEWED_PRODUCT(item);
     const name = cleanProductName(item.name || "منتج من الدولي");
     const seoDescription = cleanProductCopy(item.desc || item.specs || "تفاصيل المنتج من متجر الدولي للعدد الأصلية والمستوردة.").replace(/\s+/g, " ").slice(0, 160);
     document.title = name + " | الدولي";
