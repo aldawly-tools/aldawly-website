@@ -479,19 +479,49 @@ $("deleteAllOrdersBtn").addEventListener("click",async function(){
   const snapshot=await getDocs(collection(db,"orders"));
   const docs=snapshot.docs;
   if(!docs.length){orders=[];renderOrders();$("ordersStatus").textContent="لا توجد طلبات لحذفها.";return;}
-  const blocked=docs.filter(d=>{const o=d.data();return o.inventoryDeducted===true&&o.inventoryRestored!==true;});
-  if(blocked.length){
-   $("ordersStatus").textContent="تم إيقاف الحذف الآمن: يوجد "+blocked.length+" طلبًا خصم من المخزون ولم تُسترد كمياته. ألغِ هذه الطلبات أولًا لإرجاع المخزون، ثم أعد المحاولة.";
+  const needsRestore=docs.filter(d=>{const o=d.data();return o.inventoryDeducted===true&&o.inventoryRestored!==true;});
+  const unsafe=needsRestore.filter(d=>d.data().status!=="cancelled");
+  if(unsafe.length){
+   $("ordersStatus").textContent="تم إيقاف الحذف الآمن: يوجد "+unsafe.length+" طلب مؤكد أو غير ملغي ما زال مخزونُه مخصومًا. ألغِ هذه الطلبات أولًا، ثم أعد المحاولة.";
    return;
   }
-  const approved=window.confirm("تنبيه: سيتم حذف جميع الطلبات وعددها "+docs.length+" نهائيًا من قاعدة البيانات. لن يتم حذف المنتجات أو بيانات المتجر الأخرى. هل تريد المتابعة؟");
+  const approved=window.confirm("تنبيه: سيتم حذف جميع الطلبات وعددها "+docs.length+" نهائيًا. "+(needsRestore.length?"سيتم إرجاع مخزون "+needsRestore.length+" طلب ملغي قبل حذفه. ":"")+"لن يتم حذف المنتجات أو بيانات المتجر الأخرى. هل تريد المتابعة؟");
   if(!approved)return;
   let deleted=0;
-  for(let i=0;i<docs.length;i+=400){
+  for(const orderDoc of needsRestore){
+   await runTransaction(db,async function(transaction){
+    const orderRef=doc(db,"orders",orderDoc.id);
+    const latestSnap=await transaction.get(orderRef);
+    if(!latestSnap.exists())return;
+    const latest=latestSnap.data();
+    if(latest.inventoryDeducted===true&&latest.inventoryRestored!==true){
+     if(latest.status!=="cancelled")throw new Error("الطلب "+(latest.orderNumber||orderDoc.id)+" ليس ملغيًا؛ لم يتم حذف الطلبات.");
+     const items=Array.isArray(latest.items)?latest.items:[];
+     const reads=[];
+     for(const item of items){
+      const productId=String(item.id||""),qty=Number(item.qty);
+      if(!productId||!Number.isInteger(qty)||qty<1)throw new Error("بيانات المخزون غير مكتملة في الطلب "+(latest.orderNumber||orderDoc.id)+".");
+      const productRef=doc(db,"products",productId);
+      const productSnap=await transaction.get(productRef);
+      if(!productSnap.exists())throw new Error("المنتج "+productId+" غير موجود؛ لم يتم حذف الطلب.");
+      reads.push({ref:productRef,data:productSnap.data(),qty:qty});
+     }
+     reads.forEach(function(entry){
+      const stock=entry.data.stock;
+      if(Number.isInteger(stock)&&stock>=0)transaction.update(entry.ref,{stock:stock+entry.qty,updatedAt:serverTimestamp()});
+     });
+    }
+    transaction.delete(orderRef);
+   });
+   deleted++;
+   $("ordersStatus").textContent="جارٍ استعادة المخزون وحذف الطلبات… "+deleted+" من "+docs.length;
+  }
+  const remaining=docs.filter(d=>!needsRestore.some(x=>x.id===d.id));
+  for(let i=0;i<remaining.length;i+=400){
    const batch=writeBatch(db);
-   docs.slice(i,i+400).forEach(d=>batch.delete(d.ref));
+   remaining.slice(i,i+400).forEach(d=>batch.delete(d.ref));
    await batch.commit();
-   deleted+=Math.min(400,docs.length-i);
+   deleted+=Math.min(400,remaining.length-i);
    $("ordersStatus").textContent="جارٍ حذف الطلبات… "+deleted+" من "+docs.length;
   }
   orders=[];
