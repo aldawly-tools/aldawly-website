@@ -303,4 +303,37 @@ footer.footer .button-primary { color:#fff !important; font-weight:1000 !importa
 </script>
 <script src="recently-viewed.js?v=1"></script>
 <script type="module" src="visitor-counter.js?v=20261115-1"></script>
+<script>
+/* Reliable brand ticker: JS-driven so mobile CSS motion settings cannot disable it. */
+(function(){
+ function startBrandTicker(){
+  var track=document.querySelector('.brands-marquee-track');
+  if(!track || track.dataset.jsTicker==='1') return;
+  var groups=track.querySelectorAll('.brands-marquee-group');
+  if(groups.length<2) return;
+  track.dataset.jsTicker='1';
+  track.style.setProperty('display','flex','important');
+  track.style.setProperty('width','max-content','important');
+  track.style.setProperty('min-width','max-content','important');
+  track.style.setProperty('animation','none','important');
+  track.style.setProperty('transform','translate3d(0,0,0)','important');
+  var offset=0, last=0, distance=0;
+  function measure(){ distance=groups[0].getBoundingClientRect().width; }
+  measure();
+  window.addEventListener('resize',measure,{passive:true});
+  function frame(now){
+   if(!last) last=now;
+   var dt=Math.min((now-last)/1000,.05); last=now;
+   if(!document.hidden && distance>0){
+    offset=(offset+26*dt)%distance;
+    track.style.setProperty('transform','translate3d('+(-offset)+'px,0,0)','important');
+   }
+   requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+ }
+ if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',startBrandTicker,{once:true});
+ else startBrandTicker();
+})();
+</script>
 </body></html>
