@@ -35,7 +35,16 @@
     var path = window.location.pathname.replace(/^\/aldawly-website(?=\/|$)/, "") || "/";
     var query = new URLSearchParams(window.location.search);
     var oldCart = readLegacyCart();
-    if (oldCart.length) query.set("__dawly_cart", encodeURIComponent(JSON.stringify(oldCart)));
+    if (oldCart.length) {
+      query.set("__dawly_cart", encodeURIComponent(JSON.stringify(oldCart)));
+      // One-time migration: clear the legacy-domain copies immediately so
+      // opening another legacy product link cannot add the same cart again.
+      try {
+        Object.keys(localStorage).forEach(function (key) {
+          if (key === "dawly_cart_v1" || key.indexOf("dawly_cart_v2_") === 0) localStorage.removeItem(key);
+        });
+      } catch (e) {}
+    }
     var target = "https://" + PRIMARY + path + (query.toString() ? "?" + query.toString() : "") + window.location.hash;
     window.location.replace(target);
     return;
