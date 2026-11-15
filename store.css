@@ -2836,3 +2836,21 @@ body:has(.hero-shell) .section#categories .category-tile.all small{color:#fff}
     padding: 14px 0 8px;
   }
 }
+
+
+/* Enforce right-edge positioning for the mobile cart drawer */
+@media screen and (max-width: 600px) {
+  html body aside#cartDrawer.cart-drawer {
+    position: fixed !important;
+    inset: 0 0 0 auto !important;
+    left: auto !important;
+    right: 0 !important;
+    width: min(520px, 96vw) !important;
+    max-width: 96vw !important;
+    transform: translate3d(103%, 0, 0) !important;
+    border-radius: 16px 0 0 16px !important;
+  }
+  html body aside#cartDrawer.cart-drawer.open {
+    transform: translate3d(0, 0, 0) !important;
+  }
+}
