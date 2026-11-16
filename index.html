@@ -529,10 +529,12 @@ footer.footer .button-primary { color:#fff !important; font-weight:1000 !importa
    track.style.setProperty('cursor','grabbing','important');
   });
   track.addEventListener('pointermove',function(e){
-   if(!dragging||!half)return;
+   if(!dragging)return;
    var dx=e.clientX-startX;
    if(Math.abs(dx)>5)moved=true;
-   offset=startOffset-dx;paint();
+   offset=startOffset-dx;
+   if(distance>0)offset=((offset%distance)+distance)%distance;
+   paint();
   });
   function end(){
    if(!dragging)return;
@@ -542,7 +544,12 @@ footer.footer .button-primary { color:#fff !important; font-weight:1000 !importa
   track.addEventListener('pointerup',end);
   track.addEventListener('pointercancel',end);
   track.addEventListener('click',function(e){
-   if(track.dataset.suppressClick==='1'){e.preventDefault();e.stopPropagation();delete track.dataset.suppressClick;}
+   if(track.dataset.suppressClick==='1'){e.preventDefault();e.stopPropagation();delete track.dataset.suppressClick;return;}
+   var tile=e.target.closest('a.brand-tile');
+   if(tile){
+    var target=tile.getAttribute('data-brand-target')||tile.getAttribute('href');
+    if(target){e.preventDefault();window.location.href=target;}
+   }
   },true);
   var observer=new MutationObserver(function(){measure();});
   observer.observe(track,{childList:true,subtree:false});
