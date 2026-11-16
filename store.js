@@ -806,8 +806,16 @@
       syncCategorySelection();
       visibleProductCount = pageSize;
       renderProducts();
-      if (category.classList.contains("category-tile") || category.closest("#mobileMenuCategories")) document.getElementById("products").scrollIntoView({behavior:"smooth"});
+      const fromCategoryTile = category.classList.contains("category-tile") || !!category.closest("#mobileMenuCategories");
       if (category.closest("#mobileMenuCategories")) setMobileMenu(false);
+      if (fromCategoryTile) {
+        requestAnimationFrame(function () {
+          const productGrid = document.getElementById("productGrid");
+          if (!productGrid) return;
+          const targetTop = productGrid.getBoundingClientRect().top + window.pageYOffset - 14;
+          window.scrollTo({top: Math.max(0, targetTop), behavior:"smooth"});
+        });
+      }
       return;
     }
     const add = event.target.closest("[data-add]");
