@@ -973,8 +973,16 @@
       return new Promise(function(resolve) {
         if (!src) return resolve(null);
         const img = new Image();
-        img.onload = function(){ resolve(img); };
-        img.onerror = function(){ resolve(null); };
+        let settled = false;
+        const finish = function(value) {
+          if (settled) return;
+          settled = true;
+          clearTimeout(timeoutId);
+          resolve(value);
+        };
+        const timeoutId = setTimeout(function(){ finish(null); }, 6000);
+        img.onload = function(){ finish(img); };
+        img.onerror = function(){ finish(null); };
         if (/^https?:/i.test(src)) img.crossOrigin = "anonymous";
         img.src = src;
       });
@@ -1007,7 +1015,12 @@
       ctx.fillStyle = "#fff"; ctx.fillRect(86, y + 42, 136, 136);
       let src = item.image || "";
       if (!src && item.imageId && typeof window.DAWLY_LOAD_PRODUCT_IMAGE === "function") {
-        try { src = await window.DAWLY_LOAD_PRODUCT_IMAGE(item.imageId); } catch (e) { src = ""; }
+        try {
+          src = await Promise.race([
+            window.DAWLY_LOAD_PRODUCT_IMAGE(item.imageId),
+            new Promise(function(resolve){ setTimeout(function(){ resolve(""); }, 6000); })
+          ]);
+        } catch (e) { src = ""; }
       }
       const img = await loadImage(src);
       if (img) {
@@ -1206,7 +1219,10 @@
     // Customer orders are handled in WhatsApp; never save order records to Firestore.
     showPaymentFollowup(orderNumber, true, whatsappUrl);
     try {
-      await prepareWhatsAppOrderImage(orderNumber, customerName, customerPhone, customerAddress, orderImageItems, message, {totalAmount:pricing.total,totalIsComplete:pricing.itemCount > 0 && pricing.pricedCount === pricing.itemCount,totalText:totalText});
+      await Promise.race([
+        prepareWhatsAppOrderImage(orderNumber, customerName, customerPhone, customerAddress, orderImageItems, message, {totalAmount:pricing.total,totalIsComplete:pricing.itemCount > 0 && pricing.pricedCount === pricing.itemCount,totalText:totalText}),
+        new Promise(function(_, reject){ setTimeout(function(){ reject(new Error("انتهت مهلة تجهيز صورة الطلب")); }, 25000); })
+      ]);
     } catch (shareError) {
       console.warn("تعذر تجهيز صورة الطلب:", shareError);
       // Do not block checkout on browsers with limited canvas/File support.
