@@ -3,7 +3,7 @@ import { collection, doc, getDoc, getDocs, getFirestore } from "https://www.gsta
 
 const config = window.DAWLY_FIREBASE_CONFIG || {};
 const CACHE_KEY = "aldawly_catalog_cache_v1";
-const CACHE_TTL = 5 * 60 * 1000;
+const CACHE_TTL = 15 * 60 * 1000;
 
 function publishProducts(products) {
   window.DAWLY_PRODUCTS = products;
