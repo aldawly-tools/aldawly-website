@@ -19,7 +19,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="store.css?v=latest-shelf-scroll-20261116-1">
+<link rel="stylesheet" href="store.css?v=latest-shelf-autoplay-20261116-2">
 <link rel="stylesheet" href="visitor-counter.css?v=20261115-1">
 <link rel="stylesheet" href="product-experience.css?v=20261115-1">
 <link rel="stylesheet" href="mobile-refinement.css?v=top-gap-hard-reset-20261116-9">
@@ -371,24 +371,67 @@ footer.footer .button-primary { color:#fff !important; font-weight:1000 !importa
 <script type="module" src="visitor-counter.js?v=20261115-1"></script>
 
 <script>
-/* Latest-products shelf: native horizontal scrolling on touch and arrow controls */
+/* Latest-products shelf: auto-scroll with manual swipe, drag and arrows. */
 (function(){
  function initLatestShelf(){
   var view=document.querySelector('.home-products-viewport');
   var track=document.getElementById('newArrivalsGrid');
   if(!view||!track||view.dataset.shelfReady==='1')return;
   view.dataset.shelfReady='1';
+  var timer=null,pausedUntil=0;
+  var reduced=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function cards(){return Array.from(track.querySelectorAll('.home-shelf-card'));}
+  function stepSize(){
+   var first=cards()[0];
+   if(!first)return Math.max(220,view.clientWidth*.8);
+   var style=getComputedStyle(track);
+   var gap=parseFloat(style.columnGap||style.gap)||12;
+   return first.getBoundingClientRect().width+gap;
+  }
+  function pause(ms){
+   pausedUntil=Date.now()+(ms||4500);
+  }
+  function move(direction,manual){
+   var max=view.scrollWidth-view.clientWidth;
+   if(max<4)return;
+   var next=view.scrollLeft+direction*stepSize();
+   if(direction>0&&next>=max-5)next=0;
+   else if(direction<0&&next<=5)next=max;
+   view.scrollTo({left:Math.max(0,next),behavior:'smooth'});
+   if(manual)pause(5500);
+  }
   document.querySelectorAll('.home-shelf-arrows [data-shelf-dir]').forEach(function(btn){
    btn.addEventListener('click',function(){
-    var sign=btn.dataset.shelfDir==='next'?1:-1;
-    view.scrollBy({left:sign*view.clientWidth*.8,behavior:'smooth'});
+    move(btn.dataset.shelfDir==='next'?1:-1,true);
    });
   });
+  ['pointerdown','touchstart','wheel','keydown'].forEach(function(type){
+   view.addEventListener(type,function(){pause(5500);},{passive:type!=='keydown'});
+  });
+  view.addEventListener('pointerenter',function(){pause(6000);});
+  view.addEventListener('focusin',function(){pause(7000);});
+  view.addEventListener('pointerup',function(){pause(4500);},{passive:true});
+  view.addEventListener('scroll',function(){pause(4500);},{passive:true});
+  function schedule(){
+   clearTimeout(timer);
+   if(reduced||document.hidden)return;
+   timer=setTimeout(function(){
+    if(Date.now()<pausedUntil){schedule();return;}
+    move(1,false);
+    schedule();
+   },3200);
+  }
+  view.addEventListener('pointerleave',function(){schedule();});
+  document.addEventListener('visibilitychange',schedule);
+  var observer=new MutationObserver(function(){
+   if(cards().length){schedule();}
+  });
+  observer.observe(track,{childList:true});
+  schedule();
  }
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initLatestShelf,{once:true});else initLatestShelf();
  new MutationObserver(initLatestShelf).observe(document.documentElement,{childList:true,subtree:true});
 })();
-</script>
 <script>
 /* Duplicate the brand row once to create a seamless automatic loop. */
 (function(){
