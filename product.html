@@ -67,7 +67,46 @@
 .review-form{display:grid;gap:9px;padding-top:15px;border-top:1px solid #edf0f2}.review-form h3{margin:0 0 4px}.review-form label{font-weight:700;font-size:13px}.review-form input,.review-form textarea{width:100%;padding:11px;border:1px solid #d9dee4;border-radius:9px;font:inherit}.review-stars{display:flex;gap:6px;direction:ltr;justify-content:flex-end}.review-star{border:0;background:#f1f2f4;color:#aeb4bb;border-radius:9px;font-size:27px;width:43px;height:42px;cursor:pointer}.review-star.active{color:#e4a400;background:#fff7df}.review-form button[type=submit]{justify-self:start}.review-status{font-size:12px;color:#68707a;margin:0;line-height:1.7}
 @media(max-width:640px){.product-reviews{padding:14px;margin:18px 0}.reviews-heading h2{font-size:19px}.review-star{width:40px;height:40px}}
 
-</style><script>
+\n
+/* Product detail mobile action hierarchy: add-to-cart stays primary, share stays compact. */
+@media(max-width:640px){
+  #productDetail .product-detail-price{
+    font-size:22px!important;
+    line-height:1.3!important;
+    padding:12px 14px!important;
+  }
+  #productDetail .product-detail-price small{
+    display:block!important;
+    margin-top:5px!important;
+    font-size:12px!important;
+    line-height:1.7!important;
+    font-weight:700!important;
+  }
+  #productDetail .product-detail-actions .detail-add-cart{
+    min-height:52px!important;
+    border-radius:12px!important;
+    font-size:16px!important;
+    font-weight:950!important;
+    box-shadow:0 5px 14px rgba(200,16,30,.16)!important;
+  }
+  #productDetail .product-detail-actions .share-product-button{
+    min-height:43px!important;
+    border:1px solid #c8101e!important;
+    border-radius:11px!important;
+    background:#fff!important;
+    color:#b70e19!important;
+    font-size:13px!important;
+    font-weight:850!important;
+    padding:8px 12px!important;
+  }
+  #productDetail .product-detail-actions .share-product-button:active{
+    background:#fff1f2!important;
+  }
+  #productDetail .product-detail-actions .button-outline:not(.share-product-button){
+    min-height:42px!important;
+    font-size:13px!important;
+  }
+}\n</style><script>
 /* Prevent stale offline copies from replacing the live storefront. */
 window.addEventListener("load", function () {
   if ("serviceWorker" in navigator) {
