@@ -5038,3 +5038,29 @@ html body aside#cartDrawer.cart-drawer>.cart-scroll-area>.payment-followup{
  .home-products-shelf .home-products-viewport{padding-inline:2px!important}
  .home-shelf-progress{width:64px;margin-top:7px}
 }
+
+
+/* Responsive latest-products carousel: one main card plus a visible peek of the next. */
+@media(max-width:900px){
+ .home-products-shelf .home-products-viewport{
+  overflow-x:auto!important;
+  overflow-y:hidden!important;
+  scroll-snap-type:x mandatory!important;
+ }
+ .home-products-shelf .home-products-track{gap:12px!important}
+ .home-products-shelf .home-shelf-card{
+  flex:0 0 78vw!important;
+  width:78vw!important;
+  min-width:78vw!important;
+  max-width:78vw!important;
+  scroll-snap-align:start!important;
+ }
+}
+@media(max-width:640px){
+ .home-products-shelf .home-shelf-card{
+  flex:0 0 82vw!important;
+  width:82vw!important;
+  min-width:82vw!important;
+  max-width:82vw!important;
+ }
+}
