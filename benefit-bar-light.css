@@ -67,3 +67,39 @@ body > .benefit-bar .benefit{
     z-index:2 !important;
   }
 }
+
+
+/* Compact desktop benefits strip */
+body > .benefit-bar > .container.benefits{
+  min-height:46px!important;
+  padding:3px 0!important;
+  gap:0!important;
+}
+body > .benefit-bar .benefit{
+  min-height:40px!important;
+  padding:4px 18px!important;
+  font-size:14px!important;
+  line-height:1.35!important;
+  gap:8px!important;
+}
+body > .benefit-bar .benefit svg{
+  width:18px!important;
+  height:18px!important;
+  flex:0 0 18px!important;
+}
+@media(max-width:700px){
+  body > .benefit-bar > .container.benefits{
+    min-height:42px!important;
+    padding:2px 0!important;
+  }
+  body > .benefit-bar .benefit{
+    min-height:38px!important;
+    padding:3px 9px!important;
+    font-size:11px!important;
+    gap:5px!important;
+    white-space:nowrap!important;
+  }
+  body > .benefit-bar .benefit svg{
+    width:15px!important;height:15px!important;flex-basis:15px!important;
+  }
+}
