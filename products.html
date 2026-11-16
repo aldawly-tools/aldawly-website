@@ -50,6 +50,11 @@
 </script>
  <script src="site-routing.js?v=cart-no-transfer-20261115-2"></script>
 
+<style id="brand-filter-logo-style">
+.brand-filter-option-name{display:inline-flex;align-items:center;gap:9px;min-width:0}
+.brand-filter-logo{width:42px;height:27px;object-fit:contain;flex:0 0 42px;padding:2px 4px;border:1px solid #edf0f2;border-radius:5px;background:#fff}
+@media(max-width:760px){.brand-filter-logo{width:36px;height:24px;flex-basis:36px}.brand-filter-option-name{gap:7px}}
+</style>
 <style id="active-brand-banner-style">
 .active-brand-banner{display:none;align-items:center;justify-content:space-between;gap:18px;width:100%;box-sizing:border-box;margin:0 0 22px;padding:20px 24px;border:1px solid #e5e8ec;border-right:5px solid #d71920;border-radius:16px;background:linear-gradient(110deg,#fff 0%,#f7f8fa 100%);box-shadow:0 7px 22px rgba(20,28,38,.06)}
 .active-brand-banner.is-visible{display:flex}
@@ -249,7 +254,7 @@
 <script src="firebase-config.js?v=live-refresh-20261114-1"></script>
 <script type="module" src="traffic-analytics.js?v=product-view-routes-20261116-1"></script>
 <script src="onesignal-init.js?v=live-refresh-20261114-1"></script>
-<script src="store.js?v=desktop-nav-native-links-20261116-4"></script>
+<script src="store.js?v=brand-filter-logos-20261116-1"></script>
 <script>
 (function(){
  var params=new URLSearchParams(window.location.search);
