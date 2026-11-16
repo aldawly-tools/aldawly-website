@@ -330,6 +330,12 @@
   }
   function brandLogoForFilter(label) {
     const logos = {
+      "gesipa":"assets/brands/gesipa.webp",
+      "bahco":"assets/brands/bahco.webp",
+      "koken":"assets/brands/koken.webp",
+      "modeco":"assets/brands/modeco.webp",
+      "normex":"assets/brands/normex.webp",
+      "riss":"assets/brands/riss.webp",
       "bosch":"https://upload.wikimedia.org/wikipedia/commons/1/16/Bosch-logo.svg",
       "knipex":"https://upload.wikimedia.org/wikipedia/commons/e/e3/Knipex_logo.svg",
       "wera":"https://upload.wikimedia.org/wikipedia/commons/e/ec/Wera_schwarz_Logo_ohne_Effekt_4C.svg",
