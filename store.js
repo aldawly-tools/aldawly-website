@@ -328,6 +328,22 @@
     }
     syncCategorySelection();
   }
+  function brandLogoForFilter(label) {
+    const logos = {
+      "gesipa":"https://upload.wikimedia.org/wikipedia/commons/6/6a/Gesipa_logo.svg",
+      "bahco":"https://upload.wikimedia.org/wikipedia/commons/5/5b/Bahco_logo.svg",
+      "bosch":"https://upload.wikimedia.org/wikipedia/commons/1/16/Bosch-logo.svg",
+      "knipex":"https://upload.wikimedia.org/wikipedia/commons/e/e3/Knipex_logo.svg",
+      "wera":"https://upload.wikimedia.org/wikipedia/commons/e/ec/Wera_schwarz_Logo_ohne_Effekt_4C.svg",
+      "wurth":"https://upload.wikimedia.org/wikipedia/commons/c/c3/Wuerth_Logo_2024.svg",
+      "dewalt":"https://upload.wikimedia.org/wikipedia/commons/8/89/DeWalt_Logo.svg",
+      "milwaukee":"https://upload.wikimedia.org/wikipedia/commons/d/de/Milwaukee_Logo.svg",
+      "makita":"https://upload.wikimedia.org/wikipedia/commons/7/71/Makita_Logo.svg",
+      "beta":"https://static.cdnlogo.com/logos/b/13/beta-tools.svg"
+    };
+    const key = normalizeBrand(label);
+    return logos[key] || "";
+  }
   function drawBrandFilters() {
     if (!brandFilterList) return;
     const counts = new Map();
@@ -348,7 +364,9 @@
     brandFilterList.innerHTML = '<button class="brand-filter-option' + (!activeBrand ? ' active' : '') + '" type="button" data-brand-filter="الكل" aria-pressed="' + (!activeBrand) + '"><span>كل الماركات</span><span class="brand-filter-count">' + products.length + '</span></button>' +
       visibleBrands.map(function (entry) {
         const key = entry[0], label = entry[1].label, count = entry[1].count, selected = normalizeBrand(activeBrand) === key;
-        return '<button class="brand-filter-option' + (selected ? ' active' : '') + '" type="button" data-brand-filter="' + escapeHtml(label) + '" aria-pressed="' + selected + '"><span>' + escapeHtml(label) + '</span><span class="brand-filter-count">' + count + '</span></button>';
+        const logo = brandLogoForFilter(label);
+        const logoMarkup = logo ? '<img class="brand-filter-logo" src="' + escapeHtml(logo) + '" alt="" loading="lazy" decoding="async">' : '';
+        return '<button class="brand-filter-option' + (selected ? ' active' : '') + '" type="button" data-brand-filter="' + escapeHtml(label) + '" aria-pressed="' + selected + '"><span class="brand-filter-option-name">' + logoMarkup + '<span>' + escapeHtml(label) + '</span></span><span class="brand-filter-count">' + count + '</span></button>';
       }).join("") || '<p class="brand-filter-empty">لا توجد ماركات بهذا الاسم.</p>';
   }
 
