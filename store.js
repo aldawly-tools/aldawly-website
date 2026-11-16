@@ -1086,169 +1086,120 @@
       canvas.toBlob(function(blob) { if (blob) resolve(blob); else reject(new Error("تعذر تجهيز صورة المنتجات")); }, "image/png");
     });
   }
-  let readyOrderShareFile = null;
-  let readyOrderShareMessage = "";
-  async function prepareWhatsAppOrderImage(orderNumber, customerName, customerPhone, customerAddress, orderItems, message, orderSummary) {
-    const blob = await createWhatsAppOrderImage(orderNumber, customerName, customerPhone, customerAddress, orderItems, orderSummary);
-    readyOrderShareFile = new File([blob], "dawly-order-" + orderNumber + ".png", {type:"image/png"});
-    readyOrderShareMessage = message;
-    checkout.disabled = false;
-    checkout.textContent = "إرسال الطلب والصورة عبر واتساب";
-    checkout.dataset.shareReady = "true";
+  // One stable order draft per checkout attempt. Reopening WhatsApp reuses the same ID.
+  let pendingOrder = null;
+  function createUniqueOrderNumber() {
+    const bytes = new Uint8Array(8);
+    if (window.crypto && typeof window.crypto.getRandomValues === "function") {
+      window.crypto.getRandomValues(bytes);
+    } else {
+      for (let i = 0; i < bytes.length; i++) bytes[i] = Math.floor(Math.random() * 256);
+    }
+    const token = Array.from(bytes).map(function(value) {
+      return value.toString(16).padStart(2, "0");
+    }).join("").toUpperCase();
+    return "DW-" + Date.now().toString(36).toUpperCase() + "-" + token;
   }
 
-  checkout.addEventListener("click", async function () {
-    if (checkout.disabled) return;
-    if (checkout.dataset.shareReady === "text-only" && readyOrderShareMessage) {
-      // Fallback for browsers that cannot render/share the order image.
-      window.open("https://wa.me/201024787222?text=" + encodeURIComponent(readyOrderShareMessage), "_blank");
-      checkout.textContent = "إعادة فتح رسالة نفس الطلب عبر واتساب";
-      checkout.dataset.shareReady = "text-only";
-      return;
-    }
-    if (checkout.dataset.shareReady === "true" && readyOrderShareFile) {
-      checkout.disabled = true;
-      try {
-        const shareData = {files:[readyOrderShareFile], title:"طلب من متجر الدولي", text:readyOrderShareMessage};
-        if (navigator.share && (!navigator.canShare || navigator.canShare(shareData))) {
-          await navigator.share(shareData);
-          // The browser only confirms that the share sheet was handed off/closed;
-          // it cannot confirm that the customer actually sent the WhatsApp message.
-          checkout.textContent = "إعادة فتح مشاركة نفس الطلب";
-          checkout.dataset.shareReady = "true";
-          checkout.disabled = false;
-        } else {
-          // Desktop browsers often cannot attach files through Web Share: download the image and open WhatsApp with the order text.
-          const imageUrl = URL.createObjectURL(readyOrderShareFile);
-          const downloadLink = document.createElement("a");
-          downloadLink.href = imageUrl;
-          downloadLink.download = readyOrderShareFile.name;
-          document.body.appendChild(downloadLink);
-          downloadLink.click();
-          downloadLink.remove();
-          window.open("https://wa.me/201024787222?text=" + encodeURIComponent(readyOrderShareMessage), "_blank", "noopener");
-          window.setTimeout(function(){ URL.revokeObjectURL(imageUrl); }, 60000);
-          checkout.disabled = false;
-          checkout.textContent = "تم تجهيز الصورة — أرفقها في واتساب";
-          alert("تم تنزيل صورة الطلب التي تحتوي على صور المنتجات. أرفق الصورة في محادثة واتساب المفتوحة ثم أرسل الطلب.");
-        }
-      } catch (shareError) {
-        if (shareError && shareError.name === "AbortError") { checkout.disabled = false; return; }
-        console.warn("تعذرت مشاركة الطلب:", shareError);
-        checkout.disabled = false;
-        alert("تعذر فتح مشاركة الصورة. جرّب الضغط مرة أخرى أو افتح الموقع من Chrome.");
-      }
-      return;
-    }
-    if (!cart.length) return;
+  function buildOrderDraft() {
     const customerName = document.getElementById("customerName").value.trim();
     const customerPhoneRaw = document.getElementById("customerPhone").value.trim();
     const customerAddress = document.getElementById("customerAddress").value.trim();
     const customerPhone = customerPhoneRaw
       .replace(/[٠-٩]/g, function (digit) { return String("٠١٢٣٤٥٦٧٨٩".indexOf(digit)); })
       .replace(/[۰-۹]/g, function (digit) { return String("۰۱۲۳۴۵۶۷۸۹".indexOf(digit)); })
-      .replace(/[\s()+-]/g, "");
+      .replace(/[\\s()+-]/g, "");
+    if (!cart.length) return null;
     if (!customerName || !customerPhoneRaw || !customerAddress) {
       alert("من فضلك اكتب الاسم ورقم الهاتف والعنوان قبل إرسال الطلب.");
-      return;
+      return null;
     }
-    if (!/^\d{8,15}$/.test(customerPhone)) {
+    if (!/^\\d{8,15}$/.test(customerPhone)) {
       alert("رقم الهاتف غير صحيح. راجع الرقم وحاول مرة أخرى.");
       document.getElementById("customerPhone").focus();
-      return;
+      return null;
     }
-    checkout.disabled = true;
-    // Generate a per-checkout identifier that remains unique across customers/devices.
-    function createUniqueOrderNumber() {
-      const bytes = new Uint8Array(8);
-      if (window.crypto && typeof window.crypto.getRandomValues === "function") {
-        window.crypto.getRandomValues(bytes);
-      } else {
-        for (let i = 0; i < bytes.length; i++) bytes[i] = Math.floor(Math.random() * 256);
-      }
-      const token = Array.from(bytes).map(function(value) {
-        return value.toString(16).padStart(2, "0");
-      }).join("").toUpperCase();
-      return "DW-" + Date.now().toString(36).toUpperCase() + "-" + token;
-    }
+
     const orderNumber = createUniqueOrderNumber();
     const pricing = cartPricing();
     let itemNumber = 0;
-    const lines = cart.map(function (line) {
-      const item = products.find(function (entry) { return String(entry.id) === String(line.id); });
+    const lines = cart.map(function(line) {
+      const item = products.find(function(entry) {
+        return String(entry.id) === String(line.id) ||
+          (entry._docId !== undefined && String(entry._docId) === String(line.id));
+      });
       if (!item) return "";
       itemNumber += 1;
       const productUrl = new URL("product.html?id=" + encodeURIComponent(item.id), window.location.href).toString();
       const price = parsePrice(item.price);
       const priceLines = price === null
-        ? "   السعر: عند الاستفسار"
-        : "   سعر الوحدة: " + money(price) + "\n   إجمالي المنتج: " + money(price * line.qty);
-      return itemNumber + ") " + cleanOrderProductName(item.name) + "\n   الكمية: " + line.qty + "\n" + priceLines + "\n   صورة المنتج والتفاصيل: " + productUrl;
-    }).filter(Boolean).join("\n\n");
+        ? "السعر: عند الاستفسار"
+        : "سعر الوحدة: " + money(price) + " | إجمالي المنتج: " + money(price * line.qty);
+      return itemNumber + ") " + cleanOrderProductName(item.name) +
+        "\\nالكمية: " + line.qty + "\\n" + priceLines +
+        "\\nتفاصيل المنتج: " + productUrl;
+    }).filter(Boolean);
+    if (!lines.length || lines.length !== cart.length) {
+      alert("تعذر تحميل بيانات أحد المنتجات. حدّث الصفحة ثم راجع طلبك.");
+      return null;
+    }
+
     const totalText = pricing.pricedCount === pricing.itemCount
       ? "إجمالي المنتجات: " + money(pricing.total)
       : pricing.pricedCount
-        ? "مجموع المنتجات المسعّرة: " + money(pricing.total) + "\nبعض المنتجات: السعر عند الاستفسار"
-        : "إجمالي المنتجات: يتحدد بعد تأكيد الأسعار";
-    const customerDetails = [
-      "الاسم: " + customerName,
-      "الهاتف: " + customerPhone,
-      "العنوان: " + customerAddress
-    ];
+        ? "مجموع المنتجات المسعّرة: " + money(pricing.total) + "\\nبعض المنتجات سعرها عند الاستفسار"
+        : "الإجمالي النهائي بعد تأكيد الأسعار";
     const message = [
       "🛒 *طلب جديد من متجر الدولي*",
       "رقم الطلب: *" + orderNumber + "*",
       "",
       "👤 *بيانات العميل*",
-      customerDetails.join("\n"),
+      "الاسم: " + customerName,
+      "الهاتف: " + customerPhone,
+      "العنوان: " + customerAddress,
       "",
       "📦 *المنتجات (" + pricing.itemCount + ")*",
-      lines,
+      lines.join("\\n\\n"),
       "",
       "💰 *ملخص الطلب*",
       totalText,
+      "الشحن: يُحدد بعد تأكيد العنوان",
       "",
-      "برجاء تأكيد توفر المنتجات."
-    ].join("\n");
-    const orderItems = cart.map(function(line) {
-      const item = products.find(function(entry){return String(entry.id)===String(line.id);});
-      if (!item) return null;
-      const unitPrice = parsePrice(item.price);
-      return {
-        id:String(item.id), name:cleanOrderProductName(item.name), brand:String(item.brand||""),
-        qty:line.qty, unitPrice:String(item.price||"السعر عند الاستفسار"),
-        unitPriceAmount:unitPrice, lineTotal:unitPrice===null?null:unitPrice*line.qty,
-        image:item.image||item.imageUrl||"",
-        imageId:(Array.isArray(item.imageIds)&&item.imageIds[0])||item.imageId||null
-      };
-    }).filter(Boolean);
-    if (!orderItems.length || orderItems.length !== cart.length) {
+      "برجاء تأكيد توفر المنتجات والسعر النهائي."
+    ].join("\\n");
+
+    return {
+      number:orderNumber,
+      message:message,
+      url:"https://wa.me/201024787222?text=" + encodeURIComponent(message),
+      customerName:customerName
+    };
+  }
+
+  checkout.addEventListener("click", function() {
+    if (checkout.disabled) return;
+
+    // Reopen the exact same prepared order on repeat clicks; never issue a new ID.
+    if (!pendingOrder) {
+      pendingOrder = buildOrderDraft();
+      if (!pendingOrder) return;
+      showPaymentFollowup(pendingOrder.number, true, pendingOrder.url);
+      checkout.textContent = "إعادة فتح رسالة نفس الطلب عبر واتساب";
+      checkout.dataset.orderPrepared = "true";
       checkout.disabled = false;
-      alert("تعذر تحميل بيانات أحد المنتجات. حدّث الصفحة ثم راجع سلتك قبل إعادة الطلب.");
-      return;
     }
-    const orderImageItems = orderItems.map(function(item) {
-      return {name:item.name,qty:item.qty,unitPrice:item.unitPrice,unitPriceAmount:item.unitPriceAmount,lineTotal:item.lineTotal,image:item.image,imageId:item.imageId};
-    });
-    const whatsappUrl = "https://wa.me/201024787222?text=" + encodeURIComponent(message);
-    // Customer orders are handled in WhatsApp; never save order records to Firestore.
-    showPaymentFollowup(orderNumber, true, whatsappUrl);
-    try {
-      await Promise.race([
-        prepareWhatsAppOrderImage(orderNumber, customerName, customerPhone, customerAddress, orderImageItems, message, {totalAmount:pricing.total,totalIsComplete:pricing.itemCount > 0 && pricing.pricedCount === pricing.itemCount,totalText:totalText}),
-        new Promise(function(_, reject){ setTimeout(function(){ reject(new Error("انتهت مهلة تجهيز صورة الطلب")); }, 25000); })
-      ]);
-    } catch (shareError) {
-      console.warn("تعذر تجهيز صورة الطلب:", shareError);
-      // Do not block checkout on browsers with limited canvas/File support.
-      readyOrderShareFile = null;
-      readyOrderShareMessage = message;
-      checkout.disabled = false;
-      checkout.dataset.shareReady = "text-only";
-      checkout.textContent = "إرسال الطلب عبر واتساب (بدون صورة)";
-      alert("هذا المتصفح لم يتمكن من تجهيز صورة الطلب. يمكنك إرسال تفاصيل الطلب عبر واتساب، وسيتم فتح المحادثة مباشرة.");
+
+    const opened = window.open(pendingOrder.url, "_blank", "noopener,noreferrer");
+    if (!opened) {
+      alert("المتصفح منع فتح واتساب تلقائيًا. اضغط على زر «فتح رسالة الطلب عبر واتساب» داخل ملخص الطلب.");
+    }
+    const status = document.getElementById("paymentFollowupStatus");
+    if (status) {
+      status.textContent = "تم تجهيز الطلب رقم " + pendingOrder.number +
+        ". افتح رسالة واتساب واضغط إرسال لإتمام الطلب. لم يتم تأكيد الإرسال بعد.";
     }
   });
+
   // Keep the active checkout field visible when the mobile keyboard opens.
   function keepCheckoutFieldVisible(field) {
     if (!field || !cartDrawer || !cartDrawer.classList.contains("open")) return;
