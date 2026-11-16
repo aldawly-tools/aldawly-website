@@ -121,7 +121,20 @@ button:disabled{opacity:.6;cursor:wait}
 #postPanel #postImagePreview{display:block;width:100%;max-width:360px;max-height:320px;object-fit:contain;object-position:right center;padding:10px;border:1px solid #e5e7eb;border-radius:12px;background:#fafafa}
 #postPanel #postImagePreview.hidden{display:none!important}
 @media(max-width:700px){#postPanel #postImagePreview{max-width:100%;max-height:280px}#postPanel #postText{min-height:280px}}
-.image-gallery-preview{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}.admin-image-thumb{position:relative;width:76px;height:76px;border:1px solid #dfe3e8;border-radius:10px;background:#fff;padding:4px}.admin-image-thumb img{width:100%;height:100%;object-fit:contain}.admin-image-thumb span{position:absolute;top:3px;inset-inline-start:3px;background:#d71920;color:#fff;border-radius:50%;width:19px;height:19px;display:grid;place-items:center;font-size:11px;font-weight:700}</style>
+.image-gallery-preview{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}.admin-image-thumb{position:relative;width:76px;height:76px;border:1px solid #dfe3e8;border-radius:10px;background:#fff;padding:4px}.admin-image-thumb img{width:100%;height:100%;object-fit:contain}.admin-image-thumb span{position:absolute;top:3px;inset-inline-start:3px;background:#d71920;color:#fff;border-radius:50%;width:19px;height:19px;display:grid;place-items:center;font-size:11px;font-weight:700}/* تثبيت عنوان الاستخدامات ومنع أي وميض أو انتقال غير مقصود */
+#productForm label[for="tasks"]{
+  color:#202124!important;
+  opacity:1!important;
+  animation:none!important;
+  transition:none!important;
+  filter:none!important;
+}
+#productForm #tasks{
+  color:#202124;
+  background-color:#fff;
+  opacity:1;
+}
+</style>
 
 <link rel="manifest" href="manifest.webmanifest?v=png-real-20261113">
 <link rel="icon" href="assets/app-icon.svg" type="image/svg+xml">
@@ -1041,15 +1054,27 @@ async function editProduct(id) {
 }
 async function deleteProduct(id) {
   const product = products.find(function (item) { return String(item.id) === String(id); });
-  if (!product || !window.confirm("هل تريد حذف هذا المنتج؟")) return;
+  if (!product || !window.confirm("هل تريد حذف هذا المنتج نهائيًا؟")) return;
   try {
-    await deleteDoc(doc(db, "products", String(product.id)));
-    const ids = Array.isArray(product.imageIds) ? product.imageIds : (product.imageId ? [product.imageId] : []);
-    for (const imageId of ids) await deleteDoc(doc(db, "productImages", String(imageId)));
+    // Delete the product and all of its stored images atomically.
+    const imageIds = Array.from(new Set([
+      ...(Array.isArray(product.imageIds) ? product.imageIds : []),
+      ...(product.imageId ? [product.imageId] : [])
+    ].map(String).filter(Boolean)));
+    const batch = writeBatch(db);
+    batch.delete(doc(db, "products", String(product.id)));
+    imageIds.forEach(function (imageId) {
+      batch.delete(doc(db, "productImages", imageId));
+    });
+    await batch.commit();
     products = products.filter(function (item) { return String(item.id) !== String(id); });
     renderProducts();
-    message(saveStatus, "تم حذف المنتج.");
-  } catch (error) { message(saveStatus, "تعذر حذف المنتج. تحقق من الاتصال والصلاحيات."); }
+    message(saveStatus, "تم حذف المنتج وصوره المحفوظة بنجاح.");
+  } catch (error) {
+    console.error("Product delete failed:", error);
+    const detail = error && error.code ? error.code + " — " : "";
+    message(saveStatus, "فشل حذف المنتج: " + detail + (error && error.message ? error.message : "خطأ غير معروف"));
+  }
 }
 
 $("loginBtn").addEventListener("click", async function () {
