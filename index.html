@@ -82,6 +82,37 @@ footer.footer .button-primary { color:#fff !important; font-weight:1000 !importa
 
 </head>
 <body>
+<script>
+/* Hide any legacy benefits strip rendered above the storefront header. */
+(function () {
+  function removeLegacyTopBenefits() {
+    var header = document.querySelector('.masthead');
+    if (!header) return;
+    var headerTop = header.getBoundingClientRect().top + window.scrollY;
+    var phrases = ['شحن لجميع المحافظات', 'ضمان الجودة', 'دعم فني واستشارات'];
+    var candidates = Array.prototype.slice.call(document.querySelectorAll('body div, body section, body aside'));
+    candidates.forEach(function (el) {
+      if (el.closest('.masthead') || el.closest('main') || el.closest('.hero-shell')) return;
+      var txt = (el.innerText || el.textContent || '').replace(/\\s+/g, ' ');
+      var matches = phrases.filter(function (phrase) { return txt.indexOf(phrase) !== -1; }).length;
+      if (matches < 2) return;
+      var rect = el.getBoundingClientRect();
+      var top = rect.top + window.scrollY;
+      if (top < headerTop && rect.height > 0 && el.parentElement) {
+        el.style.setProperty('display', 'none', 'important');
+        el.style.setProperty('height', '0', 'important');
+        el.style.setProperty('margin', '0', 'important');
+        el.style.setProperty('padding', '0', 'important');
+      }
+    });
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', removeLegacyTopBenefits);
+  } else {
+    removeLegacyTopBenefits();
+  }
+})();
+</script>
 <header class="masthead">
  <div class="container masthead-grid">
   <a class="brand" href="index.html" aria-label="الدولي - الرئيسية">
