@@ -328,7 +328,7 @@
     }
     const featuredGrid = document.getElementById("featuredProductsGrid");
     if (featuredGrid) {
-      const featured = products.filter(function(item){ return item.featured === true || item.isFeatured === true || item.weeklyPick === true; }).slice(0,4);
+      const featured = products.filter(function(item){ return item.featured === true || item.isFeatured === true || item.weeklyPick === true; });
       featuredGrid.innerHTML = featured.length ? featured.map(card).join("") : '<div class="catalog-empty-note">لا توجد منتجات مميزة مضافة حاليًا. يمكنك اختيار المنتجات المميزة من بيانات المنتج في لوحة الإدارة.</div>';
     }
     const arrivalsGrid = document.getElementById("newArrivalsGrid");
