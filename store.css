@@ -4930,3 +4930,45 @@ html body aside#cartDrawer.cart-drawer>.cart-scroll-area>.payment-followup{
 .home-products-shelf .home-products-track>.home-shelf-card{flex:0 0 auto!important}
 .home-products-shelf .home-products-track>[data-auto-clone="1"]{pointer-events:none!important}
 @media(max-width:640px){.home-products-shelf .home-products-track{gap:10px!important}.home-products-shelf .home-shelf-card{flex:0 0 calc((100vw - 48px)/2)!important;width:calc((100vw - 48px)/2)!important;min-width:0!important;max-width:none!important}}
+
+
+/* Lightweight GPU-composited latest-products ticker; keep product controls clickable. */
+.home-products-shelf .home-products-viewport{
+  overflow:hidden!important;
+  position:relative!important;
+  width:100%!important;
+  touch-action:pan-y!important;
+}
+.home-products-shelf .home-products-track{
+  display:flex!important;
+  flex-flow:row nowrap!important;
+  width:max-content!important;
+  min-width:max-content!important;
+  direction:rtl!important;
+  gap:14px!important;
+  transform:translate3d(0,0,0);
+  will-change:transform;
+}
+.home-products-shelf .home-products-track>.home-shelf-card{flex:0 0 auto!important}
+.home-products-shelf .home-products-track>[data-auto-clone="1"]{pointer-events:none!important}
+.home-products-shelf .home-products-viewport.latest-shelf-running .home-products-track{
+  animation:latestShelfCssMove 38s linear infinite!important;
+}
+.home-products-shelf .home-products-track.latest-shelf-reverse{
+  animation-direction:reverse!important;
+}
+.home-products-shelf .home-products-viewport:hover .home-products-track,
+.home-products-shelf .home-products-viewport:focus-within .home-products-track{
+  animation-play-state:paused!important;
+}
+@keyframes latestShelfCssMove{
+  from{transform:translate3d(0,0,0)}
+  to{transform:translate3d(-50%,0,0)}
+}
+@media(max-width:640px){
+ .home-products-shelf .home-products-track{gap:10px!important}
+ .home-products-shelf .home-shelf-card{flex:0 0 calc((100vw - 48px)/2)!important;width:calc((100vw - 48px)/2)!important;min-width:0!important;max-width:none!important}
+}
+@media(prefers-reduced-motion:reduce){
+ .home-products-shelf .home-products-viewport.latest-shelf-running .home-products-track{animation:none!important}
+}
