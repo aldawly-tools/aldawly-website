@@ -832,6 +832,7 @@
     const followup = document.getElementById("paymentFollowup");
     const status = document.getElementById("paymentFollowupStatus");
     const orderLink = document.getElementById("orderWhatsappLink");
+    const paymentProofLink = document.getElementById("paymentProofLink");
     if (!followup || !status) return;
     status.textContent = saved
       ? "تم تسجيل طلبك رقم " + orderNumber + ". اضغط فتح رسالة الطلب لإرسال التفاصيل عبر واتساب، ويمكنك استخدام زر الطلب لإرسال صورة المنتجات."
@@ -844,6 +845,16 @@
       } else {
         orderLink.hidden = true;
         orderLink.removeAttribute("href");
+      }
+    }
+    if (paymentProofLink) {
+      if (saved && orderWhatsappUrl) {
+        const proofMessage = "مرحباً، هذا إيصال الدفع الخاص بالطلب رقم " + orderNumber + ".";
+        paymentProofLink.href = "https://wa.me/201024787222?text=" + encodeURIComponent(proofMessage);
+        paymentProofLink.hidden = false;
+      } else {
+        paymentProofLink.hidden = true;
+        paymentProofLink.removeAttribute("href");
       }
     }
     followup.hidden = false;
