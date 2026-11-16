@@ -133,3 +133,44 @@
   .hero-shell{padding-top:14px!important;margin-top:0!important}
   .hero-shell .hero-grid{margin-top:0!important}
 }
+
+/* Desktop hero: keep the entire image visible and prevent an over-tall banner. */
+@media (min-width:821px){
+  .hero-shell .hero-grid{
+    height:clamp(390px,38vw,510px)!important;
+    min-height:0!important;
+    align-items:stretch!important;
+  }
+  .hero-shell .hero-photo,
+  .hero-shell .hero-copy,
+  .hero-shell .hero-services{
+    height:100%!important;
+    min-height:0!important;
+    max-height:100%!important;
+  }
+  .hero-shell .hero-photo img,
+  .hero-shell .hero-photo video{
+    object-fit:contain!important;
+    object-position:center center!important;
+    min-height:0!important;
+    max-height:100%!important;
+  }
+  .hero-shell .hero-services{
+    display:flex!important;
+    flex-direction:column!important;
+    justify-content:center!important;
+    overflow:hidden!important;
+  }
+  .hero-shell .hero-services-track{
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr)!important;
+    gap:8px!important;
+    min-height:0!important;
+    max-height:100%!important;
+    overflow:hidden!important;
+  }
+  .hero-shell .hero-services .service-card{
+    min-height:0!important;
+    padding:9px 10px!important;
+  }
+}
