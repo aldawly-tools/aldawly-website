@@ -4895,3 +4895,30 @@ html body aside#cartDrawer.cart-drawer>.cart-scroll-area>.payment-followup{
 @media(prefers-reduced-motion:reduce){
  .home-products-shelf .home-products-viewport.is-auto-moving .home-products-track{animation:none!important}
 }
+
+
+/* Latest products ticker: JS-driven continuous movement, touch drag remains available. */
+.home-products-shelf .home-products-viewport{
+  overflow:hidden!important;
+  position:relative!important;
+  width:100%!important;
+  touch-action:pan-y!important;
+  cursor:grab!important;
+}
+.home-products-shelf .home-products-track{
+  display:flex!important;
+  flex-flow:row nowrap!important;
+  width:max-content!important;
+  min-width:max-content!important;
+  transform:translate3d(0,0,0);
+  will-change:transform;
+  direction:rtl!important;
+  gap:14px!important;
+}
+.home-products-shelf .home-products-track .home-shelf-card{flex:0 0 auto!important}
+.home-products-shelf .home-products-track [data-auto-clone="1"]{pointer-events:none!important}
+.home-products-shelf .home-products-viewport:active{cursor:grabbing!important}
+@media(max-width:640px){
+ .home-products-shelf .home-products-track{gap:10px!important}
+ .home-products-shelf .home-shelf-card{flex:0 0 calc((100vw - 48px)/2)!important;width:calc((100vw - 48px)/2)!important;min-width:0!important;max-width:none!important}
+}
