@@ -107,3 +107,37 @@ body{background:radial-gradient(ellipse at 50% 0%,#3b424a 0%,#20252b 46%,#111519
 .product-detail-crumb a:hover{color:#b51f2a!important;-webkit-text-fill-color:#b51f2a!important}
 .product-detail-crumb .separator,
 .product-detail-crumb .breadcrumb-separator{color:#b51f2a!important;-webkit-text-fill-color:#b51f2a!important}
+
+
+/* Restore clear contrast and balanced layout in related products below the detail panel */
+.related-products{
+ background:#fff!important;
+ color:#202832!important;
+ border:1px solid #dfe4e9!important;
+ box-shadow:0 12px 30px rgba(18,27,38,.08)!important;
+}
+.related-products .related-heading h2{color:#171b20!important;-webkit-text-fill-color:#171b20!important;font-weight:900!important}
+.related-products .related-heading p{color:#626d79!important;-webkit-text-fill-color:#626d79!important;opacity:1!important}
+.related-products .related-heading>a{color:#b51f2a!important;-webkit-text-fill-color:#b51f2a!important}
+.related-products .related-card{
+ display:flex!important;
+ flex-direction:column!important;
+ min-height:100%!important;
+ background:#fff!important;
+ color:#202832!important;
+ border:1px solid #e0e5ea!important;
+ box-shadow:0 3px 12px rgba(18,27,38,.05)!important;
+}
+.related-products .related-visual{
+ flex:0 0 auto!important;
+ background:linear-gradient(145deg,#f1f3f5,#fff)!important;
+ min-height:150px!important;
+}
+.related-products .related-info{background:#fff!important;color:#202832!important}
+.related-products .related-info small{color:#b51f2a!important;-webkit-text-fill-color:#b51f2a!important}
+.related-products .related-info strong{display:block!important;color:#202832!important;-webkit-text-fill-color:#202832!important;font-weight:850!important;line-height:1.65!important;opacity:1!important}
+.related-products .related-info>span{color:#b51f2a!important;-webkit-text-fill-color:#b51f2a!important;font-weight:950!important}
+@media(max-width:700px){
+ .related-products .related-visual{min-height:118px!important}
+ .related-products .related-info strong{min-height:38px!important}
+}
