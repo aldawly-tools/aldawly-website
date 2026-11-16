@@ -160,3 +160,56 @@
 @media (min-width:821px) and (max-width:1100px){
   .hero-shell .hero-grid{grid-template-columns:minmax(0,1.1fr) minmax(230px,.9fr)!important}
 }
+
+/* Compact desktop hero only — mobile layout is untouched. */
+@media (min-width:821px){
+  .hero-shell{padding-bottom:10px!important}
+  .hero-shell .hero-grid{
+    min-height:320px!important;
+    height:320px!important;
+  }
+  .hero-shell .hero-copy,
+  .hero-shell .hero-services{
+    min-height:320px!important;
+    height:320px!important;
+  }
+  .hero-shell .hero-copy{
+    padding:24px 30px!important;
+  }
+  .hero-shell .hero-copy h1{font-size:clamp(36px,3.2vw,48px)!important}
+  .hero-shell .hero-copy h2{font-size:clamp(19px,1.7vw,25px)!important}
+  .hero-shell .hero-copy p{font-size:13px!important;line-height:1.7!important}
+  .hero-shell .hero-copy .hero-cta,
+  .hero-shell .hero-copy .whatsapp-catalog-cta{
+    min-height:42px!important;
+    margin-top:8px!important;
+  }
+  .hero-shell .hero-services{
+    padding:12px!important;
+    gap:7px!important;
+    overflow:hidden!important;
+  }
+  .hero-shell .hero-services-track{
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr)!important;
+    grid-template-rows:repeat(4,minmax(0,1fr))!important;
+    gap:7px!important;
+    height:100%!important;
+    max-height:100%!important;
+    overflow:hidden!important;
+    animation:none!important;
+    transform:none!important;
+  }
+  .hero-shell .hero-services .service-card{
+    min-height:0!important;
+    height:auto!important;
+    padding:7px 9px!important;
+    gap:8px!important;
+    font-size:12px!important;
+  }
+  .hero-shell .hero-services .service-card:nth-child(n+5){display:none!important}
+  .hero-shell .hero-services .service-icon{
+    width:28px!important;height:28px!important;flex-basis:28px!important;
+  }
+  .hero-shell .hero-services .service-icon svg{width:23px!important;height:23px!important}
+}
