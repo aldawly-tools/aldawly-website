@@ -690,3 +690,10 @@
   body>header.masthead{margin-top:0!important;top:0!important}
   body>header.masthead:before{display:none!important}
 }
+
+
+/* Hard reset for any injected gap above the mobile masthead. */
+@media(max-width:700px){
+  html,body{margin:0!important;padding-top:0!important}
+  body>header.masthead{margin-block-start:0!important;inset-block-start:0!important}
+}
