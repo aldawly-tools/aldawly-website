@@ -850,78 +850,7 @@ $("ordersList").addEventListener("click",async function(e){
  }
 },true);
 
-$("ordersList").addEventListener("click",async function(e){
- const deleteButton=e.target.closest("[data-delete-order]");
- if(deleteButton){
-  const id=deleteButton.dataset.deleteOrder;
-  const order=orders.find(o=>o.id===id);
-  if(!order)return;
-  if(order.inventoryDeducted&&!order.inventoryRestored&&order.status!=="cancelled"){$("ordersStatus").textContent="لا يمكن حذف الطلب قبل إلغائه وإعادة الكميات إلى المخزون.";return;}
-  const number=order.orderNumber||order.id;
-  if(!window.confirm("هل أنت متأكد من حذف الطلب "+number+" نهائيًا؟"+(order.inventoryDeducted&&!order.inventoryRestored?" سيتم إرجاع الكميات إلى المخزون أولًا.":" لا يمكن التراجع عن الحذف.")))return;
-  deleteButton.disabled=true;
-  try{
-   await runTransaction(db,async function(transaction){
-    const orderRef=doc(db,"orders",id);
-    const orderSnap=await transaction.get(orderRef);
-    if(!orderSnap.exists())throw new Error("الطلب غير موجود أو تم حذفه بالفعل.");
-    const latest=orderSnap.data();
-    if(latest.inventoryDeducted&&!latest.inventoryRestored){
-     if(latest.status!=="cancelled")throw new Error("لا يمكن حذف طلب مؤكد قبل إلغائه.");
-     const items=Array.isArray(latest.items)?latest.items:[];
-     const productReads=[];
-     for(const item of items){
-      const productId=String(item.id||""),qty=Number(item.qty);
-      if(!productId||!Number.isInteger(qty)||qty<1)throw new Error("بيانات كمية أو رقم منتج غير صحيحة؛ لم يتم حذف الطلب.");
-      const productRef=doc(db,"products",productId);
-      const productSnap=await transaction.get(productRef);
-      if(!productSnap.exists())throw new Error("المنتج رقم "+productId+" غير موجود؛ لم يتم حذف الطلب.");
-      productReads.push({ref:productRef,data:productSnap.data(),qty:qty});
-     }
-     productReads.forEach(function(entry){
-      const stock=entry.data.stock;
-      if(Number.isInteger(stock)&&stock>=0)transaction.update(entry.ref,{stock:stock+entry.qty,updatedAt:serverTimestamp()});
-     });
-    }
-    transaction.delete(orderRef);
-   });
-   orders=orders.filter(o=>o.id!==id);
-   renderOrders();
-   $("ordersStatus").textContent="تم حذف الطلب "+number+" نهائيًا.";
-  }catch(error){
-   console.error("Order delete failed:",error);
-   $("ordersStatus").textContent=error.message||"تعذر حذف الطلب. تحقق من صلاحيات حساب الإدارة والاتصال.";
-   deleteButton.disabled=false;
-  }
-  return;
- }
- const imageShareButton=e.target.closest("[data-order-image-share]");
- if(imageShareButton){const order=orders.find(o=>o.id===imageShareButton.dataset.orderImageShare);if(order){imageShareButton.disabled=true;try{await shareOrderConfirmation(order);}catch(error){if(error&&error.name!=="AbortError")$("ordersStatus").textContent=error.message||"تعذر تجهيز صورة الطلب.";}finally{imageShareButton.disabled=false;}}return;}
- const printButton=e.target.closest("[data-print-order]");
- if(printButton){const order=orders.find(o=>o.id===printButton.dataset.printOrder);if(order)printCustomerOrder(order);return;}
- const button=e.target.closest("[data-copy-order]");if(!button)return;
- const order=orders.find(o=>o.id===button.dataset.copyOrder);if(!order)return;
- const itemLines=(Array.isArray(order.items)?order.items:[]).map(function(item,index){
-  return (index+1)+") "+String(item.name||"منتج")+" — الكمية: "+Number(item.qty||0)+" — سعر الوحدة: "+String(item.unitPrice||"عند الاستفسار");
- }).join("\n");
- const summary=[
-  "طلب جديد من متجر الدولي",
-  "رقم الطلب: "+(order.orderNumber||order.id),
-  "العميل: "+(order.customerName||""),
-  "الهاتف: "+(order.customerPhone||""),
-  "العنوان: "+(order.customerAddress||""),
-  "المنتجات:",
-  itemLines,
-  "الإجمالي: "+(order.totalText||"بعد التأكيد"),
-  order.notes?"ملاحظات: "+order.notes:""
- ].filter(Boolean).join("\n");
- try{await navigator.clipboard.writeText(summary);$("ordersStatus").textContent="تم نسخ تفاصيل الطلب "+(order.orderNumber||order.id)+".";
- }catch(error){
-  const field=document.createElement("textarea");field.value=summary;field.style.position="fixed";field.style.opacity="0";document.body.appendChild(field);field.select();
-  const copied=document.execCommand("copy");field.remove();
-  $("ordersStatus").textContent=copied?"تم نسخ تفاصيل الطلب.":"تعذر النسخ تلقائيًا؛ حاول فتح الصفحة في Chrome.";
- }
-});
+
 $("ordersList").addEventListener("change",async function(e){
  const el=e.target.closest("[data-order-status]");if(!el)return;
  const id=el.dataset.orderStatus,statusValue=el.value;
