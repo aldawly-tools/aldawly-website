@@ -5025,3 +5025,16 @@ html body aside#cartDrawer.cart-drawer>.cart-scroll-area>.payment-followup{
   -webkit-user-drag:none!important;
   user-select:none!important;
 }
+
+/* Premium mobile shelf: show the next card edge to invite swiping. */
+.home-products-shelf .home-products-viewport{padding:3px 0 9px!important;scroll-padding-inline:12px!important}
+.home-products-shelf .home-products-track{gap:12px!important}
+.home-products-shelf .home-shelf-card{scroll-snap-align:start!important}
+.home-shelf-progress{width:76px;height:4px;margin:8px auto 0;border-radius:99px;overflow:hidden;background:#e5e7eb}
+.home-shelf-progress span{display:block;width:8%;height:100%;border-radius:99px;background:#c8101e;transition:width .18s ease}
+@media(max-width:640px){
+ .home-products-shelf .home-products-track{gap:10px!important}
+ .home-products-shelf .home-shelf-card{flex:0 0 72vw!important;width:72vw!important;min-width:72vw!important;max-width:72vw!important}
+ .home-products-shelf .home-products-viewport{padding-inline:2px!important}
+ .home-shelf-progress{width:64px;margin-top:7px}
+}
