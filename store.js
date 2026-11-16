@@ -337,7 +337,7 @@
         const da = a.createdAt && (a.createdAt.seconds || Date.parse(a.createdAt) / 1000) || 0;
         const db = b.createdAt && (b.createdAt.seconds || Date.parse(b.createdAt) / 1000) || 0;
         return db-da || Number(b.id||0)-Number(a.id||0);
-      }).slice(0,4);
+      }).slice(0,12);
       arrivalsGrid.innerHTML = latest.length ? latest.map(card).join("") : '<div class="catalog-empty-note">الكتالوج فارغ حاليًا. أضف منتجاتك الأصلية من لوحة الإدارة لتظهر هنا تلقائيًا.</div>';
     }
     // Load Firebase-hosted images in the featured and latest-product shelves too.
