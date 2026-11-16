@@ -339,7 +339,7 @@ footer.footer .button-primary { color:#fff !important; font-weight:1000 !importa
 <script src="firebase-config.js?v=live-refresh-20261114-1"></script>
 <script type="module" src="traffic-analytics.js?v=product-view-routes-20261116-1"></script>
 <script src="onesignal-init.js?v=live-refresh-20261114-1"></script>
-<script src="store.js?v=latest-shelf-images-20261116-1&prev=catalog-speed-20261116-1category-direct-scroll-20261116-2"></script>
+<script src="store.js?v=latest-shelf-buttons-fix-20261116-2&prev=catalog-speed-20261116-1category-direct-scroll-20261116-2"></script>
 <script src="smart-search.js?v=20261116-6"></script>
 <script src="image-zoom.js?v=product-card-navigation-20261116-1"></script>
 <script type="module" src="product-cloud.js?v=catalog-cache-20261116-1"></script>
@@ -422,14 +422,15 @@ footer.footer .button-primary { color:#fff !important; font-weight:1000 !importa
    }
    raf=requestAnimationFrame(tick);
   }
-  function arrow(dir){pause(5000);offset=(offset+dir*Math.max(180,view.clientWidth*.7)+half)%half;paint();}
+  function arrow(dir){if(!half)return;pause(5000);offset=(offset+dir*Math.max(180,view.clientWidth*.7)+half)%half;paint();}
   document.querySelectorAll('.home-products-shelf [data-shelf-dir]').forEach(function(button){
    button.addEventListener('click',function(){arrow(button.dataset.shelfDir==='next'?-1:1);});
   });
   view.addEventListener('pointerdown',function(event){
    if(event.pointerType==='mouse'&&event.button!==0)return;
+   // Never hijack taps on product action controls; they must remain clickable.
+   if(event.target.closest('button,input,select,textarea,[data-add],[data-quick-view]'))return;
    dragging=true;moved=false;startX=event.clientX;startOffset=offset;pause(6000);
-   try{view.setPointerCapture(event.pointerId);}catch(error){}
   });
   view.addEventListener('pointermove',function(event){
    if(!dragging)return;
@@ -492,7 +493,7 @@ footer.footer .button-primary { color:#fff !important; font-weight:1000 !importa
    track.style.setProperty('cursor','grabbing','important');
   });
   track.addEventListener('pointermove',function(e){
-   if(!dragging)return;
+   if(!dragging||!half)return;
    var dx=e.clientX-startX;
    if(Math.abs(dx)>5)moved=true;
    offset=startOffset-dx;paint();
