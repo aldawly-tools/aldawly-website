@@ -688,6 +688,7 @@
   }
 
   function addToCart(id) {
+    pendingOrder = null;
     const item = products.find(function (entry) { return String(entry.id) === String(id); });
     if (!item) return;
     if (Number.isInteger(item.stock) && item.stock >= 0 && item.stock === 0) {
@@ -732,6 +733,7 @@
       const id = String(button.getAttribute("data-remove") || "");
       const before = cart.length;
       cart = cart.filter(function(line) { return String(line.id) !== id; });
+      if (cart.length !== before) pendingOrder = null;
       if (cart.length !== before) renderCart();
     }, true);
   }
@@ -888,6 +890,7 @@
           alert("الكمية المطلوبة أكبر من المتاح بالمخزون.");
           return;
         }
+        pendingOrder = null;
         line.qty = nextQty;
         if (line.qty <= 0) cart = cart.filter(function (entry) { return String(entry.id) !== String(line.id); });
         renderCart();
@@ -896,6 +899,7 @@
     }
     const remove = event.target.closest("[data-remove]");
     if (remove) {
+      pendingOrder = null;
       cart = cart.filter(function (entry) { return String(entry.id) !== String(remove.dataset.remove); });
       renderCart();
       return;
@@ -913,7 +917,7 @@
     const paymentProofLink = document.getElementById("paymentProofLink");
     if (!followup || !status) return;
     status.textContent = saved
-      ? "تم تجهيز طلبك رقم " + orderNumber + ". أكمل إرسال تفاصيل الطلب والصورة عبر واتساب، وسيتم الاتفاق والتأكيد هناك."
+      ? "تم تجهيز طلبك رقم " + orderNumber + ". افتح رسالة واتساب واضغط إرسال لإتمام الطلب. لم يتم تأكيد الإرسال بعد."
       : "تعذر تجهيز الطلب. حاول مرة أخرى أو تواصل مع المتجر عبر واتساب.";
     if (orderLink) {
       if (saved && orderWhatsappUrl) {
