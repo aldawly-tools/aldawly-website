@@ -639,11 +639,10 @@
       renderProducts();
       setMobileMenu(false);
       requestAnimationFrame(function () {
-        const productsSection = document.getElementById("products");
-        if (productsSection) {
-          // Align the products section itself near the top of the viewport.
-          // The previous +150 offset pushed the section past its intended position.
-          const targetTop = productsSection.getBoundingClientRect().top + window.pageYOffset - 12;
+        // Go directly to the filtered product cards, not just the catalog section heading.
+        const productGrid = document.getElementById("productGrid");
+        if (productGrid) {
+          const targetTop = productGrid.getBoundingClientRect().top + window.pageYOffset - 12;
           window.scrollTo({top: Math.max(0, targetTop), behavior: "smooth"});
         }
       });
