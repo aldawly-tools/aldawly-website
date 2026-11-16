@@ -132,7 +132,7 @@
 .product-grid .product-visual:hover img,
 .home-shelf-card .product-visual:hover img,
 .product-detail-image:hover img{
- animation:dawlyProductSpin 2.2s linear infinite!important;
+ animation:dawlyProductSpin 5s linear infinite!important;
  transform-origin:50% 50%!important;
 }
 #productGrid .product-visual img,
@@ -143,5 +143,5 @@
  #productGrid .product-visual:active img,
  .product-grid .product-visual:active img,
  .home-shelf-card .product-visual:active img,
- .product-detail-image:active img{animation:dawlyProductSpin 2.2s linear infinite!important}
+ .product-detail-image:active img{animation:dawlyProductSpin 5s linear infinite!important}
 }
