@@ -192,6 +192,19 @@
 
     const mainImage = document.getElementById("detailMainImage");
     const thumbBox = document.getElementById("detailImageThumbs");
+    const imageHolder = document.getElementById("detailImage");
+    function fitDetailImageToItsOwnRatio() {
+      if (!mainImage || !imageHolder || !mainImage.naturalWidth || !mainImage.naturalHeight) return;
+      const naturalRatio = mainImage.naturalWidth / mainImage.naturalHeight;
+      // Preserve each image's proportions while preventing extremely wide/tall frames.
+      const displayRatio = Math.max(0.72, Math.min(1.9, naturalRatio));
+      imageHolder.style.setProperty("aspect-ratio", displayRatio.toFixed(4), "important");
+      imageHolder.style.setProperty("height", "auto", "important");
+    }
+    if (mainImage) {
+      mainImage.addEventListener("load", fitDetailImageToItsOwnRatio);
+      if (mainImage.complete) fitDetailImageToItsOwnRatio();
+    }
     Promise.all(uniqueGallery.map(async function (source) {
       if (source.url) return source.url;
       if (typeof window.DAWLY_LOAD_PRODUCT_IMAGE !== "function") return "";
