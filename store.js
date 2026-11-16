@@ -355,6 +355,23 @@
     };
     return known[key] || String(label || "?").trim().slice(0,2).toUpperCase();
   }
+  function syncActiveBrandHeading() {
+    const banner = document.getElementById("activeBrandBanner");
+    const title = document.getElementById("activeBrandBannerTitle");
+    const logo = document.getElementById("activeBrandBannerLogo");
+    const sectionTitle = document.querySelector("#products .section-title");
+    const subtitle = document.querySelector("#products .section-subtitle");
+    const label = activeBrand ? displayBrand(activeBrand) : "";
+    if (sectionTitle) sectionTitle.textContent = label ? "منتجات " + label : "كل المنتجات";
+    if (subtitle) subtitle.textContent = label ? "المنتجات المسجلة لماركة " + label : "تصفح كتالوج الدولي واسأل عن السعر والتوفر مباشرة";
+    if (banner && title && logo) {
+      banner.classList.toggle("is-visible", !!label);
+      title.textContent = label ? "منتجات " + label : "";
+      const src = label ? brandLogoForFilter(label) : "";
+      if (src) { logo.src = src; logo.alt = label; logo.hidden = false; }
+      else { logo.removeAttribute("src"); logo.alt = ""; logo.hidden = true; }
+    }
+  }
   function drawBrandFilters() {
     if (!brandFilterList) return;
     const counts = new Map();
@@ -468,12 +485,7 @@
       button.classList.toggle("active", button.dataset.category === activeCategory);
     });
   }
-  if (activeBrand) {
-    const title = document.querySelector("#products .section-title");
-    const subtitle = document.querySelector("#products .section-subtitle");
-    if (title) title.textContent = "منتجات " + activeBrand;
-    if (subtitle) subtitle.textContent = "المنتجات المسجلة لماركة " + activeBrand;
-  }
+  syncActiveBrandHeading();
   function renderCart(skipPersist) {
     // إزالة أي معرّفات قديمة/روابط منتجات لم تعد موجودة من السلة بعد تحميل الكتالوج.
     // لا ننظف السلة عندما تكون قائمة المنتجات فارغة مؤقتًا أثناء بدء تحميل الصفحة.
@@ -715,7 +727,12 @@
     const brandFilter = event.target.closest("[data-brand-filter]");
     if (brandFilter) {
       activeBrand = brandFilter.dataset.brandFilter === "الكل" ? "" : brandFilter.dataset.brandFilter;
+      const nextUrl = new URL(window.location.href);
+      if (activeBrand) nextUrl.searchParams.set("brand", activeBrand);
+      else nextUrl.searchParams.delete("brand");
+      window.history.replaceState({}, "", nextUrl.pathname + nextUrl.search + nextUrl.hash);
       visibleProductCount = pageSize;
+      syncActiveBrandHeading();
       drawBrandFilters();
       renderProducts();
       return;
