@@ -124,3 +124,24 @@
  #productGrid .product-name,.product-card .product-name{font-size:12px!important}
 }
 @media(prefers-reduced-motion:reduce){.product-card,.product-card img{transition:none!important}}
+
+
+/* Spin the product photo only while the pointer is over it. */
+@keyframes dawlyProductSpin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+#productGrid .product-visual:hover img,
+.product-grid .product-visual:hover img,
+.home-shelf-card .product-visual:hover img,
+.product-detail-image:hover img{
+ animation:dawlyProductSpin 2.2s linear infinite!important;
+ transform-origin:50% 50%!important;
+}
+#productGrid .product-visual img,
+.product-grid .product-visual img,
+.home-shelf-card .product-visual img,
+.product-detail-image img{backface-visibility:hidden}
+@media(hover:none){
+ #productGrid .product-visual:active img,
+ .product-grid .product-visual:active img,
+ .home-shelf-card .product-visual:active img,
+ .product-detail-image:active img{animation:dawlyProductSpin 2.2s linear infinite!important}
+}
