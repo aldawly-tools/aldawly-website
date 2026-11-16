@@ -49,6 +49,17 @@
 })();
 </script>
  <script src="site-routing.js?v=cart-no-transfer-20261115-2"></script>
+
+<style id="active-brand-banner-style">
+.active-brand-banner{display:none;align-items:center;justify-content:space-between;gap:18px;margin:0 0 22px;padding:20px 24px;border:1px solid #e5e8ec;border-right:5px solid #d71920;border-radius:16px;background:linear-gradient(110deg,#fff 0%,#f7f8fa 100%);box-shadow:0 7px 22px rgba(20,28,38,.06)}
+.active-brand-banner.is-visible{display:flex}
+.active-brand-banner-copy{display:flex;align-items:center;gap:16px;min-width:0}
+.active-brand-banner-logo{width:112px;height:58px;object-fit:contain;flex:0 0 auto;padding:8px 12px;border:1px solid #e8ebef;border-radius:10px;background:#fff}
+.active-brand-banner h2{margin:0;color:#17191c;font-size:clamp(20px,2.4vw,30px);font-weight:1000;line-height:1.3}
+.active-brand-banner p{margin:5px 0 0;color:#68717b;font-size:14px}
+.active-brand-banner-reset{flex:0 0 auto;padding:10px 16px;border-radius:9px;background:#d71920;color:#fff;font-weight:800;text-decoration:none}
+@media(max-width:600px){.active-brand-banner{padding:14px;gap:10px}.active-brand-banner-copy{gap:10px}.active-brand-banner-logo{width:78px;height:48px;padding:6px}.active-brand-banner h2{font-size:19px}.active-brand-banner p{font-size:12px}.active-brand-banner-reset{padding:9px 10px;font-size:12px}}
+</style>
 </head>
 <body>
 <div class="benefit-bar">
@@ -109,6 +120,13 @@
     <div class="brand-filter-list" id="brandFilterList" aria-label="اختر ماركة"></div>
    </aside>
    <div class="catalog-results">
+    <section class="active-brand-banner" id="activeBrandBanner" aria-live="polite">
+     <div class="active-brand-banner-copy">
+      <img class="active-brand-banner-logo" id="activeBrandBannerLogo" alt="" hidden>
+      <div><h2 id="activeBrandBannerTitle"></h2><p>تصفح منتجات الماركة المتاحة لدى الدولي</p></div>
+     </div>
+     <a class="active-brand-banner-reset" href="products.html#products">كل الماركات</a>
+    </section>
     <div class="category-filter-heading"><h3>الأقسام <span class="category-filter-hint">اختر قسمًا لتضييق النتائج</span></h3><button type="button" class="filter-reset" data-category="الكل">عرض الكل</button></div>
     <div class="filter-bar" id="filterBar" aria-label="فلترة المنتجات حسب القسم"></div>
     <section class="recently-viewed-section" id="recentlyViewedSection" hidden aria-label="المنتجات التي شاهدتها"><div class="section-heading"><div><h2 class="section-title">المنتجات التي شاهدتها</h2><p class="section-subtitle">ارجع بسهولة للمنتجات اللي فتحتها قبل كده</p></div><button class="recent-view-clear" id="clearRecentlyViewed" type="button">مسح السجل</button></div><div class="recently-viewed-grid" id="recentlyViewedProducts"></div></section>
@@ -231,6 +249,32 @@
 <script type="module" src="traffic-analytics.js?v=product-view-routes-20261116-1"></script>
 <script src="onesignal-init.js?v=live-refresh-20261114-1"></script>
 <script src="store.js?v=desktop-nav-native-links-20261116-4"></script>
+<script>
+(function(){
+ var params=new URLSearchParams(window.location.search);
+ var brand=(params.get('brand')||'').trim();
+ if(!brand)return;
+ var known={
+  'wurth':{name:'WÜRTH',logo:'https://upload.wikimedia.org/wikipedia/commons/c/c3/Wuerth_Logo_2024.svg'},
+  'bosch':{name:'BOSCH',logo:'https://upload.wikimedia.org/wikipedia/commons/1/16/Bosch-logo.svg'},
+  'wera':{name:'WERA',logo:'https://upload.wikimedia.org/wikipedia/commons/e/ec/Wera_schwarz_Logo_ohne_Effekt_4C.svg'},
+  'knipex':{name:'KNIPEX',logo:'https://upload.wikimedia.org/wikipedia/commons/e/e3/Knipex_logo.svg'},
+  'beta':{name:'BETA',logo:'https://static.cdnlogo.com/logos/b/13/beta-tools.svg'},
+  'dewalt':{name:'DEWALT',logo:'https://upload.wikimedia.org/wikipedia/commons/8/89/DeWalt_Logo.svg'},
+  'milwaukee':{name:'MILWAUKEE',logo:'https://upload.wikimedia.org/wikipedia/commons/d/de/Milwaukee_Logo.svg'},
+  'makita':{name:'MAKITA',logo:'https://upload.wikimedia.org/wikipedia/commons/7/71/Makita_Logo.svg'}
+ };
+ var item=known[brand.toLowerCase()]||{name:brand.toUpperCase(),logo:''};
+ var banner=document.getElementById('activeBrandBanner');
+ var title=document.getElementById('activeBrandBannerTitle');
+ var logo=document.getElementById('activeBrandBannerLogo');
+ if(!banner||!title||!logo)return;
+ title.textContent='منتجات '+item.name;
+ if(item.logo){logo.src=item.logo;logo.alt='شعار '+item.name;logo.hidden=false;}
+ banner.classList.add('is-visible');
+})();
+</script>
+
 <script src="smart-search.js?v=20261116-6"></script>
 <script src="share-product.js?v=share-image-reuse-20261114-6"></script>
 <script src="image-zoom.js?v=product-card-navigation-20261116-1"></script>
