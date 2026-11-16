@@ -1,4 +1,4 @@
-const CACHE_NAME = "aldawly-tools-v16-custom-domain";
+const CACHE_NAME = "aldawly-tools-v17-offline-fallback";
 const APP_SHELL = [
   "/",
   "/index.html",
@@ -25,5 +25,18 @@ self.addEventListener("fetch", event => {
       caches.open(CACHE_NAME).then(cache => cache.put(request, copy));
     }
     return response;
-  }).catch(() => caches.match(request).then(cached => cached || caches.match("/index.html"))));
+  }).catch(async () => {
+    const cached = await caches.match(request);
+    if (cached) return cached;
+    // Only document navigations may fall back to the home page.
+    // Returning index.html for a failed CSS/JS/image request causes MIME errors.
+    if (request.mode === "navigate") {
+      const home = await caches.match("/index.html");
+      if (home) return home;
+    }
+    return new Response("المحتوى غير متاح دون اتصال بالإنترنت.", {
+      status: 503,
+      headers: { "content-type": "text/plain; charset=utf-8", "cache-control": "no-store" }
+    });
+  }));
 });
