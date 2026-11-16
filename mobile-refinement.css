@@ -611,3 +611,48 @@
   .hero-copy h2{font-size:11px!important}
   .hero-copy p{font-size:7.5px!important}
 }
+
+
+/* Refine mobile hero catalog CTA and keep benefit statements on one line. */
+@media(max-width:700px){
+  .hero-copy a.hero-cta.whatsapp-catalog-cta{
+    display:flex!important;
+    width:100%!important;
+    min-height:38px!important;
+    height:38px!important;
+    max-height:38px!important;
+    margin:4px 0 0!important;
+    padding:4px 10px!important;
+    font-size:11px!important;
+    line-height:1.1!important;
+    border-radius:8px!important;
+    box-sizing:border-box!important;
+  }
+  .hero-services .service-card{
+    flex-direction:row!important;
+    flex-wrap:nowrap!important;
+    align-items:center!important;
+    justify-content:center!important;
+    gap:6px!important;
+    white-space:nowrap!important;
+    min-width:0!important;
+  }
+  .hero-services .service-card > span:last-child{
+    white-space:nowrap!important;
+    font-size:clamp(10px,2.8vw,13px)!important;
+    line-height:1.15!important;
+    letter-spacing:-.25px!important;
+  }
+  .hero-services .service-icon,
+  .hero-services .service-icon svg{
+    flex:0 0 23px!important;
+    width:23px!important;
+    height:23px!important;
+  }
+}
+@media(max-width:380px){
+  .hero-services .service-card{gap:4px!important;padding-inline:4px!important}
+  .hero-services .service-card > span:last-child{font-size:10px!important}
+  .hero-services .service-icon,
+  .hero-services .service-icon svg{flex-basis:20px!important;width:20px!important;height:20px!important}
+}
