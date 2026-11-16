@@ -4601,3 +4601,30 @@ body.quick-view-open{overflow:hidden}
  .quick-view-description,.quick-view-specs{font-size:13px}
  .quick-view-price{font-size:22px}
 }
+
+
+/* Flat 2D floating call icon: crisp solid handset, no depth effects */
+.floating-contact-toggle{
+ width:60px!important;height:60px!important;
+ display:grid!important;place-items:center!important;
+ background:#08c875!important;color:#fff!important;
+ border:0!important;border-radius:50%!important;
+ box-shadow:none!important;filter:none!important;
+ transform:none!important;perspective:none!important;
+}
+.floating-contact-toggle .contact-toggle-phone{
+ display:block!important;width:30px!important;height:30px!important;
+ fill:#fff!important;stroke:none!important;stroke-width:0!important;
+ opacity:1!important;visibility:visible!important;
+ filter:none!important;transform:none!important;
+}
+.floating-contact-toggle .contact-toggle-phone path{fill:#fff!important;stroke:none!important}
+.floating-contact-toggle.is-open .contact-toggle-phone{display:none!important}
+.floating-contact-toggle .contact-toggle-close{
+ width:26px!important;height:26px!important;
+ fill:none!important;stroke:#fff!important;stroke-width:2.5!important;
+ opacity:1!important;visibility:visible!important;
+}
+.floating-contact-toggle:hover,.floating-contact-toggle:active{
+ box-shadow:none!important;filter:none!important;transform:none!important
+}
