@@ -5012,3 +5012,16 @@ html body aside#cartDrawer.cart-drawer>.cart-scroll-area>.payment-followup{
  .home-products-shelf .home-shelf-card{flex:0 0 calc((100vw - 48px)/2)!important;width:calc((100vw - 48px)/2)!important;min-width:0!important;max-width:none!important}
  .home-products-shelf .home-products-track{gap:10px!important}
 }
+
+
+/* Mobile one-finger swipe: horizontal drag is handled by the shelf, vertical page scroll stays native. */
+.home-products-shelf .home-products-viewport{
+  touch-action:pan-y!important;
+  overscroll-behavior-x:contain!important;
+  -webkit-user-select:none!important;
+  user-select:none!important;
+}
+.home-products-shelf .home-products-track img{
+  -webkit-user-drag:none!important;
+  user-select:none!important;
+}
