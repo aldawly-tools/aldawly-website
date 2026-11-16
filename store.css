@@ -5064,3 +5064,62 @@ html body aside#cartDrawer.cart-drawer>.cart-scroll-area>.payment-followup{
   max-width:82vw!important;
  }
 }
+
+
+/* Premium guided order drawer — replaces the legacy cart presentation without changing catalog layout. */
+#cartDrawer .drawer-head{
+  align-items:flex-start!important;gap:14px!important;padding:18px 18px 15px!important;
+  border-bottom:1px solid #eceff2!important;background:linear-gradient(135deg,#fff 0%,#fff7f7 100%)!important;
+}
+#cartDrawer .order-drawer-title{min-width:0;display:grid;gap:4px}
+#cartDrawer .order-eyebrow{font-size:10px;font-weight:900;letter-spacing:.2px;color:#c8101e}
+#cartDrawer .order-drawer-title h2{margin:0!important;font-size:22px!important;font-weight:1000!important;color:#171b20}
+#cartDrawer .order-drawer-title p{margin:0;color:#747c85;font-size:11px;font-weight:600}
+#cartDrawer .drawer-close{flex:0 0 auto;border:1px solid #e3e6e9!important;border-radius:10px!important;background:#fff!important;padding:9px 11px!important;font-size:12px!important}
+#cartDrawer .order-progress{display:flex;align-items:center;justify-content:space-between;gap:6px;padding:15px 2px 17px;color:#89919a;font-size:10px;font-weight:800;white-space:nowrap}
+#cartDrawer .order-progress span{display:flex;align-items:center;gap:5px}
+#cartDrawer .order-progress b{width:22px;height:22px;display:grid;place-items:center;border-radius:50%;background:#edf0f2;color:#68717b;font-size:11px}
+#cartDrawer .order-progress .is-active{color:#b71925}
+#cartDrawer .order-progress .is-active b{background:#c8101e;color:#fff}
+#cartDrawer .order-progress i{height:1px;min-width:8px;flex:1;background:#e5e8eb}
+#cartDrawer .order-section-heading{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:0 0 8px}
+#cartDrawer .order-section-heading h3{margin:0;color:#20262d;font-size:16px;font-weight:1000}
+#cartDrawer .order-section-heading p{margin:3px 0 0;color:#7a838c;font-size:10px;line-height:1.5}
+#cartDrawer .order-secure-mark{padding:6px 9px;border-radius:30px;background:#f1f7f2;color:#327044;font-size:10px;font-weight:900;white-space:nowrap}
+#cartDrawer .cart-items{padding:4px 0 12px!important}
+#cartDrawer .cart-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:9px;align-items:center;padding:12px!important;margin:0 0 9px;border:1px solid #e9ecef!important;border-radius:14px!important;background:#fff!important;box-shadow:0 3px 12px #171b2008}
+#cartDrawer .cart-product-thumb{width:66px!important;height:66px!important;flex:0 0 66px!important;border-radius:10px!important;background:#f5f6f7!important}
+#cartDrawer .cart-product-copy>strong{font-size:12px!important;line-height:1.6!important;color:#222831}
+#cartDrawer .cart-product-copy>small{font-size:11px!important}
+#cartDrawer .cart-product-description{font-size:10px!important;line-height:1.55!important}
+#cartDrawer .quantity{margin-top:8px!important;display:inline-flex!important;align-items:center!important;gap:10px!important;padding:3px 6px!important;border:1px solid #e4e7ea!important;border-radius:9px!important;background:#fafbfc!important}
+#cartDrawer .quantity button{width:27px!important;height:27px!important;border-radius:7px!important;background:#fff!important;border:1px solid #e5e8eb!important;color:#b71925!important;font-size:17px!important;font-weight:900!important}
+#cartDrawer .remove-item{padding:6px 8px!important;border-radius:8px!important;background:#fff5f5!important;color:#bd2630!important;font-size:10px!important;font-weight:900!important}
+#cartDrawer .cart-total{margin:2px 0 15px!important;padding:13px!important;border:1px solid #f0dada!important;border-radius:13px!important;background:#fff9f9!important}
+#cartDrawer .cart-total-row{font-size:13px!important}
+#cartDrawer .cart-total-row strong{font-size:19px!important}
+#cartDrawer .checkout-fields{gap:8px!important;margin:14px 0 12px!important;padding:14px!important;border:1px solid #e7eaed!important;border-radius:15px!important;background:#f8f9fa!important}
+#cartDrawer .checkout-fields-heading{display:flex;align-items:center;gap:10px;margin-bottom:3px}
+#cartDrawer .checkout-fields-icon{width:34px;height:34px;display:grid;place-items:center;border-radius:10px;background:#c8101e;color:#fff;font-size:12px;font-weight:1000}
+#cartDrawer .checkout-fields-heading h3{margin:0!important;font-size:15px!important;color:#20262d}
+#cartDrawer .checkout-fields-heading p{margin:2px 0 0;color:#7a838c;font-size:10px}
+#cartDrawer .checkout-fields label{margin-top:4px!important;font-size:11px!important}
+#cartDrawer .checkout-fields input,#cartDrawer .checkout-fields textarea{border:1px solid #dfe3e7!important;border-radius:10px!important;padding:11px 12px!important;background:#fff!important;font-size:14px!important}
+#cartDrawer .checkout-action-note{display:flex;align-items:center;gap:7px;margin:8px 0;color:#69737d;font-size:10px;font-weight:700}
+#cartDrawer .checkout-action-note span{width:18px;height:18px;display:grid;place-items:center;border-radius:50%;background:#eaf5ed;color:#287342;font-weight:1000}
+#cartDrawer .cart-sticky-footer .checkout,#cartDrawer .checkout{min-height:52px!important;border:0!important;border-radius:12px!important;background:linear-gradient(110deg,#c8101e,#e12a35)!important;box-shadow:0 7px 18px #c8101e25!important;color:#fff!important;font-size:14px!important;font-weight:1000!important}
+#cartDrawer .checkout:disabled{opacity:.45!important;box-shadow:none!important}
+#cartDrawer .payment-followup{padding:14px!important;border-radius:14px!important;background:#fffafa!important}
+#cartDrawer .payment-followup-status{font-size:12px!important;line-height:1.8!important}
+#cartDrawer .payment-proof{display:flex;justify-content:center;align-items:center;min-height:44px;padding:10px;border:1px solid #d9a0a4;border-radius:10px;color:#a91e29!important;font-size:12px;font-weight:900;text-decoration:none!important}
+#cartDrawer .payment-methods{gap:8px!important}
+#cartDrawer .empty-cart{padding:28px 14px!important;border:1px dashed #d9dee3!important;border-radius:14px!important;background:#fafbfc!important;color:#7b848d!important;text-align:center;font-size:12px!important}
+@media(max-width:600px){
+  #cartDrawer .drawer-head{padding:14px 13px 12px!important}
+  #cartDrawer .order-drawer-title h2{font-size:19px!important}
+  #cartDrawer .order-progress{font-size:9px;gap:4px}
+  #cartDrawer .order-progress span{gap:3px}
+  #cartDrawer .order-progress b{width:20px;height:20px}
+  #cartDrawer .cart-row{padding:10px!important}
+  #cartDrawer .cart-product-thumb{width:58px!important;height:58px!important;flex-basis:58px!important}
+}
