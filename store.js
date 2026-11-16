@@ -641,8 +641,10 @@
       requestAnimationFrame(function () {
         const productsSection = document.getElementById("products");
         if (productsSection) {
-          const targetTop = productsSection.getBoundingClientRect().top + window.pageYOffset + 150;
-          window.scrollTo({top: targetTop, behavior: "smooth"});
+          // Align the products section itself near the top of the viewport.
+          // The previous +150 offset pushed the section past its intended position.
+          const targetTop = productsSection.getBoundingClientRect().top + window.pageYOffset - 12;
+          window.scrollTo({top: Math.max(0, targetTop), behavior: "smooth"});
         }
       });
     });
