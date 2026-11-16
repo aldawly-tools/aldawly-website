@@ -48,6 +48,16 @@
     const labels = {wurth:"WÜRTH",bosch:"BOSCH",wera:"WERA",knipex:"KNIPEX",beta:"Beta",dewalt:"DEWALT"};
     return labels[key] || raw;
   }
+  function productBannerTheme(item) {
+    const source = [item && item.name, item && item.cat, item && item.brand, item && item.desc, item && item.specs].join(" ").toLowerCase();
+    if (/سيار|عرب|automotive|car|bmw|mercedes|volkswagen|audi|opel|ford|fiat|renault/.test(source)) return "automotive";
+    if (/كهرب|elect|فولت|multimeter|لحام|weld|battery/.test(source)) return "electrical";
+    if (/خشب|نجار|wood|carpentry|منشار/.test(source)) return "wood";
+    if (/حدائق|زراع|garden|قص عشب/.test(source)) return "garden";
+    if (/قياس|measure|ميزان|متر|caliper/.test(source)) return "measure";
+    if (/هواء|pneumatic|كمبروسر|ضغط/.test(source)) return "pneumatic";
+    return "workshop";
+  }
   function showMissing() {
     document.title = "المنتج غير موجود | الدولي";
     root.innerHTML = '<div class="product-detail-missing"><h1>المنتج غير موجود</h1><p>قد يكون الإعلان حُذف أو أن الرابط غير صحيح.</p><a class="button-primary" href="products.html">العودة إلى المنتجات</a></div>';
@@ -135,7 +145,7 @@
 
     document.title = name + " | الدولي";
     document.getElementById("detailBreadcrumb").textContent = name;
-    root.innerHTML = '<article class="product-detail-layout">' +
+    root.innerHTML = '<article class="product-detail-layout" data-theme="' + productBannerTheme(item) + '">' +
       '<div><div class="product-detail-image" id="detailImage" tabindex="0" role="button" aria-label="تكبير صورة ' + escapeHtml(name) + '" title="اضغط لتكبير الصورة">' + image + galleryControls + '</div>' + galleryHtml + '</div>' +
       '<div class="product-detail-info"><span class="product-detail-category">' + brand + escapeHtml(item.cat || "منتجات") + '</span>' +
       '<h1 class="product-detail-title">' + escapeHtml(name) + '</h1>' +
