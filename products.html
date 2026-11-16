@@ -19,7 +19,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="store.css?v=20261116-cart-details-desktop-mobile">
+<link rel="stylesheet" href="store.css?v=20261116-cart-scroll-desktop">
 <link rel="stylesheet" href="product-experience.css?v=20261115-1">\n<link rel="stylesheet" href="mobile-refinement.css?v=premium-industrial-20261115-1">
 <link rel="stylesheet" href="catalog-color-refinement.css?v=red-active-categories-20261115">
 
@@ -211,6 +211,7 @@
 <div class="cart-overlay" id="cartOverlay"></div>
 <aside class="cart-drawer" id="cartDrawer" aria-label="سلة المشتريات" aria-modal="true" role="dialog">
  <div class="drawer-head"><h2>سلة المشتريات</h2><button class="drawer-close" type="button" id="closeCart">إغلاق ✕</button></div>
+ <div class="cart-scroll-area">
  <div class="cart-items" id="cartItems"></div>
  <div class="cart-total" id="cartTotal" aria-live="polite"></div>
  <div class="checkout-fields" aria-label="بيانات العميل">
@@ -254,12 +255,13 @@
   </div>
   <a class="payment-proof" id="paymentProofLink" href="#" target="_blank" rel="noopener noreferrer">إرسال رقم الطلب وإيصال الدفع عبر واتساب</a>
  </section>
+</div>
 </aside>
 <script src="products.js?v=live-refresh-20261114-1"></script>
 <script src="firebase-config.js?v=live-refresh-20261114-1"></script>
 <script type="module" src="traffic-analytics.js?v=product-view-routes-20261116-1"></script>
 <script src="onesignal-init.js?v=live-refresh-20261114-1"></script>
-<script src="store.js?v=20261116-cart-details-desktop-mobile"></script>
+<script src="store.js?v=20261116-cart-scroll-desktop"></script>
 <script>
 (function(){
  var params=new URLSearchParams(window.location.search);

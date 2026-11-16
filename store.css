@@ -4661,3 +4661,35 @@ body.quick-view-open{overflow:hidden}
  .cart-row .cart-product-copy>strong{font-size:14px!important}
  .cart-row .cart-product-copy>.cart-product-description{font-size:12px!important}
 }
+
+
+/* Allow the complete cart contents to scroll on desktop and mobile */
+html body aside#cartDrawer.cart-drawer{
+ display:flex!important;
+ flex-direction:column!important;
+ overflow:hidden!important;
+ height:100vh!important;
+ height:100dvh!important;
+}
+html body aside#cartDrawer.cart-drawer>.drawer-head{
+ flex:0 0 auto!important;
+}
+html body aside#cartDrawer.cart-drawer>.cart-scroll-area{
+ display:block!important;
+ flex:1 1 auto!important;
+ min-height:0!important;
+ overflow-y:auto!important;
+ overflow-x:hidden!important;
+ overscroll-behavior:contain!important;
+ -webkit-overflow-scrolling:touch!important;
+ scrollbar-width:thin!important;
+ padding:0 4px 24px 0!important;
+}
+html body aside#cartDrawer.cart-drawer>.cart-scroll-area>.cart-items,
+html body aside#cartDrawer.cart-drawer>.cart-scroll-area>.cart-total,
+html body aside#cartDrawer.cart-drawer>.cart-scroll-area>.checkout-fields,
+html body aside#cartDrawer.cart-drawer>.cart-scroll-area>.booking-deposit-note,
+html body aside#cartDrawer.cart-drawer>.cart-scroll-area>.checkout,
+html body aside#cartDrawer.cart-drawer>.cart-scroll-area>.payment-followup{
+ flex:0 0 auto!important;
+}
