@@ -4922,3 +4922,11 @@ html body aside#cartDrawer.cart-drawer>.cart-scroll-area>.payment-followup{
  .home-products-shelf .home-products-track{gap:10px!important}
  .home-products-shelf .home-shelf-card{flex:0 0 calc((100vw - 48px)/2)!important;width:calc((100vw - 48px)/2)!important;min-width:0!important;max-width:none!important}
 }
+
+
+/* Automatic latest-products ticker layout. */
+.home-products-shelf .home-products-viewport{overflow:hidden!important;position:relative!important;width:100%!important;touch-action:pan-y!important;cursor:grab!important}
+.home-products-shelf .home-products-track{display:flex!important;flex-flow:row nowrap!important;width:max-content!important;min-width:max-content!important;direction:rtl!important;gap:14px!important;will-change:transform}
+.home-products-shelf .home-products-track>.home-shelf-card{flex:0 0 auto!important}
+.home-products-shelf .home-products-track>[data-auto-clone="1"]{pointer-events:none!important}
+@media(max-width:640px){.home-products-shelf .home-products-track{gap:10px!important}.home-products-shelf .home-shelf-card{flex:0 0 calc((100vw - 48px)/2)!important;width:calc((100vw - 48px)/2)!important;min-width:0!important;max-width:none!important}}
