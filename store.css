@@ -4740,7 +4740,7 @@ html body aside#cartDrawer.cart-drawer>.cart-scroll-area>.payment-followup{
   }
   .mobile-menu-drawer {
     inset:0 !important;
-    width:min(420px,100vw) !important;
+    width:100vw !important;
     height:100dvh !important;
     max-height:100dvh !important;
     padding-bottom:max(22px,env(safe-area-inset-bottom)) !important;
