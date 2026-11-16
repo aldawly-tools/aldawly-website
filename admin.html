@@ -618,53 +618,25 @@ $("deleteAllOrdersBtn").addEventListener("click",async function(){
  try{
   const snapshot=await getDocs(collection(db,"orders"));
   const docs=snapshot.docs;
-  if(!docs.length){orders=[];renderOrders();$("ordersStatus").textContent="لا توجد طلبات لحذفها.";return;}
-  const needsRestore=docs.filter(d=>{const o=d.data();return o.inventoryDeducted===true&&o.inventoryRestored!==true;});
-  const approved=window.confirm("تنبيه: سيتم حذف جميع الطلبات وعددها "+docs.length+" نهائيًا. "+(needsRestore.length?"سيتم إرجاع الكميات إلى المخزون لعدد "+needsRestore.length+" طلب قبل الحذف، حتى لو كانت حالته مؤكدة. ":"")+"لن يتم حذف المنتجات أو صورها أو بيانات المتجر الأخرى. هل تريد المتابعة؟");
+  if(!docs.length){orders=[];renderOrders();$("ordersStatus").textContent="لا توجد طلبات قديمة لحذفها.";return;}
+  const approved=window.confirm("سيتم حذف جميع الطلبات القديمة وعددها "+docs.length+" نهائيًا من قاعدة البيانات. لن يتم تعديل أو حذف أي منتج أو كمية مخزون أو صورة. هل تريد المتابعة؟");
   if(!approved)return;
   let deleted=0;
-  for(const orderDoc of needsRestore){
-   await runTransaction(db,async function(transaction){
-    const orderRef=doc(db,"orders",orderDoc.id);
-    const latestSnap=await transaction.get(orderRef);
-    if(!latestSnap.exists())return;
-    const latest=latestSnap.data();
-    if(latest.inventoryDeducted===true&&latest.inventoryRestored!==true){
-     const items=Array.isArray(latest.items)?latest.items:[];
-     const reads=[];
-     for(const item of items){
-      const productId=String(item.id||""),qty=Number(item.qty);
-      if(!productId||!Number.isInteger(qty)||qty<1)throw new Error("بيانات المخزون غير مكتملة في الطلب "+(latest.orderNumber||orderDoc.id)+".");
-      const productRef=doc(db,"products",productId);
-      const productSnap=await transaction.get(productRef);
-      if(!productSnap.exists())throw new Error("المنتج "+productId+" غير موجود؛ لم يتم حذف الطلب.");
-      reads.push({ref:productRef,data:productSnap.data(),qty:qty});
-     }
-     reads.forEach(function(entry){
-      const stock=entry.data.stock;
-      if(Number.isInteger(stock)&&stock>=0)transaction.update(entry.ref,{stock:stock+entry.qty,updatedAt:serverTimestamp()});
-     });
-    }
-    transaction.delete(orderRef);
-   });
-   deleted++;
-   $("ordersStatus").textContent="جارٍ استعادة المخزون وحذف الطلبات… "+deleted+" من "+docs.length;
-  }
-  const remaining=docs.filter(d=>!needsRestore.some(x=>x.id===d.id));
-  for(let i=0;i<remaining.length;i+=400){
+  for(let i=0;i<docs.length;i+=400){
    const batch=writeBatch(db);
-   remaining.slice(i,i+400).forEach(d=>batch.delete(d.ref));
+   const part=docs.slice(i,i+400);
+   part.forEach(function(orderDoc){batch.delete(orderDoc.ref);});
    await batch.commit();
-   deleted+=Math.min(400,remaining.length-i);
-   $("ordersStatus").textContent="جارٍ حذف الطلبات… "+deleted+" من "+docs.length;
+   deleted+=part.length;
+   $("ordersStatus").textContent="جارٍ حذف الطلبات القديمة… "+deleted+" من "+docs.length;
   }
   orders=[];
   renderOrders();
   updateSalesSummary();
-  $("ordersStatus").textContent="تم حذف جميع الطلبات بنجاح ("+deleted+" طلب). المنتجات وباقي بيانات المتجر لم تتأثر.";
+  $("ordersStatus").textContent="تم حذف جميع الطلبات القديمة بنجاح ("+deleted+" طلب). المنتجات والمخزون والصور لم تتغير.";
  }catch(error){
   console.error("Bulk order deletion failed:",error);
-  $("ordersStatus").textContent="تعذر إكمال حذف الطلبات: "+(error.code||error.message||"خطأ غير معروف")+". حدّث الطلبات للتحقق من الحالة.";
+  $("ordersStatus").textContent="تعذر حذف الطلبات: "+(error.code||error.message||"خطأ غير معروف")+". تحقق من صلاحيات Firestore ثم اضغط تحديث الطلبات.";
  }finally{
   button.disabled=false;
  }
