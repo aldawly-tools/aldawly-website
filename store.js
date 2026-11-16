@@ -79,6 +79,7 @@
     } catch (error) {}
   }
   let cloudImageObserver = null;
+  let homeShelfAdTimer = null;
 
   function showProductImageFallback(image) {
     if (!image || !image.parentNode) return;
@@ -105,7 +106,7 @@
   }, true);
 
   function observeCloudImages() {
-    const images = document.querySelectorAll("#productGrid img[data-cloud-image], #featuredProductsGrid img[data-cloud-image], #newArrivalsGrid img[data-cloud-image], #quickViewModal img[data-cloud-image]");
+    const images = document.querySelectorAll("#productGrid img[data-cloud-image], #featuredProductsGrid img[data-cloud-image], #newArrivalsGrid img[data-cloud-image], #quickViewModal img[data-cloud-image], .home-shelf-ad img[data-cloud-image]");
     if (!images.length || typeof window.DAWLY_LOAD_PRODUCT_IMAGE !== "function") return;
     function loadImage(image) {
       // The storage loader may finish initializing after the catalog markup.
@@ -368,6 +369,37 @@
         return db-da || Number(b.id||0)-Number(a.id||0);
       }).slice(0,12);
       arrivalsGrid.innerHTML = latest.length ? latest.map(card).join("") : '<div class="catalog-empty-note">الكتالوج فارغ حاليًا. أضف منتجاتك الأصلية من لوحة الإدارة لتظهر هنا تلقائيًا.</div>';
+      const adMarkup = function(item){
+        if(!item) return "";
+        const name = cleanProductName(item.name);
+        const url = "product.html?id=" + encodeURIComponent(String(item.id));
+        const image = item.image
+          ? '<img src="' + escapeHtml(item.image) + '"' + (item.imageId ? ' data-cloud-image="' + escapeHtml(item.imageId) + '"' : '') + ' alt="' + escapeHtml(name) + '" loading="eager" decoding="async">'
+          : item.imageId
+            ? '<img data-cloud-image="' + escapeHtml(item.imageId) + '" alt="' + escapeHtml(name) + '" loading="eager" decoding="async">'
+            : '<span class="product-placeholder" aria-hidden="true">' + escapeHtml(item.icon || "🔧") + '</span>';
+        return '<a class="home-shelf-ad" href="' + url + '"><span class="home-shelf-ad-kicker">إعلان منتج</span><span class="home-shelf-ad-image">' + image + '</span><strong>' + escapeHtml(name) + '</strong><span class="home-shelf-ad-brand">' + escapeHtml(displayBrand(productBrand(item)) || item.cat || "منتجات الدولي") + '</span><span class="home-shelf-ad-cta">شاهد التفاصيل ←</span></a>';
+      };
+      const adRight = document.getElementById("homeShelfAdRight");
+      const adLeft = document.getElementById("homeShelfAdLeft");
+      let adOffset = 0;
+      const paintAds = function(){
+        if(!latest.length) return;
+        const rightItem = latest[adOffset % latest.length];
+        const leftItem = latest[(adOffset + 1) % latest.length];
+        if(adRight) adRight.innerHTML = adMarkup(rightItem);
+        if(adLeft) adLeft.innerHTML = adMarkup(leftItem);
+        observeCloudImages();
+        adOffset = (adOffset + 2) % latest.length;
+      };
+      if(homeShelfAdTimer) window.clearInterval(homeShelfAdTimer);
+      if(latest.length){
+        paintAds();
+        if(latest.length > 2) homeShelfAdTimer = window.setInterval(paintAds, 5200);
+      } else {
+        if(adRight) adRight.innerHTML = "";
+        if(adLeft) adLeft.innerHTML = "";
+      }
     }
     // Load Firebase-hosted images in the featured and latest-product shelves too.
     observeCloudImages();
