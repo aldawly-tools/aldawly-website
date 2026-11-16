@@ -134,43 +134,29 @@
   .hero-shell .hero-grid{margin-top:0!important}
 }
 
-/* Desktop hero: keep the entire image visible and prevent an over-tall banner. */
+/* Match mobile hero behavior on desktop: hide the decorative photo completely. */
 @media (min-width:821px){
   .hero-shell .hero-grid{
-    height:clamp(390px,38vw,510px)!important;
-    min-height:0!important;
-    align-items:stretch!important;
+    grid-template-columns:minmax(0,1.15fr) minmax(260px,.85fr)!important;
+    grid-template-areas:"copy services"!important;
+    min-height:390px!important;
+    height:auto!important;
   }
-  .hero-shell .hero-photo,
+  .hero-shell .hero-photo{display:none!important}
   .hero-shell .hero-copy,
   .hero-shell .hero-services{
-    height:100%!important;
-    min-height:0!important;
-    max-height:100%!important;
+    min-height:390px!important;
+    height:auto!important;
   }
-  .hero-shell .hero-photo img,
-  .hero-shell .hero-photo video{
-    object-fit:cover!important;
-    object-position:center center!important;
-    min-height:0!important;
-    max-height:100%!important;
+  .hero-shell .hero-copy{
+    justify-content:center!important;
+    padding:clamp(28px,4vw,56px)!important;
   }
   .hero-shell .hero-services{
-    display:flex!important;
-    flex-direction:column!important;
-    justify-content:center!important;
-    overflow:hidden!important;
+    grid-template-rows:repeat(4,minmax(68px,auto))!important;
+    align-content:center!important;
   }
-  .hero-shell .hero-services-track{
-    display:grid!important;
-    grid-template-columns:minmax(0,1fr)!important;
-    gap:8px!important;
-    min-height:0!important;
-    max-height:100%!important;
-    overflow:hidden!important;
-  }
-  .hero-shell .hero-services .service-card{
-    min-height:0!important;
-    padding:9px 10px!important;
-  }
+}
+@media (min-width:821px) and (max-width:1100px){
+  .hero-shell .hero-grid{grid-template-columns:minmax(0,1.1fr) minmax(230px,.9fr)!important}
 }
