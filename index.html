@@ -240,7 +240,7 @@ footer.footer .button-primary { color:#fff !important; font-weight:1000 !importa
  <div class="section-heading"><div><h2 class="section-title">تصفح كل المنتجات</h2><p class="section-subtitle">ابحث بين جميع الأدوات والمعدات المتاحة في المتجر</p></div><a class="text-link" href="products.html">عرض كافة المنتجات ‹</a></div>
  <section class="home-products-shelf" aria-label="أحدث المنتجات">
   <div class="home-shelf-heading"><div><h2 class="section-title">أحدث المنتجات</h2><p class="section-subtitle">اكتشف أحدث الأدوات المضافة للمتجر</p></div><div class="home-shelf-arrows"><button type="button" class="shelf-arrow" data-shelf-dir="prev" aria-label="السابق">‹</button><button type="button" class="shelf-arrow" data-shelf-dir="next" aria-label="التالي">›</button></div></div>
-  <div class="home-products-viewport"><div class="home-products-track" id="newArrivalsGrid" aria-live="polite"></div></div>
+  <div class="home-products-viewport"><div class="home-products-track" id="newArrivalsGrid" aria-live="polite"></div></div><div class="home-shelf-progress" aria-hidden="true"><span></span></div>
  </section>
  <div class="filter-bar" id="filterBar" aria-label="فلترة المنتجات"></div>
 <div class="product-grid" id="productGrid" aria-live="polite"></div>
@@ -339,7 +339,7 @@ footer.footer .button-primary { color:#fff !important; font-weight:1000 !importa
 <script src="firebase-config.js?v=live-refresh-20261114-1"></script>
 <script type="module" src="traffic-analytics.js?v=product-view-routes-20261116-1"></script>
 <script src="onesignal-init.js?v=live-refresh-20261114-1"></script>
-<script src="store.js?v=latest-shelf-mobile-touch-drag-20261116-5&prev=catalog-speed-20261116-1category-direct-scroll-20261116-2"></script>
+<script src="store.js?v=latest-shelf-peek-progress-20261116-6&prev=catalog-speed-20261116-1category-direct-scroll-20261116-2"></script>
 <script src="smart-search.js?v=20261116-6"></script>
 <script src="image-zoom.js?v=product-card-navigation-20261116-1"></script>
 <script type="module" src="product-cloud.js?v=catalog-cache-20261116-1"></script>
@@ -384,7 +384,7 @@ footer.footer .button-primary { color:#fff !important; font-weight:1000 !importa
   function move(direction){
    var max=Math.max(0,view.scrollWidth-view.clientWidth);
    if(max<2)return;
-   var amount=stepSize()*Math.max(1,Math.floor(view.clientWidth/stepSize()));
+   var amount=stepSize();
    var current=Math.abs(view.scrollLeft);
    var next=current+direction*amount;
    if(next>max-4)next=0;
@@ -424,6 +424,10 @@ footer.footer .button-primary { color:#fff !important; font-weight:1000 !importa
    touchEligible=false;touchDragging=false;setTimeout(start,4500);
   },{passive:true});
   var timer=null;
+  var progress=document.querySelector('.home-shelf-progress span');
+  function updateProgress(){if(!progress)return;var max=Math.max(1,view.scrollWidth-view.clientWidth);var ratio=Math.min(1,Math.abs(view.scrollLeft)/max);progress.style.width=Math.max(8,ratio*100)+'%';}
+  view.addEventListener('scroll',updateProgress,{passive:true});
+  updateProgress();
   function start(){if(timer||cards().length<2)return;timer=setInterval(function(){
     if(document.hidden||view.matches(':hover')||view.contains(document.activeElement))return;
     move(-1);
