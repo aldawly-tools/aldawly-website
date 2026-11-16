@@ -682,3 +682,11 @@
 }
 @keyframes heroServicesTicker{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 @media(prefers-reduced-motion:reduce){.hero-services-track{animation:none!important}}
+
+
+/* Remove any residual top gap before the mobile storefront header. */
+@media(max-width:700px){
+  html,body{margin-top:0!important;padding-top:0!important}
+  body>header.masthead{margin-top:0!important;top:0!important}
+  body>header.masthead:before{display:none!important}
+}
