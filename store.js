@@ -554,8 +554,8 @@
       }
       const price = parsePrice(item.price);
       const lineTotal = price === null ? "" : '<small class="cart-line-total">مجموع هذا المنتج: ' + escapeHtml(money(price * line.qty)) + '</small>';
-      const cartDescription = cleanProductCopy(item.desc || item.specs || "");
-      const cartDetails = cartDescription ? '<small class="cart-product-description">' + escapeHtml(cartDescription.length > 190 ? cartDescription.slice(0,187) + "…" : cartDescription) + '</small>' : '';
+      const cartDescription = cleanProductCopy(item.desc || item.description || item.details || item.specs || item.title || "");
+      const cartDetails = cartDescription ? '<small class="cart-product-description"><b>التفاصيل: </b>' + escapeHtml(cartDescription.length > 260 ? cartDescription.slice(0,257) + "…" : cartDescription) + '</small>' : '';
       const cartImage = item.image
         ? '<img src="' + escapeHtml(item.image) + '" alt="" loading="lazy">'
         : item.imageId
