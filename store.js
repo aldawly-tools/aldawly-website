@@ -515,9 +515,9 @@
         '<div class="product-info"><span class="product-category">' + (productBrand(item) ? escapeHtml(displayBrand(productBrand(item))) + ' · ' : '') + escapeHtml(item.cat || "منتجات") + '</span>' +
         '<h3 class="product-name"><a class="product-name-link" href="' + detailUrl + '">' + escapeHtml(name) + '</a></h3>' +
         '<p class="product-description">' + escapeHtml(description) + '</p>' + stockLabel +
-        '<a class="product-details-link" href="' + detailUrl + '">عرض الإعلان والتفاصيل ←</a>' +
+        '<a class="product-details-link" href="' + detailUrl + '">تفاصيل المنتج ←</a>' +
         '<button class="quick-view-trigger" type="button" data-quick-view="' + escapeHtml(item.id) + '">معاينة سريعة</button>' +
-        '<div class="product-share-row"><button class="button-outline share-product-button" type="button" data-share-product="' + escapeHtml(item.id) + '">مشاركة المنتج ↗</button></div>' +
+        '<div class="product-share-row"><button class="button-outline share-product-button" type="button" data-share-product="' + escapeHtml(item.id) + '">مشاركة ↗</button></div>' +
         '<div class="product-meta"><span class="product-price">' + escapeHtml(formatPrice(item.price)) + (discountPercent ? '<del>' + escapeHtml(money(compareAtPrice)) + '</del><em class="product-discount">خصم ' + discountPercent + '%</em>' : '') + '<small>' + (currentPrice === null ? 'السعر ويُرجى تأكيد التوفر عند التواصل' : 'يُرجى تأكيد التوفر عند التواصل') + '</small></span>' +
         '<button class="button-primary" type="button" data-add="' + escapeHtml(item.id) + '"' + (stockOut ? ' disabled aria-disabled="true"' : '') + '>' + (stockOut ? 'غير متاح حاليًا' : 'أضف إلى السلة') + '</button></div></div></article>';
     }).join("") || '<p class="empty-cart">' + emptyMessage + '</p>';
