@@ -114,6 +114,17 @@ footer.footer .button-primary { color:#fff !important; font-weight:1000 !importa
   touch-action:pan-x pan-y!important;
  }
 }
+</style><style id="latest-shelf-performance-fix">
+@media(max-width:900px){
+ .home-products-shelf .home-products-viewport{
+  overflow-x:auto!important;overflow-y:hidden!important;
+  scroll-behavior:smooth!important;scroll-snap-type:x mandatory!important;
+  touch-action:pan-x pan-y!important;-webkit-overflow-scrolling:touch!important;
+ }
+ .home-products-shelf .home-products-track{
+  transform:none!important;animation:none!important;will-change:auto!important;
+ }
+}
 </style></head>
 
 <body>
@@ -428,35 +439,7 @@ footer.footer .button-primary { color:#fff !important; font-weight:1000 !importa
   document.querySelectorAll('.home-products-shelf [data-shelf-dir]').forEach(function(button){
    button.addEventListener('click',function(){move(button.dataset.shelfDir==='next'?-1:1);});
   });
-  // Allow a direct one-finger horizontal swipe on mobile without stealing taps from product buttons/links.
-  var touchStartX=0,touchStartY=0,touchStartScroll=0,touchDragging=false,touchEligible=false;
-  view.addEventListener('touchstart',function(event){
-   if(!event.touches||event.touches.length!==1)return;
-   var target=event.target;
-   touchEligible=!(target.closest('a,button,input,select,textarea,[role="button"]'));
-   if(!touchEligible)return;
-   touchStartX=event.touches[0].clientX;
-   touchStartY=event.touches[0].clientY;
-   touchStartScroll=view.scrollLeft;
-   touchDragging=false;
-   stop();
-  },{passive:true});
-  view.addEventListener('touchmove',function(event){
-   if(!touchEligible||!event.touches||event.touches.length!==1)return;
-   var dx=event.touches[0].clientX-touchStartX;
-   var dy=event.touches[0].clientY-touchStartY;
-   if(!touchDragging&&Math.abs(dx)>8&&Math.abs(dx)>Math.abs(dy)*1.15)touchDragging=true;
-   if(!touchDragging)return;
-   if(event.cancelable)event.preventDefault();
-   // The shelf is RTL, so keep the native RTL scroll direction while following the finger.
-   view.scrollLeft=touchStartScroll+dx;
-  },{passive:false});
-  view.addEventListener('touchend',function(){
-   if(touchEligible){touchEligible=false;setTimeout(start,4500);}
-  },{passive:true});
-  view.addEventListener('touchcancel',function(){
-   touchEligible=false;touchDragging=false;setTimeout(start,4500);
-  },{passive:true});
+  // Mobile uses native browser scrolling for smoother finger tracking.
   var timer=null,frame=null,lastFrame=0,scrollDirection=1,autoPosition=0;
   var progress=document.querySelector('.home-shelf-progress span');
   function updateProgress(){if(!progress)return;var max=Math.max(1,view.scrollWidth-view.clientWidth);var ratio=Math.min(1,Math.abs(view.scrollLeft)/max);progress.style.width=Math.max(8,ratio*100)+'%';}
@@ -481,6 +464,11 @@ footer.footer .button-primary { color:#fff !important; font-weight:1000 !importa
   }
   function start(){
     if(timer||frame||cards().length<2)return;
+    /* Keep mobile native touch scrolling smooth; continuous ticker runs on desktop only. */
+    if(window.matchMedia('(max-width:900px)').matches){
+      view.classList.remove('latest-shelf-auto-running');
+      return;
+    }
     view.classList.add('latest-shelf-auto-running');
     lastFrame=0;
     autoPosition=Math.abs(view.scrollLeft);
