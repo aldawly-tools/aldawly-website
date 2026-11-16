@@ -382,3 +382,20 @@
   #productGrid .product-meta,#featuredProductsGrid .product-meta,#newArrivalsGrid .product-meta{gap:7px!important}
   #productGrid .product-meta .button-primary,#featuredProductsGrid .product-meta .button-primary,#newArrivalsGrid .product-meta .button-primary,#newArrivalsGrid .home-shelf-add{min-height:43px!important;height:43px!important;font-size:12px!important}
 }
+
+/* Avoid a large red frame around the whole product card after tapping an action.
+   Keyboard users still get a clear focus ring on the actual focused control. */
+@media(max-width:820px){
+  #productGrid .product-card:focus-within,
+  #featuredProductsGrid .product-card:focus-within,
+  #newArrivalsGrid .product-card:focus-within{
+    outline:none!important;
+    box-shadow:0 5px 18px rgba(20,28,36,.08)!important;
+  }
+  #productGrid .product-card :focus-visible,
+  #featuredProductsGrid .product-card :focus-visible,
+  #newArrivalsGrid .product-card :focus-visible{
+    outline:2px solid #c8101e!important;
+    outline-offset:2px!important;
+  }
+}
