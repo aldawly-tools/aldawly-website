@@ -330,8 +330,6 @@
   }
   function brandLogoForFilter(label) {
     const logos = {
-      "gesipa":"https://upload.wikimedia.org/wikipedia/commons/6/6a/Gesipa_logo.svg",
-      "bahco":"https://upload.wikimedia.org/wikipedia/commons/5/5b/Bahco_logo.svg",
       "bosch":"https://upload.wikimedia.org/wikipedia/commons/1/16/Bosch-logo.svg",
       "knipex":"https://upload.wikimedia.org/wikipedia/commons/e/e3/Knipex_logo.svg",
       "wera":"https://upload.wikimedia.org/wikipedia/commons/e/ec/Wera_schwarz_Logo_ohne_Effekt_4C.svg",
@@ -343,6 +341,13 @@
     };
     const key = normalizeBrand(label);
     return logos[key] || "";
+  }
+  function brandMonogram(label) {
+    const key = normalizeBrand(label);
+    const known = {
+      "gesipa":"G","bahco":"B","koken":"K","modeco":"M","normex":"N","riss":"R"
+    };
+    return known[key] || String(label || "?").trim().slice(0,2).toUpperCase();
   }
   function drawBrandFilters() {
     if (!brandFilterList) return;
@@ -365,7 +370,9 @@
       visibleBrands.map(function (entry) {
         const key = entry[0], label = entry[1].label, count = entry[1].count, selected = normalizeBrand(activeBrand) === key;
         const logo = brandLogoForFilter(label);
-        const logoMarkup = logo ? '<img class="brand-filter-logo" src="' + escapeHtml(logo) + '" alt="" loading="lazy" decoding="async">' : '';
+        const logoMarkup = logo
+          ? '<img class="brand-filter-logo" src="' + escapeHtml(logo) + '" alt="" loading="lazy" decoding="async" onerror="this.replaceWith(Object.assign(document.createElement(\'span\'),{className:\'brand-filter-monogram\',textContent:\'' + escapeHtml(brandMonogram(label)) + '\'}))">'
+          : '<span class="brand-filter-monogram" aria-hidden="true">' + escapeHtml(brandMonogram(label)) + '</span>';
         return '<button class="brand-filter-option' + (selected ? ' active' : '') + '" type="button" data-brand-filter="' + escapeHtml(label) + '" aria-pressed="' + selected + '"><span class="brand-filter-option-name">' + logoMarkup + '<span>' + escapeHtml(label) + '</span></span><span class="brand-filter-count">' + count + '</span></button>';
       }).join("") || '<p class="brand-filter-empty">لا توجد ماركات بهذا الاسم.</p>';
   }
