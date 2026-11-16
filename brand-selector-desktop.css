@@ -14,4 +14,3 @@
 @keyframes brandLogoSwing{0%,100%{transform:rotate(-4deg)}50%{transform:rotate(4deg)}}
 @media(max-width:900px){.brands-marquee-section .brand-word.brand-tile{flex-basis:165px!important;width:165px!important;min-width:165px!important;height:86px!important;min-height:86px!important}.brands-marquee-section .brands-marquee-track,.brands-marquee-section .brands-marquee-group{gap:10px!important}}
 @media(max-width:560px){.brands-marquee-section .brand-word.brand-tile{flex-basis:145px!important;width:145px!important;min-width:145px!important;height:78px!important;min-height:78px!important;padding:10px!important}.brands-marquee-section .brand-word.brand-tile .brand-logo{max-height:48px!important}.brands-marquee-section .brands-marquee-track{animation-duration:32s!important}}
-@media(prefers-reduced-motion:reduce){.brands-marquee-section .brands-marquee-track{animation:none!important}.brands-marquee-section .brand-word.brand-tile .brand-logo{animation:none!important}}
