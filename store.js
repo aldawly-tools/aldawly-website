@@ -375,6 +375,7 @@
   function brandLogoForFilter(label) {
     const logos = {
       "gesipa":"assets/brands/gesipa.webp",
+    "lux-tools":"assets/brands/lux-tools.webp",
       "bahco":"assets/brands/bahco.webp",
       "koken":"assets/brands/koken.webp",
       "modeco":"assets/brands/modeco.webp",
