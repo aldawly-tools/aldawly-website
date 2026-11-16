@@ -806,16 +806,15 @@
       syncCategorySelection();
       visibleProductCount = pageSize;
       renderProducts();
-      const fromCategoryTile = category.classList.contains("category-tile") || !!category.closest("#mobileMenuCategories");
       if (category.closest("#mobileMenuCategories")) setMobileMenu(false);
-      if (fromCategoryTile) {
-        requestAnimationFrame(function () {
-          const productGrid = document.getElementById("productGrid");
-          if (!productGrid) return;
-          const targetTop = productGrid.getBoundingClientRect().top + window.pageYOffset - 14;
-          window.scrollTo({top: Math.max(0, targetTop), behavior:"smooth"});
-        });
-      }
+      // Every category control (including the horizontal filter chips) jumps
+      // straight to the filtered product cards, skipping the recently-viewed panel.
+      requestAnimationFrame(function () {
+        const productGrid = document.getElementById("productGrid");
+        if (!productGrid) return;
+        const targetTop = productGrid.getBoundingClientRect().top + window.pageYOffset - 14;
+        window.scrollTo({top: Math.max(0, targetTop), behavior:"smooth"});
+      });
       return;
     }
     const add = event.target.closest("[data-add]");
