@@ -106,14 +106,18 @@
 
   function observeCloudImages() {
     const images = document.querySelectorAll("#productGrid img[data-cloud-image], #featuredProductsGrid img[data-cloud-image], #newArrivalsGrid img[data-cloud-image], #quickViewModal img[data-cloud-image]");
-    if (!images.length) return;
+    if (!images.length || typeof window.DAWLY_LOAD_PRODUCT_IMAGE !== "function") return;
     function loadImage(image) {
       // The storage loader may finish initializing after the catalog markup.
       // Leave the image pending; dawly-catalog-ready will retry the observer.
       if (typeof window.DAWLY_LOAD_PRODUCT_IMAGE !== "function") return;
       window.DAWLY_LOAD_PRODUCT_IMAGE(image.dataset.cloudImage).then(function (url) {
-        if (url && image.isConnected) image.src = url;
-        else if (image.isConnected) showProductImageFallback(image);
+        if (url && image.isConnected) {
+          image.src = url;
+          document.querySelectorAll('img[data-cloud-image]').forEach(function(peer){
+            if(peer !== image && peer.dataset.cloudImage === image.dataset.cloudImage && peer.isConnected) peer.src = url;
+          });
+        } else if (image.isConnected) showProductImageFallback(image);
       }).catch(function () {
         if (image.isConnected) showProductImageFallback(image);
       });
