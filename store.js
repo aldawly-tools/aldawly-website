@@ -554,12 +554,14 @@
       }
       const price = parsePrice(item.price);
       const lineTotal = price === null ? "" : '<small class="cart-line-total">مجموع هذا المنتج: ' + escapeHtml(money(price * line.qty)) + '</small>';
+      const cartDescription = cleanProductCopy(item.desc || item.specs || "");
+      const cartDetails = cartDescription ? '<small class="cart-product-description">' + escapeHtml(cartDescription.length > 190 ? cartDescription.slice(0,187) + "…" : cartDescription) + '</small>' : '';
       const cartImage = item.image
         ? '<img src="' + escapeHtml(item.image) + '" alt="" loading="lazy">'
         : item.imageId
           ? '<img data-cart-image="' + escapeHtml(item.imageId) + '" alt="" loading="lazy">'
           : '<span aria-hidden="true">🔧</span>';
-      return '<div class="cart-row"><div class="cart-product-main"><div class="cart-product-thumb">' + cartImage + '</div><div class="cart-product-copy"><strong>' + escapeHtml(cleanProductName(item.name)) + '</strong><small>' + escapeHtml(formatPrice(item.price)) + '</small>' + lineTotal +
+      return '<div class="cart-row"><div class="cart-product-main"><div class="cart-product-thumb">' + cartImage + '</div><div class="cart-product-copy"><strong>' + escapeHtml(cleanProductName(item.name)) + '</strong>' + cartDetails + '<small>' + escapeHtml(formatPrice(item.price)) + '</small>' + lineTotal +
         '<div class="quantity"><button type="button" data-qty="' + escapeHtml(item.id) + '" data-delta="-1" aria-label="تقليل الكمية">−</button><span>' + line.qty + '</span><button type="button" data-qty="' + escapeHtml(item.id) + '" data-delta="1" aria-label="زيادة الكمية">+</button></div></div></div>' +
         '<button class="remove-item" type="button" data-remove="' + escapeHtml(item.id) + '">حذف</button></div>';
     }).join("") : '<div class="empty-cart">السلة فارغة حاليًا</div>';
