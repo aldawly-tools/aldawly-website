@@ -250,19 +250,62 @@
     return match ? match[1] : "";
   }
   function renderBrandAvailability() {
-    // Brand cards must always open the filtered products page. Do not turn a
-    // valid brand link into an in-page #brands jump while cloud products load
-    // or when a product's brand label uses a different spelling.
-    document.querySelectorAll(".brand-word").forEach(function (link) {
-      if (!link.dataset.brandTarget) {
-        link.dataset.brandTarget = link.getAttribute("href") || "#brands";
-      }
-      link.href = link.dataset.brandTarget;
-      link.classList.remove("brand-unavailable");
+    const track = document.querySelector(".brands-marquee-section .brands-marquee-track");
+    const group = track && track.querySelector(".brands-marquee-group");
+    if (!track || !group) return;
+    const templates = new Map();
+    group.querySelectorAll(".brand-word").forEach(function (link) {
+      const name = link.querySelector(".brand-name-sr")?.textContent || "";
+      const key = normalizeBrand(name);
+      if (key && !templates.has(key)) templates.set(key, link.cloneNode(true));
+    });
+    const available = new Map();
+    products.forEach(function (item) {
+      const label = productBrand(item);
+      const key = normalizeBrand(label);
+      if (!key) return;
+      if (!available.has(key)) available.set(key, label);
+    });
+    const brands = Array.from(available.entries()).sort(function(a,b) {
+      return a[1].localeCompare(b[1], "ar");
+    });
+    group.innerHTML = brands.map(function(entry) {
+      const key = entry[0], label = entry[1];
+      const link = templates.has(key) ? templates.get(key) : document.createElement("a");
+      link.className = "brand-word brand-tile";
+      link.href = "products.html?brand=" + encodeURIComponent(label) + "#productGrid";
+      link.dataset.brandTarget = link.href;
       link.removeAttribute("aria-disabled");
       link.removeAttribute("tabindex");
       link.removeAttribute("title");
-    });
+      if (!templates.has(key)) {
+        link.classList.add("brand-text-logo");
+        link.setAttribute("aria-label", "منتجات " + label);
+        const mark = document.createElement("span");
+        mark.className = "brand-text-mark";
+        mark.textContent = label;
+        const sr = document.createElement("span");
+        sr.className = "brand-name-sr";
+        sr.textContent = label;
+        link.replaceChildren(mark, sr);
+      } else {
+        const sr = link.querySelector(".brand-name-sr");
+        if (sr) sr.textContent = label;
+        const img = link.querySelector(".brand-logo");
+        if (img) img.alt = label + " logo";
+        link.setAttribute("aria-label", "منتجات " + label);
+      }
+      return link.outerHTML;
+    }).join("");
+    track.querySelectorAll(".brands-marquee-group[aria-hidden='true']").forEach(function(node){node.remove();});
+    track.dataset.loopReady = "";
+    if (brands.length) {
+      const clone = group.cloneNode(true);
+      clone.setAttribute("aria-hidden", "true");
+      clone.querySelectorAll("a").forEach(function(link){link.setAttribute("tabindex","-1");});
+      track.appendChild(clone);
+      track.dataset.loopReady = "1";
+    }
   }
   function setDrawer(open) {
     cartDrawer.classList.toggle("open", open);
