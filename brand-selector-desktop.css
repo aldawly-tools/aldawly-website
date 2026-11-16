@@ -34,3 +34,10 @@
 .brands-marquee-section .brand-word.brand-tile::before,.brands-marquee-section .brand-word.brand-tile::after{pointer-events:none!important}
 @media(max-width:900px){.brands-marquee-section .brand-word.brand-tile{min-height:96px!important;height:96px!important;border-radius:17px!important}.brands-marquee-section .brand-word.brand-tile .brand-logo{max-height:56px!important}}
 @media(max-width:560px){.brands-marquee-section .brand-word.brand-tile{min-height:86px!important;height:86px!important;padding:12px!important}.brands-marquee-section .brand-word.brand-tile .brand-logo{max-height:49px!important}}
+
+/* Let the single JS ticker own movement; keep the reference card appearance */
+.brands-marquee-section .brands-marquee-track{animation:none!important;transform:translate3d(0,0,0)!important;will-change:transform!important}
+.brands-marquee-section .brands-marquee:hover .brands-marquee-track{animation:none!important}
+.brands-marquee-section .brands-marquee{overflow:hidden!important;cursor:grab!important}
+.brands-marquee-section .brands-marquee-track{cursor:grab!important;touch-action:pan-y!important}
+.brands-marquee-section .brands-marquee-track:active{cursor:grabbing!important}
