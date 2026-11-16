@@ -850,8 +850,8 @@
     const paymentProofLink = document.getElementById("paymentProofLink");
     if (!followup || !status) return;
     status.textContent = saved
-      ? "تم تسجيل طلبك رقم " + orderNumber + ". اضغط فتح رسالة الطلب لإرسال التفاصيل عبر واتساب، ويمكنك استخدام زر الطلب لإرسال صورة المنتجات."
-      : "تعذر حفظ الطلب " + orderNumber + " في لوحة المتجر. تواصل مع المتجر للتأكد من استلامه.";
+      ? "تم تجهيز طلبك رقم " + orderNumber + ". أكمل إرسال تفاصيل الطلب والصورة عبر واتساب، وسيتم الاتفاق والتأكيد هناك."
+      : "تعذر تجهيز الطلب. حاول مرة أخرى أو تواصل مع المتجر عبر واتساب.";
     if (orderLink) {
       if (saved && orderWhatsappUrl) {
         orderLink.href = orderWhatsappUrl;
@@ -1129,39 +1129,19 @@
       alert("تعذر تحميل بيانات أحد المنتجات. حدّث الصفحة ثم راجع سلتك قبل إعادة الطلب.");
       return;
     }
-    const totalIsComplete = pricing.itemCount > 0 && pricing.pricedCount === pricing.itemCount;
-    const record = {
-      orderNumber, customerName, customerPhone, customerAddress, notes:"", items:orderItems,
-      productSubtotal:pricing.total, totalAmount:totalIsComplete?pricing.total:null, totalIsComplete,
-      totalText, status:"new",
-      whatsappStatus:"awaiting_customer_send", source:"website"
-    };
     const orderImageItems = orderItems.map(function(item) {
       return {name:item.name,qty:item.qty,unitPrice:item.unitPrice,unitPriceAmount:item.unitPriceAmount,lineTotal:item.lineTotal,image:item.image,imageId:item.imageId};
     });
     const whatsappUrl = "https://wa.me/201024787222?text=" + encodeURIComponent(message);
-    // Start saving in the background, then immediately prepare the native share from this single button action.
+    // Customer orders are handled in WhatsApp; never save order records to Firestore.
+    showPaymentFollowup(orderNumber, true, whatsappUrl);
     try {
-      const appMod = await import("https://www.gstatic.com/firebasejs/13.2.0/firebase-app.js");
-      const fsMod = await import("https://www.gstatic.com/firebasejs/13.2.0/firebase-firestore.js");
-      const app = appMod.getApps().length ? appMod.getApp() : appMod.initializeApp(window.DAWLY_FIREBASE_CONFIG);
-      await fsMod.setDoc(fsMod.doc(fsMod.getFirestore(app), "orders", orderNumber),
-        Object.assign({}, record, {createdAt:fsMod.serverTimestamp()}));
-      showPaymentFollowup(orderNumber, true, whatsappUrl);
-    } catch (err) {
-      console.warn("تعذر تسجيل الطلب في لوحة الإدارة.", err);
-      showPaymentFollowup(orderNumber, false);
-      checkout.disabled = false;
-      alert("تعذر تسجيل الطلب في لوحة المتجر. احتفظ برقم الطلب " + orderNumber + " وتواصل مع المتجر.");
-      return;
-    }
-    try {
-      await prepareWhatsAppOrderImage(orderNumber, customerName, customerPhone, customerAddress, orderImageItems, message, {totalAmount:record.totalAmount,totalIsComplete:record.totalIsComplete,totalText:record.totalText});
+      await prepareWhatsAppOrderImage(orderNumber, customerName, customerPhone, customerAddress, orderImageItems, message, {totalAmount:pricing.total,totalIsComplete:pricing.itemCount > 0 && pricing.pricedCount === pricing.itemCount,totalText:totalText});
     } catch (shareError) {
       console.warn("تعذر تجهيز صورة الطلب:", shareError);
       checkout.disabled = false;
       checkout.textContent = "إعادة تجهيز صورة الطلب";
-      alert("تم تسجيل الطلب، لكن تعذر تجهيز الصورة. حاول مرة أخرى.");
+      alert("تعذر تجهيز صورة الطلب. حاول مرة أخرى.");
     }
   });
   // Keep the active checkout field visible when the mobile keyboard opens.
