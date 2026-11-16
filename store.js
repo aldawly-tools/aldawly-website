@@ -263,48 +263,39 @@
     products.forEach(function (item) {
       const label = productBrand(item);
       const key = normalizeBrand(label);
-      if (!key) return;
-      const entry = available.get(key) || {label:label,count:0};
-      entry.count += 1;
-      available.set(key, entry);
+      if (key && !available.has(key)) available.set(key, label);
     });
     const brands = Array.from(available.entries()).sort(function(a,b) {
-      return a[1].label.localeCompare(b[1].label, "ar");
+      return a[1].localeCompare(b[1], "ar");
     });
     group.innerHTML = "";
     brands.forEach(function(entry) {
-      const key=entry[0], label=entry[1].label, count=entry[1].count;
+      const key=entry[0], label=entry[1];
       const link=templates.has(key)?templates.get(key):document.createElement("a");
       link.className="brand-word brand-tile";
       link.href="products.html?brand="+encodeURIComponent(label)+"#productGrid";
       link.dataset.brandTarget=link.href;
-      link.setAttribute("aria-label","منتجات "+label+" - "+count+" منتج");
+      link.setAttribute("aria-label","منتجات "+label);
       link.removeAttribute("aria-disabled");
       link.removeAttribute("tabindex");
-      const sr=link.querySelector(".brand-name-sr") || document.createElement("span");
+      const sr=document.createElement("span");
       sr.className="brand-name-sr";
       sr.textContent=label;
-      let img=link.querySelector(".brand-logo");
       const logo=brandLogoForFilter(label);
       if(logo){
-        if(!img){img=document.createElement("img");img.className="brand-logo";img.loading="lazy";img.decoding="async";}
-        img.src=logo; img.alt=label+" logo"; img.hidden=false;
-        link.querySelector(".brand-text-mark")?.remove();
-        link.replaceChildren(img,sr);
-      }else if(!img){
-        const mark=link.querySelector(".brand-text-mark") || document.createElement("span");
-        mark.className="brand-text-mark"; mark.textContent=label;
-        link.replaceChildren(mark,sr);
-      }else{
+        const img=document.createElement("img");
+        img.className="brand-logo";
+        img.src=logo;
         img.alt=label+" logo";
+        img.loading="lazy";
+        img.decoding="async";
         link.replaceChildren(img,sr);
+      }else{
+        const mark=document.createElement("span");
+        mark.className="brand-text-mark";
+        mark.textContent=label;
+        link.replaceChildren(mark,sr);
       }
-      let badge=link.querySelector(".brand-product-count");
-      if(!badge) badge=document.createElement("span");
-      badge.className="brand-product-count";
-      badge.textContent=String(count);
-      badge.setAttribute("aria-hidden","true");
-      link.appendChild(badge);
       group.appendChild(link);
     });
     track.querySelectorAll(".brands-marquee-group[aria-hidden='true']").forEach(function(node){node.remove();});
