@@ -51,12 +51,20 @@
  <script src="site-routing.js?v=cart-no-transfer-20261115-2"></script>
 
 <style id="brand-filter-logo-style">
-.brand-filter-option-name{display:inline-flex;align-items:center;gap:9px;min-width:0}
-.brand-filter-logo,.brand-filter-monogram{width:42px;height:27px;box-sizing:border-box;flex:0 0 42px;padding:2px 4px;border:1px solid #edf0f2;border-radius:5px;background:#fff}
-.brand-filter-logo{object-fit:contain}
-.brand-filter-monogram{display:inline-grid;place-items:center;color:#30363d;font:900 13px/1 Arial,sans-serif;letter-spacing:-.4px}
-.brand-filter-option.active .brand-filter-monogram{border-color:#e9b7ba;color:#a90d16;background:#fff}
-@media(max-width:760px){.brand-filter-logo,.brand-filter-monogram{width:36px;height:24px;flex-basis:36px}.brand-filter-option-name{gap:7px}}
+.brand-filter-option-name{display:inline-flex!important;align-items:center!important;gap:9px!important;min-width:0!important}
+.brand-filter-logo,.brand-filter-monogram{width:46px!important;height:30px!important;box-sizing:border-box!important;flex:0 0 46px!important;padding:3px 5px!important;border:1px solid #e5e9ed!important;border-radius:6px!important;background:#fff!important}
+.brand-filter-logo{object-fit:contain!important}
+.brand-filter-monogram{display:inline-grid!important;place-items:center!important;color:#30363d!important;font:900 14px/1 Arial,sans-serif!important;letter-spacing:-.4px}
+.brand-filter-option.active .brand-filter-monogram{border-color:#e9b7ba!important;color:#a90d16!important;background:#fff!important}
+@media(max-width:760px){
+ .brand-filter-panel{padding:12px!important}
+ .brand-filter-list{display:flex!important;flex-direction:column!important;gap:5px!important;max-height:340px!important;overflow-y:auto!important;overflow-x:hidden!important}
+ .brand-filter-option{display:flex!important;align-items:center!important;justify-content:space-between!important;width:100%!important;min-height:43px!important;flex:0 0 auto!important;gap:9px!important;padding:6px 9px!important;border:1px solid transparent!important;border-radius:8px!important}
+ .brand-filter-option-name{gap:8px!important}
+ .brand-filter-logo,.brand-filter-monogram{width:48px!important;height:32px!important;flex-basis:48px!important;padding:3px 5px!important}
+ .brand-filter-option-name>span:last-child{font-size:13px!important;font-weight:750!important}
+ .brand-filter-count{min-width:24px!important;height:22px!important}
+}
 </style>
 
 <style id="active-brand-banner-style">
