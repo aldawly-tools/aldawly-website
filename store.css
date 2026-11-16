@@ -4835,3 +4835,63 @@ html body aside#cartDrawer.cart-drawer>.cart-scroll-area>.payment-followup{
  .home-products-shelf .home-shelf-arrows{display:flex!important}
  .home-products-shelf .shelf-arrow{width:34px!important;height:34px!important}
 }
+
+
+/* Continuous latest-products marquee. Pause to allow precise touch/drag and manual navigation. */
+.home-products-shelf .home-products-viewport{
+  position:relative!important;
+  display:block!important;
+  overflow:hidden!important;
+  width:100%!important;
+  direction:ltr!important;
+  scroll-behavior:auto!important;
+  scroll-snap-type:none!important;
+  cursor:grab;
+  -webkit-overflow-scrolling:touch;
+}
+.home-products-shelf .home-products-track{
+  display:flex!important;
+  flex-flow:row nowrap!important;
+  direction:rtl!important;
+  align-items:stretch!important;
+  width:max-content!important;
+  min-width:max-content!important;
+  gap:14px!important;
+  padding:0!important;
+  transform:translate3d(0,0,0);
+  will-change:transform;
+}
+.home-products-shelf .home-products-viewport.is-auto-moving .home-products-track{
+  animation:latestProductsMarquee 42s linear infinite!important;
+}
+.home-products-shelf .home-products-viewport.is-manual-scroll{
+  overflow-x:auto!important;
+  overflow-y:hidden!important;
+  direction:ltr!important;
+  touch-action:pan-x pan-y!important;
+  cursor:grabbing;
+  scrollbar-width:none;
+}
+.home-products-shelf .home-products-viewport.is-manual-scroll .home-products-track{
+  animation:none!important;
+  transform:none!important;
+}
+.home-products-shelf .home-shelf-card[data-auto-clone="1"]{pointer-events:none}
+.home-products-shelf .home-shelf-arrows{display:flex!important}
+.home-products-shelf .shelf-arrow{touch-action:manipulation;cursor:pointer}
+@keyframes latestProductsMarquee{
+  from{transform:translate3d(0,0,0)}
+  to{transform:translate3d(-50%,0,0)}
+}
+@media(max-width:640px){
+ .home-products-shelf .home-products-track{gap:10px!important}
+ .home-products-shelf .home-shelf-card{
+  flex:0 0 calc((100vw - 48px)/2)!important;
+  width:calc((100vw - 48px)/2)!important;
+  min-width:0!important;
+  max-width:none!important;
+ }
+}
+@media(prefers-reduced-motion:reduce){
+ .home-products-shelf .home-products-viewport.is-auto-moving .home-products-track{animation:none!important}
+}
