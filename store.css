@@ -4720,3 +4720,41 @@ html body aside#cartDrawer.cart-drawer>.cart-scroll-area>.payment-followup{
  .home-products-shelf .home-products-track{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:12px!important}
  .home-products-shelf .home-shelf-arrows{display:none!important}
 }
+
+
+/* MOBILE LAYOUT AUDIT — keep page content visible and make the category sheet full-screen */
+@media (max-width:700px) {
+  /* The old translucent fixed dock washed out content at the bottom of the viewport. */
+  body::after {
+    display:none !important;
+    content:none !important;
+  }
+  /* Keep enough scroll room for the floating actions without painting over the page. */
+  body {
+    padding-bottom:calc(94px + env(safe-area-inset-bottom)) !important;
+  }
+  /* The category drawer and its scrim must cover the entire screen, including the bottom dock area. */
+  .mobile-menu-overlay {
+    inset:0 !important;
+    z-index:10020 !important;
+  }
+  .mobile-menu-drawer {
+    inset:0 !important;
+    width:min(420px,100vw) !important;
+    height:100dvh !important;
+    max-height:100dvh !important;
+    padding-bottom:max(22px,env(safe-area-inset-bottom)) !important;
+    z-index:10030 !important;
+    background:#fff !important;
+  }
+  .mobile-menu-drawer.open {
+    transform:translateX(0) !important;
+  }
+  .floating-contact-widget,
+  .mobile-menu-trigger {
+    z-index:10010 !important;
+  }
+  body.mobile-category-menu-open {
+    overflow:hidden !important;
+  }
+}
