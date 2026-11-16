@@ -682,6 +682,21 @@
     renderProducts();
   });
 
+  // Handle cart removal in capture phase so other page widgets cannot swallow the click.
+  if (cartItems) {
+    cartItems.addEventListener("click", function(event) {
+      const button = event.target.closest("button[data-remove]");
+      if (!button || !cartItems.contains(button)) return;
+      event.preventDefault();
+      event.stopPropagation();
+      event.stopImmediatePropagation();
+      const id = String(button.getAttribute("data-remove") || "");
+      const before = cart.length;
+      cart = cart.filter(function(line) { return String(line.id) !== id; });
+      if (cart.length !== before) renderCart();
+    }, true);
+  }
+
   document.addEventListener("click", function (event) {
     const quickViewButton = event.target.closest("[data-quick-view]");
     if (quickViewButton) {
@@ -1011,11 +1026,27 @@
     if (checkout.dataset.shareReady === "true" && readyOrderShareFile) {
       checkout.disabled = true;
       try {
-        if (!navigator.share) throw new Error("المتصفح لا يدعم مشاركة الملفات");
-        await navigator.share({files:[readyOrderShareFile], title:"طلب من متجر الدولي", text:readyOrderShareMessage});
-        clearCartAfterWhatsApp();
-        checkout.textContent = "تم إرسال الطلب";
-        checkout.dataset.shareReady = "false";
+        const shareData = {files:[readyOrderShareFile], title:"طلب من متجر الدولي", text:readyOrderShareMessage};
+        if (navigator.share && (!navigator.canShare || navigator.canShare(shareData))) {
+          await navigator.share(shareData);
+          clearCartAfterWhatsApp();
+          checkout.textContent = "تم إرسال الطلب";
+          checkout.dataset.shareReady = "false";
+        } else {
+          // Desktop browsers often cannot attach files through Web Share: download the image and open WhatsApp with the order text.
+          const imageUrl = URL.createObjectURL(readyOrderShareFile);
+          const downloadLink = document.createElement("a");
+          downloadLink.href = imageUrl;
+          downloadLink.download = readyOrderShareFile.name;
+          document.body.appendChild(downloadLink);
+          downloadLink.click();
+          downloadLink.remove();
+          window.open("https://wa.me/201024787222?text=" + encodeURIComponent(readyOrderShareMessage), "_blank", "noopener");
+          window.setTimeout(function(){ URL.revokeObjectURL(imageUrl); }, 60000);
+          checkout.disabled = false;
+          checkout.textContent = "تم تجهيز الصورة — أرفقها في واتساب";
+          alert("تم تنزيل صورة الطلب التي تحتوي على صور المنتجات. أرفق الصورة في محادثة واتساب المفتوحة ثم أرسل الطلب.");
+        }
       } catch (shareError) {
         if (shareError && shareError.name === "AbortError") { checkout.disabled = false; return; }
         console.warn("تعذرت مشاركة الطلب:", shareError);
