@@ -76,3 +76,14 @@ body{background:radial-gradient(ellipse at 50% 0%,#3b424a 0%,#20252b 46%,#111519
 .footer a:not(.button-primary){color:#f1f4f7!important;-webkit-text-fill-color:#f1f4f7!important;font-weight:750!important;text-decoration-color:rgba(255,255,255,.4)}
 .footer .button-primary{color:#fff!important;-webkit-text-fill-color:#fff!important;background:linear-gradient(120deg,#d71920,#a70d16)!important;box-shadow:0 7px 20px rgba(215,25,32,.28)!important}
 .footer .footer-links a{display:inline-flex;align-items:center;min-height:32px}
+
+
+/* Final dark-theme cleanup: hide empty detail blocks and remove white panels. */
+.product-detail-info>*:empty{display:none!important}
+.product-detail-info>.product-specs,
+.product-detail-layout .product-specs{background:rgba(0,0,0,.18)!important;border:1px solid rgba(255,255,255,.18)!important;color:#f5f6f7!important}
+.product-detail-layout .product-specs-table{background:rgba(0,0,0,.18)!important;border-color:rgba(255,255,255,.18)!important}
+.product-detail-layout .product-spec-row{background:transparent!important;color:#f5f6f7!important}
+.product-detail-layout .detail-stock-status{background:rgba(0,0,0,.22)!important;color:#fff!important;border:1px solid rgba(255,255,255,.2)!important;border-radius:12px!important;padding:12px 14px!important}
+.product-detail-layout .product-detail-image{background:linear-gradient(145deg,#eceeed,#dfe3e3)!important}
+.product-detail-layout .product-detail-image img{background:transparent!important}
