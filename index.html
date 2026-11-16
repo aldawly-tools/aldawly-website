@@ -516,4 +516,35 @@ footer.footer .button-primary { color:#fff !important; font-weight:1000 !importa
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
 })();
 </script>
+
+<script>
+/* Desktop latest-products shelf: free mouse drag without hijacking vertical page scroll. */
+(function(){
+ function init(){
+  var view=document.querySelector(".home-products-viewport");
+  if(!view||view.dataset.mouseDragReady==="1")return;
+  view.dataset.mouseDragReady="1";
+  var down=false,startX=0,startScroll=0,moved=false;
+  view.addEventListener("pointerdown",function(e){
+   if(e.pointerType!=="mouse"||e.button!==0||e.target.closest("button,input,select,textarea,[role=button]"))return;
+   down=true;moved=false;startX=e.clientX;startScroll=view.scrollLeft;
+   view.setPointerCapture(e.pointerId);
+  });
+  view.addEventListener("pointermove",function(e){
+   if(!down)return;
+   var dx=e.clientX-startX;
+   if(Math.abs(dx)>5)moved=true;
+   if(moved){view.scrollLeft=startScroll+dx;e.preventDefault();}
+  });
+  function finish(){if(!down)return;down=false;if(moved){view.dataset.dragged="1";setTimeout(function(){delete view.dataset.dragged;},180);}}
+  view.addEventListener("pointerup",finish);
+  view.addEventListener("pointercancel",finish);
+  view.addEventListener("click",function(e){
+   if(view.dataset.dragged==="1"){e.preventDefault();e.stopPropagation();}
+  },true);
+ }
+ if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init,{once:true});else init();
+ new MutationObserver(init).observe(document.documentElement,{childList:true,subtree:true});
+})();
+</script>
 </body></html>
