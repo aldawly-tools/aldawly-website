@@ -91,17 +91,26 @@
 
   document.addEventListener("error", function (event) {
     const image = event.target;
-    if (image && image.tagName === "IMG" && (image.closest(".product-grid") || image.closest(".quick-view-image"))) showProductImageFallback(image);
+    if (!image || image.tagName !== "IMG") return;
+    if (image.closest("#newArrivalsGrid, #featuredProductsGrid") && image.dataset.cloudImage &&
+        image.dataset.cloudRetried !== "1" && typeof window.DAWLY_LOAD_PRODUCT_IMAGE === "function") {
+      image.dataset.cloudRetried = "1";
+      window.DAWLY_LOAD_PRODUCT_IMAGE(image.dataset.cloudImage).then(function(url){
+        if (url && image.isConnected) image.src = url;
+        else if (image.isConnected) showProductImageFallback(image);
+      }).catch(function(){ if(image.isConnected) showProductImageFallback(image); });
+      return;
+    }
+    if (image.closest(".product-grid, .home-products-shelf, .quick-view-image")) showProductImageFallback(image);
   }, true);
 
   function observeCloudImages() {
     const images = document.querySelectorAll("#productGrid img[data-cloud-image], #featuredProductsGrid img[data-cloud-image], #newArrivalsGrid img[data-cloud-image], #quickViewModal img[data-cloud-image]");
     if (!images.length) return;
     function loadImage(image) {
-      if (typeof window.DAWLY_LOAD_PRODUCT_IMAGE !== "function") {
-        showProductImageFallback(image);
-        return;
-      }
+      // The storage loader may finish initializing after the catalog markup.
+      // Leave the image pending; dawly-catalog-ready will retry the observer.
+      if (typeof window.DAWLY_LOAD_PRODUCT_IMAGE !== "function") return;
       window.DAWLY_LOAD_PRODUCT_IMAGE(image.dataset.cloudImage).then(function (url) {
         if (url && image.isConnected) image.src = url;
         else if (image.isConnected) showProductImageFallback(image);
@@ -115,7 +124,7 @@
       if(image.closest("#newArrivalsGrid")){
         image.loading = "eager";
         image.decoding = "async";
-        if(image.dataset.cloudObserved !== "1"){
+        if(image.dataset.cloudObserved !== "1" && typeof window.DAWLY_LOAD_PRODUCT_IMAGE === "function"){
           image.dataset.cloudObserved = "1";
           loadImage(image);
         }
@@ -335,9 +344,9 @@
       const name = cleanProductName(item.name);
       const url = "product.html?id=" + encodeURIComponent(String(item.id));
       const image = item.image
-        ? '<img src="' + escapeHtml(item.image) + '" alt="' + escapeHtml(name) + '" loading="lazy">'
+        ? '<img src="' + escapeHtml(item.image) + '"' + (item.imageId ? ' data-cloud-image="' + escapeHtml(item.imageId) + '"' : '') + ' alt="' + escapeHtml(name) + '" loading="eager" decoding="async" draggable="false">'
         : item.imageId
-          ? '<img data-cloud-image="' + escapeHtml(item.imageId) + '" alt="' + escapeHtml(name) + '" loading="lazy" decoding="async" draggable="false">'
+          ? '<img data-cloud-image="' + escapeHtml(item.imageId) + '" alt="' + escapeHtml(name) + '" loading="eager" decoding="async" draggable="false">'
           : '<span class="product-placeholder" aria-hidden="true">' + escapeHtml(item.icon || "🔧") + '</span>';
       const soldOut = Number.isInteger(item.stock) && item.stock === 0;
       return '<article class="product-card home-shelf-card"><a class="product-visual product-open-link" href="' + url + '">' + image + '</a><div class="product-info"><span class="product-category">' + escapeHtml(displayBrand(productBrand(item)) || item.cat || "منتجات") + '</span><h3 class="product-name"><a href="' + url + '">' + escapeHtml(name) + '</a></h3><span class="product-price">' + escapeHtml(formatPrice(item.price)) + '<small>' + (item.price === null || item.price === undefined || item.price === "" ? 'السعر عند التواصل' : 'يُرجى تأكيد التوفر عند التواصل') + '</small></span><a class="product-details-link" href="' + url + '">التفاصيل والسعر والتوفر ←</a><button class="quick-view-trigger" type="button" data-quick-view="' + escapeHtml(item.id) + '">معاينة سريعة</button><button class="button-primary home-shelf-add" type="button" data-add="' + escapeHtml(item.id) + '"' + (soldOut ? ' disabled aria-disabled="true"' : '') + '>' + (soldOut ? 'غير متاح حاليًا' : 'أضف إلى السلة') + '</button></div></article>';
