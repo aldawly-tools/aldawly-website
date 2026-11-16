@@ -559,3 +559,24 @@
   .hero-services{margin:0!important;padding-top:7px!important}
   .section{padding-top:8px!important}
 }
+
+
+/* Final compact pass for the mobile dark hero; leave service cards unchanged. */
+@media(max-width:700px){
+  .hero-copy{padding:8px 11px!important}
+  .hero-copy .eyebrow{margin-bottom:2px!important;padding:3px 7px!important;font-size:8px!important}
+  .hero-copy h1{font-size:21px!important;line-height:1.05!important}
+  .hero-copy h2{font-size:13px!important;line-height:1.2!important;margin-bottom:3px!important}
+  .hero-copy p{font-size:9px!important;line-height:1.38!important}
+  .hero-copy .hero-cta,
+  .hero-copy .whatsapp-catalog-cta{
+    min-height:32px!important;height:32px!important;
+    margin-top:4px!important;padding:3px 9px!important;font-size:11px!important;
+  }
+}
+@media(max-width:380px){
+  .hero-copy{padding:7px 9px!important}
+  .hero-copy h1{font-size:19px!important}
+  .hero-copy h2{font-size:12px!important}
+  .hero-copy p{font-size:8.5px!important}
+}
