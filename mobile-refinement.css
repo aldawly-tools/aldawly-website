@@ -316,3 +316,54 @@
     font-size: 11px !important;
   }
 }
+
+
+/* Catalog cards: compact secondary actions on phones; keep add-to-cart dominant. */
+@media (max-width:820px){
+  #productGrid .product-details-link,
+  #productGrid .quick-view-trigger,
+  #productGrid .product-share-row .share-product-button,
+  #featuredProductsGrid .product-details-link,
+  #featuredProductsGrid .quick-view-trigger,
+  #featuredProductsGrid .product-share-row .share-product-button,
+  #newArrivalsGrid .product-details-link,
+  #newArrivalsGrid .quick-view-trigger,
+  #newArrivalsGrid .product-share-row .share-product-button{
+    min-height:38px!important;
+    height:auto!important;
+    margin:2px 0!important;
+    padding:7px 9px!important;
+    border-radius:10px!important;
+    font-size:12px!important;
+    line-height:1.4!important;
+    font-weight:850!important;
+  }
+  #productGrid .product-share-row,
+  #featuredProductsGrid .product-share-row,
+  #newArrivalsGrid .product-share-row{
+    margin-top:0!important;
+  }
+  #productGrid .product-meta .button-primary,
+  #featuredProductsGrid .product-meta .button-primary,
+  #newArrivalsGrid .product-meta .button-primary,
+  #newArrivalsGrid .home-shelf-add{
+    min-height:45px!important;
+    margin-top:3px!important;
+    border-radius:11px!important;
+    font-size:13px!important;
+    font-weight:950!important;
+  }
+  #productGrid .product-price,
+  #featuredProductsGrid .product-price,
+  #newArrivalsGrid .product-price{
+    font-size:17px!important;
+    line-height:1.35!important;
+  }
+  #productGrid .product-price small,
+  #featuredProductsGrid .product-price small,
+  #newArrivalsGrid .product-price small{
+    display:block!important;
+    margin-top:3px!important;
+    font-size:10px!important;
+  }
+}
