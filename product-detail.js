@@ -291,9 +291,26 @@
         alert("المتصفح لا يدعم مشاركة الصور. تم تجهيز تفاصيل المنتج؛ يمكنك نسخ النص ومشاركة الصورة يدويًا.");
       }
     } catch (error) {
-      if (!error || error.name !== "AbortError") {
-        console.error("Product share failed:", error);
-        alert("تعذر تجهيز صورة المشاركة. تأكد من تحميل صورة المنتج ثم حاول مرة أخرى.");
+      if (error && error.name === "AbortError") return;
+      console.error("Product image share failed; trying text/link share:", error);
+      let sharedWithoutImage = false;
+      try {
+        if (navigator.share) {
+          await navigator.share({title:name, text:caption, url:productUrl});
+          sharedWithoutImage = true;
+        }
+      } catch (fallbackError) {
+        if (fallbackError && fallbackError.name === "AbortError") return;
+        console.warn("Native text share unavailable:", fallbackError);
+      }
+      if (!sharedWithoutImage) {
+        const copied = await copyShareCaption(caption);
+        if (!copied) {
+          window.open("https://wa.me/?text=" + encodeURIComponent(caption), "_blank", "noopener");
+          alert("تعذر تجهيز صورة المنتج، لكن تم فتح واتساب بنص الإعلان ورابط المنتج.");
+        } else {
+          alert("تعذر تجهيز صورة المنتج، لكن تم نسخ اسم المنتج والسعر والتفاصيل والرابط. يمكنك لصقها في أي منصة.");
+        }
       }
     } finally {
       shareButton.disabled = false;
