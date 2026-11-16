@@ -67,3 +67,12 @@ body{background:radial-gradient(ellipse at 50% 0%,#3b424a 0%,#20252b 46%,#111519
 .product-detail-layout .product-specs h2,.product-detail-layout .product-spec-row,.product-detail-layout .product-spec-row strong,.product-detail-layout .product-spec-row span{color:#f5f6f7!important;-webkit-text-fill-color:#f5f6f7!important}
 .product-detail-layout .detail-stock-status{color:#fff!important;-webkit-text-fill-color:#fff!important;background:rgba(0,0,0,.35)!important;border-color:rgba(255,255,255,.22)!important}
 .masthead .brand-name,.masthead .brand-tag,.masthead a,.masthead button{color:#fff!important;-webkit-text-fill-color:#fff!important}
+
+/* Footer readability on the dark product page */
+.footer,.footer .container,.footer-grid{background:#151a20!important;color:#f4f6f8!important}
+.footer{border-top:2px solid #c9232d!important}
+.footer h3,.footer strong{color:#fff!important;-webkit-text-fill-color:#fff!important;font-weight:900!important}
+.footer p,.footer li,.footer span{color:#dce2e8!important;-webkit-text-fill-color:#dce2e8!important;opacity:1!important}
+.footer a:not(.button-primary){color:#f1f4f7!important;-webkit-text-fill-color:#f1f4f7!important;font-weight:750!important;text-decoration-color:rgba(255,255,255,.4)}
+.footer .button-primary{color:#fff!important;-webkit-text-fill-color:#fff!important;background:linear-gradient(120deg,#d71920,#a70d16)!important;box-shadow:0 7px 20px rgba(215,25,32,.28)!important}
+.footer .footer-links a{display:inline-flex;align-items:center;min-height:32px}
