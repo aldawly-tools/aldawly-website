@@ -1102,7 +1102,7 @@
     if (checkout.dataset.shareReady === "text-only" && readyOrderShareMessage) {
       // Fallback for browsers that cannot render/share the order image.
       window.open("https://wa.me/201024787222?text=" + encodeURIComponent(readyOrderShareMessage), "_blank");
-      checkout.textContent = "تم فتح واتساب — أرسل تفاصيل الطلب";
+      checkout.textContent = "تم فتح واتساب — اضغط إرسال داخل المحادثة";
       checkout.dataset.shareReady = "false";
       return;
     }
@@ -1112,9 +1112,11 @@
         const shareData = {files:[readyOrderShareFile], title:"طلب من متجر الدولي", text:readyOrderShareMessage};
         if (navigator.share && (!navigator.canShare || navigator.canShare(shareData))) {
           await navigator.share(shareData);
-          clearCartAfterWhatsApp();
-          checkout.textContent = "تم إرسال الطلب";
+          // The browser only confirms that the share sheet was handed off/closed;
+          // it cannot confirm that the customer actually sent the WhatsApp message.
+          checkout.textContent = "تم فتح المشاركة — تأكد من إرسال الطلب";
           checkout.dataset.shareReady = "false";
+          checkout.disabled = false;
         } else {
           // Desktop browsers often cannot attach files through Web Share: download the image and open WhatsApp with the order text.
           const imageUrl = URL.createObjectURL(readyOrderShareFile);
@@ -1156,7 +1158,20 @@
       return;
     }
     checkout.disabled = true;
-    const orderNumber = "DW-" + Date.now().toString().slice(-8);
+    // Generate a per-checkout identifier that remains unique across customers/devices.
+    function createUniqueOrderNumber() {
+      const bytes = new Uint8Array(8);
+      if (window.crypto && typeof window.crypto.getRandomValues === "function") {
+        window.crypto.getRandomValues(bytes);
+      } else {
+        for (let i = 0; i < bytes.length; i++) bytes[i] = Math.floor(Math.random() * 256);
+      }
+      const token = Array.from(bytes).map(function(value) {
+        return value.toString(16).padStart(2, "0");
+      }).join("").toUpperCase();
+      return "DW-" + Date.now().toString(36).toUpperCase() + "-" + token;
+    }
+    const orderNumber = createUniqueOrderNumber();
     const pricing = cartPricing();
     let itemNumber = 0;
     const lines = cart.map(function (line) {
