@@ -620,12 +620,7 @@ $("deleteAllOrdersBtn").addEventListener("click",async function(){
   const docs=snapshot.docs;
   if(!docs.length){orders=[];renderOrders();$("ordersStatus").textContent="لا توجد طلبات لحذفها.";return;}
   const needsRestore=docs.filter(d=>{const o=d.data();return o.inventoryDeducted===true&&o.inventoryRestored!==true;});
-  const unsafe=needsRestore.filter(d=>d.data().status!=="cancelled");
-  if(unsafe.length){
-   $("ordersStatus").textContent="تم إيقاف الحذف الآمن: يوجد "+unsafe.length+" طلب مؤكد أو غير ملغي ما زال مخزونُه مخصومًا. ألغِ هذه الطلبات أولًا، ثم أعد المحاولة.";
-   return;
-  }
-  const approved=window.confirm("تنبيه: سيتم حذف جميع الطلبات وعددها "+docs.length+" نهائيًا. "+(needsRestore.length?"سيتم إرجاع مخزون "+needsRestore.length+" طلب ملغي قبل حذفه. ":"")+"لن يتم حذف المنتجات أو بيانات المتجر الأخرى. هل تريد المتابعة؟");
+  const approved=window.confirm("تنبيه: سيتم حذف جميع الطلبات وعددها "+docs.length+" نهائيًا. "+(needsRestore.length?"سيتم إرجاع الكميات إلى المخزون لعدد "+needsRestore.length+" طلب قبل الحذف، حتى لو كانت حالته مؤكدة. ":"")+"لن يتم حذف المنتجات أو صورها أو بيانات المتجر الأخرى. هل تريد المتابعة؟");
   if(!approved)return;
   let deleted=0;
   for(const orderDoc of needsRestore){
@@ -635,7 +630,6 @@ $("deleteAllOrdersBtn").addEventListener("click",async function(){
     if(!latestSnap.exists())return;
     const latest=latestSnap.data();
     if(latest.inventoryDeducted===true&&latest.inventoryRestored!==true){
-     if(latest.status!=="cancelled")throw new Error("الطلب "+(latest.orderNumber||orderDoc.id)+" ليس ملغيًا؛ لم يتم حذف الطلبات.");
      const items=Array.isArray(latest.items)?latest.items:[];
      const reads=[];
      for(const item of items){
