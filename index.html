@@ -22,7 +22,7 @@
 <link rel="stylesheet" href="store.css?v=latest-products-responsive-peek-20261116-13">
 <link rel="stylesheet" href="visitor-counter.css?v=20261115-1">
 <link rel="stylesheet" href="product-experience.css?v=20261115-1">
-<link rel="stylesheet" href="mobile-refinement.css?v=latest-shelf-single-card-20261116-10">
+<link rel="stylesheet" href="mobile-refinement.css?v=latest-shelf-autoplay-20261116-11">
 <link rel="stylesheet" href="catalog-color-refinement.css?v=red-active-categories-20261115">
 <link rel="stylesheet" href="business-section-colors.css?v=business-red-contrast-20261115">
 <link rel="stylesheet" href="desktop-hero-layout.css?v=desktop-hero-repair-20261115">
@@ -385,11 +385,12 @@ footer.footer .button-primary { color:#fff !important; font-weight:1000 !importa
    var max=Math.max(0,view.scrollWidth-view.clientWidth);
    if(max<2)return;
    var amount=stepSize();
-   var current=Math.abs(view.scrollLeft);
-   var next=current+direction*amount;
-   if(next>max-4)next=0;
-   if(next<0)next=max;
-   view.scrollTo({left:direction>0?-next:next,behavior:'smooth'});
+   var current=Math.min(max,Math.abs(view.scrollLeft));
+   var next;
+   /* RTL Chrome uses a negative scrollLeft as the shelf moves toward later cards. */
+   if(direction<0) next=(current>=max-amount-4)?0:Math.min(max,current+amount);
+   else next=(current<=4)?max:Math.max(0,current-amount);
+   view.scrollTo({left:-next,behavior:'smooth'});
   }
   document.querySelectorAll('.home-products-shelf [data-shelf-dir]').forEach(function(button){
    button.addEventListener('click',function(){move(button.dataset.shelfDir==='next'?-1:1);});
