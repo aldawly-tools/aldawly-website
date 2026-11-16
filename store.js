@@ -1086,6 +1086,13 @@
 
   checkout.addEventListener("click", async function () {
     if (checkout.disabled) return;
+    if (checkout.dataset.shareReady === "text-only" && readyOrderShareMessage) {
+      // Fallback for browsers that cannot render/share the order image.
+      window.open("https://wa.me/201024787222?text=" + encodeURIComponent(readyOrderShareMessage), "_blank");
+      checkout.textContent = "تم فتح واتساب — أرسل تفاصيل الطلب";
+      checkout.dataset.shareReady = "false";
+      return;
+    }
     if (checkout.dataset.shareReady === "true" && readyOrderShareFile) {
       checkout.disabled = true;
       try {
@@ -1202,9 +1209,13 @@
       await prepareWhatsAppOrderImage(orderNumber, customerName, customerPhone, customerAddress, orderImageItems, message, {totalAmount:pricing.total,totalIsComplete:pricing.itemCount > 0 && pricing.pricedCount === pricing.itemCount,totalText:totalText});
     } catch (shareError) {
       console.warn("تعذر تجهيز صورة الطلب:", shareError);
+      // Do not block checkout on browsers with limited canvas/File support.
+      readyOrderShareFile = null;
+      readyOrderShareMessage = message;
       checkout.disabled = false;
-      checkout.textContent = "إعادة تجهيز صورة الطلب";
-      alert("تعذر تجهيز صورة الطلب. حاول مرة أخرى.");
+      checkout.dataset.shareReady = "text-only";
+      checkout.textContent = "إرسال الطلب عبر واتساب (بدون صورة)";
+      alert("هذا المتصفح لم يتمكن من تجهيز صورة الطلب. يمكنك إرسال تفاصيل الطلب عبر واتساب، وسيتم فتح المحادثة مباشرة.");
     }
   });
   // Keep the active checkout field visible when the mobile keyboard opens.
