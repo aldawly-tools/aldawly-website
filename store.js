@@ -120,7 +120,11 @@
           });
         }, {rootMargin:"240px"});
       }
-      images.forEach(function (image) { cloudImageObserver.observe(image); });
+      images.forEach(function (image) {
+        if (image.dataset.cloudObserved === "1") return;
+        image.dataset.cloudObserved = "1";
+        cloudImageObserver.observe(image);
+      });
       return;
     }
     images.forEach(loadImage);
@@ -353,15 +357,19 @@
   }
 
   function drawCategories() {
-    const categories = Array.from(new Set(products.map(function (item) { return item.cat; }).filter(Boolean)));
+    const categoryCounts = new Map();
+    products.forEach(function (item) {
+      if (item.cat) categoryCounts.set(item.cat, (categoryCounts.get(item.cat) || 0) + 1);
+    });
+    const categories = Array.from(categoryCounts.keys());
     tiles.innerHTML = '<button class="category-tile all" type="button" data-category="الكل"><span class="category-photo"><img src="' + categoryImage("ورش") + '" alt="" loading="lazy"><span class="category-photo-shade"></span><span class="category-icon">' + categoryIcon("ورش") + '</span></span><span class="category-copy"><strong>جميع الأقسام</strong><small>تصفح كل المنتجات</small><b>' + products.length + ' منتج</b></span></button>' +
       categories.map(function (name) {
-        const count = products.filter(function (item) { return item.cat === name; }).length;
+        const count = categoryCounts.get(name) || 0;
         return '<button class="category-tile" type="button" data-category="' + escapeHtml(name) + '"><span class="category-photo"><img src="' + categoryImage(name) + '" alt="" loading="lazy"><span class="category-photo-shade"></span><span class="category-icon">' + categoryIcon(name) + '</span></span><span class="category-copy"><strong>' + escapeHtml(name) + '</strong><small>اكتشف الأدوات المتاحة</small><b>' + count + ' منتج</b></span></button>';
       }).join("");
     filterBar.innerHTML = '<button class="filter-chip active" type="button" data-category="الكل">كل المنتجات <span class="filter-count">' + products.length + '</span></button>' +
       categories.map(function (name) {
-        const count = products.filter(function (item) { return item.cat === name; }).length;
+        const count = categoryCounts.get(name) || 0;
         return '<button class="filter-chip" type="button" data-category="' + escapeHtml(name) + '">' + escapeHtml(name) + ' <span class="filter-count">' + count + '</span></button>';
       }).join("");
     drawBrandFilters();
@@ -456,16 +464,21 @@
     renderProducts();
   });
 
+  let productSearchCache = new WeakMap();
   function renderProducts() {
     const terms = normalizeSearchText(query).split(" ").filter(Boolean);
     const filtered = products.filter(function (item) {
       const categoryMatch = activeCategory === "الكل" || item.cat === activeCategory;
       const brand = productBrand(item);
       const brandMatch = !activeBrand || normalizeBrand(brand) === normalizeBrand(activeBrand);
-      const searchable = normalizeSearchText([
-        item.name, brand, item.brand, item.cat, item.desc, item.specs,
-        item.sku, item.code, item.model, item.partNumber, item.id
-      ].join(" "));
+      let searchable = productSearchCache.get(item);
+      if (searchable === undefined) {
+        searchable = normalizeSearchText([
+          item.name, brand, item.brand, item.cat, item.desc, item.specs,
+          item.sku, item.code, item.model, item.partNumber, item.id
+        ].join(" "));
+        productSearchCache.set(item, searchable);
+      }
       const searchMatch = !terms.length || terms.every(function (term) { return searchable.includes(term); });
       return categoryMatch && brandMatch && searchMatch;
     });
@@ -525,7 +538,6 @@
     resultsCount.textContent = filtered.length ? "عرض " + shown.length + " من " + filtered.length + " منتج" : "";
     loadMoreButton.hidden = shown.length >= filtered.length;
     loadMoreButton.textContent = "عرض " + Math.min(pageSize, filtered.length - shown.length) + " منتج إضافي";
-    drawBrandFilters();
     filterBar.querySelectorAll("[data-category]").forEach(function (button) {
       button.classList.toggle("active", button.dataset.category === activeCategory);
     });
@@ -620,6 +632,7 @@
   window.addEventListener("dawly-products-updated", function (event) {
     if (!Array.isArray(event.detail)) return;
     products = event.detail;
+    productSearchCache = new WeakMap();
     drawCategories();
     renderProducts();
     renderBrandAvailability();
