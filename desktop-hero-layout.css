@@ -128,8 +128,8 @@
   .hero-shell .hero-copy{padding:25px!important}
 }
 
-/* Remove the empty white band between the navigation and the homepage hero. */
+/* Keep a small, balanced gap between navigation and homepage hero. */
 @media (min-width:821px){
-  .hero-shell{padding-top:0!important;margin-top:0!important}
+  .hero-shell{padding-top:14px!important;margin-top:0!important}
   .hero-shell .hero-grid{margin-top:0!important}
 }
