@@ -467,12 +467,9 @@ footer.footer .button-primary { color:#fff !important; font-weight:1000 !importa
   }
   function start(){
     if(timer||frame||cards().length<2)return;
-    if(window.matchMedia('(min-width:901px)').matches){
-      lastFrame=0;
-      frame=requestAnimationFrame(slowDesktopScroll);
-    }else{
-      timer=setInterval(function(){if(!document.hidden)move(-1);},4200);
-    }
+    /* Same gentle continuous auto-scroll on desktop and mobile. */
+    lastFrame=0;
+    frame=requestAnimationFrame(slowDesktopScroll);
   }
   function stop(){
     if(timer){clearInterval(timer);timer=null;}
