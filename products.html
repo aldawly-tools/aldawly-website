@@ -203,12 +203,14 @@
 </div></footer>
 <div class="cart-overlay" id="cartOverlay"></div>
 <aside class="cart-drawer" id="cartDrawer" aria-label="سلة المشتريات" aria-modal="true" role="dialog">
- <div class="drawer-head"><h2>سلة المشتريات</h2><button class="drawer-close" type="button" id="closeCart">إغلاق ✕</button></div>
+ <div class="drawer-head"><div class="order-drawer-title"><span class="order-eyebrow">الدولي للعدد الأصلية والمستوردة</span><h2>طلبك من الدولي</h2><p>راجع المنتجات وأرسل طلبك مباشرة لفريقنا</p></div><button class="drawer-close" type="button" id="closeCart">إغلاق ✕</button></div>
  <div class="cart-scroll-area">
+ <div class="order-progress" aria-label="خطوات الطلب"><span class="is-active"><b>1</b> مراجعة المنتجات</span><i></i><span><b>2</b> بيانات التوصيل</span><i></i><span><b>3</b> واتساب</span></div>
+ <div class="order-section-heading"><div><h3>منتجات طلبك</h3><p>يمكنك تعديل الكمية أو حذف أي منتج قبل الإرسال</p></div><span class="order-secure-mark">طلب مباشر</span></div>
  <div class="cart-items" id="cartItems"></div>
  <div class="cart-total" id="cartTotal" aria-live="polite"></div>
  <div class="checkout-fields" aria-label="بيانات العميل">
-  <h3>بيانات التوصيل</h3>
+  <div class="checkout-fields-heading"><span class="checkout-fields-icon">02</span><div><h3>بيانات التوصيل</h3><p>اكتب بياناتك ليتمكن فريقنا من تأكيد الطلب</p></div></div>
   <label for="customerName">الاسم بالكامل <span>*</span></label>
   <input id="customerName" type="text" autocomplete="name" maxlength="80" placeholder="اكتب اسمك" required>
   <label for="customerPhone">رقم الهاتف <span>*</span></label>
@@ -216,7 +218,7 @@
   <label for="customerAddress">العنوان بالتفصيل <span>*</span></label>
   <textarea id="customerAddress" autocomplete="street-address" maxlength="300" rows="2" placeholder="المحافظة - المدينة - الشارع - أقرب علامة مميزة" required></textarea>
  </div>
-<button class="button-primary checkout" type="button" id="checkout">تأكيد البيانات وإرسال الطلب عبر واتساب</button>
+<div class="checkout-action-note"><span>✓</span> لن يتم تحصيل أي مبلغ من خلال هذه الخطوة</div><button class="button-primary checkout" type="button" id="checkout">تجهيز الطلب وفتحه على واتساب</button>
  <section class="payment-followup" id="paymentFollowup" hidden aria-labelledby="paymentFollowupTitle">
   <h3 id="paymentFollowupTitle">خطوة تأكيد الحجز</h3>
   <p class="payment-followup-status" id="paymentFollowupStatus" aria-live="polite"></p>
