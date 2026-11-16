@@ -359,7 +359,9 @@ function renderProducts() {
   }).join("") || '<p class="muted">' + (term ? "لا توجد نتائج مطابقة للبحث." : "لا توجد منتجات حاليًا.") + '</p>';
 }
 function analyticsFormat(value){return Number(value||0).toLocaleString("ar-EG");}
-async function loadAnalytics(){
+let analyticsLoadedAt = 0;
+async function loadAnalytics(force){
+ if(!force && analyticsLoadedAt && Date.now()-analyticsLoadedAt < 5*60*1000) return;
  const statusNode=$("analyticsStatus");
  if(statusNode)statusNode.textContent="جارٍ تحميل بيانات الزيارات والمشاهدات…";
  try{
@@ -409,13 +411,14 @@ async function loadAnalytics(){
    const p=products.find(item=>String(item.id)===id);
    return '<tr><td style="padding:9px">'+escapeHtml(p?p.name:"منتج رقم "+id)+'</td><td style="padding:9px">'+escapeHtml(p&&p.brand||"—")+'</td><td style="padding:9px"><b>'+analyticsFormat(count)+'</b></td></tr>';
   }).join(""):'<tr><td colspan="3" style="padding:9px">لا توجد مشاهدات مسجلة بعد.</td></tr>';
+  analyticsLoadedAt=Date.now();
   if(statusNode)statusNode.textContent="تم تحديث الإحصائيات بنجاح. آخر تحديث: "+new Date().toLocaleTimeString("ar-EG",{timeZone:EGYPT_TIME_ZONE});
  }catch(error){
   console.error("Analytics load failed:",error);
   if(statusNode)statusNode.textContent="تعذر تحميل الإحصائيات: "+(error.code||error.message||"خطأ غير معروف")+". تأكد من نشر قواعد Firebase المحدثة.";
  }
 }
-$("refreshAnalyticsBtn").addEventListener("click",loadAnalytics);
+$("refreshAnalyticsBtn").addEventListener("click",function(){loadAnalytics(true);});
 async function ensureCatalog() {
   const metaRef = doc(db, "storeMeta", "catalog");
   const meta = await getDoc(metaRef);
@@ -984,7 +987,7 @@ async function importProducts(file) {
     if (start + 400 >= records.length) batch.set(doc(db, "storeMeta", "catalog"), {initialized:true,updatedAt:serverTimestamp()});
     await batch.commit();
   }
-  await loadProducts();
+  await loadProducts(true);
   message(saveStatus, "تم استيراد " + records.length + " منتجًا إلى المتجر.");
 }
 function readFileAsDataUrl(file) {
