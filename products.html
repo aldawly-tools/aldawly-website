@@ -19,7 +19,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="store.css?v=20261116-cart-scroll-desktop">
+<link rel="stylesheet" href="store.css?v=20261116-remove-cart-deposit-banner">
 <link rel="stylesheet" href="product-experience.css?v=20261115-1">\n<link rel="stylesheet" href="mobile-refinement.css?v=premium-industrial-20261115-1">
 <link rel="stylesheet" href="catalog-color-refinement.css?v=red-active-categories-20261115">
 
@@ -223,15 +223,7 @@
   <label for="customerAddress">العنوان بالتفصيل <span>*</span></label>
   <textarea id="customerAddress" autocomplete="street-address" maxlength="300" rows="2" placeholder="المحافظة - المدينة - الشارع - أقرب علامة مميزة" required></textarea>
  </div>
-  <div class="booking-deposit-note" role="note" aria-label="مقدم جدية الحجز">
-  <div class="booking-deposit-icon">✓</div>
-  <div class="booking-deposit-copy">
-   <strong>تأكيد الحجز بمقدم 200 جنيه</strong>
-   <span>يُخصم المبلغ من إجمالي فاتورتك. ادفع بعد تأكيد المتجر توفر المنتجات والسعر والتوصيل.</span>
-  </div>
-  <div class="booking-deposit-amount">200 <small>جنيه</small></div>
- </div>
- <button class="button-primary checkout" type="button" id="checkout">تأكيد البيانات وإرسال الطلب عبر واتساب</button>
+<button class="button-primary checkout" type="button" id="checkout">تأكيد البيانات وإرسال الطلب عبر واتساب</button>
  <section class="payment-followup" id="paymentFollowup" hidden aria-labelledby="paymentFollowupTitle">
   <h3 id="paymentFollowupTitle">خطوة تأكيد الحجز</h3>
   <p class="payment-followup-status" id="paymentFollowupStatus" aria-live="polite"></p>
@@ -261,7 +253,7 @@
 <script src="firebase-config.js?v=live-refresh-20261114-1"></script>
 <script type="module" src="traffic-analytics.js?v=product-view-routes-20261116-1"></script>
 <script src="onesignal-init.js?v=live-refresh-20261114-1"></script>
-<script src="store.js?v=20261116-cart-scroll-desktop"></script>
+<script src="store.js?v=20261116-remove-cart-deposit-banner"></script>
 <script>
 (function(){
  var params=new URLSearchParams(window.location.search);
