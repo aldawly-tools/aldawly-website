@@ -4972,3 +4972,18 @@ html body aside#cartDrawer.cart-drawer>.cart-scroll-area>.payment-followup{
 @media(prefers-reduced-motion:reduce){
  .home-products-shelf .home-products-viewport.latest-shelf-running .home-products-track{animation:none!important}
 }
+
+
+/* Keep latest products moving continuously, even after a product button receives focus. */
+.home-products-shelf .home-products-viewport.latest-shelf-running .home-products-track,
+.home-products-shelf .home-products-viewport.latest-shelf-running:hover .home-products-track,
+.home-products-shelf .home-products-viewport.latest-shelf-running:focus-within .home-products-track{
+  animation:latestShelfCssMove 38s linear infinite!important;
+  animation-play-state:running!important;
+}
+@media(prefers-reduced-motion:reduce){
+  .home-products-shelf .home-products-viewport.latest-shelf-running .home-products-track{
+    animation:latestShelfCssMove 38s linear infinite!important;
+    animation-play-state:running!important;
+  }
+}
