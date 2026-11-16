@@ -1180,6 +1180,19 @@
     };
   }
 
+  ["customerName", "customerPhone", "customerAddress"].forEach(function(id) {
+    const field = document.getElementById(id);
+    if (!field) return;
+    field.addEventListener("input", function() {
+      if (!pendingOrder) return;
+      pendingOrder = null;
+      checkout.textContent = "تجهيز الطلب وفتحه على واتساب";
+      checkout.dataset.orderPrepared = "false";
+      const followup = document.getElementById("paymentFollowup");
+      if (followup) followup.hidden = true;
+    });
+  });
+
   checkout.addEventListener("click", function() {
     if (checkout.disabled) return;
 
@@ -1193,8 +1206,10 @@
       checkout.disabled = false;
     }
 
-    const opened = window.open(pendingOrder.url, "_blank", "noopener,noreferrer");
-    if (!opened) {
+    const opened = window.open(pendingOrder.url, "_blank");
+    if (opened) {
+      try { opened.opener = null; } catch (error) {}
+    } else {
       alert("المتصفح منع فتح واتساب تلقائيًا. اضغط على زر «فتح رسالة الطلب عبر واتساب» داخل ملخص الطلب.");
     }
     const status = document.getElementById("paymentFollowupStatus");
