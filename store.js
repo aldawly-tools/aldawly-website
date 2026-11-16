@@ -1112,13 +1112,13 @@
     const customerPhone = customerPhoneRaw
       .replace(/[٠-٩]/g, function (digit) { return String("٠١٢٣٤٥٦٧٨٩".indexOf(digit)); })
       .replace(/[۰-۹]/g, function (digit) { return String("۰۱۲۳۴۵۶۷۸۹".indexOf(digit)); })
-      .replace(/[\\s()+-]/g, "");
+      .replace(/[\s()+-]/g, "");
     if (!cart.length) return null;
     if (!customerName || !customerPhoneRaw || !customerAddress) {
       alert("من فضلك اكتب الاسم ورقم الهاتف والعنوان قبل إرسال الطلب.");
       return null;
     }
-    if (!/^\\d{8,15}$/.test(customerPhone)) {
+    if (!/^\d{8,15}$/.test(customerPhone)) {
       alert("رقم الهاتف غير صحيح. راجع الرقم وحاول مرة أخرى.");
       document.getElementById("customerPhone").focus();
       return null;
@@ -1140,8 +1140,8 @@
         ? "السعر: عند الاستفسار"
         : "سعر الوحدة: " + money(price) + " | إجمالي المنتج: " + money(price * line.qty);
       return itemNumber + ") " + cleanOrderProductName(item.name) +
-        "\\nالكمية: " + line.qty + "\\n" + priceLines +
-        "\\nتفاصيل المنتج: " + productUrl;
+        "\nالكمية: " + line.qty + "\n" + priceLines +
+        "\nتفاصيل المنتج: " + productUrl;
     }).filter(Boolean);
     if (!lines.length || lines.length !== cart.length) {
       alert("تعذر تحميل بيانات أحد المنتجات. حدّث الصفحة ثم راجع طلبك.");
@@ -1151,7 +1151,7 @@
     const totalText = pricing.pricedCount === pricing.itemCount
       ? "إجمالي المنتجات: " + money(pricing.total)
       : pricing.pricedCount
-        ? "مجموع المنتجات المسعّرة: " + money(pricing.total) + "\\nبعض المنتجات سعرها عند الاستفسار"
+        ? "مجموع المنتجات المسعّرة: " + money(pricing.total) + "\nبعض المنتجات سعرها عند الاستفسار"
         : "الإجمالي النهائي بعد تأكيد الأسعار";
     const message = [
       "🛒 *طلب جديد من متجر الدولي*",
@@ -1163,14 +1163,14 @@
       "العنوان: " + customerAddress,
       "",
       "📦 *المنتجات (" + pricing.itemCount + ")*",
-      lines.join("\\n\\n"),
+      lines.join("\n\n"),
       "",
       "💰 *ملخص الطلب*",
       totalText,
       "الشحن: يُحدد بعد تأكيد العنوان",
       "",
       "برجاء تأكيد توفر المنتجات والسعر النهائي."
-    ].join("\\n");
+    ].join("\n");
 
     return {
       number:orderNumber,
