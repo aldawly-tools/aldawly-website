@@ -548,3 +548,14 @@
   .hero-photo{height:102px!important;min-height:102px!important;max-height:102px!important}
   .hero-services .service-card{min-height:42px!important;font-size:9px!important}
 }
+
+
+/* Mobile: remove the large hero photo and pull the store sections upward. */
+@media(max-width:700px){
+  .hero-photo{display:none!important}
+  .hero-shell{padding:0!important;margin:0!important}
+  .hero-grid{gap:0!important;margin:0 auto!important}
+  .hero-copy{margin:0!important;border-radius:0 0 11px 11px!important}
+  .hero-services{margin:0!important;padding-top:7px!important}
+  .section{padding-top:8px!important}
+}
