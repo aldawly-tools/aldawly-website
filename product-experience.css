@@ -126,29 +126,24 @@
 @media(prefers-reduced-motion:reduce){.product-card,.product-card img{transition:none!important}}
 
 
-/* 3D-style product turn on hover, using the available single product image. */
-@keyframes dawlyProductSpin{
-  0%{transform:perspective(900px) rotateY(0deg) scale(1)}
-  25%{transform:perspective(900px) rotateY(90deg) scale(.94)}
-  50%{transform:perspective(900px) rotateY(180deg) scale(1)}
-  75%{transform:perspective(900px) rotateY(270deg) scale(.94)}
-  100%{transform:perspective(900px) rotateY(360deg) scale(1)}
+/* Keep the product frame fixed; animate only the image itself. */
+.product-visual{
+ position:relative!important;overflow:hidden!important;
+ transform:none!important;perspective:900px!important;
 }
-#productGrid .product-visual:hover img,
-.product-grid .product-visual:hover img,
-.home-shelf-card .product-visual:hover img,
-.product-detail-image:hover img{
- animation:dawlyProductSpin 7s ease-in-out infinite!important;
+.product-visual>img{
+ display:block!important;position:relative!important;
+ width:100%!important;height:100%!important;object-fit:contain!important;
  transform-origin:50% 50%!important;
- backface-visibility:visible!important;
+ mix-blend-mode:multiply!important;
+ backface-visibility:hidden!important;
 }
-#productGrid .product-visual img,
-.product-grid .product-visual img,
-.home-shelf-card .product-visual img,
-.product-detail-image img{transform-style:preserve-3d;backface-visibility:visible}
-@media(hover:none){
- #productGrid .product-visual:active img,
- .product-grid .product-visual:active img,
- .home-shelf-card .product-visual:active img,
- .product-detail-image:active img{animation:dawlyProductSpin 7s ease-in-out infinite!important}
+@keyframes dawlyProductSpin{
+ 0%{transform:perspective(900px) rotateY(0deg) scale(1)}
+ 25%{transform:perspective(900px) rotateY(24deg) scale(.96)}
+ 50%{transform:perspective(900px) rotateY(0deg) scale(1)}
+ 75%{transform:perspective(900px) rotateY(-24deg) scale(.96)}
+ 100%{transform:perspective(900px) rotateY(0deg) scale(1)}
 }
+.product-visual:hover>img{animation:dawlyProductSpin 7s ease-in-out infinite!important}
+@media(hover:none){.product-visual:active>img{animation:dawlyProductSpin 7s ease-in-out infinite!important}}
