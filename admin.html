@@ -261,6 +261,12 @@ const baseProducts = Array.isArray(window.DAWLY_PRODUCTS) ? window.DAWLY_PRODUCT
 let db = null;
 let auth = null;
 let products = [];
+let productsLoaded = false;
+const CATALOG_CACHE_KEY = "aldawly_catalog_cache_v1";
+function saveCatalogCache() {
+  try { localStorage.setItem(CATALOG_CACHE_KEY, JSON.stringify({savedAt:Date.now(), products:products})); }
+  catch (error) { console.warn("تعذر تحديث ذاكرة كتالوج المنتجات:", error); }
+}
 let previewObjectUrl = "";
 let imageRemoved = false;
 let existingImageIds = [];
@@ -416,13 +422,16 @@ async function ensureCatalog() {
   // Do not seed sample or placeholder products. Only owner-added products belong in the live catalog.
   await setDoc(metaRef, {initialized:true, updatedAt:serverTimestamp(), seeded:false});
 }
-async function loadProducts() {
+async function loadProducts(force) {
+  if (productsLoaded && !force) { renderProducts(); return; }
   await ensureCatalog();
   const result = await getDocs(collection(db, "products"));
   products = result.docs.map(function (item) {
     const data = item.data();
     return Object.assign({}, data, {id:Number(data.id || item.id)});
   }).sort(function (a, b) { return a.id - b.id; });
+  productsLoaded = true;
+  saveCatalogCache();
   renderProducts();
   refreshPostProducts();
 }
@@ -1068,6 +1077,8 @@ async function deleteProduct(id) {
     });
     await batch.commit();
     products = products.filter(function (item) { return String(item.id) !== String(id); });
+    productsLoaded = true;
+    saveCatalogCache();
     renderProducts();
     message(saveStatus, "تم حذف المنتج وصوره المحفوظة بنجاح.");
   } catch (error) {
@@ -1286,6 +1297,8 @@ $("productForm").addEventListener("submit", async function (event) {
     };
     await setDoc(doc(db, "products", String(id)), product);
     products = products.filter(function (item) { return String(item.id) !== String(id); }).concat([product]).sort(function (a, b) { return a.id - b.id; });
+    productsLoaded = true;
+    saveCatalogCache();
     renderProducts();
     resetForm();
     message(saveStatus, "تم حفظ المنتج، وسيظهر للزوار عند تحديث الصفحة.");
@@ -1329,7 +1342,7 @@ if (!readyConfig()) {
       $("loginCard").classList.add("hidden");
       $("manager").classList.remove("hidden");
       $("signedInAs").textContent = "تم تسجيل الدخول: " + user.email;
-      try { await loadProducts(); await loadOrders(); await loadAnalytics(); }
+      try { await loadProducts(); await loadOrders(); }
       catch (error) { console.error("Admin data load failed:", error); message(saveStatus, "تعذر تحميل المنتجات: " + (error && (error.code || error.message) ? (error.code || error.message) : "خطأ غير معروف") + "."); }
     });
   } catch (error) { console.error("Firebase initialization error:", error); message(status, "تعذر تهيئة Firebase (" + (error.code || error.message || "خطأ غير معروف") + "). راجع إعدادات Firebase."); }
