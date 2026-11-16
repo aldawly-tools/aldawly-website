@@ -22,7 +22,7 @@
 <link rel="stylesheet" href="store.css?v=latest-shelf-scroll-20261116-1">
 <link rel="stylesheet" href="visitor-counter.css?v=20261115-1">
 <link rel="stylesheet" href="product-experience.css?v=20261115-1">
-<link rel="stylesheet" href="mobile-refinement.css?v=remove-top-orphan-strip-20261116-8">
+<link rel="stylesheet" href="mobile-refinement.css?v=top-gap-hard-reset-20261116-9">
 <link rel="stylesheet" href="catalog-color-refinement.css?v=red-active-categories-20261115">
 <link rel="stylesheet" href="business-section-colors.css?v=business-red-contrast-20261115">
 <link rel="stylesheet" href="desktop-hero-layout.css?v=desktop-hero-repair-20261115">
@@ -84,6 +84,33 @@ footer.footer .button-primary { color:#fff !important; font-weight:1000 !importa
 </head>
 
 <body>
+<script id="remove-top-gap">
+(function(){
+ function fix(){
+  var header=document.querySelector('body > header.masthead');
+  if(!header)return;
+  var previous=header.previousElementSibling;
+  while(previous){
+   var before=previous.previousElementSibling;
+   if(!previous.matches('script,style,link,meta')) {
+    previous.style.setProperty('display','none','important');
+    previous.style.setProperty('height','0','important');
+    previous.style.setProperty('min-height','0','important');
+    previous.style.setProperty('margin','0','important');
+    previous.style.setProperty('padding','0','important');
+    previous.style.setProperty('border','0','important');
+   }
+   previous=before;
+  }
+  document.documentElement.style.marginTop='0';
+  document.body.style.setProperty('margin-top','0','important');
+  document.body.style.setProperty('padding-top','0','important');
+  header.style.setProperty('margin-top','0','important');
+ }
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',fix,{once:true});else fix();
+ new MutationObserver(fix).observe(document.body,{childList:true});
+})();
+</script>
 <script>
 /* Hide any legacy benefits strip rendered above the storefront header. */
 (function () {
