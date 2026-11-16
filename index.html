@@ -414,7 +414,7 @@ footer.footer .button-primary { color:#fff !important; font-weight:1000 !importa
    pauseForControl();
    view.scrollBy({left:direction*Math.max(200,view.clientWidth*.72),behavior:'smooth'});
   }
-  view.querySelectorAll('.home-shelf-arrows [data-shelf-dir]').forEach(function(btn){
+  document.querySelectorAll('.home-products-shelf .home-shelf-arrows [data-shelf-dir]').forEach(function(btn){
    btn.addEventListener('click',function(){move(btn.dataset.shelfDir==='next'?-1:1);});
   });
   ['pointerdown','touchstart','wheel','keydown'].forEach(function(type){
