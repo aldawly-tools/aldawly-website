@@ -112,9 +112,13 @@
     // Latest-products images must load immediately: the horizontal shelf can be
     // transformed/cloned, which may delay IntersectionObserver visibility on mobile.
     images.forEach(function(image){
-      if(image.closest("#newArrivalsGrid") && image.dataset.cloudObserved !== "1"){
-        image.dataset.cloudObserved = "1";
-        loadImage(image);
+      if(image.closest("#newArrivalsGrid")){
+        image.loading = "eager";
+        image.decoding = "async";
+        if(image.dataset.cloudObserved !== "1"){
+          image.dataset.cloudObserved = "1";
+          loadImage(image);
+        }
       }
     });
     if ("IntersectionObserver" in window) {
