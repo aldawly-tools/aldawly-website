@@ -437,3 +437,51 @@
     content-visibility:auto;
   }
 }
+
+
+/* Compact homepage hero on phones: bring product sections into view sooner. */
+@media(max-width:700px){
+  .hero-shell{padding:7px 0 0!important}
+  .hero-grid{gap:7px!important}
+  .hero-copy{
+    min-height:0!important;
+    padding:12px 14px!important;
+    border-radius:12px!important;
+  }
+  .hero-copy .eyebrow{
+    font-size:10px!important;
+    line-height:1.4!important;
+    margin-bottom:5px!important;
+    padding:5px 9px!important;
+  }
+  .hero-copy h1{font-size:26px!important;line-height:1.12!important;margin:0 0 2px!important}
+  .hero-copy h2{font-size:16px!important;line-height:1.35!important;margin:0 0 6px!important}
+  .hero-copy p{font-size:11px!important;line-height:1.55!important;margin:0!important}
+  .hero-copy .hero-cta,
+  .hero-copy .whatsapp-catalog-cta{
+    min-height:42px!important;
+    height:42px!important;
+    width:100%!important;
+    max-width:none!important;
+    margin:7px 0 0!important;
+    padding:6px 12px!important;
+    border-radius:9px!important;
+    font-size:14px!important;
+    align-self:stretch!important;
+  }
+  .hero-photo{
+    height:150px!important;
+    min-height:150px!important;
+    max-height:150px!important;
+    border-radius:11px!important;
+  }
+  .hero-services{gap:6px!important}
+  .hero-services .service-card{min-height:54px!important;padding:7px 8px!important;font-size:11px!important}
+  .section{padding-top:13px!important}
+}
+@media(max-width:380px){
+  .hero-copy{padding:10px 12px!important}
+  .hero-copy h1{font-size:24px!important}
+  .hero-copy p{font-size:10px!important}
+  .hero-photo{height:135px!important;min-height:135px!important;max-height:135px!important}
+}
