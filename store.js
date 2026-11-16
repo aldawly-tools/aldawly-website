@@ -1102,8 +1102,8 @@
     if (checkout.dataset.shareReady === "text-only" && readyOrderShareMessage) {
       // Fallback for browsers that cannot render/share the order image.
       window.open("https://wa.me/201024787222?text=" + encodeURIComponent(readyOrderShareMessage), "_blank");
-      checkout.textContent = "تم فتح واتساب — اضغط إرسال داخل المحادثة";
-      checkout.dataset.shareReady = "false";
+      checkout.textContent = "إعادة فتح رسالة نفس الطلب عبر واتساب";
+      checkout.dataset.shareReady = "text-only";
       return;
     }
     if (checkout.dataset.shareReady === "true" && readyOrderShareFile) {
@@ -1114,8 +1114,8 @@
           await navigator.share(shareData);
           // The browser only confirms that the share sheet was handed off/closed;
           // it cannot confirm that the customer actually sent the WhatsApp message.
-          checkout.textContent = "تم فتح المشاركة — تأكد من إرسال الطلب";
-          checkout.dataset.shareReady = "false";
+          checkout.textContent = "إعادة فتح مشاركة نفس الطلب";
+          checkout.dataset.shareReady = "true";
           checkout.disabled = false;
         } else {
           // Desktop browsers often cannot attach files through Web Share: download the image and open WhatsApp with the order text.
