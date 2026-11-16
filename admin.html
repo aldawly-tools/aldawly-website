@@ -314,6 +314,7 @@ document.querySelectorAll(".dashboard-tab").forEach(function(button) {
     }
     window.scrollTo({top:0,behavior:"smooth"});
     if(button.dataset.tab==="ordersPanel"&&typeof loadOrders==="function")loadOrders();
+    if(button.dataset.tab==="analyticsPanel"&&typeof loadAnalytics==="function")loadAnalytics();
   });
 });
 function message(target, text) { target.textContent = text || ""; }
