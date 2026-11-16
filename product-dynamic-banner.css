@@ -87,3 +87,23 @@ body{background:radial-gradient(ellipse at 50% 0%,#3b424a 0%,#20252b 46%,#111519
 .product-detail-layout .detail-stock-status{background:rgba(0,0,0,.22)!important;color:#fff!important;border:1px solid rgba(255,255,255,.2)!important;border-radius:12px!important;padding:12px 14px!important}
 .product-detail-layout .product-detail-image{background:linear-gradient(145deg,#eceeed,#dfe3e3)!important}
 .product-detail-layout .product-detail-image img{background:transparent!important}
+
+
+/* Breadcrumb contrast: dark readable text on the light breadcrumb pill */
+.product-detail-crumb,
+.product-detail-crumb a,
+.product-detail-crumb span{
+ color:#252a30!important;
+ -webkit-text-fill-color:#252a30!important;
+ font-weight:800!important;
+ opacity:1!important;
+ text-shadow:none!important;
+}
+.product-detail-crumb{
+ background:linear-gradient(135deg,#fff8f0,#f2e8dc)!important;
+ border:1px solid rgba(120,70,45,.24)!important;
+ box-shadow:0 4px 14px rgba(0,0,0,.12)!important;
+}
+.product-detail-crumb a:hover{color:#b51f2a!important;-webkit-text-fill-color:#b51f2a!important}
+.product-detail-crumb .separator,
+.product-detail-crumb .breadcrumb-separator{color:#b51f2a!important;-webkit-text-fill-color:#b51f2a!important}
