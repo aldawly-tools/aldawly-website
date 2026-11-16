@@ -794,6 +794,62 @@ async function shareOrderConfirmation(order){
  }
 }
 
+// Reliable capture-phase handler for the individual order delete button.
+$("ordersList").addEventListener("click",async function(e){
+ const button=e.target.closest("button[data-delete-order]");
+ if(!button||!$("ordersList").contains(button))return;
+ e.preventDefault();
+ e.stopPropagation();
+ e.stopImmediatePropagation();
+ const id=String(button.getAttribute("data-delete-order")||"");
+ const order=orders.find(function(item){return String(item.id)===id;});
+ if(!id||!order){$("ordersStatus").textContent="لم يتم العثور على الطلب في القائمة الحالية. اضغط تحديث الطلبات ثم حاول مرة أخرى.";return;}
+ if(order.inventoryDeducted&&!order.inventoryRestored&&order.status!=="cancelled"){
+  $("ordersStatus").textContent="لا يمكن حذف الطلب قبل إلغائه وإعادة الكميات إلى المخزون.";
+  return;
+ }
+ const number=order.orderNumber||id;
+ if(!window.confirm("هل تريد حذف الطلب "+number+" نهائيًا؟"+(order.inventoryDeducted&&!order.inventoryRestored?" سيتم إرجاع الكميات إلى المخزون أولًا.":" لا يمكن التراجع عن الحذف.")))return;
+ button.disabled=true;
+ $("ordersStatus").textContent="جارٍ حذف الطلب "+number+"…";
+ try{
+  await runTransaction(db,async function(transaction){
+   const orderRef=doc(db,"orders",id);
+   const snap=await transaction.get(orderRef);
+   if(!snap.exists())throw new Error("الطلب غير موجود في قاعدة البيانات؛ حدّث القائمة.");
+   const latest=snap.data();
+   const restore=latest.inventoryDeducted===true&&latest.inventoryRestored!==true;
+   const productReads=[];
+   if(restore){
+    if(latest.status!=="cancelled")throw new Error("يجب إلغاء الطلب أولًا قبل حذفه.");
+    for(const item of (Array.isArray(latest.items)?latest.items:[])){
+     const productId=String(item.id||"");
+     const qty=Number(item.qty);
+     if(!productId||!Number.isInteger(qty)||qty<1)throw new Error("بيانات المنتج أو الكمية غير صحيحة؛ لم يُحذف الطلب.");
+     const productRef=doc(db,"products",productId);
+     const productSnap=await transaction.get(productRef);
+     if(!productSnap.exists())throw new Error("المنتج رقم "+productId+" غير موجود؛ لم يُحذف الطلب.");
+     productReads.push({ref:productRef,data:productSnap.data(),qty:qty});
+    }
+   }
+   productReads.forEach(function(entry){
+    const stock=entry.data.stock;
+    if(Number.isInteger(stock)&&stock>=0)transaction.update(entry.ref,{stock:stock+entry.qty,updatedAt:serverTimestamp()});
+   });
+   transaction.delete(orderRef);
+  });
+  orders=orders.filter(function(item){return String(item.id)!==id;});
+  renderOrders();
+  updateSalesSummary();
+  $("ordersStatus").textContent="تم حذف الطلب "+number+" بنجاح.";
+ }catch(error){
+  console.error("Order delete failed:",error);
+  const detail=error&&error.code?error.code+": ":"";
+  $("ordersStatus").textContent="فشل حذف الطلب: "+detail+(error&&error.message?error.message:"خطأ غير معروف")+".";
+  button.disabled=false;
+ }
+},true);
+
 $("ordersList").addEventListener("click",async function(e){
  const deleteButton=e.target.closest("[data-delete-order]");
  if(deleteButton){
