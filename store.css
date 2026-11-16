@@ -4628,3 +4628,10 @@ body.quick-view-open{overflow:hidden}
 .floating-contact-toggle:hover,.floating-contact-toggle:active{
  box-shadow:none!important;filter:none!important;transform:none!important
 }
+
+
+/* Product detail mobile: remove the fixed white controls dock that was covering the add-to-cart button */
+@media(max-width:700px){
+ body.product-page{padding-bottom:18px!important}
+ body.product-page::after{display:none!important;content:none!important}
+}
