@@ -297,7 +297,20 @@ footer.footer .button-primary { color:#fff !important; font-weight:1000 !importa
   var track=document.querySelector('.brands-marquee-track');
   if(!track || track.dataset.jsTicker==='1') return;
   var groups=track.querySelectorAll('.brands-marquee-group');
-  if(groups.length<2) return;
+  if(groups.length<2){
+   if(!track.dataset.waitingForBrandLoop){
+    track.dataset.waitingForBrandLoop='1';
+    var waitForClone=new MutationObserver(function(){
+     if(track.querySelectorAll('.brands-marquee-group').length>=2){
+      waitForClone.disconnect();
+      delete track.dataset.waitingForBrandLoop;
+      startBrandTicker();
+     }
+    });
+    waitForClone.observe(track,{childList:true});
+   }
+   return;
+  }
   track.dataset.jsTicker='1';
   track.style.setProperty('display','flex','important');
   track.style.setProperty('width','max-content','important');
