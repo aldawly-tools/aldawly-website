@@ -354,4 +354,80 @@ footer.footer .button-primary { color:#fff !important; font-weight:1000 !importa
  track.dataset.loopReady='1';
 })();
 </script>
+<script>
+/* Reliable brand ticker: JS-driven so mobile CSS motion settings cannot disable it. */
+(function(){
+ function startBrandTicker(){
+  var track=document.querySelector('.brands-marquee-track');
+  if(!track || track.dataset.jsTicker==='1') return;
+  var groups=track.querySelectorAll('.brands-marquee-group');
+  if(groups.length<2){
+   if(!track.dataset.waitingForBrandLoop){
+    track.dataset.waitingForBrandLoop='1';
+    var waitForClone=new MutationObserver(function(){
+     if(track.querySelectorAll('.brands-marquee-group').length>=2){
+      waitForClone.disconnect();
+      delete track.dataset.waitingForBrandLoop;
+      startBrandTicker();
+     }
+    });
+    waitForClone.observe(track,{childList:true});
+   }
+   return;
+  }
+  track.dataset.jsTicker='1';
+  track.style.setProperty('display','flex','important');
+  track.style.setProperty('width','max-content','important');
+  track.style.setProperty('min-width','max-content','important');
+  track.style.setProperty('animation','none','important');
+  track.style.setProperty('transform','translate3d(0,0,0)','important');
+  var offset=0, last=0, distance=0, dragging=false, startX=0, startOffset=0, moved=false;
+  track.style.setProperty('touch-action','pan-y','important');
+  track.style.setProperty('cursor','grab','important');
+  function paint(){ if(distance>0){ offset=((offset%distance)+distance)%distance; track.style.setProperty('transform','translate3d('+(-offset)+'px,0,0)','important'); } }
+  function measure(){ distance=groups[0].getBoundingClientRect().width; paint(); }
+  measure();
+  window.addEventListener('resize',measure,{passive:true});
+  track.addEventListener('pointerdown',function(e){
+   if(e.pointerType==='mouse' && e.button!==0) return;
+   dragging=true; moved=false; startX=e.clientX; startOffset=offset; last=0;
+   track.style.setProperty('cursor','grabbing','important');
+   /* Do not capture the pointer: preserve native clicks on brand links. */
+  });
+  track.addEventListener('pointermove',function(e){
+   if(!dragging) return;
+   var dx=e.clientX-startX;
+   if(Math.abs(dx)>4) moved=true;
+   offset=startOffset-dx; paint();
+  });
+  function endDrag(){
+   if(!dragging) return;
+   dragging=false;
+   track.style.setProperty('cursor','grab','important');
+   if(moved){
+    track.dataset.suppressClick='1';
+    setTimeout(function(){delete track.dataset.suppressClick;},350);
+   }
+  }
+  track.addEventListener('pointerup',endDrag);
+  track.addEventListener('pointercancel',endDrag);
+  track.addEventListener('lostpointercapture',endDrag);
+  track.addEventListener('click',function(e){
+   if(track.dataset.suppressClick==='1'){e.preventDefault();e.stopPropagation();delete track.dataset.suppressClick;}
+  },true);
+  function frame(now){
+   if(!last) last=now;
+   var dt=Math.min((now-last)/1000,.05); last=now;
+   if(!document.hidden && !dragging && distance>0){
+    offset=(offset+26*dt)%distance;
+    paint();
+   }
+   requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+ }
+ if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',startBrandTicker,{once:true});
+ else startBrandTicker();
+})();
+</script>
 </body></html>
