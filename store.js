@@ -1287,7 +1287,7 @@
       itemNumber += 1;
       const productUrl = new URL("product.html?id=" + encodeURIComponent(item.id), window.location.href).toString();
       const rawImageUrl = item.image || item.imageUrl || item.photo || item.imageURL || "";
-      const productImageUrl = rawImageUrl && /^https?:\\/\\//i.test(String(rawImageUrl))
+      const productImageUrl = rawImageUrl && /^https?:\/\//i.test(String(rawImageUrl))
         ? String(rawImageUrl)
         : rawImageUrl
           ? new URL(String(rawImageUrl), window.location.href).toString()
