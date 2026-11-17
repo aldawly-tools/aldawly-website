@@ -5761,3 +5761,73 @@ html body aside#cartDrawer.cart-drawer>.cart-scroll-area>.payment-followup{
    white-space:normal!important;
  }
 }
+
+
+/* Animated green contact launcher: clear label, soft pulse, and accessible motion. */
+.floating-contact-widget{z-index:10010!important}
+.floating-contact-toggle{
+ position:relative!important;
+ isolation:isolate!important;
+ display:flex!important;
+ flex-direction:row!important;
+ direction:ltr!important;
+ align-items:center!important;
+ justify-content:center!important;
+ gap:9px!important;
+ width:154px!important;
+ height:58px!important;
+ min-height:58px!important;
+ padding:0 15px!important;
+ border:2px solid rgba(255,255,255,.9)!important;
+ border-radius:999px!important;
+ background:linear-gradient(135deg,#12d982,#00a95c)!important;
+ color:#fff!important;
+ box-shadow:0 7px 22px rgba(0,170,94,.28),0 0 0 1px rgba(0,170,94,.12)!important;
+ animation:contactButtonGlow 2.8s ease-in-out infinite!important;
+}
+.floating-contact-toggle::before,
+.floating-contact-toggle::after{
+ content:""!important;
+ position:absolute!important;
+ inset:-5px!important;
+ z-index:-1!important;
+ border:2px solid rgba(8,200,117,.48)!important;
+ border-radius:999px!important;
+ pointer-events:none!important;
+ animation:contactPulse 2.4s ease-out infinite!important;
+}
+.floating-contact-toggle::after{animation-delay:1.2s!important}
+.floating-contact-toggle .contact-toggle-phone,
+.floating-contact-toggle .contact-toggle-close{
+ flex:0 0 27px!important;
+ width:27px!important;height:27px!important;
+ fill:none!important;stroke:#fff!important;stroke-width:2.4!important;
+}
+.floating-contact-toggle .contact-toggle-close{display:none!important}
+.floating-contact-toggle.is-open{
+ background:linear-gradient(135deg,#0caa67,#087d4e)!important;
+ animation:none!important;
+}
+.floating-contact-toggle.is-open .contact-toggle-phone{display:none!important}
+.floating-contact-toggle.is-open .contact-toggle-close{display:block!important}
+.floating-contact-label{
+ color:#fff!important;font-size:14px!important;font-weight:900!important;
+ line-height:1!important;white-space:nowrap!important;letter-spacing:0!important;
+}
+@keyframes contactPulse{
+ 0%{transform:scale(.96);opacity:.75}
+ 80%,100%{transform:scale(1.18);opacity:0}
+}
+@keyframes contactButtonGlow{
+ 0%,100%{box-shadow:0 7px 22px rgba(0,170,94,.25),0 0 0 0 rgba(8,200,117,.18)}
+ 50%{box-shadow:0 8px 26px rgba(0,170,94,.38),0 0 0 5px rgba(8,200,117,.08)}
+}
+@media(max-width:700px){
+ .floating-contact-widget{left:14px!important;bottom:calc(82px + env(safe-area-inset-bottom))!important}
+ .floating-contact-toggle{width:142px!important;height:52px!important;min-height:52px!important;padding:0 12px!important;gap:7px!important}
+ .floating-contact-label{font-size:13px!important}
+ .floating-contact-toggle .contact-toggle-phone,.floating-contact-toggle .contact-toggle-close{width:24px!important;height:24px!important;flex-basis:24px!important}
+}
+@media(prefers-reduced-motion:reduce){
+ .floating-contact-toggle,.floating-contact-toggle::before,.floating-contact-toggle::after{animation:none!important}
+}
