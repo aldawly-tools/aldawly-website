@@ -106,3 +106,18 @@
 @media(max-width:380px){
   #dawlyBotLauncher{left:10px!important;bottom:calc(198px + env(safe-area-inset-bottom))!important}
 }
+
+
+/* Keep the help bubble fully inside the viewport on narrow phones. */
+@media(max-width:700px){
+  #dawlyBotLauncher .dawly-bot-hint{
+    left:0!important;
+    right:auto!important;
+    max-width:calc(100vw - 28px)!important;
+    box-sizing:border-box!important;
+  }
+  #dawlyBotLauncher .dawly-bot-hint:after{
+    left:19px!important;
+    right:auto!important;
+  }
+}
