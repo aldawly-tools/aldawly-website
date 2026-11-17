@@ -1227,10 +1227,14 @@ $("productForm").addEventListener("submit", async function (event) {
   const id = previous ? Number(previous.id) : Math.max(0, ...products.map(function (item) { return Number(item.id) || 0; })) + 1;
   const files = selectedImageFiles.slice();
   if (files.length + (imageRemoved ? 0 : existingImageIds.length) > 8) { message(saveStatus, "الحد الأقصى 8 صور للمنتج. امسح الصور القديمة أولًا إذا أردت استبدالها."); return; }
-  const file = files[0];
   let image = $("imageUrl").value.trim();
   let imageIds = imageRemoved ? [] : existingImageIds.slice();
   let imageId = imageIds[0] || null;
+  const uploadedImageIds = [];
+  const previousImageIds = previous
+    ? Array.from(new Set([...(Array.isArray(previous.imageIds) ? previous.imageIds : []), ...(previous.imageId ? [previous.imageId] : [])].map(String)))
+    : [];
+  const imageChanged = !!(previous && (imageRemoved || files.length || image !== String(previous.image || "")));
   $("saveBtn").disabled = true;
   message(saveStatus, "جارٍ حفظ المنتج…");
   try {
@@ -1239,12 +1243,11 @@ $("productForm").addEventListener("submit", async function (event) {
         const newImageId = String(id) + "_" + Date.now() + "_" + i;
         const compressed = await compressImage(files[i]);
         await setDoc(doc(db, "productImages", newImageId), {data:compressed, updatedAt:serverTimestamp()});
+        uploadedImageIds.push(newImageId);
         imageIds.push(newImageId);
       }
       image = "";
     } else if (imageRemoved || (previous && image !== String(previous.image || ""))) {
-      const oldIds = previous && Array.isArray(previous.imageIds) ? previous.imageIds : (previous && previous.imageId ? [previous.imageId] : []);
-      for (const oldId of oldIds) await deleteDoc(doc(db, "productImages", String(oldId)));
       imageIds = [];
       image = "";
     }
@@ -1266,6 +1269,14 @@ $("productForm").addEventListener("submit", async function (event) {
       updatedAt:serverTimestamp()
     };
     await setDoc(doc(db, "products", String(id)), product);
+    if (imageChanged && previousImageIds.length) {
+      const obsoleteIds = previousImageIds.filter(function (oldId) { return !imageIds.includes(oldId); });
+      if (obsoleteIds.length) {
+        const cleanup = writeBatch(db);
+        obsoleteIds.forEach(function (oldId) { cleanup.delete(doc(db, "productImages", oldId)); });
+        await cleanup.commit();
+      }
+    }
     products = products.filter(function (item) { return String(item.id) !== String(id); }).concat([product]).sort(function (a, b) { return a.id - b.id; });
     productsLoaded = true;
     saveCatalogCache();
@@ -1273,6 +1284,13 @@ $("productForm").addEventListener("submit", async function (event) {
     resetForm();
     message(saveStatus, "تم حفظ المنتج، وسيظهر للزوار عند تحديث الصفحة.");
   } catch (error) {
+    if (uploadedImageIds.length) {
+      try {
+        const cleanup = writeBatch(db);
+        uploadedImageIds.forEach(function (imageId) { cleanup.delete(doc(db, "productImages", imageId)); });
+        await cleanup.commit();
+      } catch (cleanupError) { console.warn("تعذر تنظيف صور غير مرتبطة بمنتج بعد فشل الحفظ:", cleanupError); }
+    }
     message(saveStatus, error && error.message ? error.message : "تعذر الحفظ. تحقق من إعدادات Firebase والاتصال.");
   } finally { $("saveBtn").disabled = false; }
 });
