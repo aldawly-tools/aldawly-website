@@ -569,14 +569,14 @@
       const stockOut = item.availability === "unavailable" || (item.availability !== "available" && stockKnown && item.stock === 0);
       const availabilityLabel = item.availability === "ask" ? '<span class="stock-status">استفسر عن التوفر</span>' : stockOut ? '<span class="stock-status out">غير متوفر حاليًا</span>' : '<span class="stock-status">متوفر — يُرجى التأكيد عند الطلب</span>';
       const stockLabel = item.availability === "ask" || stockOut ? availabilityLabel : stockKnown ? '<span class="stock-status">المتاح: ' + item.stock + ' قطعة</span>' : availabilityLabel;
-      return '<article class="product-card" id="product-' + encodeURIComponent(item.id) + '">' +
+      return '<article class="product-card home-shelf-card catalog-card" id="product-' + encodeURIComponent(item.id) + '">' +
         '<a class="product-visual product-open-link" href="' + detailUrl + '" aria-label="عرض تفاصيل المنتج: ' + escapeHtml(name) + '">' + visual + '</a>' +
         '<div class="product-info"><span class="product-category">' + (productBrand(item) ? escapeHtml(displayBrand(productBrand(item))) + ' · ' : '') + escapeHtml(item.cat || "منتجات") + '</span>' +
         '<h3 class="product-name"><a class="product-name-link" href="' + detailUrl + '">' + escapeHtml(name) + '</a></h3>' +
         '<div class="product-card-status">' + stockLabel + '</div>' +
         '<p class="product-description">' + escapeHtml(description) + '</p>' +
-        '<div class="product-meta"><span class="product-price' + (currentPrice === null ? ' price-on-request' : '') + '">' + escapeHtml(formatPrice(item.price)) + (discountPercent ? '<del>' + escapeHtml(money(compareAtPrice)) + '</del><em class="product-discount">خصم ' + discountPercent + '%</em>' : '') + '<small>' + (currentPrice === null ? 'السعر عند التواصل' : 'يُرجى تأكيد التوفر عند الطلب') + '</small></span></div>' +
-        '<button class="button-primary product-add-cart product-add-cart-prominent" type="button" data-add="' + escapeHtml(item.id) + '"' + (stockOut ? ' disabled aria-disabled="true"' : '') + '>' + (stockOut ? '<span>غير متاح حاليًا</span>' : '<span class="add-cart-icon" aria-hidden="true">🛒</span><span>أضف إلى السلة</span>') + '</button>' +
+        '<span class="product-price' + (currentPrice === null ? ' price-on-request' : '') + '">' + escapeHtml(formatPrice(item.price)) + (discountPercent ? '<del>' + escapeHtml(money(compareAtPrice)) + '</del><em class="product-discount">خصم ' + discountPercent + '%</em>' : '') + '<small>' + (currentPrice === null ? 'السعر عند التواصل' : 'يُرجى تأكيد التوفر عند الطلب') + '</small></span>' +
+        '<button class="button-primary home-shelf-add product-add-cart-prominent" type="button" data-add="' + escapeHtml(item.id) + '"' + (stockOut ? ' disabled aria-disabled="true"' : '') + '>' + (stockOut ? 'غير متاح حاليًا' : '<span class="add-cart-icon" aria-hidden="true">🛒</span><span>أضف إلى السلة</span>') + '</button>' +
         '<div class="product-card-tools" aria-label="إجراءات المنتج"><button class="quick-view-trigger" type="button" data-quick-view="' + escapeHtml(item.id) + '" aria-label="معاينة سريعة" title="معاينة سريعة">◉</button><button class="share-product-button" type="button" data-share-product="' + escapeHtml(item.id) + '" aria-label="مشاركة المنتج" title="مشاركة المنتج">↗</button></div>' +
         '</div></article>';
     }).join("") || '<p class="empty-cart">' + emptyMessage + '</p>';
