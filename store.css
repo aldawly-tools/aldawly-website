@@ -5433,3 +5433,48 @@ html body aside#cartDrawer.cart-drawer>.cart-scroll-area>.payment-followup{
  #business-supply .business-cta-points{gap:5px 9px!important;font-size:10px!important}
  #business-supply .business-cta-button{justify-self:stretch;width:100%;min-height:40px!important;white-space:normal;font-size:12px!important}
 }
+
+
+/* Mobile category row overlap fix: use fixed flex cards inside a clipped horizontal scroller. */
+@media(max-width:600px){
+ #categories{position:relative;isolation:isolate;overflow:hidden!important}
+ #categories .container{min-width:0;max-width:100%;overflow:hidden}
+ #categories .categories-grid{
+   display:flex!important;
+   flex-flow:row nowrap!important;
+   align-items:stretch!important;
+   justify-content:flex-start!important;
+   gap:10px!important;
+   width:100%!important;
+   max-width:100%!important;
+   min-width:0!important;
+   box-sizing:border-box!important;
+   overflow-x:auto!important;
+   overflow-y:hidden!important;
+   overscroll-behavior-inline:contain;
+   scroll-snap-type:x mandatory;
+   padding:3px 3px 10px!important;
+   margin:0!important;
+   direction:rtl;
+   position:relative!important;
+   isolation:isolate;
+ }
+ #categories .categories-grid>.category-tile{
+   position:relative!important;
+   inset:auto!important;
+   z-index:0!important;
+   display:flex!important;
+   flex:0 0 43%!important;
+   width:43%!important;
+   min-width:155px!important;
+   max-width:230px!important;
+   margin:0!important;
+   box-sizing:border-box!important;
+   transform:none!important;
+   scroll-snap-align:start;
+ }
+ #categories .categories-grid>.category-tile:hover,
+ #categories .categories-grid>.category-tile:focus-visible{transform:none!important;z-index:1!important}
+ #categories .category-photo{flex:0 0 92px!important;width:100%!important}
+ #categories .category-copy{flex:1 0 auto!important}
+}
