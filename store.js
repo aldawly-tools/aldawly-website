@@ -238,7 +238,7 @@
   function categoryImage(name) {
     const value = normalizeSearchText(name);
     if (/كهرب|power|شنيور|صاروخ|منشار/.test(value)) return 'https://i5.walmartimages.com/asr/b846b5a5-0ff3-4b10-9017-d234aa05dc2a.abbc77afaed3fa74c2519f1151a3e0fb.jpeg';
-    if (/قياس|measurement|اختبار|كهرباء/.test(value)) return 'https://media.licdn.com/dms/image/v2/D4D22AQEVwdnRkVs5TA/feedshare-shrink_800/B4DZzPZOS0KAAc-/0/1773006022130?e=2147483647&t=6GAGG3-7C6ftLgrbesyazuqtOaSiedpjWMWAuGtq2NY&v=beta';
+    if (/قياس|measurement|اختبار|كهرباء/.test(value)) return 'https://raw.githubusercontent.com/aldawly-tools/aldawly-website/main/assets/categories/measurement.svg';
     if (/تخزين|شنط|صندوق|حفظ|ورش/.test(value)) return 'https://interbosch.nl/cdn/shop/collections/Impressie_foto_Gereedschapskarren_kopie.webp?v=1766153113&width=1296';
     if (/مفك|ربط|بت|لقم|كماش|زراديه|قط|قص|يدوي/.test(value)) return 'https://cdn.askul.co.jp/img/product/3L1/EP86599_3L1.jpg';
     return 'https://www.homebase.co.uk/assets/bWFzdGVyfGltYWdlc3wyMzM1MDF8aW1hZ2UvanBlZ3xoYzEvaGZiLzkzNDA4MDM2NzgyMzgvMDU0MTY2Nl8yLmpwZ3xhOTE3ZjhjZGNiYzYzNWY2NTgzYWU3YjIxODYzM2M5ZjhiOWMzNTBiOTI3ZTQ2YzY1ZDdkNDBmMTI3NzM2OWVh/0541666-2.jpg';
