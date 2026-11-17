@@ -3,6 +3,9 @@ const MAX_BODY = 60000;
 const MAX_MESSAGE = 1200;
 const MAX_HISTORY = 8;
 const MAX_PRODUCTS = 15;
+const RATE_WINDOW_MS = 5 * 60 * 1000;
+const RATE_LIMIT = 20;
+const requestCounts = new Map();
 
 function json(data, status = 200) {
   return new Response(JSON.stringify(data), {
@@ -66,12 +69,28 @@ export async function onRequestPost({ request, env }) {
     return json({ error: "ai_not_configured", message: "لم يتم إعداد مفتاح المساعد الذكي بعد." }, 503);
   }
 
-  const contentLength = Number(request.headers.get("content-length") || 0);
-  if (contentLength > MAX_BODY) return json({ error: "request_too_large" }, 413);
+  const clientIp = request.headers.get("CF-Connecting-IP") || "unknown";
+  const now = Date.now();
+  const current = requestCounts.get(clientIp);
+  if (current && now - current.startedAt < RATE_WINDOW_MS && current.count >= RATE_LIMIT) {
+    return json({ error: "rate_limited", message: "وصلنا لعدد كبير من الرسائل بسرعة. انتظر دقائق وجرب تاني." }, 429);
+  }
+  if (!current || now - current.startedAt >= RATE_WINDOW_MS) {
+    requestCounts.set(clientIp, { startedAt: now, count: 1 });
+  } else {
+    current.count += 1;
+  }
+  if (requestCounts.size > 500) {
+    for (const [ip, entry] of requestCounts) {
+      if (now - entry.startedAt >= RATE_WINDOW_MS) requestCounts.delete(ip);
+    }
+  }
 
   let body;
   try {
-    body = await request.json();
+    const raw = await request.text();
+    if (raw.length > MAX_BODY) return json({ error: "request_too_large" }, 413);
+    body = JSON.parse(raw);
   } catch (_) {
     return json({ error: "invalid_json" }, 400);
   }
