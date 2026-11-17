@@ -406,10 +406,11 @@
       if (item.cat) categoryCounts.set(item.cat, (categoryCounts.get(item.cat) || 0) + 1);
     });
     const categories = Array.from(categoryCounts.keys());
-    tiles.innerHTML = '<button class="category-tile all" type="button" data-category="الكل"><span class="category-photo"><img src="' + categoryImage("ورش") + '" alt="" loading="lazy"><span class="category-photo-shade"></span><span class="category-icon">' + categoryIcon("ورش") + '</span></span><span class="category-copy"><strong>جميع الأقسام</strong><small>تصفح كل المنتجات</small><b>' + products.length + ' منتج</b></span></button>' +
+    tiles.innerHTML = '<button class="category-tile category-row-card all" type="button" data-category="الكل"><span class="category-photo"><img src="' + categoryImage("ورش") + '" alt="" loading="lazy"><span class="category-photo-shade"></span><span class="category-icon">' + categoryIcon("ورش") + '</span></span><span class="category-copy"><strong>جميع الأقسام</strong><small class="category-availability">● متاح للتصفح</small><b>' + products.length + ' منتج</b><span class="category-browse">تصفح القسم ←</span></span></button>' +
       categories.map(function (name) {
         const count = categoryCounts.get(name) || 0;
-        return '<button class="category-tile" type="button" data-category="' + escapeHtml(name) + '"><span class="category-photo"><img src="' + categoryImage(name) + '" alt="" loading="lazy"><span class="category-photo-shade"></span><span class="category-icon">' + categoryIcon(name) + '</span></span><span class="category-copy"><strong>' + escapeHtml(name) + '</strong><small>اكتشف الأدوات المتاحة</small><b>' + count + ' منتج</b></span></button>';
+        const availability = count > 0 ? '● متاح للتصفح' : '● لا توجد منتجات';
+        return '<button class="category-tile category-row-card" type="button" data-category="' + escapeHtml(name) + '"><span class="category-photo"><img src="' + categoryImage(name) + '" alt="" loading="lazy"><span class="category-photo-shade"></span><span class="category-icon">' + categoryIcon(name) + '</span></span><span class="category-copy"><strong>' + escapeHtml(name) + '</strong><small class="category-availability' + (count > 0 ? ' is-available' : ' is-empty') + '">' + availability + '</small><b>' + count + ' منتج</b><span class="category-browse">تصفح القسم ←</span></span></button>';
       }).join("");
     filterBar.innerHTML = '<button class="filter-chip active" type="button" data-category="الكل">كل المنتجات <span class="filter-count">' + products.length + '</span></button>' +
       categories.map(function (name) {
