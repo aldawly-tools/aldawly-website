@@ -127,7 +127,8 @@ export async function onRequestPost({ request, env }) {
         model: MODEL,
         store: false,
         system_instruction: SYSTEM_INSTRUCTION,
-        input: JSON.stringify(context)
+        input: JSON.stringify(context),
+        generation_config: { thinking_level: "low" }
       })
     });
 
