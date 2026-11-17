@@ -5886,3 +5886,20 @@ html body aside#cartDrawer.cart-drawer>.cart-scroll-area>.payment-followup{
  .product-card .product-meta .button-primary,.home-shelf-card .home-shelf-add.product-add-cart-prominent,
  #productGrid .catalog-card .home-shelf-add{animation:none!important}
 }
+
+/* Make every active Add to Cart button visibly stand out. */
+@keyframes dawlyAddToCartGlow{
+  0%,100%{box-shadow:0 4px 12px rgba(200,16,30,.24),0 0 0 1px rgba(200,16,30,.12);filter:brightness(1)}
+  50%{box-shadow:0 6px 24px rgba(200,16,30,.52),0 0 0 3px rgba(200,16,30,.16);filter:brightness(1.07)}
+}
+button[data-add]:not(:disabled),
+.home-shelf-add.product-add-cart-prominent:not(:disabled){
+  animation:dawlyAddToCartGlow 1.8s ease-in-out infinite!important;
+  border:1px solid rgba(255,255,255,.72)!important;
+}
+button[data-add]:not(:disabled):active{
+  transform:scale(.97);
+}
+@media(prefers-reduced-motion:reduce){
+  button[data-add]:not(:disabled),.home-shelf-add.product-add-cart-prominent:not(:disabled){animation:none!important}
+}
