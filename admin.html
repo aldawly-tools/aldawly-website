@@ -229,6 +229,11 @@ button:disabled{opacity:.6;cursor:wait}
         <button type="button" class="quick-action" data-go="analyticsPanel"><span class="quick-icon">▥</span><strong>إحصائيات المتجر</strong><small>تابع الزيارات ومصادرها</small><b>عرض الإحصائيات ←</b></button>
         <button type="button" class="quick-action" data-go="ordersPanel" data-filter="cancelled"><span class="quick-icon">⊘</span><strong>الطلبات الملغية</strong><small>راجع الطلبات التي تم إلغاؤها</small><b>مراجعة الطلبات ←</b></button>
       </div>
+      <div class="home-section-title"><h3>مركز التواصل السريع</h3><span>افتح محادثة خدمة العملاء مباشرة</span></div>
+      <div class="quick-actions">
+        <a class="quick-action" href="https://wa.me/201024787222?text=%D9%85%D8%B1%D8%AD%D8%A8%D%D8%A7%D8%8C%20%D8%A3%D8%B1%D9%8A%D8%AF%20%D9%85%D8%AA%D8%A7%D8%A8%D8%B9%D8%A9%20%D8%B7%D9%84%D8%A8%20%D8%A3%D9%88%20%D8%A7%D8%B3%D8%AA%D9%81%D8%B3%D8%A7%D8%B1." target="_blank" rel="noopener"><span class="quick-icon">💬</span><strong>واتساب خدمة العملاء 1</strong><small>01024787222</small><b>فتح المحادثة ←</b></a>
+        <a class="quick-action" href="https://wa.me/201002878301?text=%D9%85%D8%B1%D8%AD%D8%A8%D%D8%A7%D8%8C%20%D8%A3%D8%B1%D9%8A%D8%AF%20%D9%85%D8%AA%D8%A7%D8%A8%D8%B9%D8%A9%20%D8%B7%D9%84%D8%A8%20%D8%A3%D9%88%20%D8%A7%D8%B3%D8%AA%D9%81%D8%B3%D8%A7%D8%B1." target="_blank" rel="noopener"><span class="quick-icon">💬</span><strong>واتساب خدمة العملاء 2</strong><small>01002878301</small><b>فتح المحادثة ←</b></a>
+      </div>
       <div class="home-tip"><strong>💡 تلميح سريع</strong><span>بعد إضافة المنتج وحفظه، سيظهر تلقائيًا في كتالوج المتجر.</span></div>
     </section>
     <section class="card admin-panel hidden" id="analyticsPanel" role="tabpanel">
@@ -259,6 +264,8 @@ button:disabled{opacity:.6;cursor:wait}
       <div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;min-width:300px"><thead><tr><th style="text-align:right;padding:9px">المصدر</th><th style="text-align:right;padding:9px">عدد الزيارات</th><th style="text-align:right;padding:9px">النسبة</th></tr></thead><tbody id="analyticsSourcesRows"><tr><td colspan="3">جارٍ التحميل…</td></tr></tbody></table></div>
       <h3 style="margin:20px 0 10px">المنتجات الأكثر مشاهدة</h3>
       <div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;min-width:360px"><thead><tr><th style="text-align:right;padding:9px">المنتج</th><th style="text-align:right;padding:9px">الماركة</th><th style="text-align:right;padding:9px">المشاهدات</th></tr></thead><tbody id="analyticsTopProductsRows"><tr><td colspan="3">جارٍ التحميل…</td></tr></tbody></table></div>
+      <h3 style="margin:20px 0 10px">المنتجات الأقل مشاهدة</h3>
+      <div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;min-width:360px"><thead><tr><th style="text-align:right;padding:9px">المنتج</th><th style="text-align:right;padding:9px">الماركة</th><th style="text-align:right;padding:9px">المشاهدات</th></tr></thead><tbody id="analyticsLowProductsRows"><tr><td colspan="3">جارٍ التحميل…</td></tr></tbody></table></div>
       <p class="analytics-note">ملاحظة: يتم تسجيل الزيارة مرة واحدة لكل متصفح يوميًا، مع مصدر الإحالة ومشاهدات المنتجات منذ تفعيل التتبع. لا يتم جمع أسماء أو أرقام هواتف أو عناوين IP. مدة التصفح غير مسجلة حاليًا، والبيانات السابقة لتفعيل التتبع لا تظهر بأثر رجعي.</p>
     </section>
     <div class="card admin-panel" id="productPanel" role="tabpanel">
@@ -484,6 +491,8 @@ async function loadAnalytics(force){
    const p=products.find(item=>String(item.id)===id);
    return '<tr><td style="padding:9px">'+escapeHtml(p?p.name:"منتج رقم "+id)+'</td><td style="padding:9px">'+escapeHtml(p&&p.brand||"—")+'</td><td style="padding:9px"><b>'+analyticsFormat(count)+'</b></td></tr>';
   }).join(""):'<tr><td colspan="3" style="padding:9px">لا توجد مشاهدات مسجلة بعد.</td></tr>';
+  const low=products.map(p=>({id:String(p.id),count:views[String(p.id)]||0,product:p})).sort((a,b)=>a.count-b.count||String(a.product.name||"").localeCompare(String(b.product.name||""),"ar")).slice(0,10);
+  $("analyticsLowProductsRows").innerHTML=low.length?low.map(row=>'<tr><td style="padding:9px">' + escapeHtml(row.product.name||("منتج رقم "+row.id)) + '</td><td style="padding:9px">' + escapeHtml(row.product.brand||"—") + '</td><td style="padding:9px"><b>' + analyticsFormat(row.count) + '</b></td></tr>').join(""):'<tr><td colspan="3" style="padding:9px">لا توجد منتجات في الكتالوج.</td></tr>';
   analyticsLoadedAt=Date.now();
   if(statusNode)statusNode.textContent="تم تحديث الإحصائيات بنجاح. آخر تحديث: "+new Date().toLocaleTimeString("ar-EG",{timeZone:EGYPT_TIME_ZONE});
  }catch(error){
@@ -1106,7 +1115,7 @@ async function editProduct(id) {
 }
 async function deleteProduct(id) {
   const product = products.find(function (item) { return String(item.id) === String(id); });
-  if (!product || !window.confirm("هل تريد حذف هذا المنتج نهائيًا؟")) return;
+  if (!product || !window.confirm("تأكيد حذف المنتج نهائيًا؟\n\nاسم المنتج: "+product.name+"\nرقم المنتج: "+product.id+"\n\nسيتم حذف بياناته وصوره المحفوظة من قاعدة البيانات، ولا يمكن التراجع عن ذلك.")) return;
   try {
     // Delete the product and all of its stored images atomically.
     const imageIds = Array.from(new Set([
