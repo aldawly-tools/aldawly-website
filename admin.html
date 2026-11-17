@@ -460,17 +460,21 @@ async function loadAnalytics(force){
  const statusNode=$("analyticsStatus");
  if(statusNode)statusNode.textContent="جارٍ تحميل بيانات الزيارات والمشاهدات…";
  try{
-  const [visitSnap,sourceSnap,viewSnap]=await Promise.all([
-   getDocs(collection(db,"siteVisits")),
-   getDocs(collection(db,"trafficSources")),
-   getDocs(collection(db,"productViews"))
+  const today=egyptDayKey(new Date());
+  const shiftDay=(base,offset)=>{const d=new Date(base+"T12:00:00");d.setDate(d.getDate()+offset);return egyptDayKey(d);};
+  const monthStart=shiftDay(today,-29);
+  // Aggregate all-time visits server-side; fetch only the latest 30 days for detailed reports.
+  const [totalVisitsSnap,visitSnap,sourceSnap,viewSnap]=await Promise.all([
+   getCountFromServer(collection(db,"siteVisits")),
+   getDocs(query(collection(db,"siteVisits"),where("day",">=",monthStart),where("day","<=",today))),
+   getDocs(query(collection(db,"trafficSources"),where("day",">=",monthStart),where("day","<=",today))),
+   getDocs(query(collection(db,"productViews"),where("day",">=",monthStart),where("day","<=",today)))
   ]);
   const records=visitSnap.docs.map(d=>d.data()).filter(v=>/^\d{4}-\d{2}-\d{2}$/.test(String(v.day||"")));
   const unique=new Set(records.map(v=>String(v.visitorId||"")).filter(Boolean));
   const countDay=day=>records.filter(v=>v.day===day).length;
   const weekDays=Array.from({length:7},(_,i)=>shiftDay(today,i-6));
   const week=weekDays.reduce((sum,day)=>sum+countDay(day),0);
-  const monthStart=shiftDay(today,-29);
   const month=records.filter(v=>v.day>=monthStart&&v.day<=today).length;
   $("analyticsTotalVisits").textContent=analyticsFormat(totalVisitsSnap.data().count);
   $("analyticsUniqueVisitors").textContent=analyticsFormat(unique.size);
@@ -496,21 +500,21 @@ async function loadAnalytics(force){
   $("sourceGoogle").textContent=analyticsFormat(countSource("google"));
   $("sourceWhatsapp").textContent=analyticsFormat(countSource("whatsapp"));
   $("sourceOther").textContent=analyticsFormat(sourceTotal-countSource("facebook")-countSource("google")-countSource("whatsapp"));
-  $("analyticsSourcesRows").innerHTML=sourceRows.length?sourceRows.map(([key,value])=>'<tr><td style="padding:9px">'+escapeHtml(sourceLabels[key]||key)+'</td><td style="padding:9px">'+analyticsFormat(value)+'</td><td style="padding:9px">'+(sourceTotal?Math.round(value/sourceTotal*100):0)+'%</td></tr>').join(""):'<tr><td colspan="3" style="padding:9px">لا توجد بيانات مصادر حتى الآن.</td></tr>';
+  $("analyticsSourcesRows").innerHTML=sourceRows.length?sourceRows.map(([key,value])=>'<tr><td style="padding:9px">'+escapeHtml(sourceLabels[key]||key)+'</td><td style="padding:9px">'+analyticsFormat(value)+'</td><td style="padding:9px">'+(sourceTotal?Math.round(value/sourceTotal*100):0)+'%</td></tr>').join(""):'<tr><td colspan="3" style="padding:9px">لا توجد بيانات مصادر خلال آخر 30 يومًا.</td></tr>';
   const views={};
   viewSnap.docs.forEach(d=>{const v=d.data(),id=String(v.productId||"");if(id)views[id]=(views[id]||0)+1;});
   const top=Object.entries(views).sort((a,b)=>b[1]-a[1]).slice(0,10);
   $("analyticsTopProductsRows").innerHTML=top.length?top.map(([id,count])=>{
    const p=products.find(item=>String(item.id)===id);
    return '<tr><td style="padding:9px">'+escapeHtml(p?p.name:"منتج رقم "+id)+'</td><td style="padding:9px">'+escapeHtml(p&&p.brand||"—")+'</td><td style="padding:9px"><b>'+analyticsFormat(count)+'</b></td></tr>';
-  }).join(""):'<tr><td colspan="3" style="padding:9px">لا توجد مشاهدات مسجلة بعد.</td></tr>';
+  }).join(""):'<tr><td colspan="3" style="padding:9px">لا توجد مشاهدات مسجلة خلال آخر 30 يومًا.</td></tr>';
   const low=products.map(p=>({id:String(p.id),count:views[String(p.id)]||0,product:p})).sort((a,b)=>a.count-b.count||String(a.product.name||"").localeCompare(String(b.product.name||""),"ar")).slice(0,10);
-  $("analyticsLowProductsRows").innerHTML=low.length?low.map(row=>'<tr><td style="padding:9px">' + escapeHtml(row.product.name||("منتج رقم "+row.id)) + '</td><td style="padding:9px">' + escapeHtml(row.product.brand||"—") + '</td><td style="padding:9px"><b>' + analyticsFormat(row.count) + '</b></td></tr>').join(""):'<tr><td colspan="3" style="padding:9px">لا توجد منتجات في الكتالوج.</td></tr>';
+  $("analyticsLowProductsRows").innerHTML=low.length?low.map(row=>'<tr><td style="padding:9px">'+escapeHtml(row.product.name||("منتج رقم "+row.id))+'</td><td style="padding:9px">'+escapeHtml(row.product.brand||"—")+'</td><td style="padding:9px"><b>'+analyticsFormat(row.count)+'</b></td></tr>').join(""):'<tr><td colspan="3" style="padding:9px">لا توجد منتجات في الكتالوج.</td></tr>';
   analyticsLoadedAt=Date.now();
   if(statusNode)statusNode.textContent="تم تحديث الإحصائيات بنجاح. آخر تحديث: "+new Date().toLocaleTimeString("ar-EG",{timeZone:EGYPT_TIME_ZONE});
  }catch(error){
   console.error("Analytics load failed:",error);
-  if(statusNode)statusNode.textContent="تعذر تحميل الإحصائيات: "+(error.code||error.message||"خطأ غير معروف")+". تأكد من نشر قواعد Firebase المحدثة.";
+  if(statusNode)statusNode.textContent="تعذر تحميل الإحصائيات: "+(error.code||error.message||"خطأ غير معروف")+". تحقق من اتصال Firebase وصلاحيات قراءة الإحصائيات.";
  }
 }
 $("refreshAnalyticsBtn").addEventListener("click",function(){loadAnalytics(true);});
