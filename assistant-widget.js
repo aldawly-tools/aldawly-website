@@ -40,12 +40,40 @@ history.push({q:q,ids:list.map(function(p){return String(p.id);})});history=hist
 }
 function send(q){q=String(q||"").trim();if(!q)return;msg(q,"user");reply(q);var i=document.getElementById("dawlyBotInput");i.value="";}
 var launcher=document.createElement("button");launcher.id="dawlyBotLauncher";launcher.type="button";launcher.setAttribute("aria-label","افتح مساعد الدولي");launcher.innerHTML='<span class="dawly-bot-face" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M3 13v-2a9 9 0 0 1 18 0v2"/><rect x="2.5" y="11" width="4.5" height="8" rx="2"/><rect x="17" y="11" width="4.5" height="8" rx="2"/><path d="M19 19a5 5 0 0 1-5 3h-2"/></svg></span><span class="dawly-bot-prompt">تحدث مع مساعد الدولي</span>';
-var panel=document.createElement("section");panel.id="dawlyBotPanel";panel.hidden=true;panel.setAttribute("aria-label","مساعد الدولي");panel.innerHTML='<header class="dawly-bot-head"><div class="dawly-bot-avatar">🤖</div><div><strong>مساعد الدولي</strong><small>مساعد فني للعدد والمنتجات</small></div><button type="button" id="dawlyBotClose" aria-label="إغلاق">×</button></header><div class="dawly-bot-messages" id="dawlyBotMessages"><div class="dawly-bot-msg bot">أهلاً بيك 👋 أقدر أساعدك تلاقي أداة من كتالوج الدولي. قولي هتستخدمها في إيه وعلى أي خامة.</div><div class="dawly-bot-chips"><button type="button">طقم مفكات WÜRTH</button><button type="button">بنط HSS للمعادن</button><button type="button">أدوات النجارة</button></div></div><form class="dawly-bot-form" id="dawlyBotForm"><input id="dawlyBotInput" autocomplete="off" placeholder="اسم الأداة أو الاستخدام أو المقاس..." aria-label="اكتب سؤالك"><button type="submit">إرسال</button></form><a class="dawly-bot-wa" href="https://wa.me/201024787222" target="_blank" rel="noopener">محتاج تأكيد فني؟ كلمنا واتساب</a>';
+var panel=document.createElement("section");panel.id="dawlyBotPanel";panel.hidden=true;panel.setAttribute("aria-label","مساعد الدولي");panel.innerHTML='<header class="dawly-bot-head"><div class="dawly-bot-avatar">🤖</div><div><strong>مساعد الدولي</strong><small>مساعد فني للعدد والمنتجات</small></div><button type="button" id="dawlyBotClose" aria-label="إغلاق">×</button></header><div class="dawly-bot-messages" id="dawlyBotMessages" aria-live="polite"><div class="dawly-bot-chips" id="dawlyBotChips" hidden><button type="button">طقم مفكات WÜRTH</button><button type="button">بنط HSS للمعادن</button><button type="button">أدوات النجارة</button></div></div><form class="dawly-bot-form" id="dawlyBotForm"><input id="dawlyBotInput" autocomplete="off" placeholder="اسم الأداة أو الاستخدام أو المقاس..." aria-label="اكتب سؤالك"><button type="submit">إرسال</button></form><a class="dawly-bot-wa" href="https://wa.me/201024787222" target="_blank" rel="noopener">محتاج تأكيد فني؟ كلمنا واتساب</a>';
 if(!fullPage) document.body.appendChild(launcher);
 var chatHost=fullPage?(document.getElementById("assistantPageChat")||document.body):document.body;
 panel.hidden=!fullPage;
 if(fullPage) panel.classList.add("dawly-bot-fullpage");
 chatHost.appendChild(panel);
+function typeWelcomeMessage(){
+  var messageBox=document.getElementById("dawlyBotMessages");
+  var chips=document.getElementById("dawlyBotChips");
+  if(!messageBox||messageBox.querySelector(".dawly-bot-msg"))return;
+  var welcome="أهلاً بيك 👋\nأنا مساعدك الفني في الدولي. أقدر أساعدك تلاقي الأداة المناسبة من الكتالوج.\nقولي هتستخدمها في إيه وعلى أي خامة؟";
+  var bubble=document.createElement("div");
+  bubble.className="dawly-bot-msg bot dawly-welcome-typing";
+  bubble.setAttribute("aria-label",welcome);
+  messageBox.insertBefore(bubble,chips||null);
+  var chars=Array.from(welcome),index=0;
+  var reduced=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  function finish(){
+    bubble.textContent=welcome;
+    bubble.classList.remove("dawly-welcome-typing");
+    if(chips)chips.hidden=false;
+    messageBox.scrollTop=messageBox.scrollHeight;
+  }
+  if(reduced){finish();return;}
+  function typeNext(){
+    if(!bubble.isConnected)return;
+    bubble.textContent+=chars[index++]||"";
+    messageBox.scrollTop=messageBox.scrollHeight;
+    if(index<chars.length)window.setTimeout(typeNext,27);
+    else finish();
+  }
+  window.setTimeout(typeNext,420);
+}
+typeWelcomeMessage();
 /* Avoid overlapping the assistant with the expanded contact/WhatsApp menu. */
 var contactPanel=document.getElementById("floatingContactPanel");
 if(contactPanel){
