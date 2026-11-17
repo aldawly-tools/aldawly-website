@@ -1231,6 +1231,7 @@ $("productForm").addEventListener("submit", async function (event) {
   let imageIds = imageRemoved ? [] : existingImageIds.slice();
   let imageId = imageIds[0] || null;
   const uploadedImageIds = [];
+  let productSaved = false;
   const previousImageIds = previous
     ? Array.from(new Set([...(Array.isArray(previous.imageIds) ? previous.imageIds : []), ...(previous.imageId ? [previous.imageId] : [])].map(String)))
     : [];
@@ -1269,12 +1270,15 @@ $("productForm").addEventListener("submit", async function (event) {
       updatedAt:serverTimestamp()
     };
     await setDoc(doc(db, "products", String(id)), product);
+    productSaved = true;
     if (imageChanged && previousImageIds.length) {
       const obsoleteIds = previousImageIds.filter(function (oldId) { return !imageIds.includes(oldId); });
       if (obsoleteIds.length) {
-        const cleanup = writeBatch(db);
-        obsoleteIds.forEach(function (oldId) { cleanup.delete(doc(db, "productImages", oldId)); });
-        await cleanup.commit();
+        try {
+          const cleanup = writeBatch(db);
+          obsoleteIds.forEach(function (oldId) { cleanup.delete(doc(db, "productImages", oldId)); });
+          await cleanup.commit();
+        } catch (cleanupError) { console.warn("تم حفظ المنتج لكن تعذر حذف بعض الصور القديمة:", cleanupError); }
       }
     }
     products = products.filter(function (item) { return String(item.id) !== String(id); }).concat([product]).sort(function (a, b) { return a.id - b.id; });
@@ -1284,7 +1288,7 @@ $("productForm").addEventListener("submit", async function (event) {
     resetForm();
     message(saveStatus, "تم حفظ المنتج، وسيظهر للزوار عند تحديث الصفحة.");
   } catch (error) {
-    if (uploadedImageIds.length) {
+    if (!productSaved && uploadedImageIds.length) {
       try {
         const cleanup = writeBatch(db);
         uploadedImageIds.forEach(function (imageId) { cleanup.delete(doc(db, "productImages", imageId)); });
