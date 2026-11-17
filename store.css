@@ -5251,3 +5251,33 @@ html body aside#cartDrawer.cart-drawer>.cart-scroll-area>.payment-followup{
  #productGrid .product-price.price-on-request{font-size:12px;line-height:1.35}
  #productGrid .product-meta>.button-primary{width:100%;min-width:0;padding:8px 7px;font-size:10px}
 }
+
+
+/* Distinct add-to-cart CTA: compact capsule with cart icon and clear tap target. */
+#productGrid .product-meta>.product-add-cart{
+  flex:0 1 142px;
+  min-width:116px;
+  min-height:46px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:7px;
+  padding:10px 13px;
+  border:1px solid #a90d18;
+  border-radius:13px 13px 5px 13px;
+  background:linear-gradient(145deg,#df1c28,#b90d19);
+  color:#fff;
+  font-size:13px;
+  font-weight:1000;
+  letter-spacing:0;
+  box-shadow:0 4px 0 #8f0b14,0 7px 13px rgba(185,13,25,.16);
+  transition:transform .15s ease,box-shadow .15s ease,filter .15s ease;
+}
+#productGrid .product-meta>.product-add-cart .add-cart-icon{font-size:16px;line-height:1}
+#productGrid .product-meta>.product-add-cart:hover{filter:brightness(1.04);transform:translateY(-1px);box-shadow:0 5px 0 #8f0b14,0 9px 16px rgba(185,13,25,.2)}
+#productGrid .product-meta>.product-add-cart:active{transform:translateY(2px);box-shadow:0 1px 0 #8f0b14}
+#productGrid .product-meta>.product-add-cart:disabled{background:#aeb4bb;border-color:#aeb4bb;box-shadow:none;cursor:not-allowed;transform:none}
+@media(max-width:700px){
+ #productGrid .product-meta>.product-add-cart{min-width:0;min-height:43px;width:100%;padding:8px 6px;font-size:11px;border-radius:12px 12px 5px 12px;gap:5px}
+ #productGrid .product-meta>.product-add-cart .add-cart-icon{font-size:14px}
+}
