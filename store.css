@@ -5989,3 +5989,46 @@ button[data-add]:not(:disabled) span:not(.add-cart-icon),
 .about-box .about-tagline{display:block;margin:0 0 9px;color:#202832;font-size:clamp(17px,2.4vw,22px);font-weight:1000;line-height:1.65}
 .about-box p{margin:0;color:#414850;line-height:2}
 .about-box .about-signature{display:block;margin-top:10px;color:#b80f19;font-weight:900}
+
+
+/* Premium dark identity card for the About Dawly section. */
+.dawly-about-section{padding-top:36px;padding-bottom:42px}
+.dawly-about-card{
+ position:relative;overflow:hidden;border:1px solid #303b47;border-radius:22px;
+ color:#f7f8fa;background:radial-gradient(ellipse at 8% 100%,rgba(200,16,30,.22),transparent 42%),linear-gradient(135deg,#202a35 0%,#111820 100%);
+ box-shadow:0 15px 38px rgba(16,24,32,.13);
+}
+.dawly-about-card:after{content:"";position:absolute;inset:auto -60px -150px auto;width:330px;height:330px;border:1px solid rgba(255,255,255,.07);border-radius:50%;box-shadow:0 0 0 32px rgba(255,255,255,.018),0 0 0 66px rgba(255,255,255,.014);pointer-events:none}
+.dawly-about-topline{position:relative;z-index:1;display:flex;align-items:center;gap:10px;padding:17px 22px;border-bottom:1px solid rgba(255,255,255,.1);color:#c8cdd4;font-size:10px;font-weight:900;letter-spacing:1.3px}
+.dawly-about-topline i{display:inline-block;width:6px;height:6px;margin:0 5px;border-radius:50%;background:#df2638;vertical-align:middle}
+.dawly-about-mark{display:grid;place-items:center;width:31px;height:31px;border-radius:9px;background:#c8101e;color:#fff;font-size:19px;font-weight:1000;letter-spacing:0}
+.dawly-about-content{position:relative;z-index:1;padding:clamp(22px,4vw,42px)}
+.dawly-about-kicker{display:inline-block;margin-bottom:13px;padding:6px 12px;border:1px solid rgba(239,77,91,.4);border-radius:999px;background:rgba(200,16,30,.12);color:#ff9aa4;font-size:12px;font-weight:900}
+.dawly-about-content h3{margin:0 0 16px;color:#fff;font-size:clamp(25px,4.5vw,43px);font-weight:1000;line-height:1.45}
+.dawly-about-content h3 em{color:#ff5968;font-style:normal}
+.dawly-about-content>p{max-width:820px;margin:0;color:#d1d7de;font-size:clamp(14px,1.7vw,17px);line-height:2.05}
+.dawly-about-features{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:27px}
+.dawly-about-features>div{display:grid;grid-template-columns:38px 1fr;grid-template-rows:auto auto;align-items:center;column-gap:10px;padding:13px;border:1px solid rgba(255,255,255,.12);border-radius:13px;background:rgba(255,255,255,.045)}
+.dawly-about-icon{grid-row:1/3;display:grid;place-items:center;width:36px;height:36px;border-radius:10px;background:rgba(200,16,30,.17);color:#ff6572;font-size:20px;font-weight:1000}
+.dawly-about-features b{color:#fff;font-size:13px;font-weight:900}
+.dawly-about-features small{margin-top:2px;color:#aeb8c2;font-size:11px}
+.dawly-about-bottom{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-top:24px;padding-top:19px;border-top:1px solid rgba(255,255,255,.12)}
+.dawly-about-bottom strong{color:#fff;font-size:14px;font-weight:900}
+.dawly-about-bottom a{display:inline-flex;align-items:center;gap:9px;padding:11px 16px;border-radius:10px;background:#c8101e;color:#fff;text-decoration:none;font-size:13px;font-weight:900;white-space:nowrap;transition:background .2s,transform .2s}
+.dawly-about-bottom a:hover{background:#e21b2c;transform:translateY(-2px)}
+@media(max-width:600px){
+ .dawly-about-section{padding-top:24px;padding-bottom:28px}
+ .dawly-about-card{border-radius:17px}
+ .dawly-about-topline{padding:13px 15px;font-size:9px}
+ .dawly-about-content{padding:21px 16px}
+ .dawly-about-content h3{font-size:26px;line-height:1.5}
+ .dawly-about-content>p{font-size:13px;line-height:1.95}
+ .dawly-about-features{gap:7px;margin-top:20px}
+ .dawly-about-features>div{grid-template-columns:1fr;grid-template-rows:auto auto auto;justify-items:center;text-align:center;gap:5px;padding:10px 5px}
+ .dawly-about-icon{grid-row:auto;width:31px;height:31px;font-size:17px}
+ .dawly-about-features b{font-size:11px}
+ .dawly-about-features small{font-size:9px}
+ .dawly-about-bottom{align-items:stretch;flex-direction:column;margin-top:19px;padding-top:15px}
+ .dawly-about-bottom strong{text-align:center;font-size:12px}
+ .dawly-about-bottom a{justify-content:center}
+}
