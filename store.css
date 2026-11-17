@@ -5326,3 +5326,31 @@ html body aside#cartDrawer.cart-drawer>.cart-scroll-area>.payment-followup{
  .home-shelf-card .home-shelf-add.product-add-cart-prominent{min-height:46px!important;font-size:13px!important}
  .home-shelf-card .product-price.price-on-request{font-size:13px}
 }
+
+
+/* Main catalog cards now follow the same visual system as Latest Products. */
+#productGrid .catalog-card{border-color:#e4e7eb;border-radius:18px;box-shadow:0 5px 18px rgba(20,27,36,.07)}
+#productGrid .catalog-card .product-visual{height:190px;background:#f7f8fa}
+#productGrid .catalog-card .product-info{padding:13px;gap:8px}
+#productGrid .catalog-card .product-category{font-size:11px}
+#productGrid .catalog-card .product-name{font-size:15px;line-height:1.5;min-height:0}
+#productGrid .catalog-card .product-card-status{display:flex;align-items:center;min-height:23px}
+#productGrid .catalog-card .product-card-status .stock-status{display:inline-flex;align-items:center;padding:5px 9px;border-radius:999px;background:#eaf7ef;color:#187344;font-size:11px;font-weight:900}
+#productGrid .catalog-card .product-card-status .stock-status.out{background:#fff0f0;color:#b4232c}
+#productGrid .catalog-card .product-description{font-size:11px;line-height:1.6;-webkit-line-clamp:2;line-clamp:2}
+#productGrid .catalog-card .product-price{display:block;white-space:normal;overflow-wrap:anywhere;font-size:18px}
+#productGrid .catalog-card .product-price.price-on-request{font-size:15px}
+#productGrid .catalog-card .home-shelf-add{width:100%;min-height:50px;margin-top:3px;display:flex;align-items:center;justify-content:center;gap:9px;border-radius:12px;background:#c81020;color:#fff;font-size:15px;font-weight:1000;box-shadow:0 4px 0 #8f0b14,0 7px 15px rgba(200,16,32,.18)}
+#productGrid .catalog-card .home-shelf-add:disabled{background:#aeb4bb;box-shadow:none}
+#productGrid .catalog-card .product-card-tools{display:flex;align-items:center;justify-content:flex-start;gap:7px}
+#productGrid .catalog-card .product-card-tools .quick-view-trigger,#productGrid .catalog-card .product-card-tools .share-product-button{width:34px;height:32px;min-height:32px;margin:0;padding:0;display:inline-flex;align-items:center;justify-content:center;border:1px solid #e8d5d7!important;border-radius:9px;background:#fff!important;color:#a80e19!important;font-size:17px;font-weight:900}
+@media(max-width:700px){
+ #productGrid .catalog-card .product-visual{height:150px;min-height:150px}
+ #productGrid .catalog-card .product-info{padding:10px;gap:6px}
+ #productGrid .catalog-card .product-category{font-size:10px}
+ #productGrid .catalog-card .product-name{font-size:13px;min-height:39px}
+ #productGrid .catalog-card .product-description{font-size:10px}
+ #productGrid .catalog-card .product-price{font-size:15px}
+ #productGrid .catalog-card .product-price.price-on-request{font-size:13px}
+ #productGrid .catalog-card .home-shelf-add{min-height:46px;font-size:13px;padding:9px 7px}
+}
