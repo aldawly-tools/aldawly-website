@@ -116,6 +116,8 @@ export async function onRequestPost({ request, env }) {
     catalog_match_count: catalog.length
   };
 
+  const controller = new AbortController();
+  const upstreamTimeout = setTimeout(() => controller.abort(), 18000);
   try {
     const response = await fetch("https://generativelanguage.googleapis.com/v1beta/interactions", {
       method: "POST",
@@ -123,6 +125,7 @@ export async function onRequestPost({ request, env }) {
         "content-type": "application/json",
         "x-goog-api-key": env.GEMINI_API_KEY
       },
+      signal: controller.signal,
       body: JSON.stringify({
         model: MODEL,
         store: false,
@@ -131,6 +134,7 @@ export async function onRequestPost({ request, env }) {
         generation_config: { thinking_level: "low" }
       })
     });
+    clearTimeout(upstreamTimeout);
 
     const result = await response.json().catch(() => ({}));
     if (!response.ok) {
@@ -151,7 +155,11 @@ export async function onRequestPost({ request, env }) {
     if (!text) return json({ error: "empty_ai_response" }, 502);
     return json({ reply: text.slice(0, 2200) });
   } catch (error) {
+    clearTimeout(upstreamTimeout);
     console.error("Assistant request failed:", error && error.name);
+    if (error && error.name === "AbortError") {
+      return json({ error: "ai_timeout", message: "تأخر رد المساعد. جرّب مرة أخرى." }, 504);
+    }
     return json({ error: "assistant_unavailable", message: "تعذر الاتصال بالمساعد حالياً. جرّب مرة أخرى." }, 502);
   }
 }
