@@ -150,12 +150,12 @@
       '<div class="product-detail-info"><span class="product-detail-category">' + brand + escapeHtml(item.cat || "منتجات") + '</span>' +
       '<h1 class="product-detail-title">' + escapeHtml(name) + '</h1>' +
       '<p class="product-detail-description">' + escapeHtml(cleanProductCopy(item.desc || "للاستفسار عن مواصفات المنتج وتفاصيله، تواصل معنا مباشرة.")) + '</p>' +
-      '<div class="product-detail-price">' + price + '<small>' + (formatPrice(item.price).includes("ج.م") ? 'السعر بالجنيه المصري · يُرجى تأكيد التوفر عند التواصل' : 'يُرجى تأكيد السعر والتوفر عند التواصل') + '</small></div>' + stockHtml +
+      '<div class="product-detail-price"><span class="detail-price-value">' + price + '</span><small>' + (formatPrice(item.price).startsWith("EGP ") ? 'السعر بالجنيه المصري' : 'يُرجى تأكيد السعر عند التواصل') + '</small></div>' + stockHtml +
       '<div class="product-detail-actions">' +
       '<button class="button-primary detail-add-cart" type="button" data-detail-add="' + escapeHtml(item.id) + '"' + (stockKnown && item.stock === 0 ? ' disabled aria-disabled="true"' : '') + '>' + (stockKnown && item.stock === 0 ? 'غير متاح حاليًا' : 'أضف إلى السلة') + '</button>' +
       '<button class="button-primary detail-order-now" type="button" data-detail-order-now="' + escapeHtml(item.id) + '"' + (stockKnown && item.stock === 0 ? ' disabled aria-disabled="true"' : '') + '>' + (stockKnown && item.stock === 0 ? 'غير متاح حاليًا' : 'اطلب هذا المنتج الآن ←') + '</button>' +
       '<button class="button-outline share-product-button" type="button" data-share-product="' + escapeHtml(item.id) + '">مشاركة المنتج على أي منصة ↗</button>' +
-      '<a class="button-outline" href="products.html">العودة إلى المنتجات</a></div>' + specsHtml + '</div></article>';
+      '<a class="button-outline" href="products.html">العودة إلى المنتجات</a></div>' + '<div class="product-trust-strip" aria-label="مميزات الخدمة"><div><b>🚚</b><span>شحن لجميع المحافظات</span></div><div><b>✓</b><span>تأكيد الطلب عبر واتساب</span></div><div><b>🛠</b><span>مساعدة في اختيار العدد</span></div></div>' + specsHtml + '</div></article>';
 
 
     const allProducts = cloudProducts || fallbackProducts;
