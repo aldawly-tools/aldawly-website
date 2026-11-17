@@ -5967,3 +5967,14 @@ button[data-add]:not(:disabled) span:not(.add-cart-icon),
    line-height:1.6!important;
  }
 }
+
+
+/* Mobile footer clearance: reserve room for the floating assistant and category dock. */
+@media(max-width:700px){
+  .footer{padding-bottom:calc(190px + env(safe-area-inset-bottom))!important}
+  .footer-grid{grid-template-columns:minmax(0,1fr)!important;gap:22px!important}
+  .footer-grid>div{min-width:0!important}
+  .footer-links{gap:9px!important}
+  .footer a{overflow-wrap:anywhere}
+  .site-visitor-counter{margin-bottom:0!important}
+}
