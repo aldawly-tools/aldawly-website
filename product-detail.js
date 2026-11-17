@@ -13,6 +13,12 @@
   function cleanProductCopy(value) {
     return String(value == null ? "" : value).replace(/\uFFFD/g, "").replace(/[\u200B-\u200F\u2060\uFEFF]/g, " ").replace(/\r\n?/g, "\n").replace(/[ \t]{2,}/g, " ").trim();
   }
+  function formatSpecValue(value) {
+    const match = String(value == null ? "" : value).match(/https?:\/\/[^\s<>"']+/i);
+    if (!match) return escapeHtml(value);
+    const href = match[0].replace(/[),.;]+$/, "");
+    return '<a class="product-spec-source-link" href="' + escapeHtml(href) + '" target="_blank" rel="noopener noreferrer">عرض المصدر الأصلي ↗</a>';
+  }
   function updateMeta(attribute, key, value) {
     let tag = document.head.querySelector('meta[' + attribute + '="' + key + '"]');
     if (!tag) {
@@ -137,7 +143,7 @@
     }).filter(Boolean);
     const specsHtml = specsRows.length
       ? '<section class="product-specs"><h2>المواصفات الفنية</h2><div class="product-specs-table">' +
-        specsRows.map(function (spec) { return '<div class="product-spec-row"><strong>' + escapeHtml(spec.label) + '</strong><span>' + escapeHtml(spec.value) + '</span></div>'; }).join("") +
+        specsRows.map(function (spec) { return '<div class="product-spec-row"><strong>' + escapeHtml(spec.label) + '</strong><span>' + formatSpecValue(spec.value) + '</span></div>'; }).join("") +
         '</div></section>'
       : "";
     const productUrl = new URL("product?id=" + encodeURIComponent(item.id), window.location.href).toString();
