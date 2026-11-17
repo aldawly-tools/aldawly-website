@@ -20,7 +20,8 @@ service cloud.firestore {
         && request.resource.data.day is string
         && request.resource.data.day.matches("^[0-9]{4}-[0-9]{2}-[0-9]{2}$")
         && request.resource.data.createdAt == request.time;
-      allow update, delete: if false;
+      allow update: if false;
+      allow delete: if isStoreAdmin();
     }
 
 
@@ -36,7 +37,8 @@ service cloud.firestore {
         && request.resource.data.source.size() <= 40
         && request.resource.data.createdAt == request.time;
       allow read: if isStoreAdmin();
-      allow update, delete: if false;
+      allow update: if false;
+      allow delete: if isStoreAdmin();
     }
 
     // Anonymous product views: one record per browser, product and Cairo day.
@@ -52,7 +54,8 @@ service cloud.firestore {
         && request.resource.data.productId.size() <= 80
         && request.resource.data.createdAt == request.time;
       allow read: if isStoreAdmin();
-      allow update, delete: if false;
+      allow update: if false;
+      allow delete: if isStoreAdmin();
     }
 
     match /products/{productId} {
