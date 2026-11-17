@@ -21,3 +21,9 @@
 .dawly-bot-form input:focus{border-color:#d71920}.dawly-bot-form button{border:0;border-radius:10px;padding:0 16px;background:#d71920;color:#fff;font-weight:900}
 .dawly-bot-wa{padding:9px;text-align:center;background:#fff;color:#16834b;font-size:11px;font-weight:900;text-decoration:none;border-top:1px solid #edf0f2}
 @media(max-width:480px){#dawlyBotLauncher{left:10px;bottom:15px;padding:7px 12px 7px 8px;font-size:12px}#dawlyBotPanel{left:8px;bottom:73px;width:calc(100vw - 16px);height:min(570px,calc(100dvh - 95px));border-radius:17px}}
+
+/* Keep the assistant above the bottom category control on small screens. */
+@media(max-width:700px){
+  #dawlyBotLauncher{bottom:calc(88px + env(safe-area-inset-bottom))!important}
+  #dawlyBotPanel{bottom:calc(150px + env(safe-area-inset-bottom))!important;max-height:calc(100dvh - 175px)!important}
+}
