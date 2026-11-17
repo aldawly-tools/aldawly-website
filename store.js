@@ -614,7 +614,7 @@
       const price = parsePrice(item.price);
       const lineTotal = price === null ? "" : '<small class="cart-line-total">مجموع هذا المنتج: ' + escapeHtml(money(price * line.qty)) + '</small>';
       const cartDescription = cleanProductCopy(item.desc || item.description || item.details || item.specs || item.title || "");
-      const cartDetails = cartDescription ? '<small class="cart-product-description"><b>التفاصيل: </b>' + escapeHtml(cartDescription.length > 260 ? cartDescription.slice(0,257) + "…" : cartDescription) + '</small>' : '';
+      const cartDetails = cartDescription ? '<button class="cart-details-toggle" type="button" data-cart-details aria-expanded="false">عرض التفاصيل الفنية <span aria-hidden="true">＋</span></button><small class="cart-product-description" hidden><b>التفاصيل: </b>' + escapeHtml(cartDescription.length > 260 ? cartDescription.slice(0,257) + "…" : cartDescription) + '</small>' : '';
       const cartImage = item.image
         ? '<img src="' + escapeHtml(item.image) + '" alt="" loading="lazy">'
         : item.imageId
@@ -886,6 +886,17 @@
       const quickModal = document.getElementById("quickViewModal");
       if (quickModal && quickModal.classList.contains("is-open")) { quickModal.classList.remove("is-open"); document.body.classList.remove("quick-view-open"); }
       addToCart(add.dataset.add); return;
+    }
+    const detailsToggle = event.target.closest("[data-cart-details]");
+    if (detailsToggle) {
+      const description = detailsToggle.parentElement.querySelector(".cart-product-description");
+      if (description) {
+        const expanded = !description.hidden;
+        description.hidden = expanded;
+        detailsToggle.setAttribute("aria-expanded", expanded ? "false" : "true");
+        detailsToggle.innerHTML = expanded ? 'عرض التفاصيل الفنية <span aria-hidden="true">＋</span>' : 'إخفاء التفاصيل <span aria-hidden="true">−</span>';
+      }
+      return;
     }
     const quantity = event.target.closest("[data-qty]");
     if (quantity) {
