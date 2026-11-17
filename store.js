@@ -576,7 +576,7 @@
         '<div class="product-card-status">' + stockLabel + '</div>' +
         '<p class="product-description">' + escapeHtml(description) + '</p>' +
         '<div class="product-meta"><span class="product-price' + (currentPrice === null ? ' price-on-request' : '') + '">' + escapeHtml(formatPrice(item.price)) + (discountPercent ? '<del>' + escapeHtml(money(compareAtPrice)) + '</del><em class="product-discount">خصم ' + discountPercent + '%</em>' : '') + '<small>' + (currentPrice === null ? 'السعر عند التواصل' : 'يُرجى تأكيد التوفر عند الطلب') + '</small></span>' +
-        '<button class="button-primary" type="button" data-add="' + escapeHtml(item.id) + '"' + (stockOut ? ' disabled aria-disabled="true"' : '') + '>' + (stockOut ? 'غير متاح' : 'أضف إلى السلة') + '</button></div>' +
+        '<button class="button-primary product-add-cart" type="button" data-add="' + escapeHtml(item.id) + '"' + (stockOut ? ' disabled aria-disabled="true"' : '') + '>' + (stockOut ? 'غير متاح' : '<span class="add-cart-icon" aria-hidden="true">🛒</span><span>أضف للسلة</span>') + '</button></div>' +
         '<div class="product-card-tools" aria-label="إجراءات المنتج"><button class="quick-view-trigger" type="button" data-quick-view="' + escapeHtml(item.id) + '" aria-label="معاينة سريعة" title="معاينة سريعة">◉</button><button class="share-product-button" type="button" data-share-product="' + escapeHtml(item.id) + '" aria-label="مشاركة المنتج" title="مشاركة المنتج">↗</button></div>' +
         '</div></article>';
     }).join("") || '<p class="empty-cart">' + emptyMessage + '</p>';
