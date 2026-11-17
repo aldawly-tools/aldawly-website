@@ -420,3 +420,10 @@ body.dawly-about-in-view #dawlyBotLauncher{
 }
 @keyframes dawlyTypingCursor{to{visibility:hidden}}
 @media(prefers-reduced-motion:reduce){.dawly-welcome-typing:after{animation:none}}
+
+
+/* AI assistant thinking state */
+.dawly-ai-typing{color:#66717c!important;font-weight:800!important;position:relative}
+.dawly-ai-typing:after{content:"";display:inline-block;width:5px;height:5px;margin-inline-start:8px;border-radius:50%;background:#c8101e;box-shadow:9px 0 #c8101e,18px 0 #c8101e;animation:dawlyAiDots 1s infinite ease-in-out}
+@keyframes dawlyAiDots{0%,80%,100%{opacity:.35;transform:translateY(0)}40%{opacity:1;transform:translateY(-3px)}}
+@media(prefers-reduced-motion:reduce){.dawly-ai-typing:after{animation:none}}
