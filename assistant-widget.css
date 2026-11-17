@@ -370,3 +370,13 @@ body.dawly-assistant-page{margin:0!important;min-height:100vh;background:linear-
  }
  #dawlyBotLauncher .dawly-bot-face{width:56px!important;height:56px!important;flex-basis:56px!important}
 }
+
+
+/* Stack assistant above the WhatsApp/contact launcher, with a clear touch gap. */
+@media(max-width:700px){
+ #dawlyBotLauncher,
+ #dawlyBotLauncher.dawly-prompt-visible{
+   left:14px!important;
+   bottom:calc(220px + env(safe-area-inset-bottom))!important;
+ }
+}
