@@ -458,18 +458,25 @@ footer.footer .button-primary { color:#fff !important; font-weight:1000 !importa
   function removeClones(){track.querySelectorAll('[data-auto-clone="1"]').forEach(function(el){el.remove();});}
   function stepSize(){var card=cards()[0];if(!card)return 220;var gap=parseFloat(getComputedStyle(track).gap)||12;return card.getBoundingClientRect().width+gap;}
   function move(direction){
-   var max=Math.max(0,view.scrollWidth-view.clientWidth);
-   if(max<2)return;
-   var amount=stepSize();
-   var current=Math.min(max,Math.abs(view.scrollLeft));
-   var next;
-   /* RTL Chrome uses a negative scrollLeft as the shelf moves toward later cards. */
-   if(direction<0) next=(current>=max-amount-4)?0:Math.min(max,current+amount);
-   else next=(current<=4)?max:Math.max(0,current-amount);
-   view.scrollTo({left:-next,behavior:'smooth'});
+   var list=cards();
+   if(list.length<2)return;
+   var box=view.getBoundingClientRect(),center=box.left+box.width/2;
+   var currentIndex=0,smallest=Infinity;
+   list.forEach(function(card,index){
+    var rect=card.getBoundingClientRect();
+    var distance=Math.abs((rect.left+rect.width/2)-center);
+    if(distance<smallest){smallest=distance;currentIndex=index;}
+   });
+   var targetIndex=Math.max(0,Math.min(list.length-1,currentIndex+direction));
+   if(targetIndex===currentIndex)targetIndex=direction>0?0:list.length-1;
+   list[targetIndex].scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});
   }
   document.querySelectorAll('.home-products-shelf [data-shelf-dir]').forEach(function(button){
-   button.addEventListener('click',function(){move(button.dataset.shelfDir==='next'?-1:1);});
+   button.addEventListener('click',function(){
+    stop();
+    move(button.dataset.shelfDir==='next'?1:-1);
+    window.setTimeout(start,4500);
+   });
   });
   // Mobile uses native browser scrolling for smoother finger tracking.
   var timer=null,frame=null,lastFrame=0,scrollDirection=1,autoPosition=0;
