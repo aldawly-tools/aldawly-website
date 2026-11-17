@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 600">
+<defs>
+ <linearGradient id="bg" x2="1" y2="1"><stop stop-color="#f7f8fa"/><stop offset="1" stop-color="#e8edf1"/></linearGradient>
+ <linearGradient id="red" x2="0" y2="1"><stop stop-color="#ed2938"/><stop offset="1" stop-color="#b90d1b"/></linearGradient>
+ <linearGradient id="metal" x2="0" y2="1"><stop stop-color="#f9fbfc"/><stop offset=".5" stop-color="#aeb9c2"/><stop offset="1" stop-color="#edf1f4"/></linearGradient>
+ <filter id="shadow" x="-20%" y="-20%" width="140%" height="150%"><feDropShadow dx="0" dy="12" stdDeviation="12" flood-color="#1e293b" flood-opacity=".18"/></filter>
+</defs>
+<rect width="900" height="600" rx="30" fill="url(#bg)"/>
+<g opacity=".18" stroke="#6b7280" stroke-width="3"><path d="M0 95H900M0 500H900"/><path d="M80 0V600M820 0V600"/></g>
+<!-- workbench -->
+<rect x="48" y="420" width="804" height="112" rx="18" fill="#343b43"/>
+<rect x="48" y="420" width="804" height="16" rx="8" fill="#c81020"/>
+<!-- tape measure -->
+<g filter="url(#shadow)" transform="translate(90 185)">
+ <rect x="0" y="25" width="185" height="155" rx="35" fill="#202831"/>
+ <rect x="16" y="38" width="150" height="126" rx="27" fill="#e8ad19"/>
+ <circle cx="91" cy="101" r="42" fill="#303943" stroke="#f8d45a" stroke-width="9"/>
+ <rect x="146" y="85" width="175" height="34" rx="5" fill="#f5cf47"/>
+ <path d="M160 86v15m20-15v9m20-9v15m20-15v9m20-9v15m20-15v9m20-9v15" stroke="#303943" stroke-width="3"/>
+ <path d="M320 85h18v35h-18" fill="#b8c1c8"/>
+</g>
+<!-- laser meter -->
+<g filter="url(#shadow)" transform="translate(420 70)">
+ <rect x="0" y="0" width="140" height="275" rx="24" fill="#222a33"/>
+ <rect x="13" y="16" width="114" height="145" rx="13" fill="#dce8e5"/>
+ <rect x="22" y="27" width="96" height="123" rx="8" fill="#26363b"/>
+ <text x="70" y="90" text-anchor="middle" font-family="Arial,sans-serif" font-size="25" font-weight="bold" fill="#a9f1d0">12.45</text>
+ <text x="70" y="120" text-anchor="middle" font-family="Arial,sans-serif" font-size="16" fill="#a9f1d0">m</text>
+ <circle cx="70" cy="202" r="21" fill="url(#red)"/><circle cx="70" cy="254" r="12" fill="#59636c"/>
+ <path d="M40 173h60" stroke="#65717b" stroke-width="4" stroke-linecap="round"/>
+</g>
+<!-- multimeter -->
+<g filter="url(#shadow)" transform="translate(645 115)">
+ <path d="M30 0h135l30 35v245l-28 28H20L0 280V30z" fill="url(#red)"/>
+ <rect x="25" y="35" width="145" height="95" rx="10" fill="#dbe5df"/>
+ <rect x="34" y="44" width="127" height="76" rx="6" fill="#27383a"/>
+ <text x="97" y="91" text-anchor="middle" font-family="Arial,sans-serif" font-size="27" font-weight="bold" fill="#a9efc7">0.000</text>
+ <text x="97" y="111" text-anchor="middle" font-family="Arial,sans-serif" font-size="12" fill="#a9efc7">V DC</text>
+ <circle cx="97" cy="198" r="48" fill="#242b32" stroke="#aab2b8" stroke-width="7"/>
+ <circle cx="97" cy="198" r="10" fill="#dce2e6"/>
+ <path d="M97 198l22-28" stroke="#fff" stroke-width="6" stroke-linecap="round"/>
+ <circle cx="55" cy="278" r="9" fill="#202831"/><circle cx="97" cy="278" r="9" fill="#202831"/><circle cx="139" cy="278" r="9" fill="#202831"/>
+</g>
+<!-- digital caliper -->
+<g filter="url(#shadow)" transform="translate(120 365)">
+ <rect x="0" y="0" width="560" height="25" rx="8" fill="url(#metal)" stroke="#59636c" stroke-width="3"/>
+ <path d="M40 0v16m28-16v10m28-10v16m28-16v10m28-10v16m28-16v10m28-10v16m28-16v10m28-10v16m28-16v10m28-10v16m28-16v10m28-10v16m28-16v10m28-10v16m28-16v10m28-10v16m28-16v10" stroke="#3c4650" stroke-width="2"/>
+ <rect x="210" y="-35" width="145" height="95" rx="12" fill="#252d35" stroke="#9da8b1" stroke-width="5"/>
+ <rect x="226" y="-20" width="113" height="45" rx="5" fill="#cce1d5"/>
+ <text x="282" y="11" text-anchor="middle" font-family="Arial,sans-serif" font-size="24" font-weight="bold" fill="#263b35">25.00</text>
+ <path d="M0 0v-95h22v95m-22-95h75M560 0v-85h-22v85m22-85h-75" fill="none" stroke="#aeb8c1" stroke-width="9" stroke-linejoin="round"/>
+</g>
+<g transform="translate(55 555)" fill="#66717b" font-family="Arial,sans-serif" font-size="16" font-weight="bold"><text>MEASURING TOOLS</text></g>
+</svg>
