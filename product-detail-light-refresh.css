@@ -99,3 +99,46 @@ body.product-page{background:#f5f6f8!important;color:var(--detail-ink)!important
  #productDetail .product-detail-actions .detail-add-cart,#productDetail .product-detail-actions .share-product-button{min-height:49px!important;font-size:13px!important;padding:9px 7px!important;gap:6px!important}
  #productDetail .product-detail-actions .detail-action-icon{font-size:19px!important;flex-basis:21px!important;width:21px!important}
 }
+
+
+/* Header contrast and compact navigation correction */
+body.product-page .benefit-bar{
+ background:#f3f5f7!important;color:#374151!important;
+ border-bottom:1px solid #e2e6ea!important;box-shadow:none!important;
+}
+body.product-page .benefit-bar .benefits{min-height:54px!important;padding:8px 12px!important;gap:12px!important}
+body.product-page .benefit-bar .benefit,
+body.product-page .benefit-bar span,
+body.product-page .benefit-bar .benefits>*{
+ color:#3d4650!important;-webkit-text-fill-color:#3d4650!important;
+ text-shadow:none!important;font-weight:800!important;line-height:1.5!important;
+}
+body.product-page .product-detail-header{
+ display:flex!important;align-items:center!important;justify-content:space-between!important;
+ gap:16px!important;min-height:88px!important;padding-top:12px!important;padding-bottom:12px!important;
+}
+body.product-page .product-detail-header>.button-outline{
+ display:inline-flex!important;align-items:center!important;justify-content:center!important;
+ flex:0 0 auto!important;width:auto!important;min-width:150px!important;max-width:220px!important;
+ min-height:48px!important;padding:10px 20px!important;margin:0!important;
+ border:1px solid #c8101e!important;border-radius:12px!important;
+ background:#c8101e!important;color:#fff!important;-webkit-text-fill-color:#fff!important;
+ font-family:"Cairo",Tahoma,Arial,sans-serif!important;font-size:15px!important;
+ font-weight:900!important;line-height:1.5!important;text-align:center!important;
+ text-shadow:none!important;box-shadow:0 4px 12px rgba(200,16,30,.14)!important;
+}
+body.product-page .product-detail-header>.button-outline:hover,
+body.product-page .product-detail-header>.button-outline:focus{
+ background:#a90d18!important;color:#fff!important;-webkit-text-fill-color:#fff!important;
+}
+@media(max-width:640px){
+ body.product-page .benefit-bar .benefits{min-height:48px!important;padding:6px 8px!important;gap:6px!important}
+ body.product-page .benefit-bar .benefit,
+ body.product-page .benefit-bar span,
+ body.product-page .benefit-bar .benefits>*{font-size:11px!important}
+ body.product-page .product-detail-header{min-height:76px!important;gap:9px!important;padding:9px 12px!important}
+ body.product-page .product-detail-header>.button-outline{
+  min-width:0!important;max-width:145px!important;min-height:44px!important;
+  padding:8px 12px!important;font-size:12px!important;border-radius:10px!important;
+ }
+}
