@@ -314,28 +314,36 @@
       const key = normalizeBrand(name);
       if (key && !templates.has(key)) templates.set(key, link.cloneNode(true));
     });
-    const available = new Map();
-    products.forEach(function (item) {
+    // Count only products actually published in the public storefront.
+    const counts = new Map();
+    products.filter(function (item) { return item.hiddenFromStore !== true; }).forEach(function (item) {
       const label = productBrand(item);
       const key = normalizeBrand(label);
-      if (key && !available.has(key)) available.set(key, label);
+      if (!key) return;
+      const entry = counts.get(key) || {label:label, count:0};
+      entry.count += 1;
+      counts.set(key, entry);
     });
-    const brands = Array.from(available.entries()).sort(function(a,b) {
-      return a[1].localeCompare(b[1], "ar");
+    const brands = Array.from(counts.entries()).sort(function(a,b) {
+      return a[1].label.localeCompare(b[1].label, "ar");
     });
     group.innerHTML = "";
     brands.forEach(function(entry) {
-      const key=entry[0], label=entry[1];
+      const key=entry[0], label=entry[1].label, count=entry[1].count;
       const link=templates.has(key)?templates.get(key):document.createElement("a");
       link.className="brand-word brand-tile";
       link.href="products.html?brand="+encodeURIComponent(label)+"#productGrid";
       link.dataset.brandTarget=link.href;
-      link.setAttribute("aria-label","منتجات "+label);
+      link.setAttribute("aria-label","منتجات "+label+" — "+count+" منتج");
       link.removeAttribute("aria-disabled");
       link.removeAttribute("tabindex");
       const sr=document.createElement("span");
       sr.className="brand-name-sr";
       sr.textContent=label;
+      const badge=document.createElement("span");
+      badge.className="brand-product-count";
+      badge.textContent=count.toLocaleString("en-US");
+      badge.setAttribute("aria-label",count+" منتج");
       const logo=brandLogoForFilter(label);
       if(logo){
         const img=document.createElement("img");
@@ -344,12 +352,12 @@
         img.alt=label+" logo";
         img.loading="lazy";
         img.decoding="async";
-        link.replaceChildren(img,sr);
+        link.replaceChildren(img,sr,badge);
       }else{
         const mark=document.createElement("span");
         mark.className="brand-text-mark";
         mark.textContent=label;
-        link.replaceChildren(mark,sr);
+        link.replaceChildren(mark,sr,badge);
       }
       group.appendChild(link);
     });
@@ -486,8 +494,13 @@
     const sectionTitle = document.querySelector("#products .section-title");
     const subtitle = document.querySelector("#products .section-subtitle");
     const label = activeBrand ? displayBrand(activeBrand) : "";
+    const brandCount = label ? products.filter(function(item) {
+      return item.hiddenFromStore !== true && normalizeBrand(productBrand(item)) === normalizeBrand(label);
+    }).length : 0;
     if (sectionTitle) sectionTitle.textContent = label ? "منتجات " + label : "كل المنتجات";
-    if (subtitle) subtitle.textContent = label ? "المنتجات المسجلة لماركة " + label : "اكتشف كتالوج الدولي للعدد الأصلية، وتعرّف على منتجاتنا واسألنا عن السعر والتوافر مباشرة.";
+    if (subtitle) subtitle.textContent = label
+      ? "كتالوج " + label + " — " + brandCount.toLocaleString("en-US") + " منتج متاح"
+      : "اكتشف كتالوج الدولي للعدد الأصلية، وتعرّف على منتجاتنا واسألنا عن السعر والتوافر مباشرة.";
     if (banner && title && logo) {
       banner.classList.toggle("is-visible", !!label);
       title.textContent = label ? "منتجات " + label : "";
