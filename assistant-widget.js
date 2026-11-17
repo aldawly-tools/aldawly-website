@@ -66,6 +66,7 @@ async function reply(q){
    method:"POST",
    headers:{"content-type":"application/json"},
    cache:"no-store",
+   signal:AbortSignal.timeout(15000),
    body:JSON.stringify({
     message:q,
     history:chatTurns.slice(-8),
