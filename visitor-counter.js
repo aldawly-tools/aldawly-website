@@ -13,7 +13,9 @@ import {
   if (!totalNode || !todayNode || !window.DAWLY_FIREBASE_CONFIG) return;
 
   const format = value => new Intl.NumberFormat("ar-EG").format(value);
-  const day = new Date().toLocaleDateString("en-CA", { timeZone: "Africa/Cairo" });
+  const cairoParts = new Intl.DateTimeFormat("en-CA", { timeZone: "Africa/Cairo", year: "numeric", month: "2-digit", day: "2-digit" }).formatToParts(new Date());
+  const part = type => cairoParts.find(item => item.type === type).value;
+  const day = part("year") + "-" + part("month") + "-" + part("day");
   try {
     const app = getApps().length ? getApps()[0] : initializeApp(window.DAWLY_FIREBASE_CONFIG);
     const auth = getAuth(app);
