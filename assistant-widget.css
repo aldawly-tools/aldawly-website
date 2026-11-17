@@ -229,3 +229,11 @@
     width:190px!important;min-width:190px!important;max-width:190px!important;
   }
 }
+
+
+/* Hide the assistant launcher while the contact menu is expanded. */
+#dawlyBotLauncher.dawly-contact-menu-open{
+  display:none!important;
+  visibility:hidden!important;
+  pointer-events:none!important;
+}
