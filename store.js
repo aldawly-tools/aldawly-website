@@ -1395,6 +1395,10 @@
       console.error("Packing slip generation failed:", error);
       alert("تم فتح واتساب، لكن تعذر تنزيل ورقة تجهيز الطلب. حاول تحديث الصفحة وإعادة الطلب.");
     });
+    // The order snapshot is already prepared and WhatsApp has been opened.
+    // Clear only the shopping cart; keep the prepared order and PDF data intact.
+    cart = [];
+    renderCart();
   });
 
   // Keep the active checkout field visible when the mobile keyboard opens.
