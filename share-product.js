@@ -19,7 +19,7 @@
     });
   }
   function wrapText(ctx, text, maxWidth) {
-    const words = String(text || "").split(/\\s+/);
+    const words = String(text || "").split(/\s+/);
     const lines = [];
     let line = "";
     words.forEach(function (word) {
@@ -107,7 +107,7 @@
     ctx.fillStyle = "#20242a";
     ctx.textAlign = "right";
     ctx.direction = "rtl";
-    const name = String(item.name || "منتج من الدولي").replace(/\\s+/g, " ").trim();
+    const name = String(item.name || "منتج من الدولي").replace(/\s+/g, " ").trim();
     ctx.font = "bold 43px Tahoma, Arial";
     const nameLines = wrapText(ctx, name, 990).slice(0, 2);
     let y = 940;
@@ -121,7 +121,7 @@
     ctx.font = "bold 27px Tahoma, Arial";
     const brand = item.brand ? "الماركة: " + String(item.brand) : "";
     if (brand) { ctx.fillText(brand, 1015, y); y += 43; }
-    const desc = String(item.desc || item.specs || "للاستفسار عن المواصفات والتوفر تواصل معنا").replace(/\\s+/g, " ").trim();
+    const desc = String(item.desc || item.specs || "للاستفسار عن المواصفات والتوفر تواصل معنا").replace(/\s+/g, " ").trim();
     ctx.font = "25px Tahoma, Arial";
     wrapText(ctx, desc, 990).slice(0, 2).forEach(function (line) { ctx.fillText(line, 1015, y); y += 38; });
     ctx.fillStyle = "#c8101e";
