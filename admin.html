@@ -1324,6 +1324,29 @@ $("productList").addEventListener("click", function (event) {
 $("productForm").addEventListener("submit", async function (event) {
   event.preventDefault();
   const previous = $("pid").value ? products.find(function (item) { return String(item.id) === String($("pid").value); }) : null;
+  // منع إضافة منتج مكرر بالاسم والماركة مع تجاهل اختلاف المسافات وحالة الأحرف.
+  function normalizeProductDuplicateValue(value) {
+    return String(value || "").trim().toLocaleLowerCase("ar")
+      .replace(/[أإآ]/g, "ا").replace(/ى/g, "ي").replace(/ة/g, "ه")
+      .replace(/[ـ\u064B-\u065F\u0670]/g, "").replace(/\s+/g, " ");
+  }
+  const newProductName = normalizeProductDuplicateValue($("name").value);
+  const newProductBrand = normalizeProductDuplicateValue($("brand").value);
+  if (!newProductName) {
+    message(saveStatus, "اكتب اسم المنتج أولًا.");
+    $("name").focus();
+    return;
+  }
+  const duplicateProduct = products.find(function (item) {
+    if (previous && String(item.id) === String(previous.id)) return false;
+    return normalizeProductDuplicateValue(item.name) === newProductName &&
+      normalizeProductDuplicateValue(item.brand) === newProductBrand;
+  });
+  if (duplicateProduct) {
+    message(saveStatus, "تم رفض الحفظ: المنتج موجود بالفعل في قائمة المنتجات" + (duplicateProduct.brand ? " — " + duplicateProduct.brand : "") + ". افتح المنتج الموجود وعدّله بدل إضافته مرة أخرى.");
+    $("name").focus();
+    return;
+  }
   const id = previous ? Number(previous.id) : Math.max(0, ...products.map(function (item) { return Number(item.id) || 0; })) + 1;
   const files = selectedImageFiles.slice();
   if (files.length + (imageRemoved ? 0 : existingImageIds.length) > 8) { message(saveStatus, "الحد الأقصى 8 صور للمنتج. امسح الصور القديمة أولًا إذا أردت استبدالها."); return; }
