@@ -5185,3 +5185,32 @@ html body aside#cartDrawer.cart-drawer>.cart-scroll-area>.payment-followup{
 /* Remove the zoom badge from every product card; keep detail-page gallery behavior unchanged. */
 .product-visual:before{content:none!important;display:none!important}
 .product-visual{cursor:pointer!important}
+
+
+/* Refined product cards: clear status, price/cart priority, compact secondary actions. */
+#productGrid .product-card{border-color:#e4e7eb;border-radius:18px;box-shadow:0 5px 18px rgba(20,27,36,.07)}
+#productGrid .product-visual{height:220px;background:#f7f8fa}
+#productGrid .product-info{padding:13px;gap:8px}
+#productGrid .product-category{font-size:11px;letter-spacing:.15px}
+#productGrid .product-name{font-size:15px;line-height:1.5;min-height:44px}
+#productGrid .product-description{-webkit-line-clamp:2;line-clamp:2;min-height:0}
+#productGrid .product-card-status{display:flex;align-items:center;min-height:27px}
+#productGrid .product-card-status .stock-status{display:inline-flex;align-items:center;gap:5px;padding:5px 9px;border-radius:999px;background:#eaf7ef;color:#187344;font-size:11px;font-weight:900}
+#productGrid .product-card-status .stock-status:before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
+#productGrid .product-card-status .stock-status.out{background:#fff0f0;color:#b4232c}
+#productGrid .product-meta{margin-top:2px;padding-top:11px;border-top:1px solid #edf0f2;align-items:center}
+#productGrid .product-price{font-size:19px}
+#productGrid .product-meta .button-primary{min-height:43px;padding:10px 14px;border-radius:11px;white-space:nowrap;box-shadow:0 3px 8px rgba(200,16,30,.14)}
+#productGrid .product-card-tools{display:flex;align-items:center;justify-content:space-between;gap:8px}
+#productGrid .product-card-tools .quick-view-trigger{width:auto;min-height:32px;margin:0;padding:5px 10px;border:0;background:#f4f5f6;color:#4b5560;font-size:11px}
+#productGrid .product-card-tools .quick-view-trigger:hover{background:#eceff2;color:#a80e19}
+#productGrid .product-card-tools .share-product-button{min-height:32px;padding:5px 10px;border:0!important;background:#fff5f5!important;color:#a80e19!important;border-radius:8px;font-size:11px}
+@media(max-width:700px){
+ #productGrid .product-visual{height:165px}
+ #productGrid .product-info{padding:10px;gap:7px}
+ #productGrid .product-name{font-size:13px;min-height:39px}
+ #productGrid .product-price{font-size:16px}
+ #productGrid .product-meta{gap:6px}
+ #productGrid .product-meta .button-primary{min-height:39px;padding:8px 9px;font-size:11px}
+ #productGrid .product-card-tools .quick-view-trigger,#productGrid .product-card-tools .share-product-button{font-size:10px}
+}
