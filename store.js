@@ -191,7 +191,7 @@
     return text || cleanProductName(value);
   }
   function parsePrice(value) {
-    if (typeof value === "number") return Number.isFinite(value) && value >= 0 ? value : null;
+    if (typeof value === "number") return Number.isFinite(value) && value > 0 ? value : null;
     let text = String(value == null ? "" : value).trim();
     if (!text || /استفسار|حسب الطلب/i.test(text)) return null;
     text = text
@@ -200,7 +200,7 @@
     text = text.replace(/(?:جنيه(?:\s*مصري)?|ج\.?م\.?|ج\.?|EGP|LE)/gi, "").replace(/[\s,،٬]/g, "");
     if (!/^\d+(?:\.\d+)?$/.test(text)) return null;
     const amount = Number(text);
-    return Number.isFinite(amount) ? amount : null;
+    return Number.isFinite(amount) && amount > 0 ? amount : null;
   }
   function money(amount) {
     return new Intl.NumberFormat("ar-EG", {maximumFractionDigits:2}).format(amount) + " ج.م";
@@ -1118,8 +1118,8 @@
       alert("من فضلك اكتب الاسم ورقم الهاتف والعنوان قبل إرسال الطلب.");
       return null;
     }
-    if (!/^\d{8,15}$/.test(customerPhone)) {
-      alert("رقم الهاتف غير صحيح. راجع الرقم وحاول مرة أخرى.");
+    if (!/^(?:01[0125]\d{8}|201[0125]\d{8})$/.test(customerPhone)) {
+      alert("رقم الموبايل المصري غير مكتمل أو غير صحيح. اكتب 11 رقمًا مثل 01012345678.");
       document.getElementById("customerPhone").focus();
       return null;
     }
