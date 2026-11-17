@@ -138,8 +138,19 @@ export async function onRequestPost({ request, env }) {
 
     const result = await response.json().catch(() => ({}));
     if (!response.ok) {
-      console.error("Gemini API error:", response.status, result && result.error && result.error.status);
-      return json({ error: "ai_provider_error", message: "المساعد الذكي مشغول حالياً. جرّب بعد لحظات." }, 502);
+      const providerError = result && result.error ? result.error : {};
+      const providerCode = cleanText(providerError.status || providerError.code || "UNKNOWN", 80);
+      const providerMessage = cleanText(providerError.message || "No provider message", 240);
+      console.error("Gemini API error:", response.status, providerCode, providerMessage);
+      return json({
+        error: "ai_provider_error",
+        message: "تعذر على Google إكمال الطلب.",
+        diagnostic: {
+          provider_http_status: response.status,
+          provider_code: providerCode,
+          provider_message: providerMessage
+        }
+      }, 502);
     }
 
     const text = Array.isArray(result.steps)
