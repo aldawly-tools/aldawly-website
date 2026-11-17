@@ -5910,3 +5910,25 @@ button[data-add]:not(:disabled):active,
 @media(prefers-reduced-motion:reduce){
   button[data-add]:not(:disabled),.home-shelf-add.product-add-cart-prominent:not(:disabled){animation:none!important}
 }
+
+
+/* A soft inner light sweeps across the Add to Cart words, right to left. */
+@keyframes dawlyTextLightSweep{
+  0%,100%{background-position:110% 50%;text-shadow:0 0 2px rgba(255,255,255,.18)}
+  50%{background-position:-10% 50%;text-shadow:0 0 7px rgba(255,255,255,.5)}
+}
+button[data-add]:not(:disabled) span:not(.add-cart-icon),
+.home-shelf-add.product-add-cart-prominent:not(:disabled) span:not(.add-cart-icon){
+  color:transparent!important;
+  background-image:linear-gradient(90deg,#fff 0%,#fff 34%,#ffe6a6 48%,#fff 58%,#fff 100%);
+  background-size:220% 100%;
+  background-position:110% 50%;
+  background-clip:text;
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  animation:dawlyTextLightSweep 2.6s ease-in-out infinite;
+}
+@media(prefers-reduced-motion:reduce){
+ button[data-add]:not(:disabled) span:not(.add-cart-icon),
+ .home-shelf-add.product-add-cart-prominent:not(:disabled) span:not(.add-cart-icon){animation:none!important;background:none!important;color:#fff!important;-webkit-text-fill-color:#fff!important}
+}
