@@ -41,22 +41,3 @@
 .brands-marquee-section .brands-marquee{overflow:hidden!important;cursor:grab!important}
 .brands-marquee-section .brands-marquee-track{cursor:grab!important;touch-action:pan-y!important}
 .brands-marquee-section .brands-marquee-track:active{cursor:grabbing!important}
-
-
-/* Live product-count badge on each brand card (counts come from published Firebase products). */
-.brands-marquee-section .brand-word.brand-tile .brand-product-count{
-  display:inline-flex!important;position:absolute!important;top:8px!important;left:8px!important;
-  z-index:3;align-items:center!important;justify-content:center!important;
-  min-width:29px!important;height:26px!important;padding:0 8px!important;
-  border:2px solid #fff!important;border-radius:999px!important;
-  background:#d71920!important;color:#fff!important;
-  font:900 12px/1 Arial,sans-serif!important;
-  box-shadow:0 2px 8px rgba(215,25,32,.25)!important;
-  direction:ltr!important;
-}
-@media(max-width:560px){
- .brands-marquee-section .brand-word.brand-tile .brand-product-count{
-  top:5px!important;left:5px!important;min-width:25px!important;height:23px!important;
-  padding:0 6px!important;font-size:11px!important;
- }
-}
