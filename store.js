@@ -279,7 +279,11 @@
     return normalizeSearchText(name).replace(/\s/g, "");
   }
   function displayBrand(name) {
-    const labels = {wurth:"WÜRTH",bosch:"BOSCH",wera:"WERA",knipex:"KNIPEX",beta:"Beta",dewalt:"DEWALT"};
+    const labels = {
+      wurth:"WÜRTH",bosch:"BOSCH",wera:"WERA",knipex:"KNIPEX",beta:"Beta",
+      dewalt:"DEWALT",gesipa:"GESIPA",bahco:"BAHCO",hazet:"HAZET",
+      koken:"KOKEN",modeco:"MODECO",luxtools:"LUX-TOOLS",riss:"RISS"
+    };
     return labels[normalizeBrand(name)] || cleanProductCopy(name);
   }
   function productBrand(item) {
@@ -291,7 +295,7 @@
     // Include every brand already represented by the storefront's brand logos,
     // not only the original small set. Longer identifiers are checked first.
     const known = [
-      ["lux-tools","LUX-TOOLS"],["milwaukee","Milwaukee"],["gesipa","GESIPA"],
+      ["luxtools","LUX-TOOLS"],["milwaukee","Milwaukee"],["gesipa","GESIPA"],
       ["normex","Normex"],["modeco","MODECO"],["bahco","BAHCO"],
       ["hazet","HAZET"],["knipex","KNIPEX"],["bosch","BOSCH"],
       ["dewalt","DEWALT"],["makita","Makita"],["koken","KOKEN"],
