@@ -1,6 +1,7 @@
 (function(){
 "use strict";
 if(document.getElementById("dawlyBotLauncher")) return;
+var fullPage=document.body.dataset.assistantPage==="true";
 var products=Array.isArray(window.DAWLY_PRODUCTS)?window.DAWLY_PRODUCTS:[];
 var opened=false, history=[];
 function norm(v){return String(v==null?"":v).toLocaleLowerCase("ar").normalize("NFD").replace(/[\u064B-\u065F\u0670\u0640]/g,"").replace(/[أإآٱ]/g,"ا").replace(/ى/g,"ي").replace(/ة/g,"ه").replace(/[٠-٩]/g,function(d){return String("٠١٢٣٤٥٦٧٨٩".indexOf(d));}).replace(/[۰-۹]/g,function(d){return String("۰۱۲۳۴۵۶۷۸۹".indexOf(d));}).replace(/[^\p{L}\p{N}.]+/gu," ").trim().replace(/\s+/g," ");}
@@ -40,7 +41,11 @@ history.push({q:q,ids:list.map(function(p){return String(p.id);})});history=hist
 function send(q){q=String(q||"").trim();if(!q)return;msg(q,"user");reply(q);var i=document.getElementById("dawlyBotInput");i.value="";}
 var launcher=document.createElement("button");launcher.id="dawlyBotLauncher";launcher.type="button";launcher.setAttribute("aria-label","افتح مساعد الدولي");launcher.innerHTML='<span class="dawly-bot-face" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M4 5.8A2.8 2.8 0 0 1 6.8 3h10.4A2.8 2.8 0 0 1 20 5.8v7.4a2.8 2.8 0 0 1-2.8 2.8h-5.1l-4.7 3.2v-3.2h-.6A2.8 2.8 0 0 1 4 13.2z"/><path d="M8 9h8M8 12h5"/></svg><i></i></span><span class="dawly-bot-prompt">أدورلك على أداة؟</span>';
 var panel=document.createElement("section");panel.id="dawlyBotPanel";panel.hidden=true;panel.setAttribute("aria-label","مساعد الدولي");panel.innerHTML='<header class="dawly-bot-head"><div class="dawly-bot-avatar">🤖</div><div><strong>مساعد الدولي</strong><small>مساعد فني للعدد والمنتجات</small></div><button type="button" id="dawlyBotClose" aria-label="إغلاق">×</button></header><div class="dawly-bot-messages" id="dawlyBotMessages"><div class="dawly-bot-msg bot">أهلاً بيك 👋 أقدر أساعدك تلاقي أداة من كتالوج الدولي. قولي هتستخدمها في إيه وعلى أي خامة.</div><div class="dawly-bot-chips"><button type="button">طقم مفكات WÜRTH</button><button type="button">بنط HSS للمعادن</button><button type="button">أدوات النجارة</button></div></div><form class="dawly-bot-form" id="dawlyBotForm"><input id="dawlyBotInput" autocomplete="off" placeholder="اسم الأداة أو الاستخدام أو المقاس..." aria-label="اكتب سؤالك"><button type="submit">إرسال</button></form><a class="dawly-bot-wa" href="https://wa.me/201024787222" target="_blank" rel="noopener">محتاج تأكيد فني؟ كلمنا واتساب</a>';
-document.body.appendChild(launcher);document.body.appendChild(panel);
+if(!fullPage) document.body.appendChild(launcher);
+var chatHost=fullPage?(document.getElementById("assistantPageChat")||document.body):document.body;
+panel.hidden=!fullPage;
+if(fullPage) panel.classList.add("dawly-bot-fullpage");
+chatHost.appendChild(panel);
 /* Avoid overlapping the assistant with the expanded contact/WhatsApp menu. */
 var contactPanel=document.getElementById("floatingContactPanel");
 if(contactPanel){
@@ -52,9 +57,12 @@ if(contactPanel){
   new MutationObserver(syncContactMenu).observe(contactPanel,{attributes:true,attributeFilter:["hidden"]});
   syncContactMenu();
 }
-launcher.addEventListener("click",function(){opened=!opened;panel.hidden=!opened;launcher.classList.remove("dawly-prompt-visible");if(opened)document.getElementById("dawlyBotInput").focus();});
-launcher.classList.add("dawly-prompt-visible");window.setTimeout(function(){launcher.classList.remove("dawly-prompt-visible");},6500);
-document.getElementById("dawlyBotClose").addEventListener("click",function(){opened=false;panel.hidden=true;});
+if(!fullPage){
+  launcher.addEventListener("click",function(){window.location.href="assistant.html";});
+  launcher.classList.add("dawly-prompt-visible");
+  window.setTimeout(function(){launcher.classList.remove("dawly-prompt-visible");},6500);
+}
+document.getElementById("dawlyBotClose").addEventListener("click",function(){if(fullPage){window.location.href="index.html";return;}opened=false;panel.hidden=true;});
 document.getElementById("dawlyBotForm").addEventListener("submit",function(e){e.preventDefault();send(document.getElementById("dawlyBotInput").value);});
 panel.addEventListener("click",function(e){var b=e.target.closest(".dawly-bot-chips button");if(b)send(b.textContent);});
 window.addEventListener("dawly-products-updated",function(e){if(Array.isArray(e.detail))products=e.detail;});
