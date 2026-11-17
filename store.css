@@ -5123,3 +5123,7 @@ html body aside#cartDrawer.cart-drawer>.cart-scroll-area>.payment-followup{
   #cartDrawer .cart-row{padding:10px!important}
   #cartDrawer .cart-product-thumb{width:58px!important;height:58px!important;flex-basis:58px!important}
 }
+
+/* First-step WhatsApp manager selector */
+.checkout-fields select{width:100%;min-width:0;border:1px solid #cfd5dc;border-radius:8px;background:#fff;padding:12px 11px;color:#20242a;font:800 14px "Cairo",Tahoma,Arial,sans-serif;outline:none;direction:rtl}
+.checkout-fields select:focus{border-color:var(--red);box-shadow:0 0 0 3px #d7192014}
