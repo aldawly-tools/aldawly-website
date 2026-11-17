@@ -288,10 +288,14 @@
     const searchable = normalizeBrand([
       item.name, item.desc, item.specs, item.sku, item.code, item.model, item.partNumber
     ].filter(Boolean).join(" "));
+    // Include every brand already represented by the storefront's brand logos,
+    // not only the original small set. Longer identifiers are checked first.
     const known = [
-      ["wurth","WÜRTH"],["bosch","BOSCH"],["dewalt","DEWALT"],
-      ["milwaukee","Milwaukee"],["makita","Makita"],["knipex","KNIPEX"],
-      ["wera","WERA"],["beta","Beta"]
+      ["lux-tools","LUX-TOOLS"],["milwaukee","Milwaukee"],["gesipa","GESIPA"],
+      ["normex","Normex"],["modeco","MODECO"],["bahco","BAHCO"],
+      ["hazet","HAZET"],["knipex","KNIPEX"],["bosch","BOSCH"],
+      ["dewalt","DEWALT"],["makita","Makita"],["koken","KOKEN"],
+      ["wurth","WÜRTH"],["wera","WERA"],["beta","Beta"],["riss","RISS"]
     ];
     const match = known.find(function (entry) { return searchable.includes(entry[0]); });
     return match ? match[1] : "";
@@ -490,22 +494,27 @@
   }
   function drawBrandFilters() {
     if (!brandFilterList) return;
+    // Count only products actually visible in the public catalog.
+    const publicProducts = products.filter(function (item) { return item.hiddenFromStore !== true; });
     const counts = new Map();
-    products.forEach(function (item) {
-      const brand = productBrand(item);
-      if (!brand) return;
+    publicProducts.forEach(function (item) {
+      const brand = productBrand(item) || "بدون ماركة";
       const key = normalizeBrand(brand);
       if (!key) return;
       const entry = counts.get(key) || {label:brand, count:0};
       entry.count += 1;
       counts.set(key, entry);
     });
-    const brands = Array.from(counts.entries()).sort(function (a,b) { return a[1].label.localeCompare(b[1].label, "ar"); });
+    const brands = Array.from(counts.entries()).sort(function (a,b) {
+      if (a[0] === normalizeBrand("بدون ماركة")) return 1;
+      if (b[0] === normalizeBrand("بدون ماركة")) return -1;
+      return a[1].label.localeCompare(b[1].label, "ar");
+    });
     const selectedLabel = activeBrand ? displayBrand(activeBrand) : "كل الماركات";
     if (brandFilterSummary) brandFilterSummary.textContent = selectedLabel;
     const search = normalizeSearchText(brandFilterSearch ? brandFilterSearch.value : "");
     const visibleBrands = brands.filter(function (entry) { return !search || normalizeSearchText(entry[1].label).includes(search); });
-    brandFilterList.innerHTML = '<button class="brand-filter-option' + (!activeBrand ? ' active' : '') + '" type="button" data-brand-filter="الكل" aria-pressed="' + (!activeBrand) + '"><span>كل الماركات</span><span class="brand-filter-count">' + products.length + '</span></button>' +
+    brandFilterList.innerHTML = '<button class="brand-filter-option' + (!activeBrand ? ' active' : '') + '" type="button" data-brand-filter="الكل" aria-pressed="' + (!activeBrand) + '"><span>كل الماركات</span><span class="brand-filter-count">' + publicProducts.length + '</span></button>' +
       visibleBrands.map(function (entry) {
         const key = entry[0], label = entry[1].label, count = entry[1].count, selected = normalizeBrand(activeBrand) === key;
         const logo = brandLogoForFilter(label);
@@ -533,7 +542,7 @@
     const filtered = products.filter(function (item) {
       if (item.hiddenFromStore === true) return false;
       const categoryMatch = activeCategory === "الكل" || item.cat === activeCategory;
-      const brand = productBrand(item);
+      const brand = productBrand(item) || "بدون ماركة";
       const brandMatch = !activeBrand || normalizeBrand(brand) === normalizeBrand(activeBrand);
       let searchable = productSearchCache.get(item);
       if (searchable === undefined) {
