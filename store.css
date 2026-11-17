@@ -5164,3 +5164,20 @@ html body aside#cartDrawer.cart-drawer>.cart-scroll-area>.payment-followup{
 #cartDrawer .cart-line-total{color:#a71924!important;font-weight:900!important}
 #cartDrawer .quantity{margin-top:5px!important}
 @media(max-width:600px){#cartDrawer .cart-product-thumb{width:54px!important;height:54px!important;flex-basis:54px!important}#cartDrawer .cart-row{padding:9px!important}}
+
+/* Three-step checkout flow: review -> delivery details -> WhatsApp */
+.order-progress{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;padding:12px 2px 14px;border-bottom:1px solid #e5e7eb;margin-bottom:12px}
+.order-progress span{display:flex;align-items:center;justify-content:center;gap:5px;text-align:center;color:#727983;font-size:11px;font-weight:800;line-height:1.5}
+.order-progress span b{display:inline-grid;place-items:center;width:24px;height:24px;flex:0 0 24px;border-radius:50%;background:#e9edf1;color:#606873;font-size:12px}
+.order-progress span.is-active{color:#b80f1b}
+.order-progress span.is-active b,.order-progress span.is-complete b{background:#c8101e;color:#fff}
+.checkout-step[hidden],.cart-sticky-footer[hidden]{display:none!important}
+.checkout-hint{margin:10px 0;color:#68717c;font-size:12px;line-height:1.8}
+.checkout-step-button{width:100%;margin:12px 0;padding:13px;font-weight:900}
+.checkout-back-button{border:1px solid #d5d9de;background:#fff;color:#444;border-radius:9px;padding:10px 14px;font:800 13px Cairo,Tahoma,sans-serif;width:100%;margin-top:10px}
+.checkout-whatsapp-step{text-align:center;padding:28px 12px}
+.checkout-whatsapp-step h3{font-size:21px;margin:12px 0 8px}
+.checkout-whatsapp-step p{line-height:1.9}
+.whatsapp-ready-icon{display:grid;place-items:center;width:58px;height:58px;border-radius:50%;background:#e9f8ef;color:#168447;font-size:30px;font-weight:1000;margin:0 auto}
+.checkout-whatsapp-step .payment-proof{display:block;margin:18px 0;padding:14px;background:#168447;color:#fff;border-radius:10px;text-decoration:none;font-weight:900}
+@media(max-width:420px){.order-progress{gap:2px}.order-progress span{font-size:10px;gap:3px}.order-progress span b{width:21px;height:21px;flex-basis:21px}}
