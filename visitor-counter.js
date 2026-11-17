@@ -21,31 +21,32 @@ import {
     const auth = getAuth(app);
     const db = getFirestore(app);
     const ADMIN_EMAILS = new Set(["elgoharemahmoud@gmail.com", "ahmedelgohare90@gmail.com"]);
-    // Wait for Firebase to restore the signed-in session before counting this browser.
-    await new Promise(resolve => {
+    // Restore the session first. Admin visits are excluded from counting,
+    // but admins should still be able to SEE the public totals.
+    const isAdmin = await new Promise(resolve => {
       const unsubscribe = onAuthStateChanged(auth, user => {
         unsubscribe();
-        if (user && user.emailVerified === true && ADMIN_EMAILS.has(String(user.email || "").toLowerCase())) {
-          totalNode.textContent = "—";
-          todayNode.textContent = "—";
-          resolve(false);
-        } else resolve(true);
-      }, () => resolve(true));
-    }).then(allowed => { if (!allowed) throw new Error("ADMIN_SESSION_EXCLUDED"); });
-    let visitorId = localStorage.getItem("aldawly_visitor_id");
-    if (!visitorId) {
-      visitorId = (crypto.randomUUID ? crypto.randomUUID() : "v-" + Math.random().toString(36).slice(2) + Date.now().toString(36));
-      localStorage.setItem("aldawly_visitor_id", visitorId);
-    }
+        resolve(!!(user && user.emailVerified === true &&
+          ADMIN_EMAILS.has(String(user.email || "").toLowerCase())));
+      }, () => resolve(false));
+    });
 
-    const visitRef = doc(db, "siteVisits", visitorId + "_" + day);
-    const existing = await getDoc(visitRef);
-    if (!existing.exists()) {
-      await setDoc(visitRef, {
-        visitorId,
-        day,
-        createdAt: serverTimestamp()
-      });
+    if (!isAdmin) {
+      let visitorId = localStorage.getItem("aldawly_visitor_id");
+      if (!visitorId) {
+        visitorId = (crypto.randomUUID ? crypto.randomUUID() : "v-" + Math.random().toString(36).slice(2) + Date.now().toString(36));
+        localStorage.setItem("aldawly_visitor_id", visitorId);
+      }
+
+      const visitRef = doc(db, "siteVisits", visitorId + "_" + day);
+      const existing = await getDoc(visitRef);
+      if (!existing.exists()) {
+        await setDoc(visitRef, {
+          visitorId,
+          day,
+          createdAt: serverTimestamp()
+        });
+      }
     }
 
     const visits = collection(db, "siteVisits");
