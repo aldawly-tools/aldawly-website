@@ -1354,14 +1354,10 @@
           title:"أوردر " + order.number,
           text:shareText
         });
-        cart = [];
-        pendingOrder = null;
-        renderCart();
-        checkout.textContent = "تجهيز الطلب وفتحه على واتساب";
-        checkout.dataset.orderPrepared = "false";
-        const followup = document.getElementById("paymentFollowup");
-        if (followup) followup.hidden = true;
-        alert("تم تنزيل نسخة من الفاتورة على جهازك. اختر واتساب ثم اختر المسؤول المطلوب واضغط إرسال لإرفاق الفاتورة والطلب.");
+        // Closing the native share sheet does not prove that WhatsApp actually sent
+        // the message. Keep the cart and the same order draft so an interrupted share
+        // cannot silently discard the customer's order or generate a new order number.
+        alert("تم تجهيز ومشاركة الفاتورة. تأكد من الضغط على إرسال داخل واتساب؛ السلة ورقم الطلب محفوظان حتى لا تضيع البيانات إذا لم يكتمل الإرسال.");
       } else {
         const opened = window.open(order.url, "_blank");
         if (opened) {
