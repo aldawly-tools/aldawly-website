@@ -1296,6 +1296,18 @@
     try {
       const pdfBlob = await createOrderA4Pdf(order);
       const pdfFile = new File([pdfBlob], "Order-" + order.number + ".pdf", {type:"application/pdf"});
+
+      // Save a local copy on mobile and desktop before sharing the same PDF.
+      const fileUrl = URL.createObjectURL(pdfBlob);
+      const downloadLink = document.createElement("a");
+      downloadLink.href = fileUrl;
+      downloadLink.download = pdfFile.name;
+      downloadLink.style.display = "none";
+      document.body.appendChild(downloadLink);
+      downloadLink.click();
+      downloadLink.remove();
+      window.setTimeout(function(){ URL.revokeObjectURL(fileUrl); }, 60000);
+
       const shareText = order.message + "\n\n📎 مرفق فاتورة الطلب بصيغة PDF A4.";
 
       if (navigator.share && navigator.canShare && navigator.canShare({files:[pdfFile]})) {
@@ -1311,20 +1323,12 @@
         checkout.dataset.orderPrepared = "false";
         const followup = document.getElementById("paymentFollowup");
         if (followup) followup.hidden = true;
-        alert("تم تجهيز الفاتورة ومشاركتها. اختر واتساب ثم اختر المسؤول المطلوب واضغط إرسال.");
+        alert("تم تنزيل نسخة من الفاتورة على جهازك. اختر واتساب ثم اختر المسؤول المطلوب واضغط إرسال لإرفاق الفاتورة والطلب.");
       } else {
-        const fileUrl = URL.createObjectURL(pdfBlob);
-        const downloadLink = document.createElement("a");
-        downloadLink.href = fileUrl;
-        downloadLink.download = pdfFile.name;
-        document.body.appendChild(downloadLink);
-        downloadLink.click();
-        downloadLink.remove();
-        setTimeout(function(){ URL.revokeObjectURL(fileUrl); }, 60000);
         const opened = window.open(order.url, "_blank");
         if (opened) {
           try { opened.opener = null; } catch (error) {}
-          alert("تم تنزيل فاتورة PDF وفتح رسالة واتساب. أرفق ملف Order-" + order.number + ".pdf من علامة المشبك ثم اضغط إرسال.");
+          alert("تم تنزيل الفاتورة وفتح واتساب برسالة الطلب. أرفق ملف Order-" + order.number + ".pdf من علامة المشبك ثم اضغط إرسال.");
         } else {
           alert("تم تنزيل فاتورة PDF. افتح واتساب من زر ملخص الطلب وأرفق الملف يدويًا.");
         }
