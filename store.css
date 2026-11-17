@@ -5978,3 +5978,8 @@ button[data-add]:not(:disabled) span:not(.add-cart-icon),
   .footer a{overflow-wrap:anywhere}
   .site-visitor-counter{margin-bottom:0!important}
 }
+
+/* Final mobile dock positions: separate category control from assistant launcher. */
+@media(max-width:700px){
+  .mobile-menu-trigger{bottom:calc(14px + env(safe-area-inset-bottom))!important;right:14px!important}
+}
