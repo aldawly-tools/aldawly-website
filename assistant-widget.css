@@ -1,5 +1,11 @@
-#dawlyBotLauncher{position:fixed;left:16px;bottom:22px;z-index:10050;display:flex;align-items:center;gap:9px;padding:9px 15px 9px 10px;border:2px solid #fff;border-radius:999px;background:linear-gradient(135deg,#d71920,#a90812);color:#fff;font:900 14px/1.2 inherit;box-shadow:0 7px 24px #0004;cursor:pointer}
-.dawly-bot-face{display:grid;place-items:center;width:39px;height:39px;border-radius:50%;background:#fff;font-size:25px}
+#dawlyBotLauncher{position:fixed;left:18px;bottom:22px;z-index:10050;display:flex;align-items:center;justify-content:center;gap:9px;min-width:60px;height:60px;padding:0 17px 0 0;border:2px solid #fff;border-radius:999px;background:linear-gradient(145deg,#ed252d,#a90812);color:#fff;font:900 14px/1.2 Cairo,sans-serif;box-shadow:0 8px 26px #0004,0 0 0 5px #d7192018;cursor:pointer;transition:transform .2s ease,box-shadow .2s ease}
+#dawlyBotLauncher:hover{transform:translateY(-3px);box-shadow:0 12px 30px #0005,0 0 0 7px #d7192020}
+.dawly-bot-face{position:relative;display:grid;place-items:center;flex:0 0 52px;width:52px;height:52px;border-radius:50%;background:#fff;color:#c8101e}
+.dawly-bot-face svg{width:29px;height:29px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.dawly-bot-face i{position:absolute;right:0;bottom:1px;width:12px;height:12px;border:2px solid #fff;border-radius:50%;background:#20b768}
+.dawly-bot-label{white-space:nowrap}
+.dawly-bot-hint{position:absolute;right:0;bottom:calc(100% + 9px);padding:7px 11px;border:1px solid #eee;border-radius:10px;background:#fff;color:#252b32;font:800 11px Cairo,sans-serif;white-space:nowrap;box-shadow:0 4px 15px #0002;direction:rtl}
+.dawly-bot-hint:after{content:"";position:absolute;right:19px;top:100%;border:6px solid transparent;border-top-color:#fff}
 #dawlyBotPanel{position:fixed;left:14px;bottom:84px;z-index:10051;width:min(390px,calc(100vw - 28px));height:min(590px,calc(100dvh - 115px));display:flex;flex-direction:column;overflow:hidden;border:1px solid #d9dfe5;border-radius:20px;background:#f6f7f9;color:#202832;box-shadow:0 18px 55px #0004;direction:rtl}
 #dawlyBotPanel[hidden]{display:none!important}
 .dawly-bot-head{display:flex;align-items:center;gap:10px;padding:13px 15px;background:linear-gradient(120deg,#171c22,#343b44);color:#fff;border-bottom:3px solid #d71920}
@@ -20,7 +26,7 @@
 .dawly-bot-form input{flex:1;min-width:0;border:1px solid #d8dde3;border-radius:11px;padding:11px;font:inherit;font-size:13px;outline:none}
 .dawly-bot-form input:focus{border-color:#d71920}.dawly-bot-form button{border:0;border-radius:10px;padding:0 16px;background:#d71920;color:#fff;font-weight:900}
 .dawly-bot-wa{padding:9px;text-align:center;background:#fff;color:#16834b;font-size:11px;font-weight:900;text-decoration:none;border-top:1px solid #edf0f2}
-@media(max-width:480px){#dawlyBotLauncher{left:10px;bottom:15px;padding:7px 12px 7px 8px;font-size:12px}#dawlyBotPanel{left:8px;bottom:73px;width:calc(100vw - 16px);height:min(570px,calc(100dvh - 95px));border-radius:17px}}
+@media(max-width:480px){#dawlyBotLauncher{left:10px;bottom:15px;min-width:56px;height:56px;padding:0 13px 0 0;gap:7px;font-size:11px}.dawly-bot-face{flex-basis:48px;width:48px;height:48px}.dawly-bot-face svg{width:26px;height:26px}#dawlyBotPanel{left:8px;bottom:73px;width:calc(100vw - 16px);height:min(570px,calc(100dvh - 95px));border-radius:17px}}
 
 /* Keep the assistant above the bottom category control on small screens. */
 @media(max-width:700px){
