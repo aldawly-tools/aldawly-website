@@ -1081,6 +1081,66 @@
       canvas.toBlob(function(blob) { if (blob) resolve(blob); else reject(new Error("تعذر تجهيز صورة المنتجات")); }, "image/png");
     });
   }
+  async function loadJsPdfLibrary() {
+    if (window.jspdf && window.jspdf.jsPDF) return window.jspdf.jsPDF;
+    if (window.__dawlyJsPdfLoading) return window.__dawlyJsPdfLoading;
+    window.__dawlyJsPdfLoading = new Promise(function(resolve, reject) {
+      const script = document.createElement("script");
+      script.src = "https://cdn.jsdelivr.net/npm/jspdf@2.5.2/dist/jspdf.umd.min.js";
+      script.async = true;
+      script.onload = function() {
+        if (window.jspdf && window.jspdf.jsPDF) resolve(window.jspdf.jsPDF);
+        else reject(new Error("تعذر تحميل أداة إنشاء PDF"));
+      };
+      script.onerror = function() { reject(new Error("تعذر تحميل أداة إنشاء PDF")); };
+      document.head.appendChild(script);
+    });
+    return window.__dawlyJsPdfLoading;
+  }
+
+  async function createOrderA4Pdf(order) {
+    const imageBlob = await createWhatsAppOrderImage(
+      order.number, order.customerName, order.customerPhone,
+      order.customerAddress, order.orderItems, null
+    );
+    const imageUrl = URL.createObjectURL(imageBlob);
+    try {
+      const image = await new Promise(function(resolve, reject) {
+        const img = new Image();
+        img.onload = function() { resolve(img); };
+        img.onerror = reject;
+        img.src = imageUrl;
+      });
+      const JsPDF = await loadJsPdfLibrary();
+      const pdf = new JsPDF({orientation:"portrait", unit:"mm", format:"a4", compress:true});
+      const pageWidth = 210, pageHeight = 297;
+      const sourcePageHeight = Math.floor(image.width * pageHeight / pageWidth);
+      const pageCount = Math.ceil(image.height / sourcePageHeight);
+      for (let page = 0; page < pageCount; page++) {
+        if (page > 0) pdf.addPage("a4", "portrait");
+        const sourceY = page * sourcePageHeight;
+        const sliceHeight = Math.min(sourcePageHeight, image.height - sourceY);
+        const pageCanvas = document.createElement("canvas");
+        pageCanvas.width = image.width;
+        pageCanvas.height = sliceHeight;
+        const pageContext = pageCanvas.getContext("2d");
+        pageContext.fillStyle = "#ffffff";
+        pageContext.fillRect(0, 0, pageCanvas.width, pageCanvas.height);
+        pageContext.drawImage(image, 0, sourceY, image.width, sliceHeight, 0, 0, image.width, sliceHeight);
+        const pageImage = pageCanvas.toDataURL("image/jpeg", 0.88);
+        pdf.addImage(pageImage, "JPEG", 0, 0, pageWidth, pageHeight, undefined, "FAST");
+      }
+      pdf.setProperties({
+        title: "أوردر " + order.number + " - الدولي للعدد الأصلية والمستوردة",
+        subject: "فاتورة أوردر عميل",
+        author: "الدولي للعدد الأصلية والمستوردة"
+      });
+      return pdf.output("blob");
+    } finally {
+      URL.revokeObjectURL(imageUrl);
+    }
+  }
+
   // One stable order draft per checkout attempt. Reopening WhatsApp reuses the same ID.
   let pendingOrder = null;
   function createUniqueOrderNumber() {
@@ -1176,11 +1236,34 @@
       "برجاء تأكيد توفر المنتجات والسعر النهائي."
     ].join("\n");
 
+    const orderItems = cart.map(function(line) {
+      const item = products.find(function(entry) {
+        return String(entry.id) === String(line.id) ||
+          (entry._docId !== undefined && String(entry._docId) === String(line.id));
+      });
+      if (!item) return null;
+      const parsedPrice = parsePrice(item.price);
+      return {
+        name: cleanOrderProductName(item.name),
+        qty: Number(line.qty || 0),
+        unitPrice: parsedPrice === null ? "عند الاستفسار" : money(parsedPrice),
+        unitPriceAmount: parsedPrice,
+        image: item.image || item.imageUrl || item.photo || "",
+        imageId: item.imageId || "",
+        code: item.sku || item.code || item.model || item.partNumber || "",
+        brand: productBrand(item) || ""
+      };
+    }).filter(Boolean);
+
     return {
       number:orderNumber,
       message:message,
       url:"https://wa.me/" + selectedAdmin + "?text=" + encodeURIComponent(message),
-      customerName:customerName
+      customerName:customerName,
+      customerPhone:customerPhone,
+      customerAddress:customerAddress,
+      selectedAdmin:selectedAdmin,
+      orderItems:orderItems
     };
   }
 
@@ -1197,37 +1280,66 @@
     });
   });
 
-  checkout.addEventListener("click", function() {
+  checkout.addEventListener("click", async function() {
     if (checkout.disabled) return;
-
-    // Reopen the exact same prepared order on repeat clicks; never issue a new ID.
     if (!pendingOrder) {
       pendingOrder = buildOrderDraft();
       if (!pendingOrder) return;
       showPaymentFollowup(pendingOrder.number, true, pendingOrder.url);
-      checkout.textContent = "إعادة فتح رسالة نفس الطلب عبر واتساب";
       checkout.dataset.orderPrepared = "true";
-      checkout.disabled = false;
     }
 
-    const orderNumber = pendingOrder.number;
-    const opened = window.open(pendingOrder.url, "_blank");
-    if (opened) {
-      try { opened.opener = null; } catch (error) {}
-      // Clear the cart as soon as WhatsApp opens; the browser cannot detect
-      // whether the customer pressed Send inside the WhatsApp app.
-      cart = [];
-      pendingOrder = null;
-      renderCart();
-      checkout.textContent = "تجهيز الطلب وفتحه على واتساب";
-      checkout.dataset.orderPrepared = "false";
-      const followup = document.getElementById("paymentFollowup");
-      if (followup) followup.hidden = true;
-      alert("تم فتح واتساب وتفريغ السلة. اضغط إرسال داخل واتساب لإتمام الطلب.");
-    } else {
-      alert("المتصفح منع فتح واتساب تلقائيًا. اضغط على زر فتح رسالة الطلب داخل ملخص الطلب، وستظل السلة كما هي حتى يفتح واتساب.");
-      const status = document.getElementById("paymentFollowupStatus");
-      if (status) status.textContent = "الطلب رقم " + orderNumber + " جاهز. افتح رسالة واتساب من الزر أدناه.";
+    const order = pendingOrder;
+    const originalLabel = checkout.textContent;
+    checkout.disabled = true;
+    checkout.textContent = "جاري تجهيز فاتورة A4...";
+    try {
+      const pdfBlob = await createOrderA4Pdf(order);
+      const pdfFile = new File([pdfBlob], "Order-" + order.number + ".pdf", {type:"application/pdf"});
+      const shareText = order.message + "\\n\\n📎 مرفق فاتورة الطلب بصيغة PDF A4.";
+
+      if (navigator.share && navigator.canShare && navigator.canShare({files:[pdfFile]})) {
+        await navigator.share({
+          files:[pdfFile],
+          title:"أوردر " + order.number,
+          text:shareText
+        });
+        cart = [];
+        pendingOrder = null;
+        renderCart();
+        checkout.textContent = "تجهيز الطلب وفتحه على واتساب";
+        checkout.dataset.orderPrepared = "false";
+        const followup = document.getElementById("paymentFollowup");
+        if (followup) followup.hidden = true;
+        alert("تم تجهيز الفاتورة ومشاركتها. اختر واتساب ثم اختر المسؤول المطلوب واضغط إرسال.");
+      } else {
+        const fileUrl = URL.createObjectURL(pdfBlob);
+        const downloadLink = document.createElement("a");
+        downloadLink.href = fileUrl;
+        downloadLink.download = pdfFile.name;
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+        downloadLink.remove();
+        setTimeout(function(){ URL.revokeObjectURL(fileUrl); }, 60000);
+        const opened = window.open(order.url, "_blank");
+        if (opened) {
+          try { opened.opener = null; } catch (error) {}
+          alert("تم تنزيل فاتورة PDF وفتح رسالة واتساب. أرفق ملف Order-" + order.number + ".pdf من علامة المشبك ثم اضغط إرسال.");
+        } else {
+          alert("تم تنزيل فاتورة PDF. افتح واتساب من زر ملخص الطلب وأرفق الملف يدويًا.");
+        }
+      }
+    } catch (error) {
+      if (error && error.name === "AbortError") {
+        alert("تم إلغاء المشاركة. السلة ما زالت محفوظة ولم يتم حذف الطلب.");
+      } else {
+        console.error("A4 order share failed:", error);
+        alert("تعذر تجهيز أو مشاركة فاتورة A4. السلة ما زالت محفوظة؛ حاول مرة أخرى.");
+      }
+    } finally {
+      checkout.disabled = false;
+      if (pendingOrder) checkout.textContent = "إعادة تجهيز ومشاركة فاتورة الطلب";
+      else checkout.textContent = originalLabel || "تجهيز الطلب وفتحه على واتساب";
     }
   });
 
