@@ -5354,3 +5354,55 @@ html body aside#cartDrawer.cart-drawer>.cart-scroll-area>.payment-followup{
  #productGrid .catalog-card .product-price.price-on-request{font-size:13px}
  #productGrid .catalog-card .home-shelf-add{min-height:46px;font-size:13px;padding:9px 7px}
 }
+
+
+/* Compact category browser: less vertical space, more room for products. */
+#categories.section{padding-top:24px!important;padding-bottom:22px!important}
+#categories .section-heading{margin-bottom:12px!important;align-items:end}
+#categories .section-title{font-size:clamp(20px,2.2vw,27px)!important;line-height:1.35}
+#categories .section-subtitle{font-size:12px!important;line-height:1.5;margin-top:4px!important}
+#categories .categories-grid{
+  grid-template-columns:repeat(5,minmax(0,1fr))!important;
+  gap:12px!important;
+  align-items:stretch;
+}
+#categories .category-tile{border-radius:13px!important;box-shadow:0 3px 12px #18212c0a!important}
+#categories .category-tile:hover,#categories .category-tile:focus-visible{transform:translateY(-2px)}
+#categories .category-photo{height:104px!important}
+#categories .category-photo-shade{background:linear-gradient(180deg,#10182000 30%,#10182055 100%)}
+#categories .category-icon{right:10px!important;bottom:9px!important;width:36px!important;height:36px!important;border-radius:10px!important}
+#categories .category-icon svg{width:21px!important;height:21px!important}
+#categories .category-copy{min-height:70px!important;padding:9px 11px 10px!important;gap:2px!important}
+#categories .category-copy strong{font-size:14px!important;line-height:1.4!important}
+#categories .category-copy small{font-size:10px!important;line-height:1.35!important}
+#categories .category-copy b{font-size:11px!important;margin-top:2px!important}
+@media(max-width:900px){
+ #categories .categories-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:10px!important}
+ #categories .category-photo{height:100px!important}
+}
+@media(max-width:600px){
+ #categories.section{padding-top:17px!important;padding-bottom:16px!important}
+ #categories .section-heading{margin-bottom:10px!important}
+ #categories .section-title{font-size:19px!important}
+ #categories .section-subtitle{font-size:11px!important}
+ #categories .categories-grid{
+   display:grid!important;
+   grid-auto-flow:column!important;
+   grid-auto-columns:minmax(155px,43%)!important;
+   grid-template-columns:none!important;
+   grid-template-rows:1fr!important;
+   gap:9px!important;
+   overflow-x:auto!important;
+   overflow-y:hidden!important;
+   padding:2px 2px 9px!important;
+   scroll-snap-type:x mandatory;
+   -webkit-overflow-scrolling:touch;
+   scrollbar-width:thin;
+ }
+ #categories .category-tile{scroll-snap-align:start}
+ #categories .category-photo{height:92px!important}
+ #categories .category-copy{min-height:65px!important;padding:8px 9px!important}
+ #categories .category-copy strong{font-size:13px!important}
+ #categories .category-copy small{font-size:9px!important}
+ #categories .category-copy b{font-size:10px!important}
+}
