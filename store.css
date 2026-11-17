@@ -5887,18 +5887,25 @@ html body aside#cartDrawer.cart-drawer>.cart-scroll-area>.payment-followup{
  #productGrid .catalog-card .home-shelf-add{animation:none!important}
 }
 
-/* Make every active Add to Cart button visibly stand out. */
-@keyframes dawlyAddToCartGlow{
-  0%,100%{box-shadow:0 4px 12px rgba(200,16,30,.24),0 0 0 1px rgba(200,16,30,.12);filter:brightness(1)}
-  50%{box-shadow:0 6px 24px rgba(200,16,30,.52),0 0 0 3px rgba(200,16,30,.16);filter:brightness(1.07)}
+/* Calm premium emphasis: the Add to Cart button stands out without distracting. */
+@keyframes dawlyAddToCartSoft{
+  0%,100%{box-shadow:0 3px 10px rgba(200,16,30,.13),0 0 0 1px rgba(200,16,30,.06)}
+  50%{box-shadow:0 4px 15px rgba(200,16,30,.24),0 0 0 2px rgba(200,16,30,.08)}
 }
 button[data-add]:not(:disabled),
 .home-shelf-add.product-add-cart-prominent:not(:disabled){
-  animation:dawlyAddToCartGlow 1.8s ease-in-out infinite!important;
-  border:1px solid rgba(255,255,255,.72)!important;
+  animation:dawlyAddToCartSoft 3.4s ease-in-out infinite!important;
+  border:1px solid rgba(255,255,255,.55)!important;
+  filter:none!important;
+  transition:box-shadow .25s ease,transform .2s ease!important;
 }
-button[data-add]:not(:disabled):active{
-  transform:scale(.97);
+button[data-add]:not(:disabled):hover,
+.home-shelf-add.product-add-cart-prominent:not(:disabled):hover{
+  box-shadow:0 5px 16px rgba(200,16,30,.22)!important;
+}
+button[data-add]:not(:disabled):active,
+.home-shelf-add.product-add-cart-prominent:not(:disabled):active{
+  transform:scale(.985);
 }
 @media(prefers-reduced-motion:reduce){
   button[data-add]:not(:disabled),.home-shelf-add.product-add-cart-prominent:not(:disabled){animation:none!important}
