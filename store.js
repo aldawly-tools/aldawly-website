@@ -640,32 +640,30 @@
     cart = [];
     pendingOrder = null;
     renderCart();
-    const followup = document.getElementById("paymentFollowup");
-    if (followup) followup.hidden = true;
     checkout.textContent = "تجهيز الطلب وفتحه على واتساب";
     checkout.dataset.orderPrepared = "false";
     const status = document.getElementById("paymentFollowupStatus");
-    if (status) status.textContent = "تم تأكيد إرسال الطلب وتفريغ السلة بنجاح.";
+    if (status) status.textContent = "تم تفريغ السلة بنجاح. شكراً لطلبك من الدولي.";
+    const confirmButton = document.getElementById("confirmOrderSent");
+    if (confirmButton) confirmButton.hidden = true;
+    const orderLink = document.getElementById("orderWhatsappLink");
+    if (orderLink) orderLink.hidden = true;
   }
 
   const confirmOrderSentButton = document.getElementById("confirmOrderSent");
   if (confirmOrderSentButton) {
     confirmOrderSentButton.addEventListener("click", function() {
-      if (!cart.length) return;
+      if (!pendingOrder) {
+        alert("لا يوجد طلب مجهز لتأكيد إرساله.");
+        return;
+      }
       if (!window.confirm("هل أرسلت الطلب بالفعل عبر واتساب؟ سيتم تفريغ السلة بالكامل.")) return;
       clearCartAfterWhatsApp();
       alert("تم تفريغ السلة بنجاح. يمكنك متابعة التسوق.");
     });
   }
 
-  // تفريغ السلة عند ضغط العميل على رابط إرسال تفاصيل الطلب إلى واتساب.
-  // لا نفرغها بمجرد إنشاء الطلب في Firestore؛ ننتظر فعل العميل بفتح واتساب.
-  document.addEventListener("click", function (event) {
-    const whatsappLink = event.target.closest("#orderWhatsappLink");
-    if (whatsappLink && whatsappLink.href && !whatsappLink.hidden) {
-      clearCartAfterWhatsApp();
-    }
-  });
+  // لا نفرغ السلة عند فتح واتساب؛ التفريغ يتم فقط بعد تأكيد العميل الإرسال.
 
   window.addEventListener("dawly-catalog-ready", function () {
     observeCloudImages();
