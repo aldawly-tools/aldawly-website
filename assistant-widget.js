@@ -3,7 +3,7 @@
 if(document.getElementById("dawlyBotLauncher")) return;
 var fullPage=document.body.dataset.assistantPage==="true";
 var products=Array.isArray(window.DAWLY_PRODUCTS)?window.DAWLY_PRODUCTS:[];
-var opened=false, history=[];
+var opened=false, history=[], chatTurns=[], aiSetupNoticeShown=false, aiBusy=false;
 function norm(v){return String(v==null?"":v).toLocaleLowerCase("ar").normalize("NFD").replace(/[\u064B-\u065F\u0670\u0640]/g,"").replace(/[أإآٱ]/g,"ا").replace(/ى/g,"ي").replace(/ة/g,"ه").replace(/[٠-٩]/g,function(d){return String("٠١٢٣٤٥٦٧٨٩".indexOf(d));}).replace(/[۰-۹]/g,function(d){return String("۰۱۲۳۴۵۶۷۸۹".indexOf(d));}).replace(/[^\p{L}\p{N}.]+/gu," ").trim().replace(/\s+/g," ");}
 function esc(v){return String(v==null?"":v).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];});}
 function ptext(p){return norm([p.name,p.brand,p.brandName,p.manufacturer,p.cat,p.category,p.desc,p.description,p.specs,p.sku,p.code,p.model,p.partNumber].join(" "));}
@@ -25,7 +25,7 @@ function card(p){var name=esc(p.name||"منتج من الدولي"),url=p.image|
 function loadImages(root){if(typeof window.DAWLY_LOAD_PRODUCT_IMAGE!=="function")return;root.querySelectorAll("img[data-bot-image]").forEach(function(im){if(im.dataset.loading)return;im.dataset.loading="1";window.DAWLY_LOAD_PRODUCT_IMAGE(im.dataset.botImage).then(function(u){if(u&&im.isConnected)im.src=u;else if(im.isConnected)im.replaceWith(document.createTextNode("🔧"));}).catch(function(){if(im.isConnected)im.replaceWith(document.createTextNode("🔧"));});});}
 function msg(t,who){var box=document.getElementById("dawlyBotMessages"),el=document.createElement("div");el.className="dawly-bot-msg "+who;el.textContent=t;box.appendChild(el);box.scrollTop=box.scrollHeight;}
 function show(list){if(!list.length)return;var box=document.createElement("div");box.className="dawly-bot-results";box.innerHTML=list.map(card).join("");document.getElementById("dawlyBotMessages").appendChild(box);loadImages(box);}
-function reply(q){var s=norm(q);if(!products.length){msg("الكتالوج لسه بيحمّل. جرّب بعد لحظات.","bot");return;}
+function replyFallback(q){var s=norm(q);if(!products.length){msg("الكتالوج لسه بيحمّل. جرّب بعد لحظات.","bot");return;}
 if(/^(السلام عليكم|سلام|اهلا|اهلين|مرحبا|صباح الخير|مساء الخير)$/.test(s)){msg("وعليكم السلام 👋 أهلاً بيك في الدولي. بتدور على أداة معينة ولا محتاج ترشيح لاستخدام محدد؟","bot");return;}
 var wantsPrice=/سعر|بكام|كام|تكلفه|تكلفة/.test(s),wantsAlt=/بديل|بدائل|شبيه|بدلا/.test(s),wantsSize=/مقاس|مقاسات|قطر|طول|عرض|mm|ملم|بوصه|انش|t\d+/.test(s);
 var list=find(q);
@@ -38,7 +38,67 @@ show(list);
 if(wantsSize&&!String(list[0].specs||"").trim())msg("المقاس مش مسجل بوضوح في بيانات المنتج. ابعت رقم الموديل أو صورة الملصق عشان نتحقق.","bot");
 history.push({q:q,ids:list.map(function(p){return String(p.id);})});history=history.slice(-5);
 }
-function send(q){q=String(q||"").trim();if(!q)return;msg(q,"user");reply(q);var i=document.getElementById("dawlyBotInput");i.value="";}
+function compactProduct(p){
+ return {
+  id:String(p.id==null?"":p.id).slice(0,80),
+  name:String(p.name||"").slice(0,180),
+  brand:String(p.brand||p.brandName||p.manufacturer||"").slice(0,80),
+  category:String(p.category||p.cat||"").slice(0,100),
+  description:String(p.description||p.desc||"").slice(0,300),
+  specs:(typeof p.specs==="string"?p.specs:JSON.stringify(p.specs||"")).slice(0,650),
+  price:p.price==null?"":String(p.price).slice(0,80),
+  stock:p.stock==null?null:String(p.stock).slice(0,40)
+ };
+}
+async function reply(q){
+ if(aiBusy){msg("ثواني بس، بجهزلك الرد السابق الأول 👌","bot");return;}
+ aiBusy=true;
+ var messages=document.getElementById("dawlyBotMessages");
+ var typing=document.createElement("div");
+ typing.className="dawly-bot-msg bot dawly-ai-typing";
+ typing.textContent="مساعد الدولي بيفكر في سؤالك…";
+ messages.appendChild(typing);messages.scrollTop=messages.scrollHeight;
+ var recentUserText=chatTurns.filter(function(t){return t.role==="user";}).slice(-3).map(function(t){return t.content;}).join(" ");
+ var candidates=find(recentUserText||q).slice(0,15).map(compactProduct);
+ try{
+  var response=await fetch("/api/assistant",{
+   method:"POST",
+   headers:{"content-type":"application/json"},
+   cache:"no-store",
+   body:JSON.stringify({
+    message:q,
+    history:chatTurns.slice(-8),
+    catalog:candidates
+   })
+  });
+  var data=await response.json().catch(function(){return {};});
+  typing.remove();
+  if(!response.ok||!data.reply){
+   if(!aiSetupNoticeShown){
+    aiSetupNoticeShown=true;
+    msg(response.status===503&&data.error==="ai_not_configured"
+      ?"المساعد الذكي لسه محتاج تفعيل مفتاح الربط على الخادم. هساعدك حالياً بالبحث الموجود في الكتالوج."
+      :"تعذر الوصول للمساعد الذكي حالياً، هساعدك بالبحث الموجود في الكتالوج.","bot");
+   }
+   replyFallback(q);
+   return;
+  }
+  msg(data.reply,"bot");
+  chatTurns.push({role:"assistant",content:String(data.reply).slice(0,1800)});
+  chatTurns=chatTurns.slice(-8);
+ }catch(error){
+  typing.remove();
+  if(!aiSetupNoticeShown){aiSetupNoticeShown=true;msg("الاتصال بالمساعد الذكي غير متاح حالياً. هساعدك بالبحث الموجود في الكتالوج.","bot");}
+  replyFallback(q);
+ }finally{aiBusy=false;}
+}
+function send(q){
+ q=String(q||"").trim();if(!q)return;
+ msg(q,"user");
+ chatTurns.push({role:"user",content:q});chatTurns=chatTurns.slice(-8);
+ reply(q);
+ var i=document.getElementById("dawlyBotInput");i.value="";
+}
 var launcher=document.createElement("button");launcher.id="dawlyBotLauncher";launcher.type="button";launcher.setAttribute("aria-label","افتح مساعد الدولي");launcher.innerHTML='<span class="dawly-bot-face" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M3 13v-2a9 9 0 0 1 18 0v2"/><rect x="2.5" y="11" width="4.5" height="8" rx="2"/><rect x="17" y="11" width="4.5" height="8" rx="2"/><path d="M19 19a5 5 0 0 1-5 3h-2"/></svg></span><span class="dawly-bot-prompt">تحدث مع مساعد الدولي</span>';
 var panel=document.createElement("section");panel.id="dawlyBotPanel";panel.hidden=true;panel.setAttribute("aria-label","مساعد الدولي");panel.innerHTML='<header class="dawly-bot-head"><div class="dawly-bot-avatar">🤖</div><div><strong>مساعد الدولي</strong><small>مساعد فني للعدد والمنتجات</small></div><button type="button" id="dawlyBotClose" aria-label="إغلاق">×</button></header><div class="dawly-bot-messages" id="dawlyBotMessages" aria-live="polite"><div class="dawly-bot-chips" id="dawlyBotChips" hidden><button type="button">طقم مفكات WÜRTH</button><button type="button">بنط HSS للمعادن</button><button type="button">أدوات النجارة</button></div></div><form class="dawly-bot-form" id="dawlyBotForm"><input id="dawlyBotInput" autocomplete="off" placeholder="اسم الأداة أو الاستخدام أو المقاس..." aria-label="اكتب سؤالك"><button type="submit">إرسال</button></form><a class="dawly-bot-wa" href="https://wa.me/201024787222" target="_blank" rel="noopener">محتاج تأكيد فني؟ كلمنا واتساب</a>';
 if(!fullPage) document.body.appendChild(launcher);
