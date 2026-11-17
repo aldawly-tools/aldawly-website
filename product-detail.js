@@ -441,7 +441,7 @@
       alert("تعذر حفظ السلة على هذا الجهاز. تأكد من إعدادات المتصفح وحاول مرة أخرى.");
       return;
     }
-    window.location.href = directOrder ? "products.html?cart=1&direct=1" : "products.html?cart=1";
+    window.location.href = directOrder ? "products.html?cart=1&direct=1" : "products.html";
   });
 
   window.addEventListener("dawly-products-updated", function (event) {
