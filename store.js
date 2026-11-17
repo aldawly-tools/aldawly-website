@@ -338,17 +338,20 @@
     }
   }
   function setCheckoutStep(step) {
-    const details = document.getElementById("checkoutDetailsStep");
-    const review = document.getElementById("cartReviewStep");
+    const steps = {
+      review: document.getElementById("cartReviewStep"),
+      details: document.getElementById("checkoutDetailsStep"),
+      whatsapp: document.getElementById("checkoutWhatsappStep")
+    };
+    Object.keys(steps).forEach(function(key) { if (steps[key]) steps[key].hidden = key !== step; });
     const progress = cartDrawer && cartDrawer.querySelector(".order-progress");
-    const isDetails = step === "details";
-    if (details) details.hidden = !isDetails;
-    if (review) review.hidden = isDetails;
-    if (progress) {
-      const steps = progress.querySelectorAll("span");
-      if (steps[0]) steps[0].classList.toggle("is-active", !isDetails);
-      if (steps[1]) steps[1].classList.toggle("is-active", isDetails);
-    }
+    if (progress) progress.querySelectorAll("span").forEach(function(node, index) {
+      node.classList.toggle("is-active", index === ({review:0,details:1,whatsapp:2}[step]));
+      node.classList.toggle("is-complete", index < ({review:0,details:1,whatsapp:2}[step]));
+    });
+    const totalBox = document.querySelector(".cart-sticky-footer");
+    if (totalBox) totalBox.hidden = step === "whatsapp";
+    if (checkout) checkout.hidden = step !== "details";
     const scrollArea = cartDrawer && cartDrawer.querySelector(".cart-scroll-area");
     if (scrollArea) scrollArea.scrollTop = 0;
   }
@@ -1318,67 +1321,23 @@
     });
   });
 
-  checkout.addEventListener("click", async function() {
-    if (checkout.disabled) return;
-    if (!pendingOrder) {
-      pendingOrder = buildOrderDraft();
-      if (!pendingOrder) return;
-      showPaymentFollowup(pendingOrder.number, true, pendingOrder.url);
-      checkout.dataset.orderPrepared = "true";
-    }
-
+  checkout.addEventListener("click", function() {
+    if (checkout.disabled || !cart.length) return;
+    pendingOrder = buildOrderDraft();
+    if (!pendingOrder) return;
     const order = pendingOrder;
-    const originalLabel = checkout.textContent;
-    checkout.disabled = true;
-    checkout.textContent = "جاري تجهيز فاتورة A4...";
-    try {
-      const pdfBlob = await createOrderA4Pdf(order);
-      const pdfFile = new File([pdfBlob], "Order-" + order.number + ".pdf", {type:"application/pdf"});
-
-      // Save a local copy on mobile and desktop before sharing the same PDF.
-      const fileUrl = URL.createObjectURL(pdfBlob);
-      const downloadLink = document.createElement("a");
-      downloadLink.href = fileUrl;
-      downloadLink.download = pdfFile.name;
-      downloadLink.style.display = "none";
-      document.body.appendChild(downloadLink);
-      downloadLink.click();
-      downloadLink.remove();
-      window.setTimeout(function(){ URL.revokeObjectURL(fileUrl); }, 60000);
-
-      const shareText = order.message + "\n\n📎 مرفق فاتورة الطلب بصيغة PDF A4.";
-
-      if (navigator.share && navigator.canShare && navigator.canShare({files:[pdfFile]})) {
-        await navigator.share({
-          files:[pdfFile],
-          title:"أوردر " + order.number,
-          text:shareText
-        });
-        // Closing the native share sheet does not prove that WhatsApp actually sent
-        // the message. Keep the cart and the same order draft so an interrupted share
-        // cannot silently discard the customer's order or generate a new order number.
-        alert("تم تجهيز ومشاركة الفاتورة. تأكد من الضغط على إرسال داخل واتساب؛ السلة ورقم الطلب محفوظان حتى لا تضيع البيانات إذا لم يكتمل الإرسال.");
-      } else {
-        const opened = window.open(order.url, "_blank");
-        if (opened) {
-          try { opened.opener = null; } catch (error) {}
-          alert("تم تنزيل الفاتورة وفتح واتساب برسالة الطلب. أرفق ملف Order-" + order.number + ".pdf من علامة المشبك ثم اضغط إرسال.");
-        } else {
-          alert("تم تنزيل فاتورة PDF. افتح واتساب من زر ملخص الطلب وأرفق الملف يدويًا.");
-        }
-      }
-    } catch (error) {
-      if (error && error.name === "AbortError") {
-        alert("تم إلغاء المشاركة. السلة ما زالت محفوظة ولم يتم حذف الطلب.");
-      } else {
-        console.error("A4 order share failed:", error);
-        alert("تعذر تجهيز أو مشاركة فاتورة A4. السلة ما زالت محفوظة؛ حاول مرة أخرى.");
-      }
-    } finally {
-      checkout.disabled = false;
-      if (pendingOrder) checkout.textContent = "إعادة تجهيز ومشاركة فاتورة الطلب";
-      else checkout.textContent = originalLabel || "تجهيز الطلب وفتحه على واتساب";
+    const link = document.getElementById("orderWhatsappLink");
+    const summary = document.getElementById("checkoutWhatsappSummary");
+    if (link) {
+      link.href = order.url;
+      link.textContent = "فتح واتساب وإرسال الطلب رقم " + order.number;
     }
+    if (summary) summary.textContent = "تم تجهيز الطلب رقم " + order.number + " ويشمل " + order.orderItems.length + " منتجات. ستجد رسالة مفصلة تحتوي على بياناتك والكميات والأسعار وروابط المنتجات.";
+    setCheckoutStep("whatsapp");
+    // Open WhatsApp directly from the customer's click; the customer still confirms Send inside WhatsApp.
+    const whatsappWindow = window.open(order.url, "_blank");
+    if (whatsappWindow) { try { whatsappWindow.opener = null; } catch (error) {} }
+    else if (link) link.focus();
   });
 
   // Keep the active checkout field visible when the mobile keyboard opens.
