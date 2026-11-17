@@ -77,3 +77,32 @@
   #dawlyBotLauncher{left:10px!important;bottom:calc(198px + env(safe-area-inset-bottom))!important}
   #dawlyBotPanel{bottom:calc(265px + env(safe-area-inset-bottom))!important}
 }
+
+
+/* Final compact launcher override: icon-only control on every screen size. */
+#dawlyBotLauncher{
+  width:60px!important;min-width:60px!important;max-width:60px!important;
+  height:60px!important;min-height:60px!important;max-height:60px!important;
+  padding:2px!important;gap:0!important;border-radius:50%!important;
+  justify-content:center!important;box-sizing:border-box!important;
+}
+#dawlyBotLauncher .dawly-bot-label{display:none!important}
+#dawlyBotLauncher .dawly-bot-face{
+  width:52px!important;height:52px!important;flex:0 0 52px!important;
+}
+@media(max-width:700px){
+  #dawlyBotLauncher{
+    left:14px!important;right:auto!important;
+    bottom:calc(204px + env(safe-area-inset-bottom))!important;
+  }
+  #dawlyBotPanel{
+    left:10px!important;right:10px!important;
+    bottom:calc(276px + env(safe-area-inset-bottom))!important;
+    width:auto!important;max-width:420px!important;
+    height:min(520px,calc(100dvh - 300px))!important;
+    max-height:calc(100dvh - 300px)!important;
+  }
+}
+@media(max-width:380px){
+  #dawlyBotLauncher{left:10px!important;bottom:calc(198px + env(safe-area-inset-bottom))!important}
+}
