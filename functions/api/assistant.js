@@ -45,7 +45,7 @@ export async function onRequest({request, env}) {
       method:"POST",
       headers:{"Content-Type":"application/json","x-goog-api-key":env.GEMINI_API_KEY},
       body:JSON.stringify({
-        system_instruction:{parts:[{text:instruction}]},
+        systemInstruction:{parts:[{text:instruction}]},
         contents:[{role:"user",parts:[{text:prompt}]}],
         generationConfig:{temperature:0.2,responseMimeType:"application/json"}
       })
