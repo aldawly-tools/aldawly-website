@@ -359,7 +359,16 @@ footer.footer .button-primary { color:#fff !important; font-weight:1000 !importa
  <div class="drawer-head"><h2>سلة المشتريات</h2><button class="drawer-close" type="button" id="closeCart">إغلاق ✕</button></div>
  <div class="cart-scroll-area">
   <div class="cart-items" id="cartItems"></div>
-  <div class="checkout-fields" aria-label="بيانات العميل">
+  <div class="checkout-fields" aria-label="اختيار مسؤول الطلب">
+  <h3>اختار المسؤول أولاً</h3>
+  <label for="orderAdminChoice">إرسال الطلب إلى <span>*</span></label>
+  <select id="orderAdminChoice" required>
+   <option value="">اختار المسؤول المناسب</option>
+   <option value="201002878301">المسؤول الأول · 01002878301</option>
+   <option value="201024787222">المسؤول الثاني · 01024787222</option>
+  </select>
+ </div>
+ <div class="checkout-fields" aria-label="بيانات العميل">
   <h3>بيانات التوصيل</h3>
   <label for="customerName">الاسم بالكامل <span>*</span></label>
   <input id="customerName" type="text" autocomplete="name" maxlength="80" placeholder="اكتب اسمك" required>
@@ -372,7 +381,6 @@ footer.footer .button-primary { color:#fff !important; font-weight:1000 !importa
    <h3 id="paymentFollowupTitle">حالة طلبك</h3>
    <p class="payment-followup-status" id="paymentFollowupStatus" aria-live="polite"></p>
    <a class="payment-proof" id="orderWhatsappLink" href="#" target="_blank" rel="noopener noreferrer" hidden>إرسال الطلب إلى المسؤول الأول · 01002878301</a>
-  <a class="payment-proof" id="orderWhatsappLinkSecond" href="#" target="_blank" rel="noopener noreferrer" hidden>إرسال الطلب إلى المسؤول الثاني · 01024787222</a>
   </section>
  </div>
  <div class="cart-sticky-footer">
@@ -384,7 +392,7 @@ footer.footer .button-primary { color:#fff !important; font-weight:1000 !importa
 <script src="firebase-config.js?v=live-refresh-20261114-1"></script>
 <script type="module" src="traffic-analytics.js?v=product-view-routes-20261116-1"></script>
 <script src="onesignal-init.js?v=live-refresh-20261114-1"></script>
-<script src="store.js?v=two-admin-wa-20261117-2"></script>
+<script src="store.js?v=choose-admin-first-20261117-1"></script>
 <script src="smart-search.js?v=20261116-6"></script>
 <script src="image-zoom.js?v=product-card-navigation-20261116-1"></script>
 <script type="module" src="product-cloud.js?v=catalog-cache-20261116-1"></script>
