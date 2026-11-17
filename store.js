@@ -914,6 +914,7 @@
     const followup = document.getElementById("paymentFollowup");
     const status = document.getElementById("paymentFollowupStatus");
     const orderLink = document.getElementById("orderWhatsappLink");
+    const secondOrderLink = document.getElementById("orderWhatsappLinkSecond");
     const paymentProofLink = document.getElementById("paymentProofLink");
     if (!followup || !status) return;
     status.textContent = saved
@@ -929,10 +930,19 @@
         orderLink.removeAttribute("href");
       }
     }
+    if (secondOrderLink) {
+      if (saved && window.pendingOrderWhatsappSecondUrl) {
+        secondOrderLink.href = window.pendingOrderWhatsappSecondUrl;
+        secondOrderLink.hidden = false;
+      } else {
+        secondOrderLink.hidden = true;
+        secondOrderLink.removeAttribute("href");
+      }
+    }
     if (paymentProofLink) {
       if (saved && orderWhatsappUrl) {
         const proofMessage = "مرحباً، هذا إيصال الدفع الخاص بالطلب رقم " + orderNumber + ".";
-        paymentProofLink.href = "https://wa.me/201024787222?text=" + encodeURIComponent(proofMessage);
+        paymentProofLink.href = "https://wa.me/201002878301?text=" + encodeURIComponent(proofMessage);
         paymentProofLink.hidden = false;
       } else {
         paymentProofLink.hidden = true;
@@ -1175,7 +1185,8 @@
     return {
       number:orderNumber,
       message:message,
-      url:"https://wa.me/201024787222?text=" + encodeURIComponent(message),
+      url:"https://wa.me/201002878301?text=" + encodeURIComponent(message),
+      secondUrl:"https://wa.me/201024787222?text=" + encodeURIComponent(message),
       customerName:customerName
     };
   }
@@ -1200,6 +1211,7 @@
     if (!pendingOrder) {
       pendingOrder = buildOrderDraft();
       if (!pendingOrder) return;
+      window.pendingOrderWhatsappSecondUrl = pendingOrder.secondUrl;
       showPaymentFollowup(pendingOrder.number, true, pendingOrder.url);
       checkout.textContent = "إعادة فتح رسالة نفس الطلب عبر واتساب";
       checkout.dataset.orderPrepared = "true";
