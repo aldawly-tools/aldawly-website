@@ -153,6 +153,7 @@
       '<div class="product-detail-price">' + price + '<small>' + (formatPrice(item.price).includes("ج.م") ? 'السعر بالجنيه المصري · يُرجى تأكيد التوفر عند التواصل' : 'يُرجى تأكيد السعر والتوفر عند التواصل') + '</small></div>' + stockHtml +
       '<div class="product-detail-actions">' +
       '<button class="button-primary detail-add-cart" type="button" data-detail-add="' + escapeHtml(item.id) + '"' + (stockKnown && item.stock === 0 ? ' disabled aria-disabled="true"' : '') + '>' + (stockKnown && item.stock === 0 ? 'غير متاح حاليًا' : 'أضف إلى السلة') + '</button>' +
+      '<button class="button-primary detail-order-now" type="button" data-detail-order-now="' + escapeHtml(item.id) + '"' + (stockKnown && item.stock === 0 ? ' disabled aria-disabled="true"' : '') + '>' + (stockKnown && item.stock === 0 ? 'غير متاح حاليًا' : 'اطلب هذا المنتج الآن ←') + '</button>' +
       '<button class="button-outline share-product-button" type="button" data-share-product="' + escapeHtml(item.id) + '">مشاركة المنتج على أي منصة ↗</button>' +
       '<a class="button-outline" href="products.html">العودة إلى المنتجات</a></div>' + specsHtml + '</div></article>';
 
@@ -394,9 +395,10 @@
   });
 
   root.addEventListener("click", function (event) {
-    const button = event.target.closest("[data-detail-add]");
+    const button = event.target.closest("[data-detail-add], [data-detail-order-now]");
     if (!button || button.disabled) return;
-    const id = button.dataset.detailAdd;
+    const directOrder = button.hasAttribute("data-detail-order-now");
+    const id = directOrder ? button.dataset.detailOrderNow : button.dataset.detailAdd;
     const item = (cloudProducts || fallbackProducts).find(function (product) { return String(product.id) === String(id); });
     if (!item) { alert("تعذر تحميل بيانات المنتج. حدّث الصفحة وحاول مرة أخرى."); return; }
     if (Number.isInteger(item.stock) && item.stock >= 0 && item.stock === 0) {
@@ -439,7 +441,7 @@
       alert("تعذر حفظ السلة على هذا الجهاز. تأكد من إعدادات المتصفح وحاول مرة أخرى.");
       return;
     }
-    window.location.href = "products.html?cart=1";
+    window.location.href = directOrder ? "products.html?cart=1&direct=1" : "products.html?cart=1";
   });
 
   window.addEventListener("dawly-products-updated", function (event) {
