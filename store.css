@@ -5932,3 +5932,38 @@ button[data-add]:not(:disabled) span:not(.add-cart-icon),
  button[data-add]:not(:disabled) span:not(.add-cart-icon),
  .home-shelf-add.product-add-cart-prominent:not(:disabled) span:not(.add-cart-icon){animation:none!important;background:none!important;color:#fff!important;-webkit-text-fill-color:#fff!important}
 }
+
+
+/* Give product prices more breathing room and stronger hierarchy. */
+.home-shelf-card .product-price,
+.home-products-shelf .home-shelf-card .product-price,
+#productGrid .catalog-card .product-price{
+  display:block!important;
+  margin:10px 0 14px!important;
+  padding:5px 0!important;
+  font-size:22px!important;
+  font-weight:1000!important;
+  line-height:1.55!important;
+  letter-spacing:.25px;
+  color:#b80f19!important;
+  white-space:normal!important;
+}
+.home-shelf-card .product-price small,
+.home-products-shelf .home-shelf-card .product-price small,
+#productGrid .catalog-card .product-price small{
+  display:block!important;
+  margin-top:4px!important;
+  font-size:11px!important;
+  line-height:1.5!important;
+  letter-spacing:0!important;
+}
+@media(max-width:700px){
+ .home-shelf-card .product-price,
+ .home-products-shelf .home-shelf-card .product-price,
+ #productGrid .catalog-card .product-price{
+   margin:9px 0 13px!important;
+   padding:5px 0!important;
+   font-size:19px!important;
+   line-height:1.6!important;
+ }
+}
