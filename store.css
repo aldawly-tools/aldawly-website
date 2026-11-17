@@ -5478,3 +5478,43 @@ html body aside#cartDrawer.cart-drawer>.cart-scroll-area>.payment-followup{
  #categories .category-photo{flex:0 0 92px!important;width:100%!important}
  #categories .category-copy{flex:1 0 auto!important}
 }
+
+
+/* Category cards redesigned as compact horizontal rows: name, availability and live count. */
+#categoryTiles .category-row-card{
+ display:flex!important;flex-direction:row!important;align-items:center!important;
+ gap:12px!important;min-height:116px!important;padding:10px!important;
+ text-align:right!important;border:1px solid #e3e6ea!important;border-radius:15px!important;
+ background:#fff!important;box-shadow:0 4px 13px rgba(20,30,45,.055)!important;
+}
+#categoryTiles .category-row-card .category-photo{
+ flex:0 0 104px!important;width:104px!important;height:94px!important;
+ min-height:94px!important;border-radius:11px!important;overflow:hidden!important;
+}
+#categoryTiles .category-row-card .category-photo img{width:100%!important;height:100%!important;object-fit:cover!important}
+#categoryTiles .category-row-card .category-photo-shade{display:none!important}
+#categoryTiles .category-row-card .category-icon{width:31px!important;height:31px!important;right:6px!important;bottom:6px!important}
+#categoryTiles .category-row-card .category-copy{
+ flex:1!important;min-width:0!important;min-height:0!important;padding:2px 0!important;
+ display:flex!important;flex-direction:column!important;align-items:flex-start!important;
+ justify-content:center!important;gap:4px!important;text-align:right!important;
+}
+#categoryTiles .category-row-card .category-copy strong{font-size:15px!important;line-height:1.4!important;color:#202833!important}
+#categoryTiles .category-row-card .category-availability{font-size:10px!important;color:#87909a!important;font-weight:800!important}
+#categoryTiles .category-row-card .category-availability.is-available{color:#18834b!important}
+#categoryTiles .category-row-card .category-availability.is-empty{color:#b4232c!important}
+#categoryTiles .category-row-card .category-copy b{font-size:12px!important;color:#a80e19!important;font-weight:1000!important}
+#categoryTiles .category-row-card .category-browse{font-size:10px!important;font-weight:900!important;color:#a80e19!important;margin-top:1px}
+#categoryTiles .category-row-card.all{border-color:#c81020!important;background:#fff8f8!important}
+#categoryTiles .category-row-card.all .category-copy strong{color:#b20e1b!important}
+@media(max-width:900px){
+ #categoryTiles .category-row-card{min-height:102px!important;gap:9px!important;padding:8px!important}
+ #categoryTiles .category-row-card .category-photo{flex-basis:82px!important;width:82px!important;height:84px!important;min-height:84px!important}
+ #categoryTiles .category-row-card .category-copy strong{font-size:13px!important}
+}
+@media(max-width:600px){
+ #categoryTiles{display:flex!important;flex-flow:row nowrap!important;gap:9px!important;overflow-x:auto!important;overflow-y:hidden!important;padding:3px 3px 10px!important;scroll-snap-type:x mandatory!important;direction:rtl!important}
+ #categoryTiles>.category-row-card{flex:0 0 245px!important;width:245px!important;max-width:82vw!important;min-width:0!important;min-height:102px!important;scroll-snap-align:start!important}
+ #categoryTiles .category-row-card .category-photo{flex:0 0 82px!important;width:82px!important;height:84px!important;min-height:84px!important}
+ #categoryTiles .category-row-card .category-copy strong{font-size:14px!important}
+}
