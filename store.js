@@ -337,6 +337,21 @@
       track.dataset.loopReady="1";
     }
   }
+  function setCheckoutStep(step) {
+    const details = document.getElementById("checkoutDetailsStep");
+    const review = document.getElementById("cartReviewStep");
+    const progress = cartDrawer && cartDrawer.querySelector(".order-progress");
+    const isDetails = step === "details";
+    if (details) details.hidden = !isDetails;
+    if (review) review.hidden = isDetails;
+    if (progress) {
+      const steps = progress.querySelectorAll("span");
+      if (steps[0]) steps[0].classList.toggle("is-active", !isDetails);
+      if (steps[1]) steps[1].classList.toggle("is-active", isDetails);
+    }
+    const scrollArea = cartDrawer && cartDrawer.querySelector(".cart-scroll-area");
+    if (scrollArea) scrollArea.scrollTop = 0;
+  }
   function setDrawer(open) {
     cartDrawer.classList.toggle("open", open);
     cartOverlay.classList.toggle("open", open);
@@ -585,6 +600,12 @@
     const count = cart.reduce(function (sum, line) { return sum + line.qty; }, 0);
     cartCount.textContent = String(count);
     checkout.disabled = count === 0;
+    const quickbar = document.getElementById("cartQuickbar");
+    const quickbarSummary = document.getElementById("cartQuickbarSummary");
+    if (quickbar) quickbar.hidden = count === 0;
+    if (quickbarSummary) quickbarSummary.textContent = count + " قطعة · " + (cart.length) + " منتجات";
+    const continueButton = document.getElementById("continueCheckout");
+    if (continueButton) continueButton.disabled = count === 0;
     cartItems.innerHTML = cart.length ? cart.map(function (line) {
       const item = products.find(function (entry) { return String(entry.id) === String(line.id); });
       if (!item) {
@@ -890,7 +911,13 @@
       renderCart();
       return;
     }
-    if (event.target.closest("#openCart")) { setDrawer(true); return; }
+    if (event.target.closest("#openCart") || event.target.closest("#cartQuickbarOpen")) { setCheckoutStep("review"); setDrawer(true); return; }
+    if (event.target.closest("#continueCheckout")) {
+      if (!cart.length) return;
+      setCheckoutStep("details");
+      return;
+    }
+    if (event.target.closest("#backToCartReview")) { setCheckoutStep("review"); return; }
     if (event.target.closest("#closeCart") || event.target === cartOverlay) setDrawer(false);
     if (event.target.closest("#openMobileMenu")) { setMobileMenu(true); return; }
     if (event.target.closest("#closeMobileMenu") || event.target === mobileMenuOverlay) { setMobileMenu(false); return; }
@@ -1380,6 +1407,7 @@
   if (initialParams.get("cart") === "1") {
     const directOrder = initialParams.get("direct") === "1";
     // Both flows open at the top; direct order simply opens the cart for checkout.
+    setCheckoutStep(directOrder ? "details" : "review");
     setDrawer(true);
     const cleanUrl = new URL(window.location.href);
     cleanUrl.searchParams.delete("cart");
