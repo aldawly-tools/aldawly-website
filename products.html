@@ -209,6 +209,15 @@
  <div class="order-section-heading"><div><h3>منتجات طلبك</h3><p>يمكنك تعديل الكمية أو حذف أي منتج قبل الإرسال</p></div><span class="order-secure-mark">طلب مباشر</span></div>
  <div class="cart-items" id="cartItems"></div>
  <div class="cart-total" id="cartTotal" aria-live="polite"></div>
+ <div class="checkout-fields" aria-label="اختيار مسؤول الطلب">
+  <h3>اختار المسؤول أولاً</h3>
+  <label for="orderAdminChoice">إرسال الطلب إلى <span>*</span></label>
+  <select id="orderAdminChoice" required>
+   <option value="">اختار المسؤول المناسب</option>
+   <option value="201002878301">المسؤول الأول · 01002878301</option>
+   <option value="201024787222">المسؤول الثاني · 01024787222</option>
+  </select>
+ </div>
  <div class="checkout-fields" aria-label="بيانات العميل">
   <div class="checkout-fields-heading"><span class="checkout-fields-icon">02</span><div><h3>بيانات التوصيل</h3><p>اكتب بياناتك ليتمكن فريقنا من تأكيد الطلب</p></div></div>
   <label for="customerName">الاسم بالكامل <span>*</span></label>
@@ -223,7 +232,6 @@
   <h3 id="paymentFollowupTitle">خطوة تأكيد الحجز</h3>
   <p class="payment-followup-status" id="paymentFollowupStatus" aria-live="polite"></p>
   <a class="payment-proof" id="orderWhatsappLink" href="#" target="_blank" rel="noopener noreferrer" hidden>إرسال الطلب إلى المسؤول الأول · 01002878301</a>
-  <a class="payment-proof" id="orderWhatsappLinkSecond" href="#" target="_blank" rel="noopener noreferrer" hidden>إرسال الطلب إلى المسؤول الثاني · 01024787222</a>
   <h4 class="payment-methods-title">اختار طريقة الدفع المناسبة</h4>
   <div class="payment-methods" aria-label="طرق الدفع">
    <a class="payment-method" href="http://vf.eg/vfcash?id=mt&amp;qrId=Jv7yf5" target="_blank" rel="noopener noreferrer">
@@ -240,7 +248,7 @@
 <script src="firebase-config.js?v=live-refresh-20261114-1"></script>
 <script type="module" src="traffic-analytics.js?v=product-view-routes-20261116-1"></script>
 <script src="onesignal-init.js?v=live-refresh-20261114-1"></script>
-<script src="store.js?v=two-admin-wa-20261117-1"></script>
+<script src="store.js?v=choose-admin-first-20261117-1"></script>
 <script>
 (function(){
  var params=new URLSearchParams(window.location.search);
