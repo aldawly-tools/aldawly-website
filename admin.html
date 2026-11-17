@@ -252,6 +252,7 @@ button:disabled{opacity:.6;cursor:wait}
       <div class="actions" style="justify-content:space-between;align-items:center">
         <div><h2 style="margin:0">إحصائيات المتجر</h2><p class="muted" style="margin:5px 0 0">متابعة الزيارات اليومية والإجمالية وأداء الطلبات من بيانات المتجر المسجلة.</p></div>
         <button class="light" id="refreshAnalyticsBtn" type="button">تحديث الإحصائيات</button>
+        <button class="danger" id="resetAnalyticsBtn" type="button">مسح بيانات الزيارات القديمة</button>
       </div>
       <p class="status" id="analyticsStatus" aria-live="polite">جارٍ تجهيز الإحصائيات…</p>
       <div class="analytics-grid">
@@ -518,6 +519,33 @@ async function loadAnalytics(force){
  }
 }
 $("refreshAnalyticsBtn").addEventListener("click",function(){loadAnalytics(true);});
+$("resetAnalyticsBtn").addEventListener("click",async function(){
+ const button=$("resetAnalyticsBtn"),statusNode=$("analyticsStatus");
+ const approved=window.confirm("سيتم حذف سجلات الزيارات ومصادر الدخول ومشاهدات المنتجات القديمة نهائيًا. لن يتم حذف المنتجات أو الطلبات أو الصور. هل تريد المتابعة؟");
+ if(!approved)return;
+ button.disabled=true;
+ if(statusNode)statusNode.textContent="جارٍ مسح سجلات الإحصائيات القديمة…";
+ try{
+  const names=["siteVisits","trafficSources","productViews"];
+  let removed=0;
+  for(const name of names){
+   const snap=await getDocs(collection(db,name));
+   for(let i=0;i<snap.docs.length;i+=400){
+    const batch=writeBatch(db);
+    const part=snap.docs.slice(i,i+400);
+    part.forEach(item=>batch.delete(item.ref));
+    await batch.commit();
+    removed+=part.length;
+   }
+  }
+  analyticsLoadedAt=0;
+  await loadAnalytics(true);
+  if(statusNode)statusNode.textContent="تم مسح "+analyticsFormat(removed)+" سجل إحصائيات قديم. سيبدأ القياس من جديد من الآن.";
+ }catch(error){
+  console.error("Analytics reset failed:",error);
+  if(statusNode)statusNode.textContent="تعذر مسح البيانات: "+(error.code||error.message||"خطأ غير معروف")+". تأكد من نشر قواعد Firestore المحدثة.";
+ }finally{button.disabled=false;}
+});
 async function ensureCatalog() {
   const metaRef = doc(db, "storeMeta", "catalog");
   const meta = await getDoc(metaRef);
