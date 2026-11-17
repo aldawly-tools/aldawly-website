@@ -931,13 +931,8 @@
       }
     }
     if (secondOrderLink) {
-      if (saved && window.pendingOrderWhatsappSecondUrl) {
-        secondOrderLink.href = window.pendingOrderWhatsappSecondUrl;
-        secondOrderLink.hidden = false;
-      } else {
-        secondOrderLink.hidden = true;
-        secondOrderLink.removeAttribute("href");
-      }
+      secondOrderLink.hidden = true;
+      secondOrderLink.removeAttribute("href");
     }
     if (paymentProofLink) {
       if (saved && orderWhatsappUrl) {
@@ -1116,6 +1111,13 @@
   }
 
   function buildOrderDraft() {
+    const adminChoice = document.getElementById("orderAdminChoice");
+    const selectedAdmin = adminChoice ? adminChoice.value : "";
+    if (!selectedAdmin) {
+      alert("من فضلك اختار المسؤول الذي تريد إرسال الطلب إليه أولاً.");
+      if (adminChoice) adminChoice.focus();
+      return null;
+    }
     const customerName = document.getElementById("customerName").value.trim();
     const customerPhoneRaw = document.getElementById("customerPhone").value.trim();
     const customerAddress = document.getElementById("customerAddress").value.trim();
@@ -1185,8 +1187,7 @@
     return {
       number:orderNumber,
       message:message,
-      url:"https://wa.me/201002878301?text=" + encodeURIComponent(message),
-      secondUrl:"https://wa.me/201024787222?text=" + encodeURIComponent(message),
+      url:"https://wa.me/" + selectedAdmin + "?text=" + encodeURIComponent(message),
       customerName:customerName
     };
   }
@@ -1211,7 +1212,6 @@
     if (!pendingOrder) {
       pendingOrder = buildOrderDraft();
       if (!pendingOrder) return;
-      window.pendingOrderWhatsappSecondUrl = pendingOrder.secondUrl;
       showPaymentFollowup(pendingOrder.number, true, pendingOrder.url);
       checkout.textContent = "إعادة فتح رسالة نفس الطلب عبر واتساب";
       checkout.dataset.orderPrepared = "true";
