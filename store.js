@@ -1296,7 +1296,7 @@
     try {
       const pdfBlob = await createOrderA4Pdf(order);
       const pdfFile = new File([pdfBlob], "Order-" + order.number + ".pdf", {type:"application/pdf"});
-      const shareText = order.message + "\\n\\n📎 مرفق فاتورة الطلب بصيغة PDF A4.";
+      const shareText = order.message + "\n\n📎 مرفق فاتورة الطلب بصيغة PDF A4.";
 
       if (navigator.share && navigator.canShare && navigator.canShare({files:[pdfFile]})) {
         await navigator.share({
