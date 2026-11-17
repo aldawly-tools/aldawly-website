@@ -5848,48 +5848,41 @@ html body aside#cartDrawer.cart-drawer>.cart-scroll-area>.payment-followup{
 }
 
 
-/* Subtle attention glow for important store elements (not every bold text). */
-@keyframes dawlyEmphasisGlow{
- 0%,100%{filter:drop-shadow(0 0 0 rgba(200,16,30,0));text-shadow:0 0 0 rgba(200,16,30,0)}
- 50%{filter:drop-shadow(0 0 7px rgba(200,16,30,.22));text-shadow:0 0 9px rgba(200,16,30,.18)}
+/* Clear but tasteful attention glow for mobile and desktop. */
+@keyframes dawlyPricePulse{
+  0%,100%{filter:drop-shadow(0 0 2px rgba(200,16,30,.18));text-shadow:0 0 2px rgba(200,16,30,.12)}
+  50%{filter:drop-shadow(0 0 11px rgba(200,16,30,.55));text-shadow:0 0 12px rgba(200,16,30,.35)}
 }
-@keyframes dawlyGreenStatusGlow{
- 0%,100%{filter:drop-shadow(0 0 0 rgba(15,145,82,0))}
- 50%{filter:drop-shadow(0 0 7px rgba(15,145,82,.25))}
+@keyframes dawlyGreenPulse{
+  0%,100%{box-shadow:0 0 0 1px rgba(15,145,82,.16),0 0 5px rgba(15,145,82,.16)}
+  50%{box-shadow:0 0 0 2px rgba(15,145,82,.38),0 0 14px rgba(15,145,82,.48)}
+}
+@keyframes dawlyButtonPulse{
+  0%,100%{box-shadow:0 4px 12px rgba(200,16,30,.18)}
+  50%{box-shadow:0 5px 22px rgba(200,16,30,.42),0 0 0 3px rgba(200,16,30,.08)}
 }
 #productGrid .product-price,
 .home-products-shelf .home-shelf-card .product-price,
-#categoryTiles .category-row-card .category-availability.is-available,
-#productGrid .product-card-status .stock-status:not(.out),
-.home-shelf-card .product-card-status .stock-status:not(.out){
- animation:dawlyEmphasisGlow 3.2s ease-in-out infinite;
+.home-shelf-card .product-price{
+ animation:dawlyPricePulse 2s ease-in-out infinite;
 }
 #productGrid .product-card-status .stock-status:not(.out),
 .home-shelf-card .product-card-status .stock-status:not(.out),
 #categoryTiles .category-row-card .category-availability.is-available{
- animation-name:dawlyGreenStatusGlow;
+ animation:dawlyGreenPulse 2s ease-in-out infinite;
 }
 .hero-shell .hero-cta,
 .hero-shell .whatsapp-catalog-cta,
 .product-card .product-meta .button-primary,
 .home-shelf-card .home-shelf-add.product-add-cart-prominent,
 #productGrid .catalog-card .home-shelf-add{
- box-shadow:0 5px 16px rgba(200,16,30,.12);
- transition:box-shadow .25s ease,transform .25s ease;
-}
-.hero-shell .hero-cta:hover,
-.hero-shell .whatsapp-catalog-cta:hover,
-.product-card .product-meta .button-primary:hover,
-.home-shelf-card .home-shelf-add.product-add-cart-prominent:hover,
-#productGrid .catalog-card .home-shelf-add:hover{
- box-shadow:0 7px 22px rgba(200,16,30,.24);
+ animation:dawlyButtonPulse 2.2s ease-in-out infinite;
 }
 @media(prefers-reduced-motion:reduce){
- #productGrid .product-price,
- .home-products-shelf .home-shelf-card .product-price,
+ #productGrid .product-price,.home-products-shelf .home-shelf-card .product-price,.home-shelf-card .product-price,
+ #productGrid .product-card-status .stock-status:not(.out),.home-shelf-card .product-card-status .stock-status:not(.out),
  #categoryTiles .category-row-card .category-availability.is-available,
- #productGrid .product-card-status .stock-status:not(.out),
- .home-shelf-card .product-card-status .stock-status:not(.out){
-  animation:none!important;
- }
+ .hero-shell .hero-cta,.hero-shell .whatsapp-catalog-cta,
+ .product-card .product-meta .button-primary,.home-shelf-card .home-shelf-add.product-add-cart-prominent,
+ #productGrid .catalog-card .home-shelf-add{animation:none!important}
 }
