@@ -1260,7 +1260,9 @@
       popup.document.write(html);
       popup.document.close();
       popup.focus();
-      popup.onload = function() { popup.print(); };
+      window.setTimeout(function() {
+        try { popup.print(); } catch (error) {}
+      }, 500);
     });
   }
 
