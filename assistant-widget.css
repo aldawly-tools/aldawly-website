@@ -33,3 +33,47 @@
   #dawlyBotLauncher{bottom:calc(88px + env(safe-area-inset-bottom))!important}
   #dawlyBotPanel{bottom:calc(150px + env(safe-area-inset-bottom))!important;max-height:calc(100dvh - 175px)!important}
 }
+
+
+/* Mobile compact assistant: never stretch across the screen or overlap contact controls. */
+@media(max-width:700px){
+  #dawlyBotLauncher{
+    position:fixed!important;
+    left:14px!important;
+    right:auto!important;
+    bottom:calc(204px + env(safe-area-inset-bottom))!important;
+    display:flex!important;
+    width:58px!important;
+    min-width:58px!important;
+    max-width:58px!important;
+    height:58px!important;
+    min-height:58px!important;
+    max-height:58px!important;
+    padding:2px!important;
+    gap:0!important;
+    overflow:visible!important;
+    border:2px solid #fff!important;
+    border-radius:50%!important;
+    box-sizing:border-box!important;
+    box-shadow:0 5px 18px #0004,0 0 0 4px #d7192020!important;
+  }
+  #dawlyBotLauncher .dawly-bot-face{
+    width:50px!important;height:50px!important;flex:0 0 50px!important;
+  }
+  #dawlyBotLauncher .dawly-bot-label{display:none!important}
+  #dawlyBotLauncher .dawly-bot-hint{
+    right:-5px!important;bottom:calc(100% + 8px)!important;
+    font-size:10px!important;padding:6px 9px!important;
+  }
+  #dawlyBotPanel{
+    left:10px!important;right:10px!important;
+    bottom:calc(276px + env(safe-area-inset-bottom))!important;
+    width:auto!important;max-width:420px!important;
+    height:min(520px,calc(100dvh - 300px))!important;
+    max-height:calc(100dvh - 300px)!important;
+  }
+}
+@media(max-width:380px){
+  #dawlyBotLauncher{left:10px!important;bottom:calc(198px + env(safe-area-inset-bottom))!important}
+  #dawlyBotPanel{bottom:calc(265px + env(safe-area-inset-bottom))!important}
+}
