@@ -337,3 +337,36 @@ body.dawly-assistant-page{margin:0!important;min-height:100vh;background:linear-
  }
  #dawlyBotLauncher .dawly-bot-prompt{font-size:12px!important}
 }
+
+
+/* Match the compact floating-contact concept: one clear round action, no text bar. */
+#dawlyBotLauncher,
+#dawlyBotLauncher.dawly-prompt-visible{
+ position:fixed!important;
+ left:14px!important;right:auto!important;
+ bottom:calc(150px + env(safe-area-inset-bottom))!important;
+ display:grid!important;place-items:center!important;
+ width:58px!important;min-width:58px!important;max-width:58px!important;
+ height:58px!important;min-height:58px!important;max-height:58px!important;
+ padding:0!important;gap:0!important;overflow:hidden!important;
+ border:0!important;border-radius:50%!important;
+ background:#c8101e!important;color:#fff!important;
+ box-shadow:0 8px 24px rgba(0,0,0,.22)!important;
+}
+#dawlyBotLauncher .dawly-bot-face{
+ display:grid!important;place-items:center!important;position:static!important;
+ width:58px!important;height:58px!important;flex:0 0 58px!important;
+ border-radius:50%!important;background:transparent!important;color:#fff!important;
+}
+#dawlyBotLauncher .dawly-bot-face svg{width:29px!important;height:29px!important;stroke:#fff!important}
+#dawlyBotLauncher .dawly-bot-prompt{display:none!important}
+#dawlyBotLauncher.dawly-contact-menu-open{display:none!important}
+@media(max-width:700px){
+ #dawlyBotLauncher,
+ #dawlyBotLauncher.dawly-prompt-visible{
+   left:14px!important;bottom:calc(150px + env(safe-area-inset-bottom))!important;
+   width:56px!important;min-width:56px!important;max-width:56px!important;
+   height:56px!important;min-height:56px!important;max-height:56px!important;
+ }
+ #dawlyBotLauncher .dawly-bot-face{width:56px!important;height:56px!important;flex-basis:56px!important}
+}
