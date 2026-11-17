@@ -309,3 +309,31 @@ body.dawly-assistant-page{margin:0!important;min-height:100vh;background:linear-
 @media(max-width:700px){
  #dawlyBotLauncher.dawly-prompt-visible > .dawly-bot-prompt{font-size:14px!important}
 }
+
+
+/* Reduce the support launcher footprint so it obscures less storefront content. */
+@media(max-width:700px){
+ #dawlyBotLauncher,
+ #dawlyBotLauncher.dawly-prompt-visible{
+   left:10px!important;right:auto!important;
+   width:214px!important;min-width:214px!important;max-width:calc(100vw - 20px)!important;
+   height:56px!important;min-height:56px!important;max-height:56px!important;
+   padding:5px 10px!important;gap:8px!important;
+   bottom:calc(204px + env(safe-area-inset-bottom))!important;
+ }
+ #dawlyBotLauncher .dawly-bot-face{
+   width:42px!important;height:42px!important;flex:0 0 42px!important;
+ }
+ #dawlyBotLauncher .dawly-bot-face svg{width:24px!important;height:24px!important}
+ #dawlyBotLauncher .dawly-bot-prompt{
+   font-size:13px!important;line-height:1.3!important;
+ }
+}
+@media(max-width:360px){
+ #dawlyBotLauncher,
+ #dawlyBotLauncher.dawly-prompt-visible{
+   width:198px!important;min-width:198px!important;
+   max-width:calc(100vw - 20px)!important;
+ }
+ #dawlyBotLauncher .dawly-bot-prompt{font-size:12px!important}
+}
