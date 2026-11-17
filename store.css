@@ -5983,3 +5983,9 @@ button[data-add]:not(:disabled) span:not(.add-cart-icon),
 @media(max-width:700px){
   .mobile-menu-trigger{bottom:calc(14px + env(safe-area-inset-bottom))!important;right:14px!important}
 }
+
+
+/* Stronger brand statement in the About section. */
+.about-box .about-tagline{display:block;margin:0 0 9px;color:#202832;font-size:clamp(17px,2.4vw,22px);font-weight:1000;line-height:1.65}
+.about-box p{margin:0;color:#414850;line-height:2}
+.about-box .about-signature{display:block;margin-top:10px;color:#b80f19;font-weight:900}
