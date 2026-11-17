@@ -40,7 +40,7 @@
       .replace(/[۰-۹]/g, function (digit) { return String("۰۱۲۳۴۵۶۷۸۹".indexOf(digit)); })
       .replace(/(?:جنيه(?:\s*مصري)?|ج\.?م\.?|ج\.?|EGP|LE)/gi, "").replace(/[\s,،٬]/g, "");
     if (!/^\d+(?:\.\d+)?$/.test(text)) return cleanProductCopy(value);
-    return new Intl.NumberFormat("ar-EG", {maximumFractionDigits:2}).format(Number(text)) + " ج.م";
+    return "EGP " + new Intl.NumberFormat("en-US", {maximumFractionDigits:2}).format(Number(text));
   }
   function displayBrand(value) {
     const raw = cleanProductCopy(value);
