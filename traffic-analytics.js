@@ -1,12 +1,23 @@
 /* Anonymous traffic and product-view analytics. No IP, names or contact details are collected. */
 import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-auth.js";
 import { getFirestore, collection, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-firestore.js";
 (function(){
  try {
   if(!window.DAWLY_FIREBASE_CONFIG)return;
   const params=new URLSearchParams(location.search);
   const app=getApps().length?getApps()[0]:initializeApp(window.DAWLY_FIREBASE_CONFIG);
+  const auth=getAuth(app);
   const db=getFirestore(app);
+  const ADMIN_EMAILS=new Set(["elgoharemahmoud@gmail.com","ahmedelgohare90@gmail.com"]);
+  // Do not write analytics until Firebase has restored the login session.
+  const allowed=await new Promise(resolve=>{
+   const unsubscribe=onAuthStateChanged(auth,user=>{
+    unsubscribe();
+    resolve(!(user&&user.emailVerified===true&&ADMIN_EMAILS.has(String(user.email||"").toLowerCase())));
+   },()=>resolve(true));
+  });
+  if(!allowed)return;
   let visitorId=localStorage.getItem("aldawly_visitor_id");
   if(!visitorId){visitorId=crypto.randomUUID?crypto.randomUUID():"v-"+Math.random().toString(36).slice(2)+Date.now().toString(36);localStorage.setItem("aldawly_visitor_id",visitorId);}
   const day=new Intl.DateTimeFormat("en-CA",{timeZone:"Africa/Cairo",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date());
