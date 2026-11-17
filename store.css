@@ -5130,3 +5130,22 @@ html body aside#cartDrawer.cart-drawer>.cart-scroll-area>.payment-followup{
 
 /* A4 customer and order print action */
 .print-order-a4{display:block;width:100%;margin:10px 0;padding:13px 16px;border:1.5px solid #c8101e;border-radius:12px;background:#fff;color:#b51220;font:900 14px "Cairo",Tahoma,Arial,sans-serif;cursor:pointer;transition:background .2s,color .2s,transform .2s}.print-order-a4:active{transform:scale(.99)}.print-order-a4:hover{background:#fff4f4}
+
+
+/* Two-step quick order experience */
+.cart-quickbar{position:fixed;z-index:24;inset:auto 12px max(12px,env(safe-area-inset-bottom));display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 13px 11px 16px;background:#202832;color:#fff;border:1px solid #384553;border-radius:14px;box-shadow:0 10px 32px #11182740;direction:rtl}
+.cart-quickbar[hidden]{display:none!important}
+.cart-quickbar-copy{display:flex;flex-direction:column;gap:2px;min-width:0}
+.cart-quickbar-copy strong{font-size:13px;font-weight:900}
+.cart-quickbar-copy span{font-size:11px;color:#d5dce3}
+.cart-quickbar button{flex:0 0 auto;border:0;border-radius:9px;background:#d71920;color:#fff;padding:11px 15px;font:900 13px "Cairo",sans-serif}
+.cart-quickbar button:active{transform:scale(.98)}
+.checkout-details-step[hidden],#cartReviewStep[hidden]{display:none!important}
+.checkout-step-heading{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:0 0 12px;padding:10px 0;border-bottom:1px solid #e5e9ed;color:#6b737d;font-size:12px;font-weight:800}
+.checkout-step-heading button{border:0;background:#f3f4f6;color:#252d36;border-radius:8px;padding:8px 11px;font:800 12px "Cairo",sans-serif}
+.checkout-details-step .checkout-fields{margin-top:12px}
+#continueCheckout{display:block;width:100%;min-height:50px;margin:12px 0 6px;border:0;border-radius:11px;background:#c8101e;color:#fff;font:900 14px "Cairo",sans-serif}
+#continueCheckout:disabled{opacity:.45}
+#checkout[hidden]{display:none!important}
+@media(min-width:601px){.cart-quickbar{inset:auto 24px 20px auto;width:min(420px,calc(100vw - 48px))}}
+@media(max-width:600px){.cart-quickbar{inset:auto 10px max(10px,env(safe-area-inset-bottom));padding:10px 12px}.cart-quickbar button{padding:10px 12px}}
