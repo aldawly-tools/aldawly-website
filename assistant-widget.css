@@ -146,3 +146,45 @@
   #dawlyBotLauncher.dawly-prompt-visible{width:190px!important;min-width:190px!important;max-width:190px!important;left:14px!important;right:auto!important}
 }
 @media(prefers-reduced-motion:reduce){#dawlyBotLauncher,#dawlyBotLauncher .dawly-bot-prompt{transition:none!important}}
+
+
+/* Stable timed hint: keep the launcher circular; show the prompt as a separate bubble. */
+#dawlyBotLauncher{
+  width:60px!important;min-width:60px!important;max-width:60px!important;
+  height:60px!important;min-height:60px!important;max-height:60px!important;
+  padding:2px!important;gap:0!important;overflow:visible!important;
+  border-radius:50%!important;justify-content:center!important;
+  transition:box-shadow .2s ease!important;
+}
+#dawlyBotLauncher .dawly-bot-face{
+  position:relative!important;z-index:2!important;
+  width:52px!important;height:52px!important;flex:0 0 52px!important;
+}
+#dawlyBotLauncher .dawly-bot-prompt{
+  position:absolute!important;
+  left:68px!important;right:auto!important;top:50%!important;
+  transform:translateY(-50%) translateX(-5px)!important;
+  display:block!important;width:max-content!important;
+  max-width:calc(100vw - 105px)!important;
+  padding:9px 13px!important;border:1px solid #f0c9cc!important;
+  border-radius:12px!important;background:#fff!important;color:#a90f1b!important;
+  box-shadow:0 5px 18px #0002!important;
+  font:900 12px Cairo,sans-serif!important;line-height:1.5!important;
+  white-space:nowrap!important;overflow:visible!important;
+  opacity:0!important;visibility:hidden!important;pointer-events:none!important;
+  transition:opacity .22s ease,transform .22s ease,visibility .22s ease!important;
+}
+#dawlyBotLauncher .dawly-bot-prompt:before{
+  content:"";position:absolute;right:100%;top:50%;transform:translateY(-50%);
+  border:6px solid transparent;border-right-color:#fff;
+}
+#dawlyBotLauncher.dawly-prompt-visible .dawly-bot-prompt{
+  opacity:1!important;visibility:visible!important;
+  transform:translateY(-50%) translateX(0)!important;
+}
+@media(max-width:700px){
+  #dawlyBotLauncher{left:14px!important;right:auto!important}
+  #dawlyBotLauncher .dawly-bot-prompt{
+    left:68px!important;max-width:calc(100vw - 105px)!important;
+  }
+}
