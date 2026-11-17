@@ -357,35 +357,51 @@ footer.footer .button-primary { color:#fff !important; font-weight:1000 !importa
 <div class="cart-overlay" id="cartOverlay"></div>
 <aside class="cart-drawer" id="cartDrawer" aria-label="سلة المشتريات" aria-modal="true" role="dialog">
  <div class="drawer-head"><h2>سلة المشتريات</h2><button class="drawer-close" type="button" id="closeCart">إغلاق ✕</button></div>
- <div class="cart-scroll-area">
-  <div class="cart-items" id="cartItems"></div>
-  <div class="checkout-fields" aria-label="اختيار مسؤول الطلب">
-  <h3>اختار المسؤول أولاً</h3>
-  <label for="orderAdminChoice">إرسال الطلب إلى <span>*</span></label>
-  <select id="orderAdminChoice" required>
-   <option value="">اختار المسؤول المناسب</option>
-   <option value="201002878301">المسؤول الأول · 01002878301</option>
-   <option value="201024787222">المسؤول الثاني · 01024787222</option>
-  </select>
+ <div class="order-progress" aria-label="خطوات إتمام الطلب">
+  <span class="is-active"><b>1</b> مراجعة المنتجات</span>
+  <span><b>2</b> بيانات التوصيل</span>
+  <span><b>3</b> واتساب</span>
  </div>
- <div class="checkout-fields" aria-label="بيانات العميل">
-  <h3>بيانات التوصيل</h3>
-  <label for="customerName">الاسم بالكامل <span>*</span></label>
-  <input id="customerName" type="text" autocomplete="name" maxlength="80" placeholder="اكتب اسمك" required>
-  <label for="customerPhone">رقم الهاتف <span>*</span></label>
-  <input id="customerPhone" type="tel" inputmode="tel" autocomplete="tel" maxlength="18" placeholder="مثال: 01012345678" required>
-  <label for="customerAddress">العنوان بالتفصيل <span>*</span></label>
-  <textarea id="customerAddress" autocomplete="street-address" maxlength="300" rows="2" placeholder="المحافظة - المدينة - الشارع - أقرب علامة مميزة" required></textarea>
-  </div>
-  <section class="payment-followup" id="paymentFollowup" hidden aria-labelledby="paymentFollowupTitle">
-   <h3 id="paymentFollowupTitle">حالة طلبك</h3>
-   <p class="payment-followup-status" id="paymentFollowupStatus" aria-live="polite"></p>
-   <a class="payment-proof" id="orderWhatsappLink" href="#" target="_blank" rel="noopener noreferrer" hidden>إرسال الطلب إلى المسؤول الأول · 01002878301</a>
+ <div class="cart-scroll-area">
+  <section id="cartReviewStep" class="checkout-step">
+   <div class="cart-items" id="cartItems"></div>
+   <p class="checkout-hint">راجع المنتجات والكميات والأسعار قبل المتابعة.</p>
+   <button class="button-primary checkout-step-button" id="continueCheckout" type="button">متابعة إلى بيانات التوصيل ←</button>
+  </section>
+  <section id="checkoutDetailsStep" class="checkout-step" hidden>
+   <div class="checkout-fields" aria-label="اختيار مسؤول الطلب">
+    <h3>اختيار مسؤول الطلب</h3>
+    <label for="orderAdminChoice">إرسال الطلب إلى <span>*</span></label>
+    <select id="orderAdminChoice" required>
+     <option value="">اختار المسؤول المناسب</option>
+     <option value="201002878301">المسؤول الأول · 01002878301</option>
+     <option value="201024787222">المسؤول الثاني · 01024787222</option>
+    </select>
+   </div>
+   <div class="checkout-fields" aria-label="بيانات العميل">
+    <h3>بيانات التوصيل</h3>
+    <label for="customerName">الاسم بالكامل <span>*</span></label>
+    <input id="customerName" type="text" autocomplete="name" maxlength="80" placeholder="اكتب اسمك بالكامل" required>
+    <label for="customerPhone">رقم الهاتف</label>
+    <input id="customerPhone" type="tel" inputmode="tel" autocomplete="tel" maxlength="18" placeholder="مثال: 01012345678" required>
+    <label for="customerAddress">عنوان التوصيل بالتفصيل</label>
+    <textarea id="customerAddress" autocomplete="street-address" maxlength="300" rows="3" placeholder="المحافظة - المدينة - الشارع - رقم العقار - الدور - أقرب علامة مميزة" required></textarea>
+    <small>سيتم تأكيد تكلفة الشحن وموعد التوصيل معك على واتساب قبل اعتماد الطلب.</small>
+   </div>
+   <button class="checkout-back-button" id="backToCartReview" type="button">→ الرجوع لمراجعة المنتجات</button>
+  </section>
+  <section id="checkoutWhatsappStep" class="checkout-step checkout-whatsapp-step" hidden>
+   <div class="whatsapp-ready-icon" aria-hidden="true">✓</div>
+   <h3>طلبك جاهز للإرسال</h3>
+   <p id="checkoutWhatsappSummary">تم تجهيز تفاصيل الطلب. افتح واتساب واضغط إرسال لتأكيد الطلب مع المتجر.</p>
+   <a class="payment-proof" id="orderWhatsappLink" href="#" target="_blank" rel="noopener noreferrer">فتح رسالة الطلب على واتساب</a>
+   <p class="checkout-hint">مهم: الطلب لا يُعتبر مرسلاً إلا بعد الضغط على زر إرسال داخل واتساب.</p>
+   <button class="checkout-back-button" id="backToCartReview" type="button">العودة إلى المنتجات</button>
   </section>
  </div>
  <div class="cart-sticky-footer">
   <div class="cart-total" id="cartTotal" aria-live="polite"></div>
-  <button class="button-primary checkout" type="button" id="checkout">تأكيد البيانات وإرسال الطلب عبر واتساب</button>
+  <button class="button-primary checkout" type="button" id="checkout" hidden>إرسال الطلب عبر واتساب</button>
  </div>
 </aside>
 <script src="products.js?v=live-refresh-20261114-1"></script>
