@@ -380,3 +380,11 @@ body.dawly-assistant-page{margin:0!important;min-height:100vh;background:linear-
    bottom:calc(220px + env(safe-area-inset-bottom))!important;
  }
 }
+
+
+/* Product browsing controls on the full-page assistant. */
+.dawly-assistant-actions{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.dawly-assistant-products{display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border-radius:11px;background:#c8101e;color:#fff;text-decoration:none;font-weight:900;font-size:13px;box-shadow:0 4px 12px #c8101e25}
+.dawly-assistant-products:hover{background:#a90f1b}
+.dawly-assistant-back{white-space:nowrap}
+@media(max-width:600px){.dawly-assistant-topbar{gap:8px}.dawly-assistant-actions{gap:6px}.dawly-assistant-products,.dawly-assistant-back{font-size:11px;padding:8px 9px}}
