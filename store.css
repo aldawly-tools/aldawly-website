@@ -5214,3 +5214,26 @@ html body aside#cartDrawer.cart-drawer>.cart-scroll-area>.payment-followup{
  #productGrid .product-meta .button-primary{min-height:39px;padding:8px 9px;font-size:11px}
  #productGrid .product-card-tools .quick-view-trigger,#productGrid .product-card-tools .share-product-button{font-size:10px}
 }
+
+
+/* Compact final card layout: availability below title, compact utility icons. */
+#productGrid .product-card{height:100%;min-height:0}
+#productGrid .product-info{gap:6px}
+#productGrid .product-name{min-height:0;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;line-clamp:2;overflow:hidden}
+#productGrid .product-card-status{min-height:23px}
+#productGrid .product-description{min-height:0;-webkit-line-clamp:2;line-clamp:2;font-size:11px;line-height:1.55}
+#productGrid .product-card-tools{display:flex;justify-content:flex-start;align-items:center;gap:7px;margin-top:1px}
+#productGrid .product-card-tools .quick-view-trigger,
+#productGrid .product-card-tools .share-product-button{width:34px;height:32px;min-height:32px;margin:0;padding:0;display:inline-flex;align-items:center;justify-content:center;border:1px solid #e8d5d7!important;border-radius:9px;background:#fff!important;color:#a80e19!important;font-size:17px;font-weight:900;line-height:1}
+#productGrid .product-card-tools .quick-view-trigger:hover,
+#productGrid .product-card-tools .share-product-button:hover{background:#fff0f1!important}
+#productGrid .product-meta{margin-top:2px}
+@media(max-width:700px){
+ #productGrid .product-visual{height:155px}
+ #productGrid .product-info{padding:9px;gap:5px}
+ #productGrid .product-name{font-size:13px;line-height:1.4}
+ #productGrid .product-card-status .stock-status{font-size:10px;padding:4px 7px}
+ #productGrid .product-description{font-size:10px}
+ #productGrid .product-meta{align-items:center}
+ #productGrid .product-meta .button-primary{font-size:10px;padding:8px 8px}
+}
