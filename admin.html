@@ -284,6 +284,9 @@ button:disabled{opacity:.6;cursor:wait}
         <div class="field"><label for="imageFile">أو اختر صورًا متعددة من الجهاز (حتى 8 صور)</label><input id="imageFile" type="file" multiple accept=".jpg,.jpeg,.png,.webp,.gif,.bmp,.avif,image/jpeg,image/png,image/webp,image/gif,image/bmp,image/avif"><img id="imagePreview" class="image-preview hidden" alt="معاينة صورة المنتج"><div id="imageGalleryPreview" class="image-gallery-preview" aria-live="polite"></div><button class="light" id="removeImageBtn" type="button">مسح الصورة المختارة</button><small class="muted">الصيغ المدعومة: JPG وJPEG وPNG وWEBP وGIF وBMP وAVIF. سيتم تحويل الصورة تلقائيًا إلى JPG مضغوط قبل الحفظ.</small></div>
         <div class="field"><button class="light" id="analyzeImageBtn" type="button">✨ تحليل صورة المنتج بالذكاء الاصطناعي</button><small class="muted">حلّل أول صورة مختارة لإنشاء اقتراحات للاسم والماركة والقسم والوصف والمواصفات. راجع النتائج قبل الحفظ.</small></div>
         <div class="field"><label style="display:flex;align-items:center;gap:9px"><input id="featured" type="checkbox" style="width:auto"> إظهار المنتج ضمن اختيارات الدولي</label><small class="muted">اختياري: يظهر المنتج في قسم المنتجات المميزة بالصفحة الرئيسية.</small></div>
+        <div class="field"><label for="availability">حالة التوفر للعميل</label><select id="availability"><option value="available">متوفر</option><option value="unavailable">غير متوفر حاليًا</option><option value="ask">استفسر عن التوفر</option></select></div>
+        <div class="field"><label style="display:flex;align-items:center;gap:9px"><input id="storeVisible" type="checkbox" checked style="width:auto"> إظهار المنتج في المتجر</label><small class="muted">إلغاء الاختيار يخفي المنتج عن العملاء دون حذفه من قاعدة البيانات.</small></div>
+        <div class="field"><label for="featuredOrder">ترتيب المنتج المميز</label><input id="featuredOrder" type="number" min="0" step="1" value="0"><small class="muted">الأرقام الأصغر تظهر أولًا داخل اختيارات الدولي. اتركه 0 للترتيب الافتراضي.</small></div>
         <div class="field"><label for="desc">وصف المنتج</label><textarea id="desc" rows="3" placeholder="اكتب وصفًا واضحًا للمنتج واستخدامه..."></textarea></div>
         <div class="field"><label for="specs">المواصفات الفنية (كل مواصفة في سطر)</label><textarea id="specs" rows="5" placeholder="بلد المنشأ: ألمانيا&#10;رقم الموديل: ...&#10;المقاس: ...&#10;عدد القطع: ...&#10;الخامة: ..."></textarea><small class="muted">اكتب كل سطر بهذا الشكل: اسم المواصفة: القيمة. اتركه فارغًا إذا لم تتوفر المعلومة.</small></div>
         <div class="field"><label for="tasks">الاستخدامات المناسبة للمساعد الفني</label><select id="tasks" multiple size="5"><option value="drill">تخريم</option><option value="screw">فك وربط</option><option value="cut">قطع وتجليخ</option><option value="wood">نجارة</option><option value="clean">تنظيف وصنفرة</option><option value="other">استخدامات أخرى</option></select></div>
@@ -1079,6 +1082,9 @@ async function editProduct(id) {
   $("price").value = product.price || "";
   $("icon").value = product.icon || "🔧";
   $("featured").checked = product.featured === true;
+  $("availability").value = ["available","unavailable","ask"].includes(product.availability) ? product.availability : (Number.isInteger(product.stock)&&product.stock===0 ? "unavailable" : "available");
+  $("storeVisible").checked = product.hiddenFromStore !== true;
+  $("featuredOrder").value = String(Math.max(0,Number(product.featuredOrder)||0));
   imageRemoved = false;
   existingImageIds = Array.isArray(product.imageIds) ? product.imageIds.map(String) : (product.imageId ? [String(product.imageId)] : []);
   $("imageUrl").value = product.image || "";
@@ -1345,6 +1351,9 @@ $("productForm").addEventListener("submit", async function (event) {
       price:$("price").value.trim() || "السعر عند الاستفسار",
       icon:$("icon").value.trim() || "🔧",
       featured:$("featured").checked,
+      availability:$("availability").value,
+      hiddenFromStore:!$("storeVisible").checked,
+      featuredOrder:Math.max(0,Number($("featuredOrder").value)||0),
       image:image,
       imageId:imageId,
       imageIds:imageIds,
