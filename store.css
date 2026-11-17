@@ -5831,3 +5831,18 @@ html body aside#cartDrawer.cart-drawer>.cart-scroll-area>.payment-followup{
 @media(prefers-reduced-motion:reduce){
  .floating-contact-toggle,.floating-contact-toggle::before,.floating-contact-toggle::after{animation:none!important}
 }
+
+
+/* Floating contact button stays out of the way while the visitor scrolls down. */
+.floating-contact-widget{
+ transition:opacity .22s ease,transform .22s ease,visibility .22s ease!important;
+}
+.floating-contact-widget.is-scroll-hidden{
+ opacity:0!important;
+ visibility:hidden!important;
+ transform:translateY(16px)!important;
+ pointer-events:none!important;
+}
+@media(prefers-reduced-motion:reduce){
+ .floating-contact-widget{transition:none!important}
+}
