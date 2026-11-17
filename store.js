@@ -370,17 +370,18 @@
         : item.imageId
           ? '<img data-cloud-image="' + escapeHtml(item.imageId) + '" alt="' + escapeHtml(name) + '" loading="eager" decoding="async" draggable="false">'
           : '<span class="product-placeholder" aria-hidden="true">' + escapeHtml(item.icon || "🔧") + '</span>';
-      const soldOut = Number.isInteger(item.stock) && item.stock === 0;
+      const soldOut = item.availability === "unavailable" || (item.availability !== "available" && Number.isInteger(item.stock) && item.stock === 0);
+      const availabilityLabel = item.availability === "ask" ? '<span class="stock-status">استفسر عن التوفر</span>' : soldOut ? '<span class="stock-status out">غير متوفر حاليًا</span>' : '<span class="stock-status">متوفر — يُرجى التأكيد عند الطلب</span>';
       return '<article class="product-card home-shelf-card"><a class="product-visual product-open-link" href="' + url + '">' + image + '</a><div class="product-info"><span class="product-category">' + escapeHtml(displayBrand(productBrand(item)) || item.cat || "منتجات") + '</span><h3 class="product-name"><a href="' + url + '">' + escapeHtml(name) + '</a></h3><span class="product-price">' + escapeHtml(formatPrice(item.price)) + '<small>' + (item.price === null || item.price === undefined || item.price === "" ? 'السعر عند التواصل' : 'يُرجى تأكيد التوفر عند التواصل') + '</small></span><a class="product-details-link" href="' + url + '">التفاصيل والسعر والتوفر ←</a><button class="quick-view-trigger" type="button" data-quick-view="' + escapeHtml(item.id) + '">معاينة سريعة</button><button class="button-primary home-shelf-add" type="button" data-add="' + escapeHtml(item.id) + '"' + (soldOut ? ' disabled aria-disabled="true"' : '') + '>' + (soldOut ? 'غير متاح حاليًا' : 'أضف إلى السلة') + '</button></div></article>';
     }
     const featuredGrid = document.getElementById("featuredProductsGrid");
     if (featuredGrid) {
-      const featured = products.filter(function(item){ return item.featured === true || item.isFeatured === true || item.weeklyPick === true; });
+      const featured = products.filter(function(item){ return item.hiddenFromStore !== true && (item.featured === true || item.isFeatured === true || item.weeklyPick === true); }).sort(function(a,b){ return (Number(a.featuredOrder)||0)-(Number(b.featuredOrder)||0) || Number(b.id||0)-Number(a.id||0); });
       featuredGrid.innerHTML = featured.length ? featured.map(card).join("") : '<div class="catalog-empty-note">لا توجد منتجات مميزة مضافة حاليًا. يمكنك اختيار المنتجات المميزة من بيانات المنتج في لوحة الإدارة.</div>';
     }
     const arrivalsGrid = document.getElementById("newArrivalsGrid");
     if (arrivalsGrid) {
-      const latest = products.slice().sort(function(a,b){
+      const latest = products.filter(function(item){return item.hiddenFromStore !== true;}).slice().sort(function(a,b){
         const da = a.createdAt && (a.createdAt.seconds || Date.parse(a.createdAt) / 1000) || 0;
         const db = b.createdAt && (b.createdAt.seconds || Date.parse(b.createdAt) / 1000) || 0;
         return db-da || Number(b.id||0)-Number(a.id||0);
@@ -511,6 +512,7 @@
   function renderProducts() {
     const terms = normalizeSearchText(query).split(" ").filter(Boolean);
     const filtered = products.filter(function (item) {
+      if (item.hiddenFromStore === true) return false;
       const categoryMatch = activeCategory === "الكل" || item.cat === activeCategory;
       const brand = productBrand(item);
       const brandMatch = !activeBrand || normalizeBrand(brand) === normalizeBrand(activeBrand);
@@ -564,8 +566,9 @@
       const discountPercent = currentPrice !== null && compareAtPrice !== null && compareAtPrice > currentPrice
         ? Math.round((compareAtPrice - currentPrice) / compareAtPrice * 100) : 0;
       const stockKnown = Number.isInteger(item.stock) && item.stock >= 0;
-      const stockOut = stockKnown && item.stock === 0;
-      const stockLabel = stockOut ? '<span class="stock-status out">نفد المخزون</span>' : stockKnown ? '<span class="stock-status">المتاح: ' + item.stock + ' قطعة</span>' : '';
+      const stockOut = item.availability === "unavailable" || (item.availability !== "available" && stockKnown && item.stock === 0);
+      const availabilityLabel = item.availability === "ask" ? '<span class="stock-status">استفسر عن التوفر</span>' : stockOut ? '<span class="stock-status out">غير متوفر حاليًا</span>' : '<span class="stock-status">متوفر — يُرجى التأكيد عند الطلب</span>';
+      const stockLabel = item.availability === "ask" || stockOut ? availabilityLabel : stockKnown ? '<span class="stock-status">المتاح: ' + item.stock + ' قطعة</span>' : availabilityLabel;
       return '<article class="product-card" id="product-' + encodeURIComponent(item.id) + '">' +
         '<a class="product-visual product-open-link" href="' + detailUrl + '" aria-label="عرض تفاصيل المنتج: ' + escapeHtml(name) + '">' + visual + '</a>' +
         '<div class="product-info"><span class="product-category">' + (productBrand(item) ? escapeHtml(displayBrand(productBrand(item))) + ' · ' : '') + escapeHtml(item.cat || "منتجات") + '</span>' +
