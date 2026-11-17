@@ -636,35 +636,6 @@
     } catch (error) {}
   });
 
-  function clearCartAfterWhatsApp() {
-    cart = [];
-    pendingOrder = null;
-    renderCart();
-    checkout.textContent = "تجهيز الطلب وفتحه على واتساب";
-    checkout.dataset.orderPrepared = "false";
-    const status = document.getElementById("paymentFollowupStatus");
-    if (status) status.textContent = "تم تفريغ السلة بنجاح. شكراً لطلبك من الدولي.";
-    const confirmButton = document.getElementById("confirmOrderSent");
-    if (confirmButton) confirmButton.hidden = true;
-    const orderLink = document.getElementById("orderWhatsappLink");
-    if (orderLink) orderLink.hidden = true;
-  }
-
-  const confirmOrderSentButton = document.getElementById("confirmOrderSent");
-  if (confirmOrderSentButton) {
-    confirmOrderSentButton.addEventListener("click", function() {
-      if (!pendingOrder) {
-        alert("لا يوجد طلب مجهز لتأكيد إرساله.");
-        return;
-      }
-      if (!window.confirm("هل أرسلت الطلب بالفعل عبر واتساب؟ سيتم تفريغ السلة بالكامل.")) return;
-      clearCartAfterWhatsApp();
-      alert("تم تفريغ السلة بنجاح. يمكنك متابعة التسوق.");
-    });
-  }
-
-  // لا نفرغ السلة عند فتح واتساب؛ التفريغ يتم فقط بعد تأكيد العميل الإرسال.
-
   window.addEventListener("dawly-catalog-ready", function () {
     observeCloudImages();
   });
@@ -1233,16 +1204,24 @@
       checkout.disabled = false;
     }
 
+    const orderNumber = pendingOrder.number;
     const opened = window.open(pendingOrder.url, "_blank");
     if (opened) {
       try { opened.opener = null; } catch (error) {}
+      // Clear the cart as soon as WhatsApp opens; the browser cannot detect
+      // whether the customer pressed Send inside the WhatsApp app.
+      cart = [];
+      pendingOrder = null;
+      renderCart();
+      checkout.textContent = "تجهيز الطلب وفتحه على واتساب";
+      checkout.dataset.orderPrepared = "false";
+      const followup = document.getElementById("paymentFollowup");
+      if (followup) followup.hidden = true;
+      alert("تم فتح واتساب وتفريغ السلة. اضغط إرسال داخل واتساب لإتمام الطلب.");
     } else {
-      alert("المتصفح منع فتح واتساب تلقائيًا. اضغط على زر «فتح رسالة الطلب عبر واتساب» داخل ملخص الطلب.");
-    }
-    const status = document.getElementById("paymentFollowupStatus");
-    if (status) {
-      status.textContent = "تم تجهيز الطلب رقم " + pendingOrder.number +
-        ". افتح رسالة واتساب واضغط إرسال لإتمام الطلب. لم يتم تأكيد الإرسال بعد.";
+      alert("المتصفح منع فتح واتساب تلقائيًا. اضغط على زر فتح رسالة الطلب داخل ملخص الطلب، وستظل السلة كما هي حتى يفتح واتساب.");
+      const status = document.getElementById("paymentFollowupStatus");
+      if (status) status.textContent = "الطلب رقم " + orderNumber + " جاهز. افتح رسالة واتساب من الزر أدناه.";
     }
   });
 
