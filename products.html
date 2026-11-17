@@ -202,13 +202,19 @@
  <div><h3>نسعد بخدمتك</h3><p>للاستفسار عن الأسعار والتوفر، تواصل معنا مباشرة.</p><a class="button-primary" href="https://wa.me/201024787222" target="_blank" rel="noopener">تواصل عبر واتساب</a><br><a href="https://www.facebook.com/wurth.tools" target="_blank" rel="noopener noreferrer">تابعنا على فيسبوك</a></div>
 </div></footer>
 <div class="cart-overlay" id="cartOverlay"></div>
+<div class="cart-quickbar" id="cartQuickbar" hidden><div class="cart-quickbar-copy"><strong>طلبك جاهز للمراجعة</strong><span id="cartQuickbarSummary">0 منتجات</span></div><button type="button" id="cartQuickbarOpen">متابعة الطلب ←</button></div>
 <aside class="cart-drawer" id="cartDrawer" aria-label="سلة المشتريات" aria-modal="true" role="dialog">
  <div class="drawer-head"><div class="order-drawer-title"><span class="order-eyebrow">الدولي للعدد الأصلية والمستوردة</span><h2>طلبك من الدولي</h2><p>راجع المنتجات وأرسل طلبك مباشرة لفريقنا</p></div><button class="drawer-close" type="button" id="closeCart">إغلاق ✕</button></div>
  <div class="cart-scroll-area">
+ <div id="cartReviewStep">
  <div class="order-progress" aria-label="خطوات الطلب"><span class="is-active"><b>1</b> مراجعة المنتجات</span><i></i><span><b>2</b> بيانات التوصيل</span><i></i><span><b>3</b> واتساب</span></div>
  <div class="order-section-heading"><div><h3>منتجات طلبك</h3><p>يمكنك تعديل الكمية أو حذف أي منتج قبل الإرسال</p></div><span class="order-secure-mark">طلب مباشر</span></div>
  <div class="cart-items" id="cartItems"></div>
  <div class="cart-total" id="cartTotal" aria-live="polite"></div>
+ <button class="button-primary" type="button" id="continueCheckout">متابعة وإدخال البيانات ←</button>
+ </div>
+ <section class="checkout-details-step" id="checkoutDetailsStep" hidden aria-label="بيانات إتمام الطلب">
+  <div class="checkout-step-heading"><button type="button" id="backToCartReview">← رجوع للمنتجات</button><span>الخطوة الثانية من ٢</span></div>
  <div class="checkout-fields" aria-label="اختيار مسؤول الطلب">
   <h3>اختار المسؤول أولاً</h3>
   <label for="orderAdminChoice">إرسال الطلب إلى <span>*</span></label>
@@ -228,7 +234,8 @@
   <textarea id="customerAddress" autocomplete="street-address" maxlength="300" rows="2" placeholder="المحافظة - المدينة - الشارع - أقرب علامة مميزة" required></textarea>
  </div>
 <div class="checkout-action-note"><span>✓</span> لن يتم تحصيل أي مبلغ من خلال هذه الخطوة</div>
-  <button class="button-primary checkout" type="button" id="checkout">تجهيز الطلب وفتحه على واتساب</button>
+   <button class="button-primary checkout" type="button" id="checkout" hidden>تجهيز الطلب وفتحه على واتساب</button>
+ </section>
  <section class="payment-followup" id="paymentFollowup" hidden aria-labelledby="paymentFollowupTitle">
   <h3 id="paymentFollowupTitle">خطوة تأكيد الحجز</h3>
   <p class="payment-followup-status" id="paymentFollowupStatus" aria-live="polite"></p>
@@ -249,7 +256,7 @@
 <script src="firebase-config.js?v=live-refresh-20261114-1"></script>
 <script type="module" src="traffic-analytics.js?v=product-view-routes-20261116-1"></script>
 <script src="onesignal-init.js?v=live-refresh-20261114-1"></script>
-<script src="store.js?v=direct-checkout-top-20261117-2"></script>
+<script src="store.js?v=quick-cart-two-step-20261117-1"></script>
 <script>
 (function(){
  var params=new URLSearchParams(window.location.search);
