@@ -291,3 +291,21 @@ body.dawly-assistant-page{margin:0!important;min-height:100vh;background:linear-
  #dawlyBotLauncher.dawly-prompt-visible{width:260px!important;min-width:260px!important;max-width:calc(100vw - 28px)!important;height:66px!important}
 }
 @media(max-width:360px){#dawlyBotLauncher,#dawlyBotLauncher.dawly-prompt-visible{width:calc(100vw - 28px)!important;min-width:0!important}#dawlyBotLauncher .dawly-bot-prompt{font-size:14px!important}}
+
+
+/* Ensure the Arabic support label is visible and not constrained by legacy prompt rules. */
+#dawlyBotLauncher.dawly-prompt-visible > .dawly-bot-prompt{
+ display:inline-block!important;position:static!important;
+ flex:0 0 auto!important;width:auto!important;max-width:none!important;max-height:none!important;
+ height:auto!important;overflow:visible!important;clip:auto!important;clip-path:none!important;
+ color:#202832!important;-webkit-text-fill-color:#202832!important;
+ opacity:1!important;visibility:visible!important;transform:none!important;
+ font-family:Cairo,Tahoma,Arial,sans-serif!important;font-size:15px!important;font-weight:900!important;
+ line-height:1.5!important;white-space:nowrap!important;text-indent:0!important;
+}
+#dawlyBotLauncher.dawly-prompt-visible{
+ justify-content:center!important;gap:12px!important;
+}
+@media(max-width:700px){
+ #dawlyBotLauncher.dawly-prompt-visible > .dawly-bot-prompt{font-size:14px!important}
+}
