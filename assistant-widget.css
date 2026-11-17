@@ -409,3 +409,14 @@ a.dawly-bot-product:hover,a.dawly-bot-product:focus-visible{
 body.dawly-about-in-view #dawlyBotLauncher{
  opacity:0!important;visibility:hidden!important;pointer-events:none!important;
 }
+
+
+/* Animated first-visit welcome message */
+#dawlyBotChips[hidden]{display:none!important}
+.dawly-welcome-typing:after{
+ content:"";display:inline-block;width:2px;height:1.05em;margin-inline-start:4px;
+ vertical-align:-.15em;background:#c8101e;border-radius:2px;
+ animation:dawlyTypingCursor .8s steps(2,start) infinite;
+}
+@keyframes dawlyTypingCursor{to{visibility:hidden}}
+@media(prefers-reduced-motion:reduce){.dawly-welcome-typing:after{animation:none}}
