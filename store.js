@@ -1191,6 +1191,79 @@
     });
   });
 
+  const printOrderA4Button = document.getElementById("printOrderA4");
+  if (printOrderA4Button) {
+    printOrderA4Button.addEventListener("click", function() {
+      if (!cart.length) {
+        alert("السلة فارغة. أضف المنتجات أولاً.");
+        return;
+      }
+      const adminChoice = document.getElementById("orderAdminChoice");
+      const selectedAdmin = adminChoice ? adminChoice.value : "";
+      const customerName = document.getElementById("customerName").value.trim();
+      const customerPhoneRaw = document.getElementById("customerPhone").value.trim();
+      const customerAddress = document.getElementById("customerAddress").value.trim();
+      if (!selectedAdmin || !customerName || !customerPhoneRaw || !customerAddress) {
+        alert("من فضلك اختر المسؤول واكتب اسم العميل ورقم الهاتف والعنوان قبل الطباعة.");
+        return;
+      }
+      const customerPhone = customerPhoneRaw
+        .replace(/[٠-٩]/g, function (digit) { return String("٠١٢٣٤٥٦٧٨٩".indexOf(digit)); })
+        .replace(/[۰-۹]/g, function (digit) { return String("۰۱۲۳۴۵۶۷۸۹".indexOf(digit)); })
+        .replace(/[\s()+-]/g, "");
+      if (!/^(?:01[0125]\d{8}|201[0125]\d{8})$/.test(customerPhone)) {
+        alert("رقم الموبايل المصري غير مكتمل أو غير صحيح.");
+        document.getElementById("customerPhone").focus();
+        return;
+      }
+      const orderNo = pendingOrder ? pendingOrder.number : createUniqueOrderNumber();
+      const rows = cart.map(function(line, index) {
+        const item = products.find(function(entry) {
+          return String(entry.id) === String(line.id) ||
+            (entry._docId !== undefined && String(entry._docId) === String(line.id));
+        });
+        if (!item) return "";
+        const unit = parsePrice(item.price);
+        const lineTotal = unit === null ? null : unit * line.qty;
+        const brand = productBrand(item);
+        const code = item.sku || item.code || item.model || item.partNumber || "";
+        const details = cleanProductCopy(item.desc || item.description || item.details || item.specs || "");
+        return '<tr><td>' + (index + 1) + '</td><td><strong>' + escapeHtml(cleanOrderProductName(item.name)) + '</strong>' +
+          (brand ? '<small>' + escapeHtml(brand) + '</small>' : '') +
+          (code ? '<small>الكود / الموديل: ' + escapeHtml(code) + '</small>' : '') +
+          (details ? '<small>' + escapeHtml(details.slice(0, 240)) + '</small>' : '') +
+          '</td><td>' + line.qty + '</td><td>' + (unit === null ? 'عند الاستفسار' : escapeHtml(money(unit))) +
+          '</td><td>' + (lineTotal === null ? 'بعد تأكيد السعر' : escapeHtml(money(lineTotal))) + '</td></tr>';
+      }).filter(Boolean);
+      if (!rows.length || rows.length !== cart.length) {
+        alert("تعذر تجهيز بيانات كل المنتجات للطباعة. حدّث الصفحة وحاول مرة أخرى.");
+        return;
+      }
+      const pricing = cartPricing();
+      const totalLabel = pricing.pricedCount === pricing.itemCount
+        ? money(pricing.total)
+        : (pricing.pricedCount ? "مجموع المنتجات المسعّرة: " + money(pricing.total) : "يحدد بعد تأكيد الأسعار");
+      const adminLabel = selectedAdmin === "201002878301" ? "المسؤول الأول · 01002878301" : "المسؤول الثاني · 01024787222";
+      const popup = window.open("", "_blank");
+      if (!popup) {
+        alert("المتصفح منع نافذة الطباعة. اسمح بالنوافذ المنبثقة للموقع ثم حاول مرة أخرى.");
+        return;
+      }
+      const html = '<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>طلب ' + escapeHtml(orderNo) + '</title><style>' +
+        '@page{size:A4;margin:14mm}*{box-sizing:border-box}body{font-family:Tahoma,Arial,sans-serif;color:#20242a;margin:0;font-size:12px;line-height:1.7}.head{display:flex;justify-content:space-between;align-items:center;border-bottom:4px solid #c8101e;padding-bottom:12px;margin-bottom:16px}.brand{font-size:24px;font-weight:900;color:#b51220}.tag{font-size:12px;color:#555;font-weight:700}.meta{text-align:left;font-size:11px;color:#555}.title{font-size:20px;font-weight:900;margin:12px 0}.cards{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}.card{border:1px solid #d9dde2;border-radius:8px;padding:10px}.card h3{margin:0 0 6px;color:#b51220;font-size:13px}.card p{margin:3px 0;overflow-wrap:anywhere}.order-id{font-weight:900;font-size:14px;color:#b51220}table{width:100%;border-collapse:collapse;margin-top:8px}th,td{border:1px solid #cfd4da;padding:7px;text-align:right;vertical-align:top}th{background:#f1f3f5;font-weight:900}td small{display:block;color:#606872;font-size:10px;line-height:1.5}.totals{width:48%;margin:14px 0 0 auto;border:1px solid #d9dde2;border-radius:8px;padding:10px}.total-line{display:flex;justify-content:space-between;padding:3px 0}.grand{border-top:2px solid #c8101e;margin-top:5px;padding-top:7px;font-size:16px;font-weight:900;color:#b51220}.note{margin-top:12px;padding:9px;background:#fff7f7;border:1px solid #efd1d4;border-radius:7px}.foot{margin-top:24px;padding-top:9px;border-top:1px solid #ddd;text-align:center;color:#666;font-size:10px}.sign{display:flex;justify-content:space-between;margin-top:28px}.sign span{width:42%;border-top:1px solid #777;padding-top:5px;text-align:center}@media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact}.no-print{display:none!important}}' +
+        '</style></head><body><header class="head"><div><div class="brand">الدولي</div><div class="tag">للعدد الأصلية والمستوردة</div></div><div class="meta">تاريخ الطباعة: ' + escapeHtml(new Date().toLocaleString("ar-EG")) + '<br>رقم الطلب: <span class="order-id">' + escapeHtml(orderNo) + '</span></div></header>' +
+        '<h1 class="title">بيانات العميل وتفاصيل الطلب</h1><section class="cards"><div class="card"><h3>بيانات العميل</h3><p><b>الاسم:</b> ' + escapeHtml(customerName) + '</p><p><b>رقم الهاتف:</b> ' + escapeHtml(customerPhoneRaw) + '</p><p><b>العنوان:</b> ' + escapeHtml(customerAddress) + '</p></div><div class="card"><h3>بيانات متابعة الطلب</h3><p><b>المسؤول المختار:</b> ' + escapeHtml(adminLabel) + '</p><p><b>عدد المنتجات:</b> ' + pricing.itemCount + '</p><p><b>إجمالي القطع:</b> ' + cart.reduce(function(sum,line){return sum+line.qty;},0) + '</p></div></section>' +
+        '<table><thead><tr><th style="width:5%">م</th><th>المنتج والتفاصيل</th><th style="width:9%">الكمية</th><th style="width:18%">سعر الوحدة</th><th style="width:20%">الإجمالي</th></tr></thead><tbody>' + rows.join("") + '</tbody></table>' +
+        '<section class="totals"><div class="total-line"><span>إجمالي المنتجات</span><b>' + escapeHtml(totalLabel) + '</b></div><div class="total-line"><span>الشحن</span><b>يحدد بعد تأكيد العنوان</b></div><div class="total-line grand"><span>الإجمالي النهائي</span><b>' + escapeHtml(totalLabel) + '</b></div></section>' +
+        '<div class="note">ملاحظة: الأسعار غير المحددة عند الاستفسار وتكلفة الشحن يتم تأكيدها من المتجر قبل اعتماد الطلب.</div><div class="sign"><span>توقيع العميل</span><span>مراجعة المتجر</span></div><footer class="foot">الدولي للعدد الأصلية والمستوردة · شكراً لثقتكم بنا</footer><div class="no-print" style="text-align:center;margin-top:20px"><button onclick="window.print()" style="padding:12px 24px;background:#c8101e;color:#fff;border:0;border-radius:8px;font-weight:900;font-size:15px">طباعة ورقة A4</button></div></body></html>';
+      popup.document.open();
+      popup.document.write(html);
+      popup.document.close();
+      popup.focus();
+      popup.onload = function() { popup.print(); };
+    });
+  }
+
   checkout.addEventListener("click", function() {
     if (checkout.disabled) return;
 
