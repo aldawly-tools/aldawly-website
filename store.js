@@ -221,7 +221,7 @@
     return Number.isFinite(amount) && amount > 0 ? amount : null;
   }
   function money(amount) {
-    return new Intl.NumberFormat("ar-EG", {maximumFractionDigits:2}).format(amount) + " ج.م";
+    return "EGP " + new Intl.NumberFormat("en-US", {maximumFractionDigits:2}).format(amount);
   }
   function formatPrice(value) {
     const amount = parsePrice(value);
