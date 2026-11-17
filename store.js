@@ -1192,7 +1192,7 @@
     };
   }
 
-  ["customerName", "customerPhone", "customerAddress"].forEach(function(id) {
+  ["orderAdminChoice", "customerName", "customerPhone", "customerAddress"].forEach(function(id) {
     const field = document.getElementById(id);
     if (!field) return;
     field.addEventListener("input", function() {
