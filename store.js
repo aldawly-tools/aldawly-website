@@ -1376,10 +1376,22 @@
   renderHomeShelves();
   renderBrandAvailability();
   renderCart();
-  if (new URLSearchParams(window.location.search).get("cart") === "1") {
+  const initialParams = new URLSearchParams(window.location.search);
+  if (initialParams.get("cart") === "1") {
+    const directOrder = initialParams.get("direct") === "1";
     setDrawer(true);
+    if (directOrder) {
+      // Direct-order links skip the cart-items view and bring delivery details into view.
+      window.requestAnimationFrame(function () {
+        const customerSection = cartDrawer.querySelector('.checkout-fields[aria-label="بيانات العميل"]');
+        if (customerSection && customerSection.scrollIntoView) {
+          customerSection.scrollIntoView({behavior:"smooth", block:"start"});
+        }
+      });
+    }
     const cleanUrl = new URL(window.location.href);
     cleanUrl.searchParams.delete("cart");
+    cleanUrl.searchParams.delete("direct");
     window.history.replaceState({}, "", cleanUrl.pathname + cleanUrl.search + cleanUrl.hash);
   }
 })();
