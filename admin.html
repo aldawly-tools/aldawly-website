@@ -136,6 +136,7 @@ button:disabled{opacity:.6;cursor:wait}
 }
 
 /* لوحة إدارة جديدة: تخطيط جانبي واضح وسريع */
+#manager.hidden{display:none!important}
 #manager{display:grid;grid-template-columns:238px minmax(0,1fr);grid-template-rows:auto 1fr;column-gap:22px;align-items:start;max-width:1320px;margin:22px auto 40px}
 #manager>.dashboard-nav{grid-column:1;grid-row:1 / span 20;position:sticky;top:14px;display:flex;flex-direction:column;align-items:stretch;gap:7px;padding:15px;background:#fff;border:1px solid #e8e9ed;border-radius:19px;box-shadow:0 8px 28px #20242a0b;min-height:calc(100vh - 28px)}
 .admin-brand{display:flex;align-items:center;gap:11px;padding:5px 7px 18px;margin-bottom:8px;border-bottom:1px solid #eceef1}
