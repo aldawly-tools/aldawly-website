@@ -1182,6 +1182,58 @@
     }
   }
 
+
+  // Create an A5 packing slip with product names and quantities only (no prices).
+  async function createPackingSlipPdf(order) {
+    const canvas = document.createElement("canvas");
+    canvas.width = 1240; canvas.height = 1754;
+    const ctx = canvas.getContext("2d"), w = canvas.width, h = canvas.height;
+    ctx.fillStyle = "#fff"; ctx.fillRect(0, 0, w, h);
+    ctx.fillStyle = "#c8101e"; ctx.fillRect(0, 0, w, 24);
+    ctx.direction = "rtl"; ctx.textAlign = "right";
+    function write(value, x, y, size, color, weight) {
+      ctx.font = (weight || "600") + " " + size + "px Tahoma, Arial, sans-serif";
+      ctx.fillStyle = color || "#20242a"; ctx.fillText(String(value == null ? "" : value), x, y, w - 150);
+    }
+    ctx.fillStyle = "#c8101e"; ctx.beginPath(); ctx.arc(155, 145, 66, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = "#fff"; ctx.beginPath(); ctx.arc(155, 145, 47, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = "#20242a"; ctx.beginPath(); ctx.arc(155, 145, 32, 0, Math.PI * 2); ctx.fill();
+    write("الدولي للعدد الأصلية والمستوردة", w - 90, 135, 48, "#c8101e", "bold");
+    write("ورقة تجهيز وتأكيد الطلب", w - 90, 205, 32, "#333", "bold");
+    ctx.strokeStyle = "#e5e7eb"; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(75, 255); ctx.lineTo(w - 75, 255); ctx.stroke();
+    write("رقم الطلب: " + order.number, w - 90, 325, 30, "#20242a", "bold");
+    write("اسم العميل: " + order.customerName, w - 90, 390, 27, "#343d47");
+    write("رقم الهاتف: " + order.customerPhone, w - 90, 445, 25, "#343d47");
+    let y = 535;
+    write("المنتجات المطلوبة", w - 90, y, 31, "#c8101e", "bold"); y += 38;
+    ctx.fillStyle = "#f3f4f6"; ctx.fillRect(75, y, w - 150, 66);
+    write("اسم المنتج", w - 115, y + 44, 23, "#20242a", "bold");
+    ctx.textAlign = "left"; ctx.font = "bold 23px Tahoma, Arial, sans-serif"; ctx.fillStyle = "#20242a"; ctx.fillText("الكمية", 125, y + 44); ctx.textAlign = "right";
+    y += 66;
+    order.orderItems.forEach(function(item, index) {
+      const rowH = 92;
+      ctx.fillStyle = index % 2 ? "#fff" : "#fafafa"; ctx.fillRect(75, y, w - 150, rowH);
+      ctx.strokeStyle = "#eee"; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(75, y + rowH); ctx.lineTo(w - 75, y + rowH); ctx.stroke();
+      write((index + 1) + ". " + item.name, w - 115, y + 55, 24, "#20242a");
+      ctx.textAlign = "left"; ctx.font = "bold 25px Tahoma, Arial, sans-serif"; ctx.fillStyle = "#20242a"; ctx.fillText(String(item.qty), 145, y + 55); ctx.textAlign = "right";
+      y += rowH;
+    });
+    y += 85;
+    ctx.strokeStyle = "#e5e7eb"; ctx.beginPath(); ctx.moveTo(75, y); ctx.lineTo(w - 75, y); ctx.stroke();
+    write("شكرًا لثقتكم في الدولي للعدد الأصلية ❤️", w - 90, y + 70, 28, "#c8101e", "bold");
+    write("نسعد بخدمتكم دائمًا", w - 90, y + 120, 23, "#555");
+    write("aldawly-website.pages.dev", w - 90, h - 95, 20, "#777");
+    const JsPDF = await loadJsPdfLibrary();
+    const pdf = new JsPDF({orientation:"portrait", unit:"mm", format:"a5", compress:true});
+    pdf.addImage(canvas.toDataURL("image/jpeg", 0.94), "JPEG", 0, 0, 148, 210, undefined, "FAST");
+    pdf.setProperties({title:"ورقة تجهيز الطلب " + order.number, author:"الدولي للعدد الأصلية والمستوردة"});
+    return pdf;
+  }
+  async function downloadPackingSlip(order) {
+    const pdf = await createPackingSlipPdf(order);
+    pdf.save("طلب-" + order.number + "-الدولي.pdf");
+  }
+
   // One stable order draft per checkout attempt. Reopening WhatsApp reuses the same ID.
   let pendingOrder = null;
   function createUniqueOrderNumber() {
@@ -1334,10 +1386,15 @@
     }
     if (summary) summary.textContent = "تم تجهيز الطلب رقم " + order.number + " ويشمل " + order.orderItems.length + " منتجات. ستجد رسالة مفصلة تحتوي على بياناتك والكميات والأسعار وروابط المنتجات.";
     setCheckoutStep("whatsapp");
-    // Open WhatsApp directly from the customer's click; the customer still confirms Send inside WhatsApp.
+    // Open WhatsApp immediately so the existing customer-send flow is not blocked.
     const whatsappWindow = window.open(order.url, "_blank");
     if (whatsappWindow) { try { whatsappWindow.opener = null; } catch (error) {} }
     else if (link) link.focus();
+    // Download the A5 packing slip separately; it contains no prices.
+    downloadPackingSlip(order).catch(function(error) {
+      console.error("Packing slip generation failed:", error);
+      alert("تم فتح واتساب، لكن تعذر تنزيل ورقة تجهيز الطلب. حاول تحديث الصفحة وإعادة الطلب.");
+    });
   });
 
   // Keep the active checkout field visible when the mobile keyboard opens.
