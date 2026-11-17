@@ -460,7 +460,7 @@
     const subtitle = document.querySelector("#products .section-subtitle");
     const label = activeBrand ? displayBrand(activeBrand) : "";
     if (sectionTitle) sectionTitle.textContent = label ? "منتجات " + label : "كل المنتجات";
-    if (subtitle) subtitle.textContent = label ? "المنتجات المسجلة لماركة " + label : "تصفح كتالوج الدولي واسأل عن السعر والتوفر مباشرة";
+    if (subtitle) subtitle.textContent = label ? "المنتجات المسجلة لماركة " + label : "اكتشف كتالوج الدولي للعدد الأصلية، وتعرّف على منتجاتنا واسألنا عن السعر والتوافر مباشرة.";
     if (banner && title && logo) {
       banner.classList.toggle("is-visible", !!label);
       title.textContent = label ? "منتجات " + label : "";
