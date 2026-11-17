@@ -92,7 +92,7 @@ img{max-width:100%}
 .product-card:hover{transform:translateY(-3px);box-shadow:0 10px 24px #141b2414}
 .product-visual{height:220px;background:linear-gradient(135deg,#f4f6f8,#fff 65%,#fff1f1);display:grid;place-items:center;position:relative;overflow:hidden;cursor:zoom-in}
 .product-visual:after{content:"";position:absolute;width:170px;height:170px;border-radius:50%;background:#d7192008;right:-35px;bottom:-85px}
-.product-visual:before,.product-detail-image:before{content:"⤢ تكبير";position:absolute;top:10px;inset-inline-start:10px;z-index:3;background:#ffffffed;color:var(--ink);border:1px solid var(--line);border-radius:999px;padding:4px 9px;font:800 11px Tahoma,Arial,sans-serif;pointer-events:none}
+.product-detail-image:before{content:"⤢ تكبير";position:absolute;top:10px;inset-inline-start:10px;z-index:3;background:#ffffffed;color:var(--ink);border:1px solid var(--line);border-radius:999px;padding:4px 9px;font:800 11px Tahoma,Arial,sans-serif;pointer-events:none}
 .product-visual img{width:auto;height:auto;max-width:100%;max-height:100%;object-fit:contain;object-position:center;position:relative;z-index:1;padding:8px}
 .product-placeholder{font-size:74px;line-height:1;filter:drop-shadow(0 7px 8px #00000016);position:relative;z-index:1}
 .product-info{padding:13px 14px 14px;display:flex;flex-direction:column;gap:5px;flex:1}
@@ -5181,3 +5181,7 @@ html body aside#cartDrawer.cart-drawer>.cart-scroll-area>.payment-followup{
 .whatsapp-ready-icon{display:grid;place-items:center;width:58px;height:58px;border-radius:50%;background:#e9f8ef;color:#168447;font-size:30px;font-weight:1000;margin:0 auto}
 .checkout-whatsapp-step .payment-proof{display:block;margin:18px 0;padding:14px;background:#168447;color:#fff;border-radius:10px;text-decoration:none;font-weight:900}
 @media(max-width:420px){.order-progress{gap:2px}.order-progress span{font-size:10px;gap:3px}.order-progress span b{width:21px;height:21px;flex-basis:21px}}
+
+/* Remove the zoom badge from every product card; keep detail-page gallery behavior unchanged. */
+.product-visual:before{content:none!important;display:none!important}
+.product-visual{cursor:pointer!important}
