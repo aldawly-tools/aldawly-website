@@ -6032,3 +6032,14 @@ button[data-add]:not(:disabled) span:not(.add-cart-icon),
  .dawly-about-bottom strong{text-align:center;font-size:12px}
  .dawly-about-bottom a{justify-content:center}
 }
+
+
+/* Keep the About section fully visible: hide floating controls while it is in view. */
+body.dawly-about-in-view #floatingContactWidget,
+body.dawly-about-in-view #dawlyBotLauncher{
+ opacity:0!important;visibility:hidden!important;pointer-events:none!important;
+ transform:translateY(12px)!important;
+}
+#floatingContactWidget,#dawlyBotLauncher{
+ transition:opacity .22s ease,visibility .22s ease,transform .22s ease!important;
+}
