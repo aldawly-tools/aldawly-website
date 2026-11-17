@@ -388,3 +388,18 @@ body.dawly-assistant-page{margin:0!important;min-height:100vh;background:linear-
 .dawly-assistant-products:hover{background:#a90f1b}
 .dawly-assistant-back{white-space:nowrap}
 @media(max-width:600px){.dawly-assistant-topbar{gap:8px}.dawly-assistant-actions{gap:6px}.dawly-assistant-products,.dawly-assistant-back{font-size:11px;padding:8px 9px}}
+
+
+/* Whole product result is a link; opening it in a new tab preserves the chat. */
+a.dawly-bot-product{
+ display:flex!important;color:inherit!important;text-decoration:none!important;
+ cursor:pointer!important;-webkit-tap-highlight-color:transparent;
+ transition:border-color .18s ease,box-shadow .18s ease,transform .18s ease;
+}
+a.dawly-bot-product:hover,a.dawly-bot-product:focus-visible{
+ border-color:#c8101e!important;box-shadow:0 4px 14px #c8101e18;outline:none;
+}
+.dawly-bot-product-info .dawly-bot-product-open{
+ display:inline-block;align-self:flex-start;margin-top:3px;
+ color:#b80f19;font-size:11px;font-weight:900;text-decoration:none;
+}
