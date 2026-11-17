@@ -134,6 +134,53 @@ button:disabled{opacity:.6;cursor:wait}
   background-color:#fff;
   opacity:1;
 }
+
+/* لوحة إدارة جديدة: تخطيط جانبي واضح وسريع */
+#manager{display:grid;grid-template-columns:238px minmax(0,1fr);grid-template-rows:auto 1fr;column-gap:22px;align-items:start;max-width:1320px;margin:22px auto 40px}
+#manager>.dashboard-nav{grid-column:1;grid-row:1 / span 20;position:sticky;top:14px;display:flex;flex-direction:column;align-items:stretch;gap:7px;padding:15px;background:#fff;border:1px solid #e8e9ed;border-radius:19px;box-shadow:0 8px 28px #20242a0b;min-height:calc(100vh - 28px)}
+.admin-brand{display:flex;align-items:center;gap:11px;padding:5px 7px 18px;margin-bottom:8px;border-bottom:1px solid #eceef1}
+.admin-brand-mark{width:42px;height:42px;display:grid;place-items:center;border-radius:13px;background:#d71920;color:#fff;font-size:24px;font-weight:900}
+.admin-brand strong,.admin-brand small{display:block}.admin-brand strong{font-size:15px}.admin-brand small{font-size:11px;color:#858b94;margin-top:4px}
+#manager>.dashboard-nav .dashboard-tab{display:flex;align-items:center;justify-content:flex-start;gap:11px;width:100%;min-height:47px;padding:11px 13px;border:1px solid transparent;border-radius:11px;background:transparent;color:#4a5059;text-align:right;font-size:14px;white-space:normal;box-shadow:none}
+#manager>.dashboard-nav .dashboard-tab>span{width:24px;text-align:center;font-size:18px;color:#858b94}
+#manager>.dashboard-nav .dashboard-tab:hover{background:#fff5f5;color:#b20f19}
+#manager>.dashboard-nav .dashboard-tab.active{background:#d71920;color:#fff;border-color:#d71920;box-shadow:0 5px 14px #d7192025}
+#manager>.dashboard-nav .dashboard-tab.active>span{color:#fff}
+.admin-store-link{margin-top:auto;display:flex;align-items:center;justify-content:center;padding:13px;border-radius:11px;background:#f5f6f8;color:#555;text-decoration:none;font-size:13px;font-weight:700}
+#manager>.dashboard-stats,#manager>.admin-panel{grid-column:2;min-width:0;width:100%}
+#manager>.dashboard-stats{grid-row:1;grid-template-columns:repeat(2,minmax(0,1fr));margin:0 0 14px}
+#manager>.admin-panel{grid-row:2;margin:0 0 16px}
+#manager>.admin-panel.hidden{display:none!important}
+#manager>.admin-home{background:transparent;border:0;padding:0;box-shadow:none}
+.admin-welcome{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:25px 26px;margin-bottom:20px;border-radius:18px;background:linear-gradient(115deg,#fff 0%,#fff7f7 100%);border:1px solid #f0dfe0}
+.admin-eyebrow{font-size:12px;font-weight:800;color:#c21a23}.admin-welcome h2{font-size:23px;margin:7px 0}.admin-welcome p{margin:0;color:#707782;font-size:14px;line-height:1.8}
+.home-section-title{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:18px 2px 12px}.home-section-title h3{margin:0;font-size:17px}.home-section-title span{font-size:12px;color:#858b94}
+.quick-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}
+.quick-action{display:flex;flex-direction:column;align-items:flex-start;gap:8px;min-height:165px;padding:18px;text-align:right;border:1px solid #e7e9ed;border-radius:16px;background:#fff;color:#252a31;box-shadow:0 5px 18px #111108;transition:transform .18s,border-color .18s,box-shadow .18s}
+.quick-action:hover{transform:translateY(-2px);border-color:#e5a4a7;box-shadow:0 9px 24px #11110d}
+.quick-icon{display:grid;place-items:center;width:38px;height:38px;border-radius:11px;background:#fff0f0;color:#c31b24;font-size:21px}
+.quick-action strong{font-size:15px}.quick-action small{font-size:12px;color:#777f89;font-weight:400}.quick-action b{margin-top:auto;color:#bd171f;font-size:12px}
+.home-tip{display:flex;gap:10px;align-items:center;margin-top:16px;padding:13px 15px;border-radius:12px;background:#fff8e8;color:#725a20;font-size:12px;line-height:1.8}.home-tip strong{white-space:nowrap}
+#manager>.dashboard-stats .dashboard-stat{min-height:100px;text-align:right;position:relative;overflow:hidden}
+#manager>.dashboard-stats .dashboard-stat:after{content:"";position:absolute;inset-inline-start:0;top:0;bottom:0;width:4px;background:#d71920}
+@media(max-width:760px){
+ #manager{display:flex;flex-direction:column;gap:11px;width:calc(100% - 18px);margin:10px auto 24px}
+ #manager>.dashboard-nav{position:sticky;top:0;z-index:20;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;width:100%;min-height:0;padding:10px;border-radius:14px}
+ .admin-brand{grid-column:1/-1;padding:2px 4px 10px;margin-bottom:2px}
+ .admin-brand-mark{width:36px;height:36px;font-size:21px}
+ #manager>.dashboard-nav .dashboard-tab{min-height:43px;padding:9px 8px;font-size:13px;gap:7px}
+ #manager>.dashboard-nav .dashboard-tab>span{width:20px;font-size:16px}
+ .admin-store-link{grid-column:1/-1;margin-top:2px;padding:10px}
+ #manager>.dashboard-stats{grid-template-columns:repeat(2,minmax(0,1fr));margin:0;width:100%;gap:8px}
+ #manager>.dashboard-stats .dashboard-stat{min-height:92px;padding:12px 10px}
+ #manager>.admin-panel{width:100%;margin:0}
+ .admin-welcome{align-items:flex-start;flex-direction:column;padding:19px 16px;gap:12px}
+ .admin-welcome h2{font-size:20px}
+ .quick-actions{grid-template-columns:1fr;gap:9px}
+ .quick-action{min-height:130px;padding:15px}
+ .home-section-title span{display:none}
+}
+
 </style>
 
 <link rel="manifest" href="manifest.webmanifest?v=png-real-20261113">
@@ -156,17 +203,33 @@ button:disabled{opacity:.6;cursor:wait}
 
   <section class="hidden" id="manager">
     <nav class="dashboard-nav" aria-label="أقسام لوحة الإدارة" role="tablist">
-      <button type="button" class="dashboard-tab active" data-tab="productPanel" role="tab" aria-selected="true">＋ إضافة منتج</button>
-      <button type="button" class="dashboard-tab" data-tab="catalogPanel" role="tab" aria-selected="false">المنتجات</button>
-      <button type="button" class="dashboard-tab" data-tab="ordersPanel" role="tab" aria-selected="false">الطلبات</button>
-      <button type="button" class="dashboard-tab" data-tab="ordersPanel" data-filter="cancelled" role="tab" aria-selected="false">الطلبات الملغية</button>
-      <button type="button" class="dashboard-tab" data-tab="postPanel" role="tab" aria-selected="false">منشئ البوستات</button>
-      <button type="button" class="dashboard-tab" data-tab="analyticsPanel" role="tab" aria-selected="false">📊 الإحصائيات</button>
+      <div class="admin-brand"><span class="admin-brand-mark">د</span><div><strong>الدولي للعدد</strong><small>إدارة المتجر</small></div></div>
+      <button type="button" class="dashboard-tab active" data-tab="dashboardPanel" role="tab" aria-selected="true"><span>⌂</span> الرئيسية</button>
+      <button type="button" class="dashboard-tab" data-tab="productPanel" role="tab" aria-selected="false"><span>＋</span> إضافة منتج</button>
+      <button type="button" class="dashboard-tab" data-tab="catalogPanel" role="tab" aria-selected="false"><span>▦</span> إدارة المنتجات</button>
+      <button type="button" class="dashboard-tab" data-tab="ordersPanel" role="tab" aria-selected="false"><span>🛒</span> الطلبات</button>
+      <button type="button" class="dashboard-tab" data-tab="ordersPanel" data-filter="cancelled" role="tab" aria-selected="false"><span>⊘</span> الطلبات الملغية</button>
+      <button type="button" class="dashboard-tab" data-tab="postPanel" role="tab" aria-selected="false"><span>✎</span> منشئ البوستات</button>
+      <button type="button" class="dashboard-tab" data-tab="analyticsPanel" role="tab" aria-selected="false"><span>▥</span> الإحصائيات</button>
+      <a class="admin-store-link" href="index.html">↗ عرض المتجر</a>
     </nav>
     <div class="dashboard-stats" aria-label="ملخص المتجر">
       <button type="button" class="dashboard-stat dashboard-stat-action" id="dashProductsCard" aria-label="فتح المنتجات لعرضها وتعديلها"><span>إجمالي المنتجات</span><strong id="dashProducts">0</strong><small>اضغط لعرض المنتجات وتعديلها</small></button>
       <button type="button" class="dashboard-stat dashboard-stat-action" id="dashOrdersCard" aria-label="فتح الطلبات لعرضها وتعديلها"><span>إجمالي الطلبات</span><strong id="dashOrders">0</strong><small>اضغط لعرض الطلبات وتعديلها</small></button>
     </div>
+    <section class="admin-home admin-panel" id="dashboardPanel" role="tabpanel">
+      <div class="admin-welcome"><div><span class="admin-eyebrow">لوحة التحكم</span><h2>أهلاً بك في إدارة المتجر 👋</h2><p>تابع منتجاتك وطلبات العملاء وكل نشاط المتجر من مكان واحد.</p></div><a class="link light" href="index.html">فتح المتجر ↗</a></div>
+      <div class="home-section-title"><h3>الوصول السريع</h3><span>اختر المهمة التي تريد تنفيذها</span></div>
+      <div class="quick-actions">
+        <button type="button" class="quick-action" data-go="productPanel"><span class="quick-icon">＋</span><strong>إضافة منتج جديد</strong><small>أضف منتجًا وصوره ومواصفاته</small><b>ابدأ الآن ←</b></button>
+        <button type="button" class="quick-action" data-go="catalogPanel"><span class="quick-icon">▦</span><strong>إدارة المنتجات</strong><small>بحث وتعديل وحذف المنتجات</small><b>عرض المنتجات ←</b></button>
+        <button type="button" class="quick-action" data-go="ordersPanel"><span class="quick-icon">🛒</span><strong>طلبات العملاء</strong><small>راجع الطلبات وحدّث حالتها</small><b>فتح الطلبات ←</b></button>
+        <button type="button" class="quick-action" data-go="postPanel"><span class="quick-icon">✎</span><strong>منشئ البوستات</strong><small>جهّز منشورًا تسويقيًا لمنتجاتك</small><b>إنشاء بوست ←</b></button>
+        <button type="button" class="quick-action" data-go="analyticsPanel"><span class="quick-icon">▥</span><strong>إحصائيات المتجر</strong><small>تابع الزيارات ومصادرها</small><b>عرض الإحصائيات ←</b></button>
+        <button type="button" class="quick-action" data-go="ordersPanel" data-filter="cancelled"><span class="quick-icon">⊘</span><strong>الطلبات الملغية</strong><small>راجع الطلبات التي تم إلغاؤها</small><b>مراجعة الطلبات ←</b></button>
+      </div>
+      <div class="home-tip"><strong>💡 تلميح سريع</strong><span>بعد إضافة المنتج وحفظه، سيظهر تلقائيًا في كتالوج المتجر.</span></div>
+    </section>
     <section class="card admin-panel hidden" id="analyticsPanel" role="tabpanel">
       <div class="actions" style="justify-content:space-between;align-items:center">
         <div><h2 style="margin:0">إحصائيات المتجر</h2><p class="muted" style="margin:5px 0 0">متابعة الزيارات اليومية والإجمالية وأداء الطلبات من بيانات المتجر المسجلة.</p></div>
@@ -249,7 +312,7 @@ import { getAuth, GoogleAuthProvider, onAuthStateChanged, signInWithPopup, signI
 import { collection, deleteDoc, doc, getDoc, getDocs, getFirestore, setDoc, serverTimestamp, writeBatch, query, orderBy, updateDoc, runTransaction } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-firestore.js";
 
 const $ = function (id) { return document.getElementById(id); };
-const ids = ["productPanel", "catalogPanel", "ordersPanel", "postPanel", "analyticsPanel"];
+const ids = ["dashboardPanel", "productPanel", "catalogPanel", "ordersPanel", "postPanel", "analyticsPanel"];
 const config = window.DAWLY_FIREBASE_CONFIG || {};
 const ADMIN_EMAILS = new Set(["elgoharemahmoud@gmail.com", "ahmedelgohare90@gmail.com"]);
 function isAuthorizedAdmin(user) {
@@ -302,6 +365,15 @@ if(dashOrdersCard){
   if(typeof loadOrders==="function")loadOrders();
  });
 }
+document.querySelectorAll(".quick-action").forEach(function(button) {
+  button.addEventListener("click", function() {
+    showAdminTab(button.dataset.go);
+    if (button.dataset.filter) $("orderFilter").value = button.dataset.filter;
+    if (button.dataset.go === "ordersPanel") { renderOrders(); if (typeof loadOrders === "function") loadOrders(); }
+    if (button.dataset.go === "analyticsPanel" && typeof loadAnalytics === "function") loadAnalytics();
+    window.scrollTo({top:0,behavior:"smooth"});
+  });
+});
 document.querySelectorAll(".dashboard-tab").forEach(function(button) {
   button.addEventListener("click", function() {
     showAdminTab(button.dataset.tab);
