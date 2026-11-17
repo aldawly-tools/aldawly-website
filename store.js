@@ -26,12 +26,10 @@
     floatingContactToggle.classList.toggle("is-open", open);
   }
 
-  // Hide the floating contact button while scrolling down; reveal it on scroll-up or pause.
+  // Hide the floating contact button in either scroll direction; reveal only after scrolling stops.
   const floatingContactWidget = document.getElementById("floatingContactWidget");
   if (floatingContactWidget) {
-    let contactLastScrollY = window.scrollY || 0;
     let contactScrollIdleTimer = null;
-    let contactScrollTicking = false;
     function revealFloatingContact() {
       floatingContactWidget.classList.remove("is-scroll-hidden");
     }
@@ -40,21 +38,9 @@
       floatingContactWidget.classList.add("is-scroll-hidden");
     }
     window.addEventListener("scroll", function () {
-      if (contactScrollTicking) return;
-      contactScrollTicking = true;
-      window.requestAnimationFrame(function () {
-        const currentY = Math.max(0, window.scrollY || 0);
-        const delta = currentY - contactLastScrollY;
-        if (currentY < 100 || delta < -5) {
-          revealFloatingContact();
-        } else if (delta > 5) {
-          hideFloatingContact();
-        }
-        contactLastScrollY = currentY;
-        contactScrollTicking = false;
-        if (contactScrollIdleTimer) window.clearTimeout(contactScrollIdleTimer);
-        contactScrollIdleTimer = window.setTimeout(revealFloatingContact, 850);
-      });
+      hideFloatingContact();
+      if (contactScrollIdleTimer) window.clearTimeout(contactScrollIdleTimer);
+      contactScrollIdleTimer = window.setTimeout(revealFloatingContact, 850);
     }, { passive: true });
   }
   function setMobileMenu(open) {
