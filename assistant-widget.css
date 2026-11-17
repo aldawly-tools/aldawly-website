@@ -121,3 +121,28 @@
     right:auto!important;
   }
 }
+
+
+/* Helpful prompt briefly expands, then returns to a discreet floating icon. */
+#dawlyBotLauncher{
+  position:fixed!important;width:60px!important;min-width:60px!important;max-width:60px!important;
+  height:60px!important;min-height:60px!important;max-height:60px!important;
+  padding:2px!important;gap:0!important;border-radius:999px!important;
+  overflow:hidden!important;box-sizing:border-box!important;
+  transition:width .28s ease,min-width .28s ease,box-shadow .2s ease!important;
+}
+#dawlyBotLauncher .dawly-bot-prompt{
+  display:block!important;max-width:0!important;opacity:0!important;overflow:hidden!important;
+  white-space:nowrap!important;font:900 12px Cairo,sans-serif!important;color:#fff!important;
+  transition:max-width .28s ease,opacity .2s ease!important;
+}
+#dawlyBotLauncher.dawly-prompt-visible{
+  width:194px!important;min-width:194px!important;max-width:194px!important;
+  padding:2px 11px 2px 2px!important;gap:9px!important;
+}
+#dawlyBotLauncher.dawly-prompt-visible .dawly-bot-prompt{max-width:125px!important;opacity:1!important}
+#dawlyBotLauncher .dawly-bot-face{width:52px!important;height:52px!important;flex:0 0 52px!important}
+@media(max-width:700px){
+  #dawlyBotLauncher.dawly-prompt-visible{width:190px!important;min-width:190px!important;max-width:190px!important;left:14px!important;right:auto!important}
+}
+@media(prefers-reduced-motion:reduce){#dawlyBotLauncher,#dawlyBotLauncher .dawly-bot-prompt{transition:none!important}}
