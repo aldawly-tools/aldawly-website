@@ -156,7 +156,15 @@ export async function onRequestPost({ request, env }) {
   }
 }
 
-export async function onRequest({ request }) {
+export async function onRequest({ request, env }) {
   if (request.method === "OPTIONS") return new Response(null, { status: 204 });
+  if (request.method === "GET") {
+    return json({
+      service: "dawly-assistant",
+      status: "online",
+      gemini_configured: Boolean(env && env.GEMINI_API_KEY),
+      model: MODEL
+    });
+  }
   return json({ error: "method_not_allowed" }, 405);
 }
