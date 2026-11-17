@@ -5149,3 +5149,18 @@ html body aside#cartDrawer.cart-drawer>.cart-scroll-area>.payment-followup{
 #checkout[hidden]{display:none!important}
 @media(min-width:601px){.cart-quickbar{inset:auto 24px 20px auto;width:min(420px,calc(100vw - 48px))}}
 @media(max-width:600px){.cart-quickbar{inset:auto 10px max(10px,env(safe-area-inset-bottom));padding:10px 12px}.cart-quickbar button{padding:10px 12px}}
+
+
+/* Smart compact cart cards: keep technical copy collapsed until requested. */
+#cartDrawer .cart-row{align-items:start!important;padding:10px!important;gap:8px!important}
+#cartDrawer .cart-product-main{display:flex!important;align-items:flex-start!important;gap:10px!important;min-width:0!important}
+#cartDrawer .cart-product-copy{min-width:0!important;display:flex!important;flex-direction:column!important;align-items:flex-start!important;gap:4px!important}
+#cartDrawer .cart-product-copy>strong{display:-webkit-box!important;-webkit-line-clamp:2!important;-webkit-box-orient:vertical!important;overflow:hidden!important;font-size:12px!important;line-height:1.5!important}
+#cartDrawer .cart-product-description[hidden]{display:none!important}
+#cartDrawer .cart-details-toggle{display:inline-flex!important;align-items:center!important;gap:5px!important;padding:3px 0!important;border:0!important;background:transparent!important;color:#a71924!important;font:800 10px "Cairo",sans-serif!important;cursor:pointer!important}
+#cartDrawer .cart-product-description{display:block!important;margin:2px 0!important;color:#626c76!important;font-size:10px!important;line-height:1.65!important}
+#cartDrawer .cart-product-description[hidden]{display:none!important}
+#cartDrawer .cart-product-copy>small:not(.cart-product-description){font-size:10px!important}
+#cartDrawer .cart-line-total{color:#a71924!important;font-weight:900!important}
+#cartDrawer .quantity{margin-top:5px!important}
+@media(max-width:600px){#cartDrawer .cart-product-thumb{width:54px!important;height:54px!important;flex-basis:54px!important}#cartDrawer .cart-row{padding:9px!important}}
