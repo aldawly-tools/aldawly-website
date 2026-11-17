@@ -638,7 +638,24 @@
 
   function clearCartAfterWhatsApp() {
     cart = [];
+    pendingOrder = null;
     renderCart();
+    const followup = document.getElementById("paymentFollowup");
+    if (followup) followup.hidden = true;
+    checkout.textContent = "تجهيز الطلب وفتحه على واتساب";
+    checkout.dataset.orderPrepared = "false";
+    const status = document.getElementById("paymentFollowupStatus");
+    if (status) status.textContent = "تم تأكيد إرسال الطلب وتفريغ السلة بنجاح.";
+  }
+
+  const confirmOrderSentButton = document.getElementById("confirmOrderSent");
+  if (confirmOrderSentButton) {
+    confirmOrderSentButton.addEventListener("click", function() {
+      if (!cart.length) return;
+      if (!window.confirm("هل أرسلت الطلب بالفعل عبر واتساب؟ سيتم تفريغ السلة بالكامل.")) return;
+      clearCartAfterWhatsApp();
+      alert("تم تفريغ السلة بنجاح. يمكنك متابعة التسوق.");
+    });
   }
 
   // تفريغ السلة عند ضغط العميل على رابط إرسال تفاصيل الطلب إلى واتساب.
