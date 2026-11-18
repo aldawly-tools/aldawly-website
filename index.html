@@ -274,6 +274,12 @@ main > #about{order:5!important}
  html body #dawlyQuickMenu,html body .floating-home-cart{right:10px!important}
 }
 </style>
+<style id="dawly-remove-drawer-categories-20261118">
+.mobile-menu-main-links{display:flex;flex-direction:column;gap:0;margin-top:18px}
+.mobile-menu-main-links a{display:flex;align-items:center;min-height:68px;padding:12px 22px;border-bottom:1px solid #e7e9ec;color:#202832!important;text-decoration:none!important;font-family:Cairo,Tahoma,sans-serif;font-size:19px;font-weight:900}
+.mobile-menu-main-links a:active{background:#f4f5f7;color:#c8101e!important}
+.mobile-menu-browse-label,#mobileMenuCategories{display:none!important}
+</style>
 </head>
 
 <body>
@@ -370,8 +376,13 @@ main > #about{order:5!important}
 <aside class="mobile-menu-drawer" id="mobileMenuDrawer" aria-label="قائمة أقسام المتجر" aria-modal="true" role="dialog" aria-hidden="true">
  <button class="mobile-menu-close" id="closeMobileMenu" type="button" aria-label="إغلاق القائمة">×</button>
  <div class="mobile-menu-home-label">القائمة الرئيسية</div>
- <div class="mobile-menu-browse-label">تصفح التصنيفات</div>
- <div class="mobile-menu-categories" id="mobileMenuCategories"></div>
+ <nav class="mobile-menu-main-links" aria-label="روابط الموقع">
+  <a href="index.html">الرئيسية</a>
+  <a href="products.html">كل المنتجات</a>
+  <a href="advisor.html">الدعم الفني</a>
+  <a href="#contact">تواصل معنا</a>
+  <a href="#about">عن الدولي</a>
+ </nav>
 </aside>
 
 <main>
