@@ -140,18 +140,7 @@
         if (image.isConnected) showProductImageFallback(image);
       });
     }
-    // Latest-products images must load immediately: the horizontal shelf can be
-    // transformed/cloned, which may delay IntersectionObserver visibility on mobile.
-    images.forEach(function(image){
-      if(image.closest("#newArrivalsGrid")){
-        image.loading = "eager";
-        image.decoding = "async";
-        if(image.dataset.cloudObserved !== "1" && typeof window.DAWLY_LOAD_PRODUCT_IMAGE === "function"){
-          image.dataset.cloudObserved = "1";
-          loadImage(image);
-        }
-      }
-    });
+    // Use the shared observer so off-screen shelf images do not download yet.
     if ("IntersectionObserver" in window) {
       if (!cloudImageObserver) {
         cloudImageObserver = new IntersectionObserver(function (entries) {
@@ -392,9 +381,9 @@
       const name = cleanProductName(item.name);
       const url = "product.html?id=" + encodeURIComponent(String(item.id));
       const image = item.image
-        ? '<img src="' + escapeHtml(item.image) + '"' + (item.imageId ? ' data-cloud-image="' + escapeHtml(item.imageId) + '"' : '') + ' alt="' + escapeHtml(name) + '" loading="eager" decoding="async" draggable="false">'
+        ? '<img src="' + escapeHtml(item.image) + '"' + (item.imageId ? ' data-cloud-image="' + escapeHtml(item.imageId) + '"' : '') + ' alt="' + escapeHtml(name) + '" loading="lazy" decoding="async" draggable="false">'
         : item.imageId
-          ? '<img data-cloud-image="' + escapeHtml(item.imageId) + '" alt="' + escapeHtml(name) + '" loading="eager" decoding="async" draggable="false">'
+          ? '<img data-cloud-image="' + escapeHtml(item.imageId) + '" alt="' + escapeHtml(name) + '" loading="lazy" decoding="async" draggable="false">'
           : '<span class="product-placeholder" aria-hidden="true">' + escapeHtml(item.icon || "🔧") + '</span>';
       const soldOut = item.availability === "unavailable" || (item.availability !== "available" && Number.isInteger(item.stock) && item.stock === 0);
       const availabilityLabel = item.availability === "ask" ? '<span class="stock-status">استفسر عن التوفر</span>' : soldOut ? '<span class="stock-status out">غير متوفر حاليًا</span>' : '<span class="stock-status">متوفر — يُرجى التأكيد عند الطلب</span>';
