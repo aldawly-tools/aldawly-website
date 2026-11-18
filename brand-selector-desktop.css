@@ -41,3 +41,19 @@
 .brands-marquee-section .brands-marquee{overflow:hidden!important;cursor:grab!important}
 .brands-marquee-section .brands-marquee-track{cursor:grab!important;touch-action:pan-y!important}
 .brands-marquee-section .brands-marquee-track:active{cursor:grabbing!important}
+
+
+/* BRAND CTA CONTRAST FIX — readable on every screen */
+html body #brands.brands-marquee-section .brands-marquee .brand-word.brand-tile.brand-tile:after{
+  color:#a30d1b!important;
+  -webkit-text-fill-color:#a30d1b!important;
+  opacity:1!important;
+  font-weight:1000!important;
+  text-shadow:none!important;
+  background:#f6f7f9!important;
+}
+@media(max-width:560px){
+  html body #brands.brands-marquee-section .brands-marquee .brand-word.brand-tile.brand-tile:after{
+    font-size:11px!important;
+  }
+}
