@@ -6582,3 +6582,30 @@ body:has(.cart-drawer.open) .dawly-mini-cart-launcher{opacity:0!important;pointe
   }
   footer.footer .footer-grid>div:nth-child(3) br{display:none!important}
 }
+
+
+/* Smart compact footer: accordion sections on mobile, full footer on desktop. */
+.footer-smart-grid{display:grid;grid-template-columns:1.2fr 1fr 1fr 1fr;gap:18px 22px;align-items:start}
+.footer-smart-grid .footer-brand{min-width:0}
+.footer-smart-grid .footer-accordion{border-bottom:1px solid rgba(255,255,255,.15);padding:0 0 10px}
+.footer-smart-grid .footer-accordion summary{cursor:pointer;list-style:none;color:#fff;font-weight:900;font-size:15px;line-height:1.6;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.footer-smart-grid .footer-accordion summary::-webkit-details-marker{display:none}
+.footer-smart-grid .footer-accordion summary:after{content:"+";font-size:20px;color:#fff;line-height:1}
+.footer-smart-grid .footer-accordion[open] summary:after{content:"−"}
+.footer-smart-grid .footer-accordion-content{padding-top:10px;color:#fff}
+.footer-smart-grid .footer-accordion-content p{margin:4px 0;line-height:1.8}
+.footer-smart-grid .footer-accordion-content a{color:#fff}
+.footer-smart-grid .footer-whatsapp-row{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:9px}
+.footer-smart-grid .footer-whatsapp-row .button-primary{margin:0;min-height:42px;display:inline-flex;align-items:center;justify-content:center;padding:9px 15px;border-radius:10px}
+@media(max-width:700px){
+ footer.footer.footer-smart-grid,.footer-smart-grid{grid-template-columns:minmax(0,1fr)!important;gap:10px!important;padding-top:16px!important;padding-bottom:calc(100px + env(safe-area-inset-bottom))!important;margin-top:14px!important}
+ .footer-smart-grid .footer-brand{padding:0 0 7px;border-bottom:1px solid rgba(255,255,255,.14)}
+ .footer-smart-grid .footer-brand h3{font-size:15px!important;line-height:1.5!important;margin:0!important}
+ .footer-smart-grid .footer-accordion{padding:8px 0!important}
+ .footer-smart-grid .footer-accordion summary{font-size:13px!important;line-height:1.5!important}
+ .footer-smart-grid .footer-accordion-content{padding-top:7px;font-size:12px!important;line-height:1.65!important}
+ .footer-smart-grid .footer-accordion-content p{font-size:12px!important;margin:3px 0!important;line-height:1.65!important}
+ .footer-smart-grid .footer-whatsapp-row{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:2px}
+ .footer-smart-grid .footer-whatsapp-row .button-primary{min-height:38px!important;padding:7px 5px!important;font-size:10px!important;line-height:1.35!important;text-align:center;white-space:normal}
+}
+@media(max-width:360px){.footer-smart-grid .footer-whatsapp-row{grid-template-columns:1fr}}
