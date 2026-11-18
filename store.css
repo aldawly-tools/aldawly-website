@@ -6149,3 +6149,23 @@ body.dawly-mini-cart-open{overflow:hidden}
 .card-qty-control button{width:34px;height:32px;border:0;border-radius:8px;background:#fcebed;color:#b51220;font-size:21px;line-height:1;font-weight:900;cursor:pointer}
 .card-qty-control b{min-width:22px;text-align:center;color:#202832;font-size:16px;font-weight:900;font-variant-numeric:tabular-nums}
 
+
+
+/* Mobile cart quickbar placement fix: never cover product text */
+@media (max-width: 700px) {
+  .cart-quickbar {
+    position: fixed !important;
+    top: auto !important;
+    bottom: calc(12px + env(safe-area-inset-bottom, 0px)) !important;
+    left: 10px !important;
+    right: 10px !important;
+    width: auto !important;
+    max-width: none !important;
+    margin: 0 !important;
+    transform: none !important;
+    z-index: 10020 !important;
+  }
+  body.product-page {
+    padding-bottom: calc(92px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+}
