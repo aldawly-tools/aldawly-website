@@ -1,7 +1,7 @@
 const { initializeApp } = require("firebase-admin/app");
 const { FieldValue, getFirestore } = require("firebase-admin/firestore");
 const { logger } = require("firebase-functions");
-const { onDocumentCreated } = require("firebase-functions/v2/firestore");
+const { onDocumentCreated, onDocumentUpdated } = require("firebase-functions/v2/firestore");
 const { defineSecret } = require("firebase-functions/params");
 
 initializeApp();
@@ -63,7 +63,7 @@ exports.notifyNewProductOnOneSignal = onDocumentCreated(
   }
 );
 
-exports.notifyNewOrderOnOneSignal = onDocumentCreated(
+exports.notifyConfirmedOrderOnOneSignal = onDocumentUpdated(
   {
     document: "orders/{orderId}",
     region: "me-central1",
@@ -71,17 +71,27 @@ exports.notifyNewOrderOnOneSignal = onDocumentCreated(
     secrets: [oneSignalRestApiKey]
   },
   async (event) => {
-    const snapshot = event.data;
-    if (!snapshot) return;
-    const order = snapshot.data() || {};
-    if (order.status !== "new" || order.source !== "website") return;
-    const orderNumber = safeText(order.orderNumber, 40) || snapshot.id;
+    const before = event.data && event.data.before && event.data.before.data();
+    const afterSnapshot = event.data && event.data.after;
+    if (!before || !afterSnapshot || !afterSnapshot.exists) return;
+    const order = afterSnapshot.data() || {};
+
+    // Notify only on the first transition into confirmed, never when a draft is created.
+    if (before.status === "confirmed" || order.status !== "confirmed") return;
+    if (order.source !== "website") return;
+    if (order.oneSignalConfirmedAt) return;
+
+    const orderNumber = safeText(order.orderNumber, 40) || afterSnapshot.id;
     const customer = safeText(order.customerName, 80);
     await sendStorePush(
-      "🛒 طلب جديد من متجر الدولي",
-      "طلب " + orderNumber + (customer ? " من العميل " + customer : "") + " — افتح لوحة الإدارة لمراجعته.",
+      "✅ تم تأكيد طلب من متجر الدولي",
+      "تم تأكيد الطلب " + orderNumber + (customer ? " للعميل " + customer : "") + ". افتح لوحة الإدارة لمتابعته.",
       "https://aldawly-website.pages.dev/admin.html"
     );
+
+    // Mark successful delivery; the status-transition guard prevents repeat sends
+    // when this metadata update itself triggers the function again.
+    await afterSnapshot.ref.update({ oneSignalConfirmedAt: FieldValue.serverTimestamp() });
   }
 );
 
