@@ -1815,6 +1815,7 @@ $("productForm").addEventListener("submit", async function (event) {
       desc:$("desc").value.trim(),
       specs:collectSpecsText(),
       price:$("price").value.trim() || "السعر عند الاستفسار",
+      discountPercent:previous ? Math.max(0,Math.min(90,Number(previous.discountPercent)||0)) : 0,
       icon:$("icon").value.trim() || "🔧",
       featured:$("featured").checked,
       availability:$("availability").value,
