@@ -6072,3 +6072,23 @@ body.dawly-about-in-view #dawlyBotLauncher{
  .product-detail-actions-compact .detail-share-icon{width:100%;min-width:0;height:44px;min-height:44px;flex:initial}
  .product-detail-actions-compact .detail-back-link{grid-column:1/-1}
 }
+
+
+/* Tighter, recognizable SVG utility buttons */
+.product-detail-actions-compact .detail-add-cart-icon,
+.product-detail-actions-compact .detail-share-icon{
+  width:42px;min-width:42px;max-width:42px;height:42px;min-height:42px;max-height:42px;
+  padding:0;border-radius:12px;display:inline-flex;align-items:center;justify-content:center;
+  flex:0 0 42px;box-shadow:none;
+}
+.product-detail-actions-compact .detail-add-cart-icon svg,
+.product-detail-actions-compact .detail-share-icon svg{
+  display:block;width:21px;height:21px;stroke:currentColor;
+}
+@media(max-width:700px){
+ .product-detail-actions-compact .detail-add-cart-icon,
+ .product-detail-actions-compact .detail-share-icon{
+  width:42px;min-width:42px;max-width:42px;height:42px;min-height:42px;max-height:42px;
+  justify-self:center;
+ }
+}
