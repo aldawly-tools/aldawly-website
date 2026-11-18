@@ -544,12 +544,12 @@ async function loadAnalytics(force){
 $("refreshAnalyticsBtn").addEventListener("click",function(){loadAnalytics(true);});
 $("resetAnalyticsBtn").addEventListener("click",async function(){
  const button=$("resetAnalyticsBtn"),statusNode=$("analyticsStatus");
- const approved=window.confirm("سيتم حذف سجلات الزيارات ومصادر الدخول ومشاهدات المنتجات القديمة نهائيًا. لن يتم حذف المنتجات أو الطلبات أو الصور. هل تريد المتابعة؟");
+ const approved=window.confirm("سيتم حذف سجلات الزيارات ومصادر الدخول ومشاهدات المنتجات وأحداث السلة وواتساب القديمة نهائيًا. لن يتم حذف المنتجات أو الطلبات أو الصور. هل تريد المتابعة؟");
  if(!approved)return;
  button.disabled=true;
  if(statusNode)statusNode.textContent="جارٍ مسح سجلات الإحصائيات القديمة…";
  try{
-  const names=["siteVisits","trafficSources","productViews"];
+  const names=["siteVisits","trafficSources","productViews","storeEvents"];
   let removed=0;
   for(const name of names){
    const snap=await getDocs(collection(db,name));
