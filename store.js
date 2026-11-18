@@ -896,6 +896,13 @@
       syncActiveBrandHeading();
       drawBrandFilters();
       renderProducts();
+      // After choosing any brand, move directly to the filtered product cards.
+      requestAnimationFrame(function () {
+        const productGrid = document.getElementById("productGrid");
+        if (!productGrid) return;
+        const targetTop = productGrid.getBoundingClientRect().top + window.pageYOffset - 14;
+        window.scrollTo({top: Math.max(0, targetTop), behavior:"smooth"});
+      });
       return;
     }
     const category = event.target.closest("[data-category]");
