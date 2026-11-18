@@ -98,14 +98,13 @@ button:disabled{opacity:.6;cursor:wait}
   .specs-editor{padding:16px;border:1px solid #e5e7eb;border-radius:14px;background:#fbfcfd}
   .specs-editor-head,.specs-extra-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
   .specs-count{font-size:11px;font-weight:800;color:#b20f19;background:#fff0f0;padding:6px 9px;border-radius:20px}
-  .specs-fixed-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:14px}
-  .specs-fixed-grid>div{min-width:0}.specs-fixed-grid .spec-country{grid-column:1/-1}
-  .specs-extra-head{margin:20px 0 10px;padding-top:14px;border-top:1px solid #e8eaed}
-  .specs-extra-head b{display:block;font-size:14px}
-  .extra-specs-list{display:grid;gap:9px}
-  .extra-spec-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr) auto;gap:8px;align-items:center;padding:9px;background:#fff;border:1px solid #e7e9ed;border-radius:11px}
-  .extra-spec-row input{min-width:0}.extra-spec-row button{padding:8px 10px;min-height:42px}
-  @media(max-width:700px){.specs-fixed-grid{grid-template-columns:1fr}.specs-fixed-grid .spec-country{grid-column:auto}.extra-spec-row{grid-template-columns:1fr 1fr}.extra-spec-row button{grid-column:1/-1;width:100%}}
+  .category-specs-list,.extra-specs-list{display:grid;gap:9px;margin-top:13px}
+  .smart-spec-row{display:grid;grid-template-columns:32px minmax(0,.9fr) minmax(0,1.2fr) auto;gap:8px;align-items:center;padding:9px;background:#fff;border:1px solid #e7e9ed;border-radius:11px}
+  .smart-spec-row.dragging{opacity:.45;border-color:#d71920}.smart-spec-row.drag-over{border-color:#d71920;background:#fff7f7}
+  .smart-spec-row input{min-width:0}.spec-drag-handle{display:grid;place-items:center;width:30px;height:38px;border-radius:8px;background:#f2f3f5;color:#707780;cursor:grab;user-select:none;font-size:18px}
+  .spec-fixed-name{font-size:13px;font-weight:800;color:#353b42;padding:8px 2px}.smart-spec-row button{padding:8px 10px;min-height:40px}
+  .specs-extra-head{margin:20px 0 10px;padding-top:14px;border-top:1px solid #e8eaed}.specs-extra-head b{display:block;font-size:14px}
+  @media(max-width:700px){.smart-spec-row{grid-template-columns:28px minmax(0,.85fr) minmax(0,1.15fr) auto;padding:7px;gap:6px}.spec-drag-handle{width:27px}.smart-spec-row button{padding:7px}.spec-fixed-name{font-size:12px}}
 
   #tasks{min-height:145px}
   button,.link{font-size:15px;min-height:46px;padding:12px 14px}
@@ -319,15 +318,9 @@ button:disabled{opacity:.6;cursor:wait}
         <div class="field"><label for="featuredOrder">ترتيب المنتج المميز</label><input id="featuredOrder" type="number" min="0" step="1" value="0"><small class="muted">الأرقام الأصغر تظهر أولًا داخل اختيارات الدولي. اتركه 0 للترتيب الافتراضي.</small></div>
         <div class="field"><label for="desc">وصف المنتج</label><textarea id="desc" rows="3" placeholder="اكتب وصفًا واضحًا للمنتج واستخدامه..."></textarea></div>
         <section class="field specs-editor" aria-labelledby="specsHeading">
-<div class="specs-editor-head"><div><label id="specsHeading">المواصفات الفنية</label><small class="muted">املأ البيانات المتاحة فقط؛ الخانات الفارغة لن تظهر للعميل.</small></div><span class="specs-count">5 خانات أساسية</span></div>
-<div class="specs-fixed-grid">
-<div><label for="specModel">رقم الموديل</label><input id="specModel" type="text" placeholder="مثال: 0715 11"></div>
-<div><label for="specSize">المقاس</label><input id="specSize" type="text" placeholder="مثال: T25 أو 10 مم"></div>
-<div><label for="specPieces">عدد القطع</label><input id="specPieces" type="text" placeholder="مثال: 3 قطع"></div>
-<div><label for="specMaterial">الخامة</label><input id="specMaterial" type="text" placeholder="مثال: فولاذ كروم فاناديوم"></div>
-<div class="spec-country"><label for="specOrigin">بلد المنشأ</label><input id="specOrigin" type="text" placeholder="مثال: ألمانيا"></div>
-</div>
-<div class="specs-extra-head"><div><b>مواصفات إضافية</b><small class="muted">أضف أي تفاصيل أخرى تخص المنتج.</small></div><button class="light" id="addExtraSpecBtn" type="button">＋ إضافة مواصفة</button></div>
+<div class="specs-editor-head"><div><label id="specsHeading">المواصفات الفنية الذكية</label><small class="muted">تتغير الحقول تلقائيًا حسب قسم المنتج. املأ المتاح فقط.</small></div><span class="specs-count" id="specsCategoryHint">عدد يدوية</span></div>
+<div id="categorySpecsList" class="category-specs-list" aria-live="polite"></div>
+<div class="specs-extra-head"><div><b>مواصفات إضافية</b><small class="muted">أضف أي تفاصيل خاصة بالمنتج واسحب الصف لترتيب العرض.</small></div><button class="light" id="addExtraSpecBtn" type="button">＋ إضافة مواصفة</button></div>
 <div id="extraSpecsList" class="extra-specs-list"></div>
 <textarea id="specs" class="hidden" aria-hidden="true" tabindex="-1"></textarea>
 </section>
@@ -451,58 +444,80 @@ function escapeHtml(value) {
 function readyConfig() {
   return config.apiKey && config.apiKey !== "PASTE_FIREBASE_WEB_API_KEY" && config.authDomain && config.projectId && config.projectId !== "YOUR_PROJECT_ID" && config.appId;
 }
-const FIXED_SPEC_FIELDS = [
-  {id:"specModel",label:"رقم الموديل"},
-  {id:"specSize",label:"المقاس"},
-  {id:"specPieces",label:"عدد القطع"},
-  {id:"specMaterial",label:"الخامة"},
-  {id:"specOrigin",label:"بلد المنشأ"}
-];
-function addExtraSpecRow(name="", value="") {
-  const row=document.createElement("div");
-  row.className="extra-spec-row";
-  row.innerHTML='<input type="text" data-extra-name placeholder="اسم المواصفة" aria-label="اسم المواصفة"><input type="text" data-extra-value placeholder="القيمة" aria-label="قيمة المواصفة"><button class="danger" type="button" data-remove-extra>حذف</button>';
-  row.querySelector("[data-extra-name]").value=name;
-  row.querySelector("[data-extra-value]").value=value;
-  row.querySelector("[data-remove-extra]").addEventListener("click",function(){row.remove();syncSpecsField();});
-  row.querySelectorAll("input").forEach(function(input){input.addEventListener("input",syncSpecsField);});
-  $("extraSpecsList").appendChild(row);
+const SPEC_TEMPLATES = {
+ "عدد يدوية":["رقم الموديل","المقاس","عدد القطع","الخامة","بلد المنشأ"],
+ "عدد كهربائية":["رقم الموديل","القدرة","الجهد الكهربائي","السرعة","مصدر الطاقة","الوزن","بلد المنشأ"],
+ "مستلزمات الورش":["رقم الموديل","النوع","المقاس","الطول","الخامة","عدد القطع","بلد المنشأ"],
+ "قياس":["رقم الموديل","نطاق القياس","دقة القياس","وحدة القياس","نوع العرض","بلد المنشأ"]
+};
+function specRowsFromUI(){
+ const rows=[];
+ document.querySelectorAll("#categorySpecsList .smart-spec-row,#extraSpecsList .smart-spec-row").forEach(row=>{
+  const name=row.dataset.fixed==="true"?row.dataset.specName:row.querySelector("[data-spec-name]").value.trim();
+  const value=row.querySelector("[data-spec-value]").value.trim();
+  if(name&&value)rows.push({name,value});
+ });
+ return rows;
 }
-function parseSpecsText(value) {
-  const fixedLabels=new Map(FIXED_SPEC_FIELDS.map(field=>[field.label,field.id]));
-  const extras=[];
-  FIXED_SPEC_FIELDS.forEach(field=>$(field.id).value="");
-  $("extraSpecsList").innerHTML="";
-  String(value||"").split(/\r?\n/).map(line=>line.trim()).filter(Boolean).forEach(function(line){
-    const colon=line.indexOf(":")>=0?line.indexOf(":"):line.indexOf("：");
-    if(colon>=0){
-      const name=line.slice(0,colon).trim(),val=line.slice(colon+1).trim();
-      const fixedId=fixedLabels.get(name);
-      if(fixedId){$(fixedId).value=val;return;}
-      extras.push([name,val]);
-    }else extras.push(["مواصفة إضافية",line]);
-  });
-  extras.forEach(item=>addExtraSpecRow(item[0],item[1]));
-  syncSpecsField();
+function syncSpecsField(){$("specs").value=specRowsFromUI().map(row=>row.name+": "+row.value).join("\n");}
+function makeSpecRow(name,value,fixed){
+ const row=document.createElement("div");row.className="smart-spec-row";row.draggable=true;row.dataset.fixed=fixed?"true":"false";row.dataset.specName=name;
+ const handle=document.createElement("span");handle.className="spec-drag-handle";handle.textContent="⠿";handle.title="اسحب لترتيب المواصفة";
+ let label;
+ if(fixed){label=document.createElement("span");label.className="spec-fixed-name";label.textContent=name;}
+ else{label=document.createElement("input");label.type="text";label.placeholder="اسم المواصفة";label.value=name;label.setAttribute("data-spec-name","");}
+ const input=document.createElement("input");input.type="text";input.placeholder="اكتب القيمة";input.value=value||"";input.setAttribute("data-spec-value","");
+ row.append(handle,label,input);
+ if(!fixed){const remove=document.createElement("button");remove.type="button";remove.className="danger";remove.textContent="حذف";remove.addEventListener("click",()=>{row.remove();syncSpecsField();});row.append(remove);}
+ else{const spacer=document.createElement("span");spacer.setAttribute("aria-hidden","true");row.append(spacer);}
+ input.addEventListener("input",syncSpecsField);if(!fixed)label.addEventListener("input",syncSpecsField);
+ return row;
 }
-function collectSpecsText() {
-  const lines=[];
-  FIXED_SPEC_FIELDS.forEach(field=>{const value=$(field.id).value.trim();if(value)lines.push(field.label+": "+value);});
-  $("extraSpecsList").querySelectorAll(".extra-spec-row").forEach(function(row){
-    const name=row.querySelector("[data-extra-name]").value.trim();
-    const value=row.querySelector("[data-extra-value]").value.trim();
-    if(name&&value)lines.push(name+": "+value);
-  });
-  return lines.join("\n");
+function renderCategorySpecs(values,extras){
+ const fields=SPEC_TEMPLATES[$("cat").value]||SPEC_TEMPLATES["عدد يدوية"];
+ $("specsCategoryHint").textContent=$("cat").value;$("categorySpecsList").innerHTML="";$("extraSpecsList").innerHTML="";
+ fields.forEach(name=>$("categorySpecsList").appendChild(makeSpecRow(name,values[name]||"",true)));
+ (extras||[]).forEach(spec=>$("extraSpecsList").appendChild(makeSpecRow(spec.name,spec.value,false)));
+ syncSpecsField();
 }
-function syncSpecsField() {$("specs").value=collectSpecsText();}
-FIXED_SPEC_FIELDS.forEach(field=>$(field.id).addEventListener("input",syncSpecsField));
-$("addExtraSpecBtn").addEventListener("click",function(){addExtraSpecRow();const rows=$("extraSpecsList").querySelectorAll(".extra-spec-row");if(rows.length)rows[rows.length-1].querySelector("[data-extra-name]").focus();});
+function readCurrentSpecValues(){
+ const values={};document.querySelectorAll("#categorySpecsList .smart-spec-row").forEach(row=>{values[row.dataset.specName]=row.querySelector("[data-spec-value]").value;});return values;
+}
+function parseSpecsText(value){
+ const values={},extras=[],known=new Set(Object.values(SPEC_TEMPLATES).flat());
+ String(value||"").split(/\r?\n/).map(line=>line.trim()).filter(Boolean).forEach(line=>{
+  const colon=line.search(/[:：]/);if(colon<0){extras.push({name:"مواصفة إضافية",value:line});return;}
+  const name=line.slice(0,colon).trim(),val=line.slice(colon+1).trim();
+  if(known.has(name))values[name]=val;else extras.push({name,value:val});
+ });
+ renderCategorySpecs(values,extras);
+}
+function addExtraSpecRow(name="",value=""){
+ $("extraSpecsList").appendChild(makeSpecRow(name,value,false));syncSpecsField();
+}
+$("cat").addEventListener("change",()=>{
+ const values=readCurrentSpecValues(),extras=[];
+ $("extraSpecsList").querySelectorAll(".smart-spec-row").forEach(row=>extras.push({name:row.querySelector("[data-spec-name]").value,value:row.querySelector("[data-spec-value]").value}));
+ renderCategorySpecs(values,extras);
+});
+$("addExtraSpecBtn").addEventListener("click",()=>{
+ addExtraSpecRow();const rows=$("extraSpecsList").querySelectorAll(".smart-spec-row");if(rows.length)rows[rows.length-1].querySelector("[data-spec-name]").focus();
+});
+["categorySpecsList","extraSpecsList"].forEach(id=>{
+ const list=$(id);
+ list.addEventListener("dragstart",event=>{const row=event.target.closest(".smart-spec-row");if(!row)return;row.classList.add("dragging");event.dataTransfer.effectAllowed="move";});
+ list.addEventListener("dragover",event=>{event.preventDefault();const target=event.target.closest(".smart-spec-row");if(target&&!target.classList.contains("dragging"))target.classList.add("drag-over");});
+ list.addEventListener("dragleave",event=>{const target=event.target.closest(".smart-spec-row");if(target)target.classList.remove("drag-over");});
+ list.addEventListener("drop",event=>{
+  event.preventDefault();const dragged=document.querySelector(".smart-spec-row.dragging"),target=event.target.closest(".smart-spec-row");
+  if(!dragged||!target||dragged===target)return;
+  const rect=target.getBoundingClientRect();target.parentNode.insertBefore(dragged,event.clientY>rect.top+rect.height/2?target.nextSibling:target);target.classList.remove("drag-over");syncSpecsField();
+ });
+ list.addEventListener("dragend",()=>{document.querySelectorAll(".smart-spec-row").forEach(row=>row.classList.remove("dragging","drag-over"));syncSpecsField();});
+});
 function resetForm() {
   $("productForm").reset();
-  FIXED_SPEC_FIELDS.forEach(field=>$(field.id).value="");
-  $("extraSpecsList").innerHTML="";
-  syncSpecsField();
+  renderCategorySpecs({},[]);
   imageRemoved = false;
   existingImageIds = [];
   selectedImageFiles = [];
