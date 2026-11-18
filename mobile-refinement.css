@@ -760,3 +760,65 @@
     scroll-snap-align:start!important;
   }
 }
+
+
+/* Restore the moving trust/promotional ticker below the homepage hero CTAs.
+   This final mobile override wins over the older grid-card layout in store.css. */
+@media(max-width:700px){
+ html body .hero-shell .hero-services{
+  display:block!important;
+  grid-area:services!important;
+  grid-template-columns:none!important;
+  grid-auto-flow:initial!important;
+  position:relative!important;
+  width:100%!important;
+  height:54px!important;
+  min-height:54px!important;
+  max-height:54px!important;
+  margin:0!important;
+  padding:0!important;
+  overflow:hidden!important;
+  box-sizing:border-box!important;
+  direction:ltr!important;
+  border-radius:0!important;
+ }
+ html body .hero-shell .hero-services-track{
+  display:flex!important;
+  flex-direction:row!important;
+  flex-wrap:nowrap!important;
+  align-items:center!important;
+  gap:8px!important;
+  width:max-content!important;
+  min-width:max-content!important;
+  height:54px!important;
+  padding:0 8px!important;
+  animation:heroServicesTicker 24s linear infinite!important;
+  will-change:transform;
+ }
+ html body .hero-shell .hero-services .service-card{
+  display:flex!important;
+  flex:0 0 auto!important;
+  flex-direction:row!important;
+  align-items:center!important;
+  justify-content:center!important;
+  width:auto!important;
+  min-width:max-content!important;
+  min-height:42px!important;
+  height:42px!important;
+  padding:5px 13px!important;
+  margin:0!important;
+  gap:7px!important;
+  white-space:nowrap!important;
+  border-radius:10px!important;
+  font-size:11px!important;
+ }
+ html body .hero-shell .hero-services .service-card[aria-hidden="true"]{display:flex!important}
+ html body .hero-shell .hero-services .service-card>span:last-child{
+  white-space:nowrap!important;font-size:11px!important;line-height:1.1!important
+ }
+ html body .hero-shell .hero-services .service-icon,
+ html body .hero-shell .hero-services .service-icon svg{
+  width:22px!important;height:22px!important;flex:0 0 22px!important
+ }
+}
+@keyframes heroServicesTicker{from{transform:translateX(0)}to{transform:translateX(-50%)}}
