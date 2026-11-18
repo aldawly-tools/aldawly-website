@@ -519,3 +519,151 @@ a.dawly-bot-product .dawly-bot-product-info .dawly-bot-product-open{
  #dawlyBotLauncher{left:14px!important;right:auto!important;bottom:calc(14px + env(safe-area-inset-bottom,0px))!important;width:58px!important;height:58px!important;min-width:58px!important;max-width:58px!important;min-height:58px!important;max-height:58px!important}
  #dawlyBotLauncher .dawly-bot-face svg{width:32px!important;height:32px!important}
 }
+
+
+/* Mobile full-screen assistant layout: compact header, larger chat, pinned composer. */
+@media (max-width: 600px) {
+  html, body.dawly-assistant-page {
+    min-height: 100%;
+    height: 100%;
+    overflow: hidden;
+  }
+  body.dawly-assistant-page {
+    min-height: 100dvh !important;
+    height: 100dvh !important;
+    display: flex !important;
+    flex-direction: column !important;
+    background: #f5f6f8 !important;
+  }
+  .dawly-assistant-topbar {
+    position: relative !important;
+    top: auto !important;
+    flex: 0 0 auto !important;
+    min-height: 76px !important;
+    padding: 9px 12px !important;
+    gap: 8px !important;
+    box-shadow: 0 2px 9px #1018200c !important;
+  }
+  .dawly-assistant-brand { gap: 7px !important; font-size: 16px !important; }
+  .dawly-assistant-brand-mark {
+    width: 38px !important; height: 38px !important;
+    border-radius: 11px !important; font-size: 21px !important;
+  }
+  .dawly-assistant-brand small { font-size: 10px !important; }
+  .dawly-assistant-actions { gap: 6px !important; }
+  .dawly-assistant-products, .dawly-assistant-back {
+    padding: 7px 9px !important; font-size: 10px !important;
+    border-radius: 9px !important; white-space: nowrap !important;
+  }
+  .dawly-assistant-main {
+    width: 100% !important;
+    max-width: none !important;
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+    height: auto !important;
+    display: flex !important;
+    flex-direction: column !important;
+    margin: 0 !important;
+    padding: 8px 10px 0 !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+  }
+  .dawly-assistant-intro {
+    flex: 0 0 auto !important;
+    margin: 0 auto 8px !important;
+    padding: 0 4px !important;
+  }
+  .dawly-assistant-intro h1 {
+    margin: 0 0 2px !important;
+    font-size: 23px !important;
+    line-height: 1.35 !important;
+  }
+  .dawly-assistant-intro p {
+    max-width: 520px !important;
+    margin: 0 auto !important;
+    font-size: 11px !important;
+    line-height: 1.55 !important;
+  }
+  .dawly-assistant-status {
+    margin-top: 5px !important;
+    padding: 4px 9px !important;
+    font-size: 10px !important;
+  }
+  #assistantPageChat {
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: hidden !important;
+  }
+  #dawlyBotPanel.dawly-bot-fullpage {
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+    height: auto !important;
+    max-height: none !important;
+    margin: 0 0 8px !important;
+    border-radius: 15px 15px 0 0 !important;
+    box-shadow: 0 5px 22px #17212b12 !important;
+  }
+  #dawlyBotPanel.dawly-bot-fullpage .dawly-bot-head {
+    flex: 0 0 auto !important;
+    min-height: 68px !important;
+    padding: 9px 13px !important;
+  }
+  #dawlyBotPanel.dawly-bot-fullpage .dawly-bot-avatar {
+    width: 42px !important; height: 42px !important;
+    flex: 0 0 42px !important;
+  }
+  #dawlyBotPanel.dawly-bot-fullpage .dawly-bot-messages {
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    overscroll-behavior: contain !important;
+    padding: 12px !important;
+    gap: 10px !important;
+  }
+  #dawlyBotPanel.dawly-bot-fullpage .dawly-bot-msg {
+    max-width: 96% !important;
+    padding: 10px 12px !important;
+    font-size: 13px !important;
+    line-height: 1.75 !important;
+  }
+  #dawlyBotPanel.dawly-bot-fullpage .dawly-bot-form {
+    position: relative !important;
+    z-index: 2 !important;
+    flex: 0 0 auto !important;
+    display: flex !important;
+    align-items: stretch !important;
+    gap: 8px !important;
+    padding: 9px 10px calc(9px + env(safe-area-inset-bottom, 0px)) !important;
+    background: #fff !important;
+    border-top: 1px solid #e3e6ea !important;
+    box-shadow: 0 -4px 14px #17212b08 !important;
+  }
+  #dawlyBotPanel.dawly-bot-fullpage .dawly-bot-form input {
+    min-width: 0 !important;
+    min-height: 54px !important;
+    padding: 10px 12px !important;
+    border-radius: 13px !important;
+    font-size: 14px !important;
+  }
+  #dawlyBotPanel.dawly-bot-fullpage .dawly-bot-form button {
+    flex: 0 0 104px !important;
+    min-width: 104px !important;
+    min-height: 54px !important;
+    border-radius: 12px !important;
+    font-size: 15px !important;
+  }
+  #dawlyBotPanel.dawly-bot-fullpage .dawly-bot-wa {
+    flex: 0 0 auto !important;
+    padding: 7px 9px !important;
+    font-size: 10px !important;
+  }
+  .dawly-assistant-footer { display: none !important; }
+}
+@media (max-width: 380px) {
+  #dawlyBotPanel.dawly-bot-fullpage .dawly-bot-form button {
+    flex-basis: 88px !important; min-width: 88px !important;
+  }
+}
