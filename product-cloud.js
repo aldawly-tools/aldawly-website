@@ -90,6 +90,8 @@ if (!config.apiKey || !config.projectId) {
       imageCache.set(key, pending);
       return pending;
     };
+    // Notify product pages that the asynchronous image loader is now available.
+    window.dispatchEvent(new Event("dawly-product-image-loader-ready"));
 
     // Reuse a recent catalog between page visits instead of opening a full
     // real-time listener (which rereads every product on every page load).
