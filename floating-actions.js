@@ -11,16 +11,14 @@
   function place(){
    assistant=document.getElementById('dawlyBotLauncher');
    contact=document.getElementById('floatingContactWidget');
-   var aSlot=menu.querySelector('#dawlyQuickAssistant'),cSlot=menu.querySelector('#dawlyQuickContact');
-   if(assistant&&assistant.parentNode!==aSlot)aSlot.appendChild(assistant);
+   var cSlot=menu.querySelector('#dawlyQuickContact');
    if(contact&&contact.parentNode!==cSlot)cSlot.appendChild(contact);
-   aSlot.hidden=!assistant;cSlot.hidden=!contact;
+   var aSlot=menu.querySelector('#dawlyQuickAssistant');aSlot.hidden=true;cSlot.hidden=!contact;
    if(!assistant&&!contact)menu.hidden=true;
   }
   function close(){panel.hidden=true;toggle.setAttribute('aria-expanded','false');}
   toggle.addEventListener('click',function(){var open=panel.hidden;panel.hidden=!open;toggle.setAttribute('aria-expanded',String(open));});
   menu.addEventListener('click',function(e){
-   if(e.target.closest('#dawlyBotLauncher'))close();
    if(e.target.closest('.floating-contact-toggle')){panel.hidden=false;toggle.setAttribute('aria-expanded','true');}
   });
   document.addEventListener('click',function(e){if(!menu.contains(e.target)&&!e.target.closest('#dawlyBotPanel'))close();});
