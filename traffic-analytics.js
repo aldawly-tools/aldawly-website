@@ -1,4 +1,4 @@
-/* Anonymous traffic and product-view analytics. No IP, names or contact details are collected. */
+/* Anonymous traffic and product-view analytics. Admin accounts are excluded before any write. */
 import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-auth.js";
 import { getFirestore, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-firestore.js";
@@ -6,20 +6,24 @@ import { getFirestore, doc, setDoc, serverTimestamp } from "https://www.gstatic.
 (async function trackStoreTraffic(){
  try {
   if(!window.DAWLY_FIREBASE_CONFIG)return;
-  const params=new URLSearchParams(location.search);
   const app=getApps().length?getApps()[0]:initializeApp(window.DAWLY_FIREBASE_CONFIG);
   const auth=getAuth(app);
   const db=getFirestore(app);
-  const ADMIN_EMAILS=new Set(["elgoharemahmoud@gmail.com","ahmedelgohare90@gmail.com"]);
-  // Wait until Firebase restores the login session so verified admins are never counted.
-  const allowed=await new Promise(resolve=>{
-   const unsubscribe=onAuthStateChanged(auth,user=>{
-    unsubscribe();
-    resolve(!(user&&user.emailVerified===true&&ADMIN_EMAILS.has(String(user.email||"").toLowerCase())));
-   },()=>resolve(true));
-  });
-  if(!allowed)return;
+  const ADMIN_EMAILS=new Set(["elgoharemahmoud@gmail.com","ahmedelgohare90@gmail.com"].map(v=>v.toLowerCase()));
 
+  // Wait for Firebase to restore the session. If auth cannot be checked, fail closed:
+  // do not record a visit or product view because this could be an admin session.
+  const authState=await new Promise(resolve=>{
+   let unsubscribe=()=>{};
+   try {
+    unsubscribe=onAuthStateChanged(auth,user=>{unsubscribe();resolve({ok:true,user});},()=>{unsubscribe();resolve({ok:false,user:null});});
+   } catch(error) { resolve({ok:false,user:null}); }
+  });
+  if(!authState.ok)return;
+  const user=authState.user;
+  if(user && ADMIN_EMAILS.has(String(user.email||"").trim().toLowerCase()))return;
+
+  const params=new URLSearchParams(location.search);
   const cairoParts=new Intl.DateTimeFormat("en-CA",{timeZone:"Africa/Cairo",year:"numeric",month:"2-digit",day:"2-digit"}).formatToParts(new Date());
   const part=type=>cairoParts.find(item=>item.type===type).value;
   const day=part("year")+"-"+part("month")+"-"+part("day");
@@ -30,13 +34,7 @@ import { getFirestore, doc, setDoc, serverTimestamp } from "https://www.gstatic.
    try{localStorage.setItem("aldawly_visitor_id",visitorId);}catch(e){}
   }
 
-  // Count one visit per browser per Cairo day on EVERY store page.
-  // The homepage counter uses the same document ID, so it cannot create a duplicate.
-  await setDoc(doc(db,"siteVisits",visitorId+"_"+day),{
-   visitorId,
-   day,
-   createdAt:serverTimestamp()
-  });
+  await setDoc(doc(db,"siteVisits",visitorId+"_"+day),{visitorId,day,createdAt:serverTimestamp()});
 
   const rawSource=String(params.get("utm_source")||document.referrer||"direct").toLowerCase();
   let source="direct";
@@ -49,7 +47,6 @@ import { getFirestore, doc, setDoc, serverTimestamp } from "https://www.gstatic.
     source=/facebook|fb\./.test(host)?"facebook":/google\./.test(host)?"google":/whatsapp|wa\.me/.test(host)?"whatsapp":/instagram/.test(host)?"instagram":/tiktok/.test(host)?"tiktok":/messenger/.test(host)?"facebook":"other";
    }catch(e){source="direct";}
   }
-
   const sourceFlag="aldawly_source_logged_"+day;
   let sourceAlreadyLogged=false;
   try{sourceAlreadyLogged=localStorage.getItem(sourceFlag)==="1";}catch(e){}
@@ -59,7 +56,6 @@ import { getFirestore, doc, setDoc, serverTimestamp } from "https://www.gstatic.
     .catch(error=>console.warn("Traffic source tracking:",error));
   }
 
-  // Product detail links use product.html?id=PRODUCT_ID.
   const isProductPage=/(?:^|\/)product(?:\.html)?\/?$/i.test(location.pathname);
   const productId=isProductPage?params.get("id"):"";
   const id=String(productId||"").replace(/[^a-zA-Z0-9_-]/g,"").slice(0,80);
