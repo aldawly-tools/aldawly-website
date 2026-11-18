@@ -441,6 +441,114 @@
     }
   });
 
+  let miniCartKey = null;
+  function getMiniCartKey() {
+    if (miniCartKey) return miniCartKey;
+    let deviceId = localStorage.getItem("dawly_cart_device_v1");
+    if (!deviceId) {
+      deviceId = (window.crypto && typeof window.crypto.randomUUID === "function")
+        ? window.crypto.randomUUID()
+        : "d" + Date.now().toString(36) + Math.random().toString(36).slice(2);
+      localStorage.setItem("dawly_cart_device_v1", deviceId);
+    }
+    miniCartKey = "dawly_cart_v3_" + deviceId;
+    return miniCartKey;
+  }
+  function miniCartProducts() { return cloudProducts || fallbackProducts || []; }
+  function miniCartPrice(value) {
+    const raw = String(value == null ? "" : value).replace(/[٠-٩]/g, d => String("٠١٢٣٤٥٦٧٨٩".indexOf(d))).replace(/[۰-۹]/g, d => String("۰۱۲۳۴۵۶۷۸۹".indexOf(d))).replace(/[^0-9.]/g, "");
+    const n = Number(raw);
+    return raw && Number.isFinite(n) ? n : null;
+  }
+  function ensureMiniCart() {
+    let shell = document.getElementById("dawlyMiniCart");
+    if (shell) return shell;
+    shell = document.createElement("div");
+    shell.id = "dawlyMiniCart";
+    shell.innerHTML = '<button class="dawly-mini-cart-overlay" type="button" data-mini-close aria-label="إغلاق السلة"></button><aside class="dawly-mini-cart-panel" role="dialog" aria-modal="true" aria-labelledby="dawlyMiniCartTitle"><header class="dawly-mini-cart-head"><div><strong id="dawlyMiniCartTitle">سلة مشترياتك</strong><small>منتجات اخترتها من الدولي</small></div><button type="button" data-mini-close aria-label="إغلاق">×</button></header><div class="dawly-mini-cart-body" id="dawlyMiniCartBody"></div><footer class="dawly-mini-cart-foot"><div class="dawly-mini-cart-total"><span>الإجمالي</span><strong id="dawlyMiniCartTotal">—</strong></div><small>الشحن يُحدد عند تأكيد العنوان</small><a class="dawly-mini-cart-checkout" href="products.html?cart=1">إتمام الطلب ←</a><button class="dawly-mini-cart-continue" type="button" data-mini-close>متابعة التسوق</button></footer></aside>';
+    document.body.appendChild(shell);
+    shell.addEventListener("click", function(event) {
+      const close = event.target.closest("[data-mini-close]");
+      if (close) { closeMiniCart(); return; }
+      const control = event.target.closest("[data-mini-qty], [data-mini-remove]");
+      if (!control) return;
+      const key = getMiniCartKey();
+      let lines = [];
+      try { lines = JSON.parse(localStorage.getItem(key) || "[]"); } catch (_) {}
+      if (!Array.isArray(lines)) lines = [];
+      const id = String(control.dataset.miniQty || control.dataset.miniRemove || "");
+      if (control.hasAttribute("data-mini-remove")) {
+        lines = lines.filter(line => String(line.id) !== id);
+      } else {
+        const line = lines.find(entry => String(entry.id) === id);
+        const delta = Number(control.dataset.delta || 0);
+        if (line) {
+          const product = miniCartProducts().find(p => String(p.id) === id);
+          const next = Math.max(0, Math.min(99, Number(line.qty || 1) + delta));
+          if (product && Number.isInteger(product.stock) && product.stock >= 0 && next > product.stock) {
+            alert("الكمية المطلوبة أكبر من المتاح بالمخزون."); return;
+          }
+          line.qty = next;
+          if (!line.qty) lines = lines.filter(entry => String(entry.id) !== id);
+        }
+      }
+      localStorage.setItem(key, JSON.stringify(lines));
+      localStorage.setItem("dawly_cart_last_updated_v1", String(Date.now()));
+      window.dispatchEvent(new CustomEvent("dawly-cart-updated", {detail:{cart:lines}}));
+      renderMiniCart();
+    });
+    shell.addEventListener("keydown", function(event) { if (event.key === "Escape") closeMiniCart(); });
+    return shell;
+  }
+  function renderMiniCart() {
+    const shell = ensureMiniCart();
+    const body = shell.querySelector("#dawlyMiniCartBody");
+    let lines = [];
+    try { lines = JSON.parse(localStorage.getItem(getMiniCartKey()) || "[]"); } catch (_) {}
+    if (!Array.isArray(lines)) lines = [];
+    let total = 0, priced = 0, count = 0;
+    body.innerHTML = lines.map(function(line) {
+      const item = miniCartProducts().find(p => String(p.id) === String(line.id));
+      if (!item) return "";
+      const qty = Math.max(1, Number(line.qty) || 1);
+      const price = miniCartPrice(item.price);
+      if (price !== null) { total += price * qty; priced++; }
+      count += qty;
+      const imageId = (Array.isArray(item.imageIds) && item.imageIds[0]) || item.imageId || "";
+      const imageUrl = item.image || (Array.isArray(item.images) && typeof item.images[0] === "string" ? item.images[0] : "");
+      const image = imageUrl
+        ? '<img src="' + escapeHtml(imageUrl) + '" alt="' + escapeHtml(cleanProductName(item.name)) + '" loading="lazy">'
+        : imageId
+          ? '<img data-mini-image="' + escapeHtml(imageId) + '" alt="' + escapeHtml(cleanProductName(item.name)) + '" loading="lazy">'
+          : '<span aria-hidden="true">🔧</span>';
+      return '<article class="dawly-mini-cart-item"><div class="dawly-mini-cart-image">' + image + '</div><div class="dawly-mini-cart-info"><strong>' + escapeHtml(cleanProductName(item.name)) + '</strong><small>' + escapeHtml(displayBrand(item.brand || "")) + '</small><b>' + escapeHtml(formatPrice(item.price)) + '</b><div class="dawly-mini-cart-controls"><button type="button" data-mini-qty="' + escapeHtml(item.id) + '" data-delta="-1" aria-label="تقليل الكمية">−</button><span>' + qty + '</span><button type="button" data-mini-qty="' + escapeHtml(item.id) + '" data-delta="1" aria-label="زيادة الكمية">+</button><button type="button" data-mini-remove="' + escapeHtml(item.id) + '">حذف</button></div></div></article>';
+    }).join("");
+    if (!body.innerHTML) body.innerHTML = '<div class="dawly-mini-cart-empty">سلتك فارغة حاليًا</div>';
+    const totalNode = shell.querySelector("#dawlyMiniCartTotal");
+    totalNode.textContent = priced === lines.length && priced ? "EGP " + new Intl.NumberFormat("en-US",{maximumFractionDigits:2}).format(total) : (count ? "يُحدد عند الاستفسار" : "EGP 0");
+    const title = shell.querySelector("#dawlyMiniCartTitle");
+    title.textContent = "سلة مشترياتك (" + count + ")";
+    body.querySelectorAll("img[data-mini-image]").forEach(function(img) {
+      if (typeof window.DAWLY_LOAD_PRODUCT_IMAGE === "function") {
+        window.DAWLY_LOAD_PRODUCT_IMAGE(img.dataset.miniImage).then(url => { if(url && img.isConnected) img.src=url; }).catch(()=>{});
+      }
+    });
+  }
+  function openMiniCart() {
+    const shell = ensureMiniCart();
+    renderMiniCart();
+    shell.classList.add("is-open");
+    document.body.classList.add("dawly-mini-cart-open");
+    const close = shell.querySelector("[data-mini-close]");
+    if (close) close.focus();
+  }
+  function closeMiniCart() {
+    const shell = document.getElementById("dawlyMiniCart");
+    if (!shell) return;
+    shell.classList.remove("is-open");
+    document.body.classList.remove("dawly-mini-cart-open");
+  }
+
   root.addEventListener("click", function (event) {
     const button = event.target.closest("[data-detail-add], [data-detail-order-now]");
     if (!button || button.disabled) return;
@@ -488,9 +596,9 @@
       alert("تعذر حفظ السلة على هذا الجهاز. تأكد من إعدادات المتصفح وحاول مرة أخرى.");
       return;
     }
-    // Keep the customer on this product page after using "Complete your order".
-    // The cart is already saved locally above; give clear inline confirmation.
+    // Keep the product page open and show the Amazon-style mini cart.
     window.dispatchEvent(new CustomEvent("dawly-cart-updated", {detail:{productId:item.id, cart:cart}}));
+    openMiniCart();
     if (directOrder) {
       const label = button.querySelector("span:last-child");
       if (label) label.textContent = "تمت الإضافة للسلة ✓";
@@ -505,7 +613,8 @@
       }, 1800);
       return;
     }
-    window.location.href = "products.html";
+    // The compact cart icon also opens the side cart without leaving this page.
+    return;
   });
 
   window.addEventListener("dawly-products-updated", function (event) {
