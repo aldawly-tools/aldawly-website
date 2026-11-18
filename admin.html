@@ -264,6 +264,9 @@ button:disabled{opacity:.6;cursor:wait}
         <div class="analytics-card"><span>زيارات أمس</span><strong id="analyticsYesterday">—</strong><small>مقارنة باليوم الحالي</small></div>
         <div class="analytics-card"><span>إجمالي الطلبات</span><strong id="analyticsOrders">—</strong><small>من الطلبات المسجلة في المتجر</small></div>
         <div class="analytics-card"><span>طلبات غير ملغية</span><strong id="analyticsActiveOrders">—</strong><small>جديد أو مؤكد أو مشحون أو تم التسليم</small></div>
+        <div class="analytics-card"><span>إضافات السلة — آخر 30 يومًا</span><strong id="analyticsCartAdds">—</strong><small>مرات ضغط أضف إلى السلة</small></div>
+        <div class="analytics-card"><span>طلبات مجهزة لواتساب — آخر 30 يومًا</span><strong id="analyticsWhatsappOrders">—</strong><small>تم فتح تجهيز الطلب على واتساب، وليس تأكيد الإرسال</small></div>
+        <div class="analytics-card"><span>معدل الانتقال لواتساب</span><strong id="analyticsConversionRate">—</strong><small>من زيارات آخر 30 يومًا</small></div>
       </div>
       <h3 style="margin:18px 0 10px">حركة الزيارات — آخر 7 أيام</h3>
       <div class="analytics-chart" id="analyticsChart" aria-label="رسم بياني للزيارات اليومية"></div>
@@ -277,9 +280,11 @@ button:disabled{opacity:.6;cursor:wait}
       <div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;min-width:300px"><thead><tr><th style="text-align:right;padding:9px">المصدر</th><th style="text-align:right;padding:9px">عدد الزيارات</th><th style="text-align:right;padding:9px">النسبة</th></tr></thead><tbody id="analyticsSourcesRows"><tr><td colspan="3">جارٍ التحميل…</td></tr></tbody></table></div>
       <h3 style="margin:20px 0 10px">المنتجات الأكثر مشاهدة — آخر 30 يومًا</h3>
       <div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;min-width:360px"><thead><tr><th style="text-align:right;padding:9px">المنتج</th><th style="text-align:right;padding:9px">الماركة</th><th style="text-align:right;padding:9px">المشاهدات</th></tr></thead><tbody id="analyticsTopProductsRows"><tr><td colspan="3">جارٍ التحميل…</td></tr></tbody></table></div>
+      <h3 style="margin:20px 0 10px">المنتجات الأكثر إضافة للسلة — آخر 30 يومًا</h3>
+      <div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;min-width:360px"><thead><tr><th style="text-align:right;padding:9px">المنتج</th><th style="text-align:right;padding:9px">العدد</th></tr></thead><tbody id="analyticsCartProductsRows"><tr><td colspan="2">جارٍ التحميل…</td></tr></tbody></table></div>
       <h3 style="margin:20px 0 10px">المنتجات الأقل مشاهدة — آخر 30 يومًا</h3>
       <div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;min-width:360px"><thead><tr><th style="text-align:right;padding:9px">المنتج</th><th style="text-align:right;padding:9px">الماركة</th><th style="text-align:right;padding:9px">المشاهدات</th></tr></thead><tbody id="analyticsLowProductsRows"><tr><td colspan="3">جارٍ التحميل…</td></tr></tbody></table></div>
-      <p class="analytics-note">ملاحظة: الزيارة تُسجل مرة واحدة لكل متصفح يوميًا. أرقام الزوار الفريدين ومصادر الدخول ومشاهدات المنتجات المعروضة هنا تخص آخر 30 يومًا، بينما إجمالي الزيارات يشمل كل السجلات. لا يتم جمع أسماء أو أرقام هواتف أو عناوين IP، ولا تُحسب البيانات قبل تفعيل التتبع بأثر رجعي.</p>
+      <p class="analytics-note">ملاحظة: الزيارة تُسجل مرة واحدة لكل متصفح يوميًا. أرقام الزوار الفريدين ومصادر الدخول ومشاهدات المنتجات المعروضة هنا تخص آخر 30 يومًا، بينما إجمالي الزيارات يشمل كل السجلات. لا يتم جمع أسماء أو أرقام هواتف أو عناوين IP. إضافات السلة وتجهيز واتساب يبدأ قياسهما بعد تفعيل صلاحيات مجموعة storeEvents، ولا تُحسب البيانات بأثر رجعي.</p>
     </section>
     <div class="card admin-panel" id="productPanel" role="tabpanel">
       <div class="actions" style="justify-content:space-between;align-items:center"><div><h2 style="margin:0 0 5px">إضافة منتج</h2><span class="muted" id="signedInAs"></span></div><button class="light" id="enablePushBtn" type="button">تفعيل إشعارات الطلبات على هذا الهاتف</button><button class="light" id="logoutBtn" type="button">تسجيل الخروج</button></div>
@@ -472,6 +477,15 @@ async function loadAnalytics(force){
    getDocs(query(collection(db,"productViews"),where("day",">=",monthStart),where("day","<=",today)))
   ]);
   const records=visitSnap.docs.map(d=>d.data()).filter(v=>/^\d{4}-\d{2}-\d{2}$/.test(String(v.day||"")));
+  let eventRecords=[];
+  let eventTrackingReady=true;
+  try{
+   const eventSnap=await getDocs(query(collection(db,"storeEvents"),where("day",">=",monthStart),where("day","<=",today)));
+   eventRecords=eventSnap.docs.map(d=>d.data());
+  }catch(eventError){
+   eventTrackingReady=false;
+   console.warn("Conversion analytics are waiting for Firestore storeEvents rules:",eventError);
+  }
   const unique=new Set(records.map(v=>String(v.visitorId||"")).filter(Boolean));
   const countDay=day=>records.filter(v=>v.day===day).length;
   const weekDays=Array.from({length:7},(_,i)=>shiftDay(today,i-6));
@@ -486,6 +500,15 @@ async function loadAnalytics(force){
   $("analyticsYesterday").textContent=analyticsFormat(countDay(shiftDay(today,-1)));
   $("analyticsOrders").textContent=analyticsFormat(orders.length);
   $("analyticsActiveOrders").textContent=analyticsFormat(orders.filter(o=>o.status!=="cancelled").length);
+  const cartEvents=eventRecords.filter(e=>e.eventType==="add_to_cart");
+  const whatsappEvents=eventRecords.filter(e=>e.eventType==="whatsapp_order");
+  $("analyticsCartAdds").textContent=eventTrackingReady?analyticsFormat(cartEvents.length):"بانتظار التفعيل";
+  $("analyticsWhatsappOrders").textContent=eventTrackingReady?analyticsFormat(whatsappEvents.length):"بانتظار التفعيل";
+  $("analyticsConversionRate").textContent=eventTrackingReady?(records.length?Math.round(whatsappEvents.length/records.length*100)+"%":"0%"):"—";
+  const cartProductCounts={};
+  cartEvents.forEach(e=>{const name=String(e.productName||"").trim();if(name)cartProductCounts[name]=(cartProductCounts[name]||0)+1;});
+  const cartProductRows=Object.entries(cartProductCounts).sort((a,b)=>b[1]-a[1]).slice(0,10);
+  $("analyticsCartProductsRows").innerHTML=cartProductRows.length?cartProductRows.map(([name,count])=>"<tr><td style=\"padding:9px\">"+escapeHtml(name)+"</td><td style=\"padding:9px\"><b>"+analyticsFormat(count)+"</b></td></tr>").join(""):(eventTrackingReady?"<tr><td colspan=\"2\" style=\"padding:9px\">لا توجد إضافات للسلة مسجلة بعد.</td></tr>":"<tr><td colspan=\"2\" style=\"padding:9px\">فعّل صلاحيات Firestore لمجموعة storeEvents لبدء القياس.</td></tr>");
   const max=Math.max(1,...weekDays.map(countDay));
   $("analyticsChart").innerHTML=weekDays.map(day=>{
    const value=countDay(day),height=Math.max(3,Math.round(value/max*100));
