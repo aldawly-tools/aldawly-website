@@ -25,7 +25,20 @@ function price(p){var v=String(p.price==null?"":p.price).trim();if(!v)return "ا
 function card(p){var name=esc(p.name||"منتج من الدولي"),url=p.image||p.imageUrl||p.imageURL||p.photo||"",iid=p.imageId||p._docId||p.id||"",href="product.html?id="+encodeURIComponent(p.id);var im=url?'<img src="'+esc(url)+'" alt="'+name+'" loading="lazy">':iid?'<img data-bot-image="'+esc(iid)+'" alt="'+name+'" loading="lazy">':'<span>🔧</span>';return '<a class="dawly-bot-product" href="'+href+'" target="_blank" rel="noopener noreferrer" aria-label="عرض تفاصيل '+name+'"><div class="dawly-bot-product-img">'+im+'</div><div class="dawly-bot-product-info"><strong>'+name+'</strong><small>'+esc(p.brand||p.cat||"من كتالوج الدولي")+'</small><b>'+price(p)+'</b><span class="dawly-bot-product-open">عرض المنتج ←</span></div></a>';}
 function loadImages(root){if(typeof window.DAWLY_LOAD_PRODUCT_IMAGE!=="function")return;root.querySelectorAll("img[data-bot-image]").forEach(function(im){if(im.dataset.loading)return;im.dataset.loading="1";window.DAWLY_LOAD_PRODUCT_IMAGE(im.dataset.botImage).then(function(u){if(u&&im.isConnected)im.src=u;else if(im.isConnected)im.replaceWith(document.createTextNode("🔧"));}).catch(function(){if(im.isConnected)im.replaceWith(document.createTextNode("🔧"));});});}
 function msg(t,who){var box=document.getElementById("dawlyBotMessages"),el=document.createElement("div");el.className="dawly-bot-msg "+who;el.textContent=t;box.appendChild(el);box.scrollTop=box.scrollHeight;}
-function show(list){if(!list.length)return;var box=document.createElement("div");box.className="dawly-bot-results";box.innerHTML=list.map(card).join("");document.getElementById("dawlyBotMessages").appendChild(box);loadImages(box);}
+function show(list){
+ if(!Array.isArray(list)||!list.length)return;
+ var messages=document.getElementById("dawlyBotMessages");
+ if(!messages)return;
+ var box=document.createElement("div");
+ box.className="dawly-bot-results";
+ box.setAttribute("aria-label","المنتجات المطابقة من كتالوج الدولي");
+ box.innerHTML='<div class="dawly-bot-results-title">المنتجات المطابقة في الكتالوج</div>'+list.map(card).join("");
+ messages.appendChild(box);
+ loadImages(box);
+ // The reply bubble is appended before the product cards. Scroll again after
+ // inserting cards so the customer actually sees the matched products.
+ requestAnimationFrame(function(){messages.scrollTop=messages.scrollHeight;});
+}
 function replyFallback(q){var s=norm(q);if(!products.length){msg("الكتالوج لسه بيحمّل. جرّب بعد لحظات.","bot");return;}
 if(/^(السلام عليكم|سلام|اهلا|اهلين|مرحبا|صباح الخير|مساء الخير)$/.test(s)){msg("وعليكم السلام 👋 أهلاً بيك في الدولي. بتدور على أداة معينة ولا محتاج ترشيح لاستخدام محدد؟","bot");return;}
 var wantsPrice=/سعر|بكام|كام|تكلفه|تكلفة/.test(s),wantsAlt=/بديل|بدائل|شبيه|بدلا/.test(s),wantsSize=/مقاس|مقاسات|قطر|طول|عرض|mm|ملم|بوصه|انش|t\d+/.test(s);
