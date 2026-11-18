@@ -1327,12 +1327,6 @@
       if (!item) return "";
       itemNumber += 1;
       const productUrl = new URL("product.html?id=" + encodeURIComponent(item.id), window.location.href).toString();
-      const rawImageUrl = item.image || item.imageUrl || item.photo || item.imageURL || "";
-      const productImageUrl = rawImageUrl && /^https?:\/\//i.test(String(rawImageUrl))
-        ? String(rawImageUrl)
-        : rawImageUrl
-          ? new URL(String(rawImageUrl), window.location.href).toString()
-          : productUrl;
       const price = parsePrice(item.price);
       const priceLines = price === null
         ? "السعر: عند الاستفسار"
@@ -1345,7 +1339,6 @@
         (code ? "\nالكود / الموديل: " + code : "") +
         "\nالكمية: " + line.qty + "\n" + priceLines +
         (details ? "\nالتفاصيل: " + details.slice(0, 240) : "") +
-        "\n🖼️ صورة المنتج: " + productImageUrl +
         "\nرابط المنتج: " + productUrl;
     }).filter(Boolean);
     if (!lines.length || lines.length !== cart.length) {
