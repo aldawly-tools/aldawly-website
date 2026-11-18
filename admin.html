@@ -362,6 +362,18 @@ button:disabled{opacity:.6;cursor:wait}
       </div>
       <div class="actions" style="margin-top:16px"><button class="light" id="undoBulkPricesBtn" type="button">التراجع عن آخر تعديل جماعي</button></div>
       <p class="muted">التراجع متاح لآخر عملية جماعية مكتملة فقط، ولن يعيد سعر منتج تم تعديله يدويًا بعد العملية.</p>
+      <div style="height:1px;background:#e8ebef;margin:22px 0"></div>
+      <div class="product-control-heading"><span>٪</span><div><strong>خصومات المنتجات بالجملة</strong><small>إظهار نسبة الخصم والسعر قبل وبعد الخصم للعملاء دون تغيير السعر الأساسي</small></div></div>
+      <p class="muted">يتم تطبيق الخصم على المنتجات ذات الأسعار الرقمية فقط. السعر الأصلي يظل محفوظًا ويمكن إزالة الخصم أو التراجع عنه.</p>
+      <div class="product-control-grid">
+        <div class="field"><label for="bulkDiscountPercent">نسبة الخصم (%)</label><input id="bulkDiscountPercent" type="number" min="1" max="90" step="1" value="10" inputmode="numeric"></div>
+        <div class="field"><label for="bulkDiscountScope">نطاق العملية</label><select id="bulkDiscountScope"><option value="all">تطبيق الخصم على كل المنتجات المسعّرة</option><option value="clear">إزالة الخصم من كل المنتجات</option></select></div>
+      </div>
+      <div class="actions" style="margin-top:12px"><button class="light" id="previewBulkDiscountBtn" type="button">معاينة الخصومات</button><button class="red" id="applyBulkDiscountBtn" type="button" disabled>تطبيق الخصم على الموقع</button></div>
+      <p class="status" id="bulkDiscountStatus" aria-live="polite"></p>
+      <div id="bulkDiscountPreview" class="hidden" style="margin-top:12px"><div class="order-top"><strong>معاينة الخصومات</strong><span class="pill" id="bulkDiscountCount"></span></div><div class="muted" id="bulkDiscountSummary" style="margin:8px 0"></div><div style="overflow:auto;max-height:320px;border:1px solid #e6e8eb;border-radius:12px"><table style="width:100%;border-collapse:collapse;min-width:420px;font-size:13px;text-align:right"><thead style="position:sticky;top:0;background:#f5f6f8"><tr><th style="padding:9px">المنتج</th><th style="padding:9px">السعر الأصلي</th><th style="padding:9px">بعد الخصم</th><th style="padding:9px">النسبة</th></tr></thead><tbody id="bulkDiscountPreviewRows"></tbody></table></div></div>
+      <div class="actions" style="margin-top:14px"><button class="light" id="undoBulkDiscountBtn" type="button">التراجع عن آخر خصم جماعي</button></div>
+      <p class="muted">سيظهر الخصم في بطاقات المنتجات وصفحة التفاصيل والسلة، ويُحسب في إجمالي الطلب.</p>
     </section>
     <section class="card admin-panel hidden" id="postPanel" role="tabpanel">
       <h2>منشئ بوستات فيسبوك</h2><p class="muted">اختار منتجًا من المتجر وسيتم تجهيز نص تسويقي قابل للتعديل والنسخ. راجع السعر والمواصفات قبل النشر.</p>
@@ -862,6 +874,71 @@ $("undoBulkPricesBtn").addEventListener("click", async function() {
     console.error("Bulk price undo failed:",error);
     bulkPriceMessage("تعذر التراجع: " + (error && error.message ? error.message : "خطأ غير معروف"));
   } finally { bulkPriceBusy = false;button.disabled = false; }
+});
+
+
+let bulkDiscountPreviewData=null;
+const BULK_DISCOUNT_HISTORY_ID="bulkDiscountHistory";
+function discountMessage(v){$("bulkDiscountStatus").textContent=v||"";}
+function renderBulkDiscountPreview(){
+ const d=bulkDiscountPreviewData;
+ if(!d){$("bulkDiscountPreview").classList.add("hidden");$("applyBulkDiscountBtn").disabled=true;return;}
+ $("bulkDiscountPreview").classList.remove("hidden");
+ $("bulkDiscountCount").textContent=d.changes.length+" منتج";
+ $("bulkDiscountSummary").textContent=(d.scope==="clear"?"إزالة الخصم من ":"خصم "+d.percent+"% على ")+d.changes.length+" منتج؛ تم تجاوز "+d.skipped+" منتج بلا سعر رقمي.";
+ $("bulkDiscountPreviewRows").innerHTML=d.changes.slice(0,150).map(c=>'<tr style="border-top:1px solid #edf0f2"><td style="padding:8px">'+escapeHtml(c.name)+'</td><td style="padding:8px;white-space:nowrap">'+escapeHtml(c.price)+'</td><td style="padding:8px;white-space:nowrap;color:#b20f19;font-weight:800">'+escapeHtml(c.after)+'</td><td style="padding:8px">'+(c.newPercent?c.newPercent+"%":"—")+'</td></tr>').join("")+(d.changes.length>150?'<tr><td colspan="4" style="padding:9px">تظهر أول 150 نتيجة فقط.</td></tr>':"");
+ $("applyBulkDiscountBtn").disabled=!d.changes.length||bulkPriceBusy;
+}
+$("previewBulkDiscountBtn").addEventListener("click",async function(){
+ this.disabled=true;
+ try{
+  if(!auth||!auth.currentUser||!isAuthorizedAdmin(auth.currentUser))throw Error("سجّل الدخول بحساب الإدارة أولًا.");
+  await loadProducts(true);
+  const scope=$("bulkDiscountScope").value,percent=Number($("bulkDiscountPercent").value);
+  if(scope!=="clear"&&(!Number.isInteger(percent)||percent<1||percent>90))throw Error("اكتب نسبة خصم من 1% إلى 90%.");
+  const changes=[];let skipped=0;
+  products.forEach(p=>{
+   const parsed=parseBulkPrice(p.price);if(!parsed){skipped++;return;}
+   const oldPercent=Math.max(0,Math.min(90,Number(p.discountPercent)||0)),newPercent=scope==="clear"?0:percent;
+   if(oldPercent===newPercent){skipped++;return;}
+   const amount=newPercent?Math.round(parsed.number*(1-newPercent/100)*100)/100:parsed.number;
+   changes.push({id:String(p.id),name:String(p.name||"منتج"),price:String(p.price),oldPercent,newPercent,after:"EGP "+new Intl.NumberFormat("en-US",{maximumFractionDigits:2}).format(amount)});
+  });
+  bulkDiscountPreviewData={scope,percent,changes,skipped};renderBulkDiscountPreview();
+  discountMessage(changes.length?"المعاينة جاهزة. راجعها ثم اضغط تطبيق الخصم.":"لا توجد منتجات تحتاج إلى تعديل.");
+ }catch(e){bulkDiscountPreviewData=null;renderBulkDiscountPreview();discountMessage(e.message||"تعذرت المعاينة.");}
+ finally{this.disabled=false;}
+});
+$("applyBulkDiscountBtn").addEventListener("click",async function(){
+ const d=bulkDiscountPreviewData;if(!d||!d.changes.length||bulkPriceBusy)return;
+ if(!confirm((d.scope==="clear"?"إزالة الخصومات من ":"تطبيق خصم "+d.percent+"% على ")+d.changes.length+" منتج؟ السعر الأساسي لن يتغير."))return;
+ bulkPriceBusy=true;this.disabled=true;$("previewBulkDiscountBtn").disabled=true;
+ const ref=doc(db,"storeMeta",BULK_DISCOUNT_HISTORY_ID);
+ try{
+  const prev=await getDoc(ref);if(prev.exists()&&prev.data().status==="applying")throw Error("هناك عملية خصم سابقة غير مكتملة؛ راجع سجلها أولًا.");
+  await setDoc(ref,{status:"applying",scope:d.scope,percent:d.percent,createdAt:serverTimestamp(),createdBy:auth.currentUser.email,changes:d.changes.map(c=>({id:c.id,oldPercent:c.oldPercent,newPercent:c.newPercent}))});
+  for(let i=0;i<d.changes.length;i+=400){const batch=writeBatch(db);d.changes.slice(i,i+400).forEach(c=>batch.update(doc(db,"products",c.id),{discountPercent:c.newPercent,updatedAt:serverTimestamp()}));await batch.commit();}
+  await updateDoc(ref,{status:"completed",completedAt:serverTimestamp()});
+  products=products.map(p=>{const c=d.changes.find(x=>x.id===String(p.id));return c?Object.assign({},p,{discountPercent:c.newPercent}):p;});
+  saveCatalogCache();renderProducts();refreshPostProducts();bulkDiscountPreviewData=null;renderBulkDiscountPreview();
+  discountMessage("تم تطبيق الخصم على "+d.changes.length+" منتج. السعر الأساسي محفوظ.");
+ }catch(e){console.error("Bulk discount failed",e);discountMessage("تعذر إكمال العملية: "+(e.message||"خطأ غير معروف")+". راجع سجل العملية قبل إعادة المحاولة.");}
+ finally{bulkPriceBusy=false;$("previewBulkDiscountBtn").disabled=false;$("applyBulkDiscountBtn").disabled=!bulkDiscountPreviewData||!bulkDiscountPreviewData.changes.length;}
+});
+$("undoBulkDiscountBtn").addEventListener("click",async function(){
+ if(bulkPriceBusy)return;
+ if(!auth||!auth.currentUser||!isAuthorizedAdmin(auth.currentUser)){discountMessage("سجّل الدخول بحساب الإدارة أولًا.");return;}
+ if(!confirm("التراجع عن آخر خصم جماعي مكتمل؟"))return;
+ bulkPriceBusy=true;this.disabled=true;const ref=doc(db,"storeMeta",BULK_DISCOUNT_HISTORY_ID);
+ try{
+  const snap=await getDoc(ref);if(!snap.exists()||snap.data().status!=="completed"||snap.data().undoneAt)throw Error("لا توجد عملية خصم مكتملة قابلة للتراجع.");
+  const restore=[];let skipped=0;
+  for(const c of snap.data().changes||[]){const pr=doc(db,"products",String(c.id)),cur=await getDoc(pr);if(!cur.exists()||Number(cur.data().discountPercent||0)!==Number(c.newPercent)){skipped++;continue;}restore.push({ref:pr,value:c.oldPercent});}
+  for(let i=0;i<restore.length;i+=400){const batch=writeBatch(db);restore.slice(i,i+400).forEach(x=>batch.update(x.ref,{discountPercent:x.value,updatedAt:serverTimestamp()}));await batch.commit();}
+  await updateDoc(ref,{undoneAt:serverTimestamp(),undoRestored:restore.length,undoSkipped:skipped});await loadProducts(true);
+  discountMessage("تم التراجع عن الخصم في "+restore.length+" منتج، وتخطي "+skipped+" منتج تغيّر خصمه يدويًا.");
+ }catch(e){discountMessage("تعذر التراجع: "+(e.message||"خطأ غير معروف"));}
+ finally{bulkPriceBusy=false;this.disabled=false;}
 });
 
 const orderStatusLabels={new:"جديد",confirmed:"تم التأكيد",shipped:"تم الشحن",delivered:"تم التسليم",cancelled:"ملغي"};
