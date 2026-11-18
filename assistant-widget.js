@@ -68,12 +68,12 @@ function readSpecs(p){
  var raw=p&&p.specs;
  if(Array.isArray(raw))return raw.map(function(x){return {name:String(x.name||"مواصفة"),value:String(x.value||"")};}).filter(function(x){return x.value.trim();});
  if(raw&&typeof raw==="object")return Object.keys(raw).map(function(k){return {name:k,value:String(raw[k]||"")};}).filter(function(x){return x.value.trim();});
- return String(raw||"").split(/\\r?\\n/).map(function(line){
+ return String(raw||"").split(/\r?\n/).map(function(line){
   var i=line.search(/[:：]/);return i<0?null:{name:line.slice(0,i).trim(),value:line.slice(i+1).trim()};
  }).filter(function(x){return x&&x.name&&x.value;});
 }
 function specsText(p){
- var rows=readSpecs(p);return rows.length?rows.map(function(x){return "• "+x.name+": "+x.value;}).join("\\n"):"لا توجد مواصفات فنية مسجلة لهذا المنتج حتى الآن.";
+ var rows=readSpecs(p);return rows.length?rows.map(function(x){return "• "+x.name+": "+x.value;}).join("\n"):"لا توجد مواصفات فنية مسجلة لهذا المنتج حتى الآن.";
 }
 function answerFromCatalog(q){
  var s=norm(q),list=findForAI(q);
@@ -84,7 +84,7 @@ function answerFromCatalog(q){
  var chosen=list.slice(0,asksCompare?3:2);
  if(asksCompare){
   msg("دي مقارنة مبنية على البيانات المسجلة في كتالوج الدولي. أي معلومة غير موجودة مش هخمنها:", "bot");
-  chosen.forEach(function(p){msg((p.name||"منتج")+(p.brand?" — "+p.brand:"")+"\\n"+specsText(p),"bot");});
+  chosen.forEach(function(p){msg((p.name||"منتج")+(p.brand?" — "+p.brand:"")+"\n"+specsText(p),"bot");});
   show(chosen);return true;
  }
  var p=chosen[0],rows=readSpecs(p);
@@ -96,7 +96,7 @@ function answerFromCatalog(q){
  if(/بلد المنشأ|صناعه|صناعة/.test(s))terms.push(/بلد المنشأ|صناعه|صناعة/);
  if(/قدره|قدرة|واط|watt|الجهد|فولت|سرعه|سرعة|وزن/.test(s))terms.push(/قدره|قدرة|واط|الجهد|فولت|سرعه|سرعة|وزن/);
  if(terms.length)requested=rows.filter(function(row){return terms.some(function(re){return re.test(norm(row.name));});});
- msg("بالنسبة لمنتج "+(p.name||"المحدد")+"، دي المعلومات المسجلة عندنا:"+"\\n"+(requested.length?requested.map(function(x){return "• "+x.name+": "+x.value;}).join("\\n"):"المواصفة المطلوبة مش مسجلة بوضوح لهذا المنتج. دي باقي المواصفات المتاحة:\\n"+specsText(p)),"bot");
+ msg("بالنسبة لمنتج "+(p.name||"المحدد")+"، دي المعلومات المسجلة عندنا:"+"\n"+(requested.length?requested.map(function(x){return "• "+x.name+": "+x.value;}).join("\n"):"المواصفة المطلوبة مش مسجلة بوضوح لهذا المنتج. دي باقي المواصفات المتاحة:\n"+specsText(p)),"bot");
  show([p]);return true;
 }
 function reply(q){
