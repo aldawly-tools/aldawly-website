@@ -4,14 +4,12 @@
 /*.html
   Cache-Control: no-store, no-cache, must-revalidate, max-age=0
 
-# Versioned JavaScript and CSS use query-string cache busting in the HTML.
 /*.js
   Cache-Control: public, max-age=604800, stale-while-revalidate=86400
 
 /*.css
   Cache-Control: public, max-age=604800, stale-while-revalidate=86400
 
-# Product and interface assets can be reused for 30 days.
 /assets/*
   Cache-Control: public, max-age=2592000, stale-while-revalidate=604800
 
