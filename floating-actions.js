@@ -27,3 +27,34 @@
  }
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
 })();
+
+
+/* Temporarily hide floating launchers during active page scrolling, then restore them. */
+(function(){
+ function init(){
+  if(window.__dawlyScrollHideReady)return;
+  window.__dawlyScrollHideReady=true;
+  var timer=null;
+  function hideDuringScroll(){
+   var menuPanel=document.getElementById('dawlyQuickMenuPanel');
+   var contactPanel=document.getElementById('floatingContactPanel');
+   var botPanel=document.getElementById('dawlyBotPanel');
+   var cartDrawer=document.querySelector('.cart-drawer.open');
+   /* Keep controls available when one of their panels is actively in use. */
+   if((menuPanel&&!menuPanel.hidden)||(contactPanel&&!contactPanel.hidden)||(botPanel&&!botPanel.hidden)||cartDrawer){
+    document.body.classList.remove('dawly-is-scrolling');
+    return;
+   }
+   document.body.classList.add('dawly-is-scrolling');
+   if(timer)window.clearTimeout(timer);
+   timer=window.setTimeout(function(){
+    document.body.classList.remove('dawly-is-scrolling');
+    timer=null;
+   },220);
+  }
+  window.addEventListener('scroll',hideDuringScroll,{passive:true});
+  window.addEventListener('touchmove',hideDuringScroll,{passive:true});
+  window.addEventListener('pointerdown',function(){document.body.classList.remove('dawly-is-scrolling');},{passive:true});
+ }
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
+})();
