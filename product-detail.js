@@ -124,7 +124,10 @@
     const galleryHtml = uniqueGallery.length > 1 ? '<div class="detail-image-thumbs" id="detailImageThumbs" aria-label="صور المنتج"></div>' : '';
     const galleryControls = uniqueGallery.length > 1 ? '<button class="detail-gallery-nav prev" type="button" data-gallery-step="-1" hidden aria-label="الصورة السابقة">‹</button><button class="detail-gallery-nav next" type="button" data-gallery-step="1" hidden aria-label="الصورة التالية">›</button>' : '';
     const brand = item.brand ? escapeHtml(displayBrand(item.brand)) + ' · ' : "";
-    const price = escapeHtml(formatPrice(item.price));
+    const basePrice = parsePrice(item.price);
+    const discountPercent = Math.max(0,Math.min(90,Number(item.discountPercent)||0));
+    const finalPrice = basePrice===null?null:(discountPercent?Math.round(basePrice*(1-discountPercent/100)*100)/100:basePrice);
+    const price = finalPrice===null?escapeHtml(formatPrice(item.price)):(discountPercent?'<strong>'+escapeHtml(money(finalPrice))+'</strong><del>'+escapeHtml(money(basePrice))+'</del><em class="product-discount">خصم '+discountPercent+'%</em>':escapeHtml(money(finalPrice)));
     const stockKnown = Number.isInteger(item.stock) && item.stock >= 0;
     const stockHtml = stockKnown
       ? (item.stock === 0
