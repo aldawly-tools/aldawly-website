@@ -6272,3 +6272,76 @@ body:has(.cart-drawer.open) .dawly-mini-cart-launcher{opacity:0!important;pointe
 @media(prefers-reduced-motion:reduce){
   .floating-contact-widget,.floating-contact-toggle{transition:none!important;animation:none!important}
 }
+
+
+/* DAWLY unified floating dock — cart, customer service, assistant. */
+.floating-home-cart,.dawly-mini-cart-launcher{
+ position:fixed!important;left:22px!important;right:auto!important;top:auto!important;
+ bottom:22px!important;z-index:10042!important;
+ width:60px!important;min-width:60px!important;max-width:60px!important;
+ height:60px!important;min-height:60px!important;max-height:60px!important;
+ box-sizing:border-box!important;margin:0!important;padding:0!important;
+ display:grid!important;place-items:center!important;gap:0!important;
+ border:2px solid #fff!important;border-radius:50%!important;
+ background:linear-gradient(145deg,#26313d,#111820)!important;color:#fff!important;
+ box-shadow:0 6px 18px rgba(0,0,0,.24)!important;
+ transform:none!important;transition:background .18s ease,box-shadow .18s ease!important;
+}
+.floating-home-cart:hover,.dawly-mini-cart-launcher:hover{
+ background:linear-gradient(145deg,#394653,#202832)!important;
+ box-shadow:0 8px 22px rgba(0,0,0,.28)!important;transform:translateY(-1px)!important;
+}
+.floating-home-cart svg{width:29px!important;height:29px!important;stroke:#fff!important;fill:none!important}
+.dawly-mini-cart-launcher-icon{font-size:25px!important;line-height:1!important}
+.dawly-mini-cart-launcher>span:not(.dawly-mini-cart-launcher-icon){display:none!important}
+.floating-home-cart-count,.dawly-mini-cart-launcher b{
+ position:absolute!important;top:-5px!important;right:-5px!important;left:auto!important;
+ min-width:23px!important;height:23px!important;padding:0 5px!important;
+ display:grid!important;place-items:center!important;
+ border:2px solid #fff!important;border-radius:50px!important;
+ background:#d71920!important;color:#fff!important;
+ font:900 12px/1 Arial,sans-serif!important;
+}
+.floating-contact-widget{
+ position:fixed!important;left:22px!important;right:auto!important;top:auto!important;
+ bottom:90px!important;z-index:10043!important;
+ display:flex!important;flex-direction:column!important;align-items:flex-start!important;gap:0!important;
+}
+.floating-contact-toggle{
+ width:60px!important;height:60px!important;min-width:60px!important;min-height:60px!important;
+ box-sizing:border-box!important;padding:0!important;margin:0!important;
+ display:grid!important;place-items:center!important;
+ border:2px solid #fff!important;border-radius:50%!important;
+ background:linear-gradient(145deg,#ed252d,#b80f19)!important;color:#fff!important;
+ box-shadow:0 6px 18px rgba(0,0,0,.24)!important;
+ animation:none!important;transform:none!important;
+}
+.floating-contact-toggle::before,.floating-contact-toggle::after{display:none!important;content:none!important;animation:none!important}
+.floating-contact-toggle .contact-toggle-phone,.floating-contact-toggle .contact-toggle-close{
+ width:29px!important;height:29px!important;flex:0 0 29px!important;
+ fill:none!important;stroke:#fff!important;stroke-width:2.4!important;
+}
+.floating-contact-toggle .contact-toggle-phone path{fill:none!important;stroke:#fff!important}
+.floating-contact-toggle .contact-toggle-close{display:none!important}
+.floating-contact-toggle.is-open .contact-toggle-phone{display:none!important}
+.floating-contact-toggle.is-open .contact-toggle-close{display:block!important}
+.floating-contact-label{display:none!important}
+.floating-contact-panel{margin-bottom:12px!important}
+body:has(.cart-drawer.open) .floating-home-cart,
+body:has(.cart-drawer.open) .dawly-mini-cart-launcher{opacity:0!important;pointer-events:none!important}
+@media(max-width:700px){
+ .floating-home-cart,.dawly-mini-cart-launcher{
+  left:14px!important;right:auto!important;bottom:calc(14px + env(safe-area-inset-bottom,0px))!important;
+  width:56px!important;min-width:56px!important;max-width:56px!important;
+  height:56px!important;min-height:56px!important;max-height:56px!important;
+ }
+ .floating-home-cart svg{width:27px!important;height:27px!important}
+ .floating-contact-widget{
+  left:14px!important;right:auto!important;bottom:calc(78px + env(safe-area-inset-bottom,0px))!important;
+ }
+ .floating-contact-toggle{width:56px!important;height:56px!important;min-width:56px!important;min-height:56px!important}
+ .floating-contact-toggle .contact-toggle-phone,.floating-contact-toggle .contact-toggle-close{width:27px!important;height:27px!important;flex-basis:27px!important}
+}
+@media(prefers-reduced-motion:reduce){
+ .floating-home-cart,.dawly-mini-cart-launcher,.floating-contact-widget,.floating-contact-toggle{transition:none!important;animation:none!important}
+}
