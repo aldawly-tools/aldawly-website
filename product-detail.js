@@ -256,8 +256,28 @@
       const source = uniqueGallery[index];
       galleryLoadPromises[index] = (async function () {
         if (source.url) return source.url;
+        // product-cloud.js is an ES module and may finish loading after this
+        // classic script has rendered the product. Wait for its image loader.
+        if (typeof window.DAWLY_LOAD_PRODUCT_IMAGE !== "function") {
+          await new Promise(function (resolve) {
+            let settled = false;
+            const finish = function () {
+              if (settled) return;
+              settled = true;
+              window.removeEventListener("dawly-product-image-loader-ready", finish);
+              clearTimeout(timer);
+              resolve();
+            };
+            const timer = setTimeout(finish, 12000);
+            window.addEventListener("dawly-product-image-loader-ready", finish, {once:true});
+            if (typeof window.DAWLY_LOAD_PRODUCT_IMAGE === "function") finish();
+          });
+        }
         if (typeof window.DAWLY_LOAD_PRODUCT_IMAGE !== "function") return "";
-        try { return await window.DAWLY_LOAD_PRODUCT_IMAGE(source.id); } catch (error) { return ""; }
+        try { return await window.DAWLY_LOAD_PRODUCT_IMAGE(source.id); } catch (error) {
+          console.warn("تعذر تحميل صورة المنتج:", source.id, error);
+          return "";
+        }
       })().then(function (url) {
         resolvedGalleryUrls[index] = url || "";
         const thumb = thumbBox && thumbBox.querySelector('[data-gallery-thumb="' + index + '"]');
