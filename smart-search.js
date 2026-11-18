@@ -6,6 +6,7 @@
   if (!input || !form || input.dataset.smartSearchReady === "1") return;
   input.dataset.smartSearchReady = "1";
   var products = Array.isArray(window.DAWLY_PRODUCTS) ? window.DAWLY_PRODUCTS : [];
+  var searchIndex = [];
   var activeIndex = -1;
   var panel = document.createElement("div");
   panel.className = "dawly-search-suggestions";
@@ -58,23 +59,29 @@
       return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];
     });
   }
-  function productText(p) {
-    return norm([p.name,p.brand,p.brandName,p.manufacturer,p.cat,p.desc,p.specs,p.sku,p.code,p.model,p.partNumber,p.id].join(" "));
+  function buildSearchIndex(list) {
+    searchIndex = (Array.isArray(list) ? list : []).map(function(p) {
+      var name=norm(p.name), brand=norm(p.brand||p.brandName||p.manufacturer);
+      var code=norm([p.sku,p.code,p.model,p.partNumber,p.id].join(" "));
+      var category=norm(p.cat), details=norm([p.desc,p.specs].join(" "));
+      var hay=norm([p.name,p.brand,p.brandName,p.manufacturer,p.cat,p.desc,p.specs,p.sku,p.code,p.model,p.partNumber,p.id].join(" "));
+      return {p:p,name:name,brand:brand,code:code,category:category,details:details,hay:hay};
+    }).filter(function(entry){return entry.hay;});
   }
-  function score(p, terms) {
-    var name=norm(p.name), brand=norm(p.brand||p.brandName||p.manufacturer), code=norm([p.sku,p.code,p.model,p.partNumber,p.id].join(" "));
-    var hay=productText(p), total=0;
+  function score(entry, terms) {
+    var total=0;
     terms.forEach(function(t){
-      if(!hay.includes(t)) return;
-      total += name===t?100:name.startsWith(t)?65:name.includes(t)?45:0;
-      if(brand.includes(t)) total+=35;
-      if(code.split(" ").some(function(x){return x===t;})) total+=90;
-      else if(code.includes(t)) total+=50;
-      if(norm(p.cat).includes(t)) total+=12;
-      if(norm(p.desc+" "+p.specs).includes(t)) total+=5;
+      if(!entry.hay.includes(t)) return;
+      total += entry.name===t?100:entry.name.startsWith(t)?65:entry.name.includes(t)?45:0;
+      if(entry.brand.includes(t)) total+=35;
+      if(entry.code.split(" ").some(function(x){return x===t;})) total+=90;
+      else if(entry.code.includes(t)) total+=50;
+      if(entry.category.includes(t)) total+=12;
+      if(entry.details.includes(t)) total+=5;
     });
     return total;
   }
+  buildSearchIndex(products);
   function hide() {
     panel.hidden=true; input.setAttribute("aria-expanded","false");
     input.removeAttribute("aria-activedescendant"); activeIndex=-1;
@@ -86,8 +93,8 @@
   function render() {
     var terms=norm(input.value).split(" ").filter(Boolean);
     if(!terms.length){hide();return;}
-    var matches=products.map(function(p){return {p:p,s:score(p,terms)};})
-      .filter(function(x){return x.s>0 && terms.every(function(t){return productText(x.p).includes(t);});})
+    var matches=searchIndex.map(function(entry){return {p:entry.p,s:score(entry,terms),hay:entry.hay};})
+      .filter(function(x){return x.s>0 && terms.every(function(t){return x.hay.includes(t);});})
       .sort(function(a,b){return b.s-a.s;}).slice(0,7);
     activeIndex=-1;
     if(!matches.length){
@@ -138,6 +145,7 @@
   window.addEventListener("dawly-products-updated",function(e){
     if(Array.isArray(e.detail))products=e.detail;
     else if(Array.isArray(window.DAWLY_PRODUCTS))products=window.DAWLY_PRODUCTS;
+    buildSearchIndex(products);
     if(!panel.hidden)render();
   });
   // Catch catalogs assigned by the initial product loader before its update event.
