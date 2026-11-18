@@ -740,6 +740,9 @@
       line.qty += 1;
     } else cart.push({id:id, qty:1});
     renderCart();
+    if (typeof window.DAWLY_TRACK_CONVERSION === "function") {
+      window.DAWLY_TRACK_CONVERSION("add_to_cart", {productId:String(item.id),productName:item.name,brand:productBrand(item),itemCount:1});
+    }
     // Keep the catalog visible after adding; the cart opens only when the shopper taps its button.
     setDrawer(false);
     renderProducts();
@@ -1432,6 +1435,9 @@
     pendingOrder = buildOrderDraft();
     if (!pendingOrder) return;
     const order = pendingOrder;
+    if (typeof window.DAWLY_TRACK_CONVERSION === "function") {
+      window.DAWLY_TRACK_CONVERSION("whatsapp_order", {itemCount:order.orderItems.length,productNames:order.orderItems.map(function(item){return item.name;})});
+    }
     const link = document.getElementById("orderWhatsappLink");
     const summary = document.getElementById("checkoutWhatsappSummary");
     if (link) {
