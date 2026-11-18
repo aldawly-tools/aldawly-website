@@ -198,11 +198,22 @@
  <div class="about-box">الدولي — عدد أصلية ومستوردة، وعدد يدوية وكهربائية وتجهيزات للورش. نسهل وصولك إلى الأداة المناسبة مع إمكانية الاستفسار عن السعر والتوفر مباشرة.</div>
 </div></section>
 </main>
-<footer class="footer" id="contact"><div class="container footer-grid">
- <div><h3>الدولي — العدد الأصلية والمستوردة</h3><p>طنطا — محافظة الغربية</p><p>خدمة العملاء: <a href="tel:+201024787222">01024787222</a></p></div>
- <div><h3>روابط سريعة</h3><div class="footer-links"><a href="products.html">المنتجات</a><a href="advisor.html">مساعد اختيار العدد</a><a href="#brands">الماركات</a></div></div>
- <div><h3>نسعد بخدمتك</h3><p>للاستفسار عن الأسعار والتوفر، تواصل معنا مباشرة.</p><a class="button-primary" href="https://wa.me/201024787222" target="_blank" rel="noopener">تواصل عبر واتساب</a><br><a href="https://www.facebook.com/wurth.tools" target="_blank" rel="noopener noreferrer">تابعنا على فيسبوك</a></div>
+<footer class="footer" id="contact"><div class="container footer-grid footer-smart-grid">
+ <div class="footer-brand"><h3>الدولي — العدد الأصلية والمستوردة</h3></div>
+ <div class="footer-accordion-cell"><details class="footer-accordion"><summary>اتصل بنا</summary><div class="footer-accordion-content"><p>خدمة العملاء: <a href="tel:+201024787222" dir="ltr">01024787222</a></p><p>خدمة العملاء: <a href="tel:+201002878301" dir="ltr">01002878301</a></p></div></details></div>
+ <div class="footer-accordion-cell"><details class="footer-accordion"><summary>روابط سريعة</summary><div class="footer-accordion-content footer-links"><a href="products.html">المنتجات</a><a href="advisor.html">مساعد اختيار العدد</a><a href="index.html#brands">الماركات</a></div></details></div>
+ <div class="footer-accordion-cell"><details class="footer-accordion"><summary>تابعنا على فيسبوك</summary><div class="footer-accordion-content"><a href="https://www.facebook.com/wurth.tools" target="_blank" rel="noopener noreferrer">صفحة الدولي على فيسبوك</a></div></details></div>
+ <div class="footer-whatsapp-row"><a class="button-primary" href="https://wa.me/201024787222" target="_blank" rel="noopener">واتساب 01024787222</a><a class="button-primary" href="https://wa.me/201002878301" target="_blank" rel="noopener">واتساب 01002878301</a></div>
 </div></footer>
+<script>
+(function(){
+ const groups=document.querySelectorAll(".footer-accordion");
+ const mobile=window.matchMedia("(max-width:700px)");
+ function setFooterMode(){groups.forEach(group=>{if(mobile.matches)group.removeAttribute("open");else group.setAttribute("open","");});}
+ setFooterMode();
+ if(mobile.addEventListener)mobile.addEventListener("change",setFooterMode);else mobile.addListener(setFooterMode);
+})();
+</script>
 <div class="floating-contact-widget" id="floatingContactWidget">
  <div class="floating-contact-panel" id="floatingContactPanel" hidden aria-label="أرقام التواصل">
   <div class="floating-contact-heading"><strong>تواصل مع الدولي</strong><span>اختر الاتصال أو واتساب</span></div>
