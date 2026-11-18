@@ -36,14 +36,59 @@ if (!config.apiKey || !config.projectId) {
     const app = getApps().length ? getApps()[0] : initializeApp(config);
     const db = getFirestore(app);
     const imageCache = new Map();
+    let imageDbPromise = null;
+    function openImageCache() {
+      if (!("indexedDB" in window)) return Promise.resolve(null);
+      if (!imageDbPromise) imageDbPromise = new Promise(function(resolve) {
+        const request = indexedDB.open("dawly-product-images-v1", 1);
+        request.onupgradeneeded = function() {
+          const database = request.result;
+          if (!database.objectStoreNames.contains("images")) database.createObjectStore("images", {keyPath:"id"});
+        };
+        request.onsuccess = function() { resolve(request.result); };
+        request.onerror = function() { resolve(null); };
+      });
+      return imageDbPromise;
+    }
+    async function readSavedImage(key) {
+      const database = await openImageCache();
+      if (!database) return "";
+      return new Promise(function(resolve) {
+        try {
+          const request = database.transaction("images", "readonly").objectStore("images").get(key);
+          request.onsuccess = function() {
+            const row = request.result;
+            resolve(row && Date.now() - Number(row.savedAt || 0) < 7 * 24 * 60 * 60 * 1000 ? String(row.url || "") : "");
+          };
+          request.onerror = function() { resolve(""); };
+        } catch (_) { resolve(""); }
+      });
+    }
+    async function saveImage(key, url) {
+      if (!url) return;
+      const database = await openImageCache();
+      if (!database) return;
+      try {
+        database.transaction("images", "readwrite").objectStore("images").put({id:key, url:url, savedAt:Date.now()});
+      } catch (_) {}
+    }
 
-    window.DAWLY_LOAD_PRODUCT_IMAGE = async function (id) {
+    window.DAWLY_LOAD_PRODUCT_IMAGE = function (id) {
       const key = String(id);
       if (imageCache.has(key)) return imageCache.get(key);
-      const snapshot = await getDoc(doc(db, "productImages", key));
-      const url = snapshot.exists() ? String(snapshot.data().data || "") : "";
-      imageCache.set(key, url);
-      return url;
+      const pending = (async function() {
+        const saved = await readSavedImage(key);
+        if (saved) return saved;
+        const snapshot = await getDoc(doc(db, "productImages", key));
+        const url = snapshot.exists() ? String(snapshot.data().data || "") : "";
+        if (url) await saveImage(key, url);
+        return url;
+      })().catch(function(error) {
+        imageCache.delete(key);
+        throw error;
+      });
+      imageCache.set(key, pending);
+      return pending;
     };
 
     // Reuse a recent catalog between page visits instead of opening a full
