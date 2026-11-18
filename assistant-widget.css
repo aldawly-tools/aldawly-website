@@ -452,3 +452,43 @@ a.dawly-bot-product .dawly-bot-product-info .dawly-bot-product-open{
  text-decoration:none!important;opacity:1!important;visibility:visible!important;
  text-shadow:0 1px 1px rgba(0,0,0,.18)!important;
 }
+
+
+/* DAWLY unified floating dock — assistant at the top of the stack. */
+#dawlyBotLauncher{
+ position:fixed!important;left:22px!important;right:auto!important;top:auto!important;
+ bottom:158px!important;z-index:10044!important;
+ display:grid!important;place-items:center!important;
+ width:60px!important;min-width:60px!important;max-width:60px!important;
+ height:60px!important;min-height:60px!important;max-height:60px!important;
+ box-sizing:border-box!important;padding:0!important;margin:0!important;gap:0!important;
+ border:2px solid #fff!important;border-radius:50%!important;
+ background:linear-gradient(145deg,#ed252d,#a90812)!important;color:#fff!important;
+ box-shadow:0 6px 18px rgba(0,0,0,.24)!important;
+ transform:none!important;overflow:visible!important;
+}
+#dawlyBotLauncher:hover{transform:translateY(-1px)!important;box-shadow:0 8px 22px rgba(0,0,0,.28)!important}
+#dawlyBotLauncher .dawly-bot-face{
+ width:52px!important;height:52px!important;min-width:52px!important;
+ flex:0 0 52px!important;margin:0!important;background:#fff!important;color:#c8101e!important;
+}
+#dawlyBotLauncher .dawly-bot-face svg{width:29px!important;height:29px!important}
+#dawlyBotLauncher .dawly-bot-prompt,
+#dawlyBotLauncher .dawly-bot-label,
+#dawlyBotLauncher .dawly-bot-hint{display:none!important}
+#dawlyBotPanel{bottom:230px!important}
+@media(max-width:700px){
+ #dawlyBotLauncher{
+  left:14px!important;right:auto!important;bottom:calc(142px + env(safe-area-inset-bottom,0px))!important;
+  width:56px!important;min-width:56px!important;max-width:56px!important;
+  height:56px!important;min-height:56px!important;max-height:56px!important;
+  padding:0!important;
+ }
+ #dawlyBotLauncher .dawly-bot-face{width:48px!important;height:48px!important;flex:0 0 48px!important}
+ #dawlyBotLauncher .dawly-bot-face svg{width:27px!important;height:27px!important}
+ #dawlyBotPanel{
+  left:8px!important;bottom:calc(208px + env(safe-area-inset-bottom,0px))!important;
+  width:calc(100vw - 16px)!important;max-height:calc(100dvh - 225px)!important;
+ }
+}
+@media(prefers-reduced-motion:reduce){#dawlyBotLauncher{transition:none!important}}
