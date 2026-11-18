@@ -816,7 +816,7 @@
         '<h2 id="quickViewTitle">' + escapeHtml(name) + '</h2>' +
         '<p class="quick-view-description">' + escapeHtml(description) + '</p>' +
         (specs ? '<div class="quick-view-specs">' + escapeHtml(specs) + '</div>' : '') +
-        '<div class="quick-view-price">' + escapeHtml(formatPrice(item.price)) + '</div>' +
+        '<div class="quick-view-price">' + (productPricing(item).percent ? '<strong>'+escapeHtml(money(productPricing(item).current))+'</strong><del>'+escapeHtml(money(productPricing(item).base))+'</del><em class="product-discount">خصم '+productPricing(item).percent+'%</em>' : escapeHtml(formatPrice(item.price))) + '</div>' +
         '<div class="quick-view-actions"><a class="quick-view-details" href="product.html?id=' + encodeURIComponent(String(item.id)) + '">عرض التفاصيل الكاملة</a>' +
         '<button class="button-primary" type="button" data-add="' + escapeHtml(item.id) + '"' + (soldOut ? ' disabled' : '') + '>' + (soldOut ? 'غير متاح حاليًا' : 'أضف إلى السلة') + '</button></div></div>';
       modal.classList.add("is-open");
