@@ -99,6 +99,40 @@
       document.head.appendChild(canonicalTag);
     }
     canonicalTag.href = canonicalUrl.href;
+    const seoKeywords = [name, item.brand || item.brandName || item.manufacturer, item.cat, item.sku, item.code, item.model, item.partNumber]
+      .filter(Boolean).map(function(value){return cleanProductCopy(value);}).join(", ");
+    updateMeta("name", "keywords", seoKeywords);
+    const schemaPriceText = String(item.price == null ? "" : item.price)
+      .replace(/[٠-٩]/g, function(d){return String("٠١٢٣٤٥٦٧٨٩".indexOf(d));})
+      .replace(/[۰-۹]/g, function(d){return String("۰۱۲۳۴۵۶۷۸۹".indexOf(d));})
+      .replace(/[,،٬\\s]/g, "").replace(/(?:جنيه(?:مصري)?|ج\\.?م\\.?|EGP|LE)/gi, "");
+    const schemaPrice = /^\\d+(?:\\.\\d+)?$/.test(schemaPriceText) ? Number(schemaPriceText) : NaN;
+    const productSchema = {
+      "@context":"https://schema.org",
+      "@type":"Product",
+      "name":name,
+      "description":seoDescription,
+      "url":canonicalUrl.href,
+      "category":cleanProductCopy(item.cat || ""),
+      "brand":(item.brand || item.brandName || item.manufacturer) ? {"@type":"Brand","name":cleanProductCopy(item.brand || item.brandName || item.manufacturer)} : undefined,
+      "sku":cleanProductCopy(item.sku || item.code || item.partNumber || ""),
+      "image":/^https:\\/\\//i.test(String(item.image || "")) ? [String(item.image)] : undefined
+    };
+    if (Number.isFinite(schemaPrice) && schemaPrice > 0) {
+      productSchema.offers = {
+        "@type":"Offer","url":canonicalUrl.href,"priceCurrency":"EGP","price":schemaPrice,
+        "availability":Number.isInteger(item.stock) && item.stock === 0
+          ? "https://schema.org/OutOfStock" : "https://schema.org/InStock"
+      };
+    }
+    let productSchemaTag = document.getElementById("dawlyProductSchema");
+    if (!productSchemaTag) {
+      productSchemaTag = document.createElement("script");
+      productSchemaTag.id = "dawlyProductSchema";
+      productSchemaTag.type = "application/ld+json";
+      document.head.appendChild(productSchemaTag);
+    }
+    productSchemaTag.textContent = JSON.stringify(productSchema);
     const imageIds = Array.isArray(item.imageIds) && item.imageIds.length ? item.imageIds : (item.imageId ? [item.imageId] : []);
     const extraImages = Array.isArray(item.images) ? item.images : [];
     const gallerySources = [];
