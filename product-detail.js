@@ -129,9 +129,7 @@
     const stockHtml = stockKnown
       ? (item.stock === 0
         ? '<div class="detail-stock-status out">غير متوفر حاليًا — تواصل معنا لمعرفة موعد التوفر</div>'
-        : item.stock <= 5
-          ? '<div class="detail-stock-status low">متبقي ' + item.stock + ' قطع فقط — سارع بالاستفسار</div>'
-          : '<div class="detail-stock-status">متوفر — الكمية: ' + item.stock + ' قطعة</div>')
+        : '<div class="detail-stock-status">متوفر — يُرجى تأكيد التوفر عند الطلب</div>')
       : "";
     const specsText = cleanProductCopy(item.specs || "");
     const specsRows = specsText.split("\n").map(function (line) {
