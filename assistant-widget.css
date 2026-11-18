@@ -669,18 +669,3 @@ a.dawly-bot-product .dawly-bot-product-info .dawly-bot-product-open{
 }
 
 
-/* Assistant product cards, quick prompts and direct cart actions. */
-.dawly-bot-chips{padding:2px 0 6px}
-.dawly-bot-chips button{min-height:34px;cursor:pointer;transition:background .18s,border-color .18s}
-.dawly-bot-chips button:active{background:#fff0f1;border-color:#c8101e}
-.dawly-bot-product{align-items:center;text-decoration:none;color:inherit}
-.dawly-bot-product-img{display:grid;place-items:center;flex:0 0 78px;width:78px;height:78px;border-radius:11px;background:#f5f6f8;overflow:hidden;text-decoration:none;color:#a90e19}
-.dawly-bot-product-img img{width:100%;height:100%;object-fit:contain}
-.dawly-bot-product-info{gap:4px}
-.dawly-bot-product-actions{display:flex;align-items:center;justify-content:space-between;gap:7px;flex-wrap:wrap;margin-top:4px}
-.dawly-bot-product-info .dawly-bot-product-open{font-size:11px;color:#a90e19;font-weight:900;text-decoration:none}
-.dawly-bot-add{border:0;border-radius:8px;background:#c8101e;color:#fff;padding:7px 10px;font:800 11px Cairo,sans-serif;cursor:pointer}
-.dawly-bot-add:disabled{background:#9ba1a8;cursor:not-allowed}
-.dawly-bot-add.is-added{background:#16834b}
-.dawly-bot-open-cart{display:inline-flex;align-self:flex-start;margin:2px 0 8px;padding:9px 13px;border-radius:9px;background:#202832;color:#fff;font-size:12px;font-weight:900;text-decoration:none}
-@media(max-width:600px){.dawly-bot-product-img{flex-basis:68px;width:68px;height:68px}.dawly-bot-add{padding:7px 8px;font-size:10px}}
