@@ -607,6 +607,9 @@
       alert("تعذر حفظ السلة على هذا الجهاز. تأكد من إعدادات المتصفح وحاول مرة أخرى.");
       return;
     }
+    if (typeof window.DAWLY_TRACK_CONVERSION === "function") {
+      window.DAWLY_TRACK_CONVERSION("add_to_cart", {productId:String(item.id),productName:item.name,brand:item.brand || "",itemCount:1});
+    }
     // Keep the product page open and show the Amazon-style mini cart.
     window.dispatchEvent(new CustomEvent("dawly-cart-updated", {detail:{productId:item.id, cart:cart}}));
     renderMiniCart();
