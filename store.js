@@ -626,6 +626,8 @@
     if (!skipPersist) persistCart();
     const count = cart.reduce(function (sum, line) { return sum + line.qty; }, 0);
     cartCount.textContent = String(count);
+    const floatingHomeCartCount = document.getElementById("floatingHomeCartCount");
+    if (floatingHomeCartCount) floatingHomeCartCount.textContent = String(count);
     checkout.disabled = count === 0;
     const quickbar = document.getElementById("cartQuickbar");
     const quickbarSummary = document.getElementById("cartQuickbarSummary");
@@ -970,7 +972,7 @@
       renderProducts();
       return;
     }
-    if (event.target.closest("#openCart") || event.target.closest("#cartQuickbarOpen")) { setCheckoutStep("review"); setDrawer(true); return; }
+    if (event.target.closest("#openCart") || event.target.closest("#floatingHomeCart") || event.target.closest("[data-open-cart]") || event.target.closest("#cartQuickbarOpen")) { setCheckoutStep("review"); setDrawer(true); return; }
     if (event.target.closest("#continueCheckout")) {
       if (!cart.length) return;
       setCheckoutStep("details");
