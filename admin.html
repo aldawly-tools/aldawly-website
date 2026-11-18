@@ -281,13 +281,16 @@ button:disabled{opacity:.6;cursor:wait}
       </div>
       <h3 style="margin:18px 0 10px">حركة الزيارات — آخر 7 أيام</h3>
       <div class="analytics-chart" id="analyticsChart" aria-label="رسم بياني للزيارات اليومية"></div>
-      <div class="analytics-grid" style="margin-top:18px">
-        <div class="analytics-card"><span>مصدر فيسبوك</span><strong id="sourceFacebook">—</strong></div>
-        <div class="analytics-card"><span>مصدر جوجل</span><strong id="sourceGoogle">—</strong></div>
-        <div class="analytics-card"><span>مصدر واتساب</span><strong id="sourceWhatsapp">—</strong></div>
-        <div class="analytics-card"><span>مصادر أخرى / مباشر</span><strong id="sourceOther">—</strong></div>
+      <h3 style="margin:20px 0 10px">توزيع المصادر — آخر 30 يومًا</h3>
+      <div class="analytics-grid" style="margin-top:12px">
+        <div class="analytics-card"><span>ChatGPT</span><strong id="sourceChatGPT">—</strong><small>آخر 30 يومًا</small></div>
+        <div class="analytics-card"><span>فيسبوك</span><strong id="sourceFacebook">—</strong><small>آخر 30 يومًا</small></div>
+        <div class="analytics-card"><span>جوجل</span><strong id="sourceGoogle">—</strong><small>آخر 30 يومًا</small></div>
+        <div class="analytics-card"><span>واتساب</span><strong id="sourceWhatsapp">—</strong><small>آخر 30 يومًا</small></div>
+        <div class="analytics-card"><span>دخول مباشر</span><strong id="sourceDirect">—</strong><small>آخر 30 يومًا</small></div>
+        <div class="analytics-card"><span>مصادر أخرى</span><strong id="sourceOther">—</strong><small>آخر 30 يومًا</small></div>
       </div>
-      <h3 style="margin:20px 0 10px">مصادر دخول الزوار — آخر 30 يومًا</h3>
+      <h3 style="margin:20px 0 10px">مصادر دخول الزوار — آخر 30 يومًا (نفس بيانات بطاقات المصادر)</h3>
       <div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;min-width:300px"><thead><tr><th style="text-align:right;padding:9px">المصدر</th><th style="text-align:right;padding:9px">عدد الزيارات</th><th style="text-align:right;padding:9px">النسبة</th></tr></thead><tbody id="analyticsSourcesRows"><tr><td colspan="3">جارٍ التحميل…</td></tr></tbody></table></div>
       <h3 style="margin:20px 0 10px">المنتجات الأكثر مشاهدة — آخر 30 يومًا</h3>
       <div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;min-width:360px"><thead><tr><th style="text-align:right;padding:9px">المنتج</th><th style="text-align:right;padding:9px">الماركة</th><th style="text-align:right;padding:9px">المشاهدات</th></tr></thead><tbody id="analyticsTopProductsRows"><tr><td colspan="3">جارٍ التحميل…</td></tr></tbody></table></div>
@@ -614,16 +617,19 @@ async function loadAnalytics(force){
    const value=countDay(day),height=Math.max(3,Math.round(value/max*100));
    return '<div class="analytics-day"><b>'+analyticsFormat(value)+'</b><div class="analytics-bar-wrap"><i class="analytics-bar" style="height:'+height+'%"></i></div><small>'+day.slice(5)+'</small></div>';
   }).join("");
-  const sourceLabels={facebook:"فيسبوك",google:"جوجل",whatsapp:"واتساب",instagram:"إنستجرام",tiktok:"تيك توك",direct:"دخول مباشر",other:"مصادر أخرى"};
+  const sourceLabels={facebook:"فيسبوك",google:"جوجل",whatsapp:"واتساب",instagram:"إنستجرام",tiktok:"تيك توك",direct:"دخول مباشر",other:"مصادر أخرى","chatgpt.com":"ChatGPT",chatgpt:"ChatGPT"};
   const sourceCounts={};
   sourceSnap.docs.forEach(d=>{const src=String(d.data().source||"other");sourceCounts[src]=(sourceCounts[src]||0)+1;});
   const sourceRows=Object.entries(sourceCounts).sort((a,b)=>b[1]-a[1]);
   const sourceTotal=sourceRows.reduce((sum,row)=>sum+row[1],0);
   const countSource=key=>sourceCounts[key]||0;
+  const chatgptCount=countSource("chatgpt.com")+countSource("chatgpt");
+  $("sourceChatGPT").textContent=analyticsFormat(chatgptCount);
   $("sourceFacebook").textContent=analyticsFormat(countSource("facebook"));
   $("sourceGoogle").textContent=analyticsFormat(countSource("google"));
   $("sourceWhatsapp").textContent=analyticsFormat(countSource("whatsapp"));
-  $("sourceOther").textContent=analyticsFormat(sourceTotal-countSource("facebook")-countSource("google")-countSource("whatsapp"));
+  $("sourceDirect").textContent=analyticsFormat(countSource("direct"));
+  $("sourceOther").textContent=analyticsFormat(countSource("other")+countSource("instagram")+countSource("tiktok"));
   $("analyticsSourcesRows").innerHTML=sourceRows.length?sourceRows.map(([key,value])=>'<tr><td style="padding:9px">'+escapeHtml(sourceLabels[key]||key)+'</td><td style="padding:9px">'+analyticsFormat(value)+'</td><td style="padding:9px">'+(sourceTotal?Math.round(value/sourceTotal*100):0)+'%</td></tr>').join(""):'<tr><td colspan="3" style="padding:9px">لا توجد بيانات مصادر خلال آخر 30 يومًا.</td></tr>';
   const views={};
   viewSnap.docs.forEach(d=>{const v=d.data(),id=String(v.productId||"");if(id)views[id]=(views[id]||0)+1;});
