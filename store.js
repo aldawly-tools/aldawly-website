@@ -1085,13 +1085,19 @@
       ctx.fillRect(68, y, width - 136, rowHeight - 12);
       ctx.fillStyle = "#fff"; ctx.fillRect(86, y + 42, 136, 136);
       let src = item.image || "";
-      if (!src && item.imageId && typeof window.DAWLY_LOAD_PRODUCT_IMAGE === "function") {
-        try {
-          src = await Promise.race([
-            window.DAWLY_LOAD_PRODUCT_IMAGE(item.imageId),
-            new Promise(function(resolve){ setTimeout(function(){ resolve(""); }, 6000); })
-          ]);
-        } catch (e) { src = ""; }
+      const imageIds = [];
+      if (item.imageId) imageIds.push(item.imageId);
+      if (Array.isArray(item.imageIds)) item.imageIds.forEach(function(id) { if (id && !imageIds.includes(id)) imageIds.push(id); });
+      if (typeof window.DAWLY_LOAD_PRODUCT_IMAGE === "function") {
+        for (const imageId of imageIds) {
+          try {
+            src = await Promise.race([
+              window.DAWLY_LOAD_PRODUCT_IMAGE(imageId),
+              new Promise(function(resolve){ setTimeout(function(){ resolve(""); }, 6000); })
+            ]);
+            if (src) break;
+          } catch (e) {}
+        }
       }
       const img = await loadImage(src);
       if (img) {
@@ -1385,6 +1391,7 @@
         unitPriceAmount: parsedPrice,
         image: item.image || item.imageUrl || item.photo || "",
         imageId: item.imageId || "",
+        imageIds: Array.isArray(item.imageIds) ? item.imageIds.slice(0, 4) : [],
         code: item.sku || item.code || item.model || item.partNumber || "",
         brand: productBrand(item) || ""
       };
@@ -1428,10 +1435,37 @@
     }
     if (summary) summary.textContent = "تم تجهيز الطلب رقم " + order.number + " ويشمل " + order.orderItems.length + " منتجات. ستجد رسالة مفصلة تحتوي على بياناتك والكميات والأسعار وروابط المنتجات.";
     setCheckoutStep("whatsapp");
-    // Open WhatsApp immediately so the existing customer-send flow is not blocked.
-    const whatsappWindow = window.open(order.url, "_blank");
-    if (whatsappWindow) { try { whatsappWindow.opener = null; } catch (error) {} }
-    else if (link) link.focus();
+    // On devices that support file sharing, attach the generated order image
+    // (including product thumbnails) together with the full order text.
+    // Otherwise retain the existing WhatsApp text-link fallback.
+    (async function shareOrderWithImage() {
+      let sharedWithImage = false;
+      try {
+        if (navigator.share && navigator.canShare && typeof File !== "undefined") {
+          const imageBlob = await createWhatsAppOrderImage(
+            order.number, order.customerName, order.customerPhone,
+            order.customerAddress, order.orderItems, null
+          );
+          const imageFile = new File([imageBlob], "aldawly-order-" + order.number + ".png", {type:"image/png"});
+          if (navigator.canShare({files:[imageFile]})) {
+            await navigator.share({
+              files:[imageFile],
+              title:"طلب " + order.number + " - الدولي للعدد",
+              text:order.message
+            });
+            sharedWithImage = true;
+          }
+        }
+      } catch (error) {
+        if (error && error.name === "AbortError") return;
+        console.warn("Order image sharing unavailable; opening WhatsApp text:", error);
+      }
+      if (!sharedWithImage) {
+        const whatsappWindow = window.open(order.url, "_blank");
+        if (whatsappWindow) { try { whatsappWindow.opener = null; } catch (error) {} }
+        else if (link) link.focus();
+      }
+    })();
     // Download the A5 packing slip separately; it contains no prices.
     downloadPackingSlip(order).catch(function(error) {
       console.error("Packing slip generation failed:", error);
