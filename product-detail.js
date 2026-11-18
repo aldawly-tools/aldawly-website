@@ -41,8 +41,8 @@
   }
   function parsePrice(value) {
     let text=String(value==null?"":value).trim().replace(/[٠-٩]/g,d=>String("٠١٢٣٤٥٦٧٨٩".indexOf(d))).replace(/[۰-۹]/g,d=>String("۰۱۲۳۴۵۶۷۸۹".indexOf(d)));
-    text=text.replace(/(?:جنيه(?:\s*مصري)?|ج\\.?م\\.?|ج\\.?|EGP|LE)/gi,"").replace(/[\s,،٬]/g,"");
-    if(!/^\d+(?:\\.\d+)?$/.test(text))return null;
+    text=text.replace(/[^0-9.]/g,"");
+    if(!/^[0-9]+(\.[0-9]+)?$/.test(text))return null;
     const n=Number(text);return Number.isFinite(n)&&n>0?n:null;
   }
   function money(value){return "EGP "+new Intl.NumberFormat("en-US",{maximumFractionDigits:2}).format(value);}
