@@ -40,11 +40,11 @@ import { getFirestore, doc, setDoc, serverTimestamp } from "https://www.gstatic.
   let source="direct";
   if(params.get("utm_source")){
    const tag=String(params.get("utm_source")).trim().toLowerCase();
-   source=/facebook|fb|messenger/.test(tag)?"facebook":/google/.test(tag)?"google":/whatsapp|wa/.test(tag)?"whatsapp":/instagram/.test(tag)?"instagram":/tiktok/.test(tag)?"tiktok":tag.slice(0,40)||"other";
+   source=/chatgpt|openai/.test(tag)?"chatgpt":/facebook|fb|messenger/.test(tag)?"facebook":/google/.test(tag)?"google":/whatsapp|wa/.test(tag)?"whatsapp":/instagram/.test(tag)?"instagram":/tiktok/.test(tag)?"tiktok":tag.slice(0,40)||"other";
   }else if(rawSource!=="direct"){
    try{
     const host=new URL(rawSource).hostname.toLowerCase();
-    source=/facebook|fb\./.test(host)?"facebook":/google\./.test(host)?"google":/whatsapp|wa\.me/.test(host)?"whatsapp":/instagram/.test(host)?"instagram":/tiktok/.test(host)?"tiktok":/messenger/.test(host)?"facebook":"other";
+    source=/chatgpt\.com$|openai\.com$/.test(host)?"chatgpt":/facebook|fb\./.test(host)?"facebook":/google\./.test(host)?"google":/whatsapp|wa\.me/.test(host)?"whatsapp":/instagram/.test(host)?"instagram":/tiktok/.test(host)?"tiktok":/messenger/.test(host)?"facebook":"other";
    }catch(e){source="direct";}
   }
   const sourceFlag="aldawly_source_logged_"+day;
