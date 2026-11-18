@@ -1,0 +1,71 @@
+/* Mobile navigation drawer: isolated override stylesheet */
+@media (max-width:700px){
+  html body #mobileMenuOverlay.mobile-menu-overlay{
+    position:fixed!important;inset:0!important;z-index:2147483000!important;
+    background:rgba(18,25,34,.46)!important;opacity:0;visibility:hidden;
+  }
+  html body #mobileMenuOverlay.mobile-menu-overlay.open{opacity:1!important;visibility:visible!important}
+  html body aside#mobileMenuDrawer.mobile-menu-drawer{
+    position:fixed!important;top:0!important;right:0!important;bottom:0!important;left:auto!important;
+    width: min(86vw,390px)!important;max-width:390px!important;min-width:0!important;
+    height:100vh!important;height:100dvh!important;max-height:100dvh!important;
+    margin:0!important;padding:0 0 max(22px,env(safe-area-inset-bottom))!important;
+    border-radius:18px 0 0 18px!important;overflow-y:auto!important;
+    background:#fff!important;color:#202832!important;
+    box-shadow:-14px 0 42px rgba(18,27,38,.2)!important;
+    transform:translate3d(105%,0,0)!important;transition:transform .28s ease!important;
+    z-index:2147483001!important;direction:rtl!important;
+  }
+  html body aside#mobileMenuDrawer.mobile-menu-drawer.open{transform:translate3d(0,0,0)!important}
+  html body #mobileMenuDrawer .mobile-menu-close{
+    position:absolute!important;top:18px!important;right:16px!important;
+    width:42px!important;height:42px!important;display:grid!important;place-items:center!important;
+    border:1px solid #e8ebef!important;border-radius:12px!important;
+    background:#f5f6f8!important;color:#202832!important;font-size:30px!important;
+    line-height:1!important;padding:0!important;
+  }
+  html body #mobileMenuDrawer .mobile-menu-home-label{
+    display:block!important;margin:78px 0 0!important;padding:0 20px 16px!important;
+    color:#202832!important;font:900 17px/1.5 Cairo,Tahoma,sans-serif!important;
+  }
+  html body #mobileMenuDrawer .mobile-menu-home-label:after{
+    content:""!important;display:block!important;width:42px!important;height:4px!important;
+    margin-top:9px!important;border-radius:8px!important;background:#c8101e!important;
+  }
+  html body #mobileMenuDrawer nav.mobile-menu-main-links{
+    display:flex!important;flex-direction:column!important;gap:8px!important;
+    margin:8px 12px 0!important;padding:0!important;
+  }
+  html body #mobileMenuDrawer nav.mobile-menu-main-links>a{
+    box-sizing:border-box!important;display:flex!important;align-items:center!important;
+    gap:12px!important;width:100%!important;min-height:54px!important;
+    margin:0!important;padding:8px 12px!important;
+    border:1px solid #e9edf1!important;border-radius:12px!important;
+    background:#fff!important;color:#202832!important;
+    font:900 15px/1.5 Cairo,Tahoma,sans-serif!important;text-decoration:none!important;
+  }
+  html body #mobileMenuDrawer nav.mobile-menu-main-links>a:before{
+    content:""!important;display:grid!important;place-items:center!important;flex:0 0 34px!important;
+    width:34px!important;height:34px!important;border-radius:10px!important;
+    background:#fff0f1!important;color:#c8101e!important;font:900 18px/1 Arial,sans-serif!important;
+  }
+  html body #mobileMenuDrawer nav.mobile-menu-main-links>a:nth-child(1):before{content:"⌂"!important}
+  html body #mobileMenuDrawer nav.mobile-menu-main-links>a:nth-child(2):before{content:"▦"!important}
+  html body #mobileMenuDrawer nav.mobile-menu-main-links>a:nth-child(3):before{content:"⚙"!important}
+  html body #mobileMenuDrawer nav.mobile-menu-main-links>a:nth-child(4):before{content:"☎"!important}
+  html body #mobileMenuDrawer nav.mobile-menu-main-links>a:nth-child(5):before{content:"ⓘ"!important}
+  html body #mobileMenuDrawer nav.mobile-menu-main-links>a:after{
+    content:"‹"!important;margin-right:auto!important;color:#9aa2ab!important;font-size:22px!important;
+  }
+  html body.mobile-category-menu-open #openMobileMenu,
+  html body.mobile-category-menu-open #dawlyQuickMenu,
+  html body.mobile-category-menu-open #dawlyBotLauncher,
+  html body.mobile-category-menu-open .floating-home-cart,
+  html body.mobile-category-menu-open .floating-contact-widget{
+    opacity:0!important;visibility:hidden!important;pointer-events:none!important;
+  }
+}
+@media(max-width:380px){
+ html body aside#mobileMenuDrawer.mobile-menu-drawer{width:90vw!important}
+ html body #mobileMenuDrawer nav.mobile-menu-main-links>a{min-height:51px!important;font-size:14px!important}
+}
