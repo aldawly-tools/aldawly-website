@@ -467,6 +467,13 @@
     shell.id = "dawlyMiniCart";
     shell.innerHTML = '<button class="dawly-mini-cart-overlay" type="button" data-mini-close aria-label="إغلاق السلة"></button><aside class="dawly-mini-cart-panel" role="dialog" aria-modal="true" aria-labelledby="dawlyMiniCartTitle"><header class="dawly-mini-cart-head"><div><strong id="dawlyMiniCartTitle">سلة مشترياتك</strong><small>منتجات اخترتها من الدولي</small></div><button type="button" data-mini-close aria-label="إغلاق">×</button></header><div class="dawly-mini-cart-body" id="dawlyMiniCartBody"></div><footer class="dawly-mini-cart-foot"><div class="dawly-mini-cart-total"><span>الإجمالي</span><strong id="dawlyMiniCartTotal">—</strong></div><small>الشحن يُحدد عند تأكيد العنوان</small><a class="dawly-mini-cart-checkout" href="products.html?cart=1">إتمام الطلب ←</a><button class="dawly-mini-cart-continue" type="button" data-mini-close>متابعة التسوق</button></footer></aside>';
     document.body.appendChild(shell);
+    const launcher = document.createElement("button");
+    launcher.type = "button";
+    launcher.className = "dawly-mini-cart-launcher";
+    launcher.setAttribute("aria-label", "فتح سلة المشتريات");
+    launcher.innerHTML = '<span class="dawly-mini-cart-launcher-icon" aria-hidden="true">🛒</span><span>سلة المشتريات</span><b id="dawlyMiniCartBadge">0</b>';
+    launcher.addEventListener("click", openMiniCart);
+    document.body.appendChild(launcher);
     shell.addEventListener("click", function(event) {
       const close = event.target.closest("[data-mini-close]");
       if (close) { closeMiniCart(); return; }
@@ -528,6 +535,13 @@
     totalNode.textContent = priced === lines.length && priced ? "EGP " + new Intl.NumberFormat("en-US",{maximumFractionDigits:2}).format(total) : (count ? "يُحدد عند الاستفسار" : "EGP 0");
     const title = shell.querySelector("#dawlyMiniCartTitle");
     title.textContent = "سلة مشترياتك (" + count + ")";
+    const badge = document.getElementById("dawlyMiniCartBadge");
+    const launcher = document.querySelector(".dawly-mini-cart-launcher");
+    if (badge) badge.textContent = String(count);
+    if (launcher) {
+      launcher.classList.toggle("has-items", count > 0);
+      launcher.setAttribute("aria-label", "فتح سلة المشتريات، " + count + " قطعة");
+    }
     body.querySelectorAll("img[data-mini-image]").forEach(function(img) {
       if (typeof window.DAWLY_LOAD_PRODUCT_IMAGE === "function") {
         window.DAWLY_LOAD_PRODUCT_IMAGE(img.dataset.miniImage).then(url => { if(url && img.isConnected) img.src=url; }).catch(()=>{});
@@ -598,7 +612,12 @@
     }
     // Keep the product page open and show the Amazon-style mini cart.
     window.dispatchEvent(new CustomEvent("dawly-cart-updated", {detail:{productId:item.id, cart:cart}}));
-    openMiniCart();
+    renderMiniCart();
+    const launcher = document.querySelector(".dawly-mini-cart-launcher");
+    if (launcher) {
+      launcher.classList.add("just-added");
+      window.setTimeout(function(){ if (launcher.isConnected) launcher.classList.remove("just-added"); }, 900);
+    }
     if (directOrder) {
       const label = button.querySelector("span:last-child");
       if (label) label.textContent = "تمت الإضافة للسلة ✓";
@@ -617,6 +636,9 @@
     return;
   });
 
+  window.addEventListener("dawly-cart-updated", function () {
+    if (document.getElementById("dawlyMiniCart")) renderMiniCart();
+  });
   window.addEventListener("dawly-products-updated", function (event) {
     if (!Array.isArray(event.detail)) return;
     cloudProducts = event.detail;
@@ -628,4 +650,6 @@
     render();
   });
   render();
+  // Keep a compact, fixed cart shortcut visible while the customer continues browsing.
+  renderMiniCart();
 })();
