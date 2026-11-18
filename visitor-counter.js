@@ -6,7 +6,7 @@ import { getFirestore, collection, doc, getDoc, setDoc, serverTimestamp, getCoun
 (async function initVisitorCounter() {
   const totalNode=document.getElementById("siteVisitsTotal");
   const todayNode=document.getElementById("siteVisitsToday");
-  if(!totalNode||!todayNode||!window.DAWLY_FIREBASE_CONFIG)return;
+  if(!window.DAWLY_FIREBASE_CONFIG)return;
   const format=value=>new Intl.NumberFormat("ar-EG").format(value);
   const cairoParts=new Intl.DateTimeFormat("en-CA",{timeZone:"Africa/Cairo",year:"numeric",month:"2-digit",day:"2-digit"}).formatToParts(new Date());
   const part=type=>cairoParts.find(item=>item.type===type).value;
@@ -25,7 +25,7 @@ import { getFirestore, collection, doc, getDoc, setDoc, serverTimestamp, getCoun
       }catch(error){resolve({ok:false,user:null});}
     });
     const user=authState.user;
-    const isAdmin=!!(authState.ok&&user&&ADMIN_EMAILS.has(String(user.email||"").trim().toLowerCase()));
+    const isAdmin=!!(authState.ok&&user&&user.emailVerified===true&&ADMIN_EMAILS.has(String(user.email||"").trim().toLowerCase()));
 
     if(authState.ok&&!isAdmin){
       let visitorId="";
@@ -40,16 +40,19 @@ import { getFirestore, collection, doc, getDoc, setDoc, serverTimestamp, getCoun
     }
 
     // Admins can still view totals. Auth failures also show totals but never create a visit.
-    const visits=collection(db,"siteVisits");
-    const [total,today]=await Promise.all([
-      getCountFromServer(visits),
-      getCountFromServer(query(visits,where("day","==",day)))
-    ]);
-    totalNode.textContent=format(total.data().count);
-    todayNode.textContent=format(today.data().count);
+    // Only the homepage renders the public totals; other pages still record visits.
+    if(totalNode||todayNode){
+      const visits=collection(db,"siteVisits");
+      const [total,today]=await Promise.all([
+        getCountFromServer(visits),
+        getCountFromServer(query(visits,where("day","==",day)))
+      ]);
+      if(totalNode)totalNode.textContent=format(total.data().count);
+      if(todayNode)todayNode.textContent=format(today.data().count);
+    }
   }catch(error){
     console.warn("Visitor counter unavailable:",error);
-    totalNode.textContent="—";
-    todayNode.textContent="—";
+    if(totalNode)totalNode.textContent="—";
+    if(todayNode)todayNode.textContent="—";
   }
 })();
