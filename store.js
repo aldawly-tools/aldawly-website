@@ -738,7 +738,8 @@
       line.qty += 1;
     } else cart.push({id:id, qty:1});
     renderCart();
-    setDrawer(true);
+    // Keep the catalog visible after adding; the cart opens only when the shopper taps its button.
+    setDrawer(false);
   }
 
   if (brandFilterSearch) brandFilterSearch.addEventListener("input", drawBrandFilters);
