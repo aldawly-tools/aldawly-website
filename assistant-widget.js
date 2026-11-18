@@ -51,48 +51,29 @@ function compactProduct(p){
   stock:p.stock==null?null:String(p.stock).slice(0,40)
  };
 }
-async function reply(q){
- if(aiBusy){msg("ثواني بس، بجهزلك الرد السابق الأول 👌","bot");return;}
- aiBusy=true;
- var messages=document.getElementById("dawlyBotMessages");
- var typing=document.createElement("div");
- typing.className="dawly-bot-msg bot dawly-ai-typing";
- typing.textContent="مساعد الدولي بيفكر في سؤالك…";
- messages.appendChild(typing);messages.scrollTop=messages.scrollHeight;
- var recentUserText=chatTurns.filter(function(t){return t.role==="user";}).slice(-3).map(function(t){return t.content;}).join(" ");
- var candidates=findForAI(recentUserText||q).slice(0,15).map(compactProduct);
- try{
-  var response=await fetch("/api/assistant",{
-   method:"POST",
-   headers:{"content-type":"application/json"},
-   cache:"no-store",
-   signal:AbortSignal.timeout(15000),
-   body:JSON.stringify({
-    message:q,
-    history:chatTurns.slice(-8),
-    catalog:candidates
-   })
-  });
-  var data=await response.json().catch(function(){return {};});
-  typing.remove();
-  if(!response.ok||!data.reply){
-   if(!aiSetupNoticeShown){
-    aiSetupNoticeShown=true;
-    msg(response.status===503&&data.error==="ai_not_configured"
-      ?"المساعد الذكي لسه محتاج تفعيل مفتاح الربط على الخادم. هساعدك حالياً بالبحث الموجود في الكتالوج."
-      :"تعذر الوصول للمساعد الذكي حالياً، هساعدك بالبحث الموجود في الكتالوج.","bot");
-   }
-   replyFallback(q);
-   return;
-  }
-  msg(data.reply,"bot");
-  chatTurns.push({role:"assistant",content:String(data.reply).slice(0,1800)});
-  chatTurns=chatTurns.slice(-8);
- }catch(error){
-  typing.remove();
-  if(!aiSetupNoticeShown){aiSetupNoticeShown=true;msg("الاتصال بالمساعد الذكي غير متاح حالياً. هساعدك بالبحث الموجود في الكتالوج.","bot");}
-  replyFallback(q);
- }finally{aiBusy=false;}
+function reply(q){
+ /* Local-only assistant: no external AI requests, API keys, or customer-chat uploads. */
+ var s=norm(q);
+ if(/شحن|توصيل|محافظات/.test(s)){
+  msg("الشحن متاح لجميع محافظات مصر 🚚 لتأكيد تكلفة ومدة الشحن حسب عنوانك، تواصل معنا على واتساب 01024787222.","bot");
+  return;
+ }
+ if(/واتساب|تواصل|رقم|اتصل/.test(s)){
+  msg("تقدر تتواصل مع فريق الدولي مباشرة على واتساب 01024787222 لتأكيد السعر والتوفر والطلب.","bot");
+  return;
+ }
+ if(/دفع|تحويل|فيزا|كاش|الدفع/.test(s)){
+  msg("لتأكيد طرق الدفع المتاحة لطلبك، تواصل مع فريق الدولي على واتساب 01024787222. مش هأكد طريقة دفع غير مسجلة عندنا.","bot");
+  return;
+ }
+ if(/سعر|بكام|كام/.test(s)){
+  var results=find(q);
+  if(!results.length){replyFallback(q);return;}
+  msg("دي المنتجات اللي لقيتها في الكتالوج، والسعر الظاهر هو السعر المسجل حاليًا. لو السعر غير ظاهر، تواصل معنا للتأكيد:","bot");
+  show(results);
+  return;
+ }
+ replyFallback(q);
 }
 function send(q){
  q=String(q||"").trim();if(!q)return;
