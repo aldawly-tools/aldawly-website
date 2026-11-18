@@ -6131,11 +6131,11 @@ body.dawly-mini-cart-open{overflow:hidden}
 
 
 /* Fixed cart shortcut: browsing stays uninterrupted until the shopper opens it */
-.dawly-mini-cart-launcher{position:fixed;z-index:10040;right:22px;bottom:22px;display:flex;align-items:center;gap:9px;min-height:50px;padding:0 16px;border:0;border-radius:999px;background:#20262d;color:#fff;font-family:inherit;font-size:14px;font-weight:900;box-shadow:0 7px 24px rgba(0,0,0,.22);cursor:pointer;direction:rtl;transition:transform .18s,background .18s}
+.dawly-mini-cart-launcher{position:fixed;z-index:10040;right:12px;top:46%;bottom:auto;display:flex;align-items:center;gap:8px;min-height:48px;padding:0 14px;border:1px solid #fff4;background:#20262d;color:#fff;font-family:inherit;font-size:13px;font-weight:900;box-shadow:0 7px 24px rgba(0,0,0,.24);cursor:pointer;direction:rtl;transition:transform .18s,background .18s;border-radius:14px 0 0 14px}
 .dawly-mini-cart-launcher:hover{background:#c8101e;transform:translateY(-2px)}
 .dawly-mini-cart-launcher-icon{font-size:19px;line-height:1}
 .dawly-mini-cart-launcher b{display:grid;place-items:center;min-width:23px;height:23px;padding:0 5px;border-radius:50px;background:#c8101e;color:#fff;font-size:12px}
 .dawly-mini-cart-launcher.has-items b{background:#fff;color:#c8101e}
 .dawly-mini-cart-launcher.just-added{animation:dawlyCartNudge .45s ease}
 @keyframes dawlyCartNudge{50%{transform:scale(1.06)}}
-@media(max-width:600px){.dawly-mini-cart-launcher{right:12px;bottom:calc(14px + env(safe-area-inset-bottom));min-height:46px;padding:0 13px;font-size:13px;box-shadow:0 5px 18px rgba(0,0,0,.2)}}
+@media(max-width:600px){.dawly-mini-cart-launcher{right:0;top:44%;bottom:auto;min-height:44px;padding:0 11px;font-size:12px;border-radius:12px 0 0 12px;box-shadow:0 5px 18px rgba(0,0,0,.22)}}
