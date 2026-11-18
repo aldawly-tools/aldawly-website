@@ -6150,22 +6150,36 @@ body.dawly-mini-cart-open{overflow:hidden}
 .card-qty-control b{min-width:22px;text-align:center;color:#202832;font-size:16px;font-weight:900;font-variant-numeric:tabular-nums}
 
 
-
-/* Mobile cart quickbar placement fix: never cover product text */
+/* Product-page floating cart: compact icon on phones so it never blocks descriptions */
 @media (max-width: 700px) {
-  .cart-quickbar {
-    position: fixed !important;
+  .dawly-mini-cart-launcher {
     top: auto !important;
-    bottom: calc(12px + env(safe-area-inset-bottom, 0px)) !important;
-    left: 10px !important;
-    right: 10px !important;
-    width: auto !important;
-    max-width: none !important;
-    margin: 0 !important;
-    transform: none !important;
-    z-index: 10020 !important;
+    bottom: calc(82px + env(safe-area-inset-bottom, 0px)) !important;
+    right: 12px !important;
+    left: auto !important;
+    width: 52px !important;
+    min-width: 52px !important;
+    height: 52px !important;
+    min-height: 52px !important;
+    padding: 0 !important;
+    border-radius: 50% !important;
+    justify-content: center !important;
+    gap: 0 !important;
+    box-shadow: 0 4px 14px rgba(0,0,0,.2) !important;
   }
-  body.product-page {
-    padding-bottom: calc(92px + env(safe-area-inset-bottom, 0px)) !important;
+  .dawly-mini-cart-launcher > span:not(.dawly-mini-cart-launcher-icon) {
+    display: none !important;
+  }
+  .dawly-mini-cart-launcher-icon {
+    font-size: 23px !important;
+  }
+  .dawly-mini-cart-launcher b {
+    position: absolute !important;
+    top: -5px !important;
+    right: -4px !important;
+    min-width: 21px !important;
+    height: 21px !important;
+    padding: 0 4px !important;
+    border: 2px solid #fff !important;
   }
 }
