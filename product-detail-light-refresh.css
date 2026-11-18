@@ -142,3 +142,9 @@ body.product-page .product-detail-header>.button-outline:focus{
   padding:8px 12px!important;font-size:12px!important;border-radius:10px!important;
  }
 }
+
+/* Sale price presentation */
+.product-detail-layout .product-detail-price .detail-price-value{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.product-detail-layout .product-detail-price .detail-price-value strong{font-size:1.2em;font-weight:1000;color:#b20f19}
+.product-detail-layout .product-detail-price .detail-price-value del{font-size:14px;color:#7a8189;font-weight:700}
+.product-detail-layout .product-detail-price .detail-price-value .product-discount{display:inline-block;padding:4px 9px;border-radius:999px;background:#c8101e;color:#fff;font-size:12px;font-style:normal;font-weight:900}
