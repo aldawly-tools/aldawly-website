@@ -122,7 +122,25 @@ function reply(q){
   show(results);
   return;
  }
- replyFallback(q);
+ // Hybrid path: use the exact store catalog as context; fall back locally if AI is not configured.
+ var matched=findForAI(q).slice(0,6).map(compactProduct);
+ fetch("/api/assistant",{
+  method:"POST",
+  headers:{"Content-Type":"application/json"},
+  body:JSON.stringify({question:q,products:matched,history:chatTurns.slice(-6)})
+ }).then(function(response){
+  if(!response.ok)throw new Error("assistant_unavailable");
+  return response.json();
+ }).then(function(data){
+  var answer=String(data&&data.answer||"").trim();
+  if(!answer)throw new Error("empty_answer");
+  msg(answer,"bot");
+  var ids=Array.isArray(data.productIds)?data.productIds.map(String):[];
+  if(ids.length){
+   var selected=products.filter(function(p){return ids.indexOf(String(p.id))>=0;}).slice(0,4);
+   if(selected.length)show(selected);
+  }
+ }).catch(function(){replyFallback(q);});
 }
 function send(q){
  q=String(q||"").trim();if(!q)return;
