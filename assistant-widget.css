@@ -492,3 +492,30 @@ a.dawly-bot-product .dawly-bot-product-info .dawly-bot-product-open{
  }
 }
 @media(prefers-reduced-motion:reduce){#dawlyBotLauncher{transition:none!important}}
+
+
+/* FINAL assistant launcher visibility fix: solid red button with unmistakable white headset icon. */
+#dawlyBotLauncher{
+ left:18px!important;right:auto!important;bottom:18px!important;top:auto!important;
+ width:62px!important;height:62px!important;min-width:62px!important;max-width:62px!important;
+ min-height:62px!important;max-height:62px!important;padding:0!important;margin:0!important;
+ display:grid!important;place-items:center!important;overflow:visible!important;
+ background:#c8101e!important;border:3px solid #fff!important;border-radius:50%!important;
+ box-shadow:0 5px 18px rgba(0,0,0,.28)!important;z-index:10070!important;
+}
+#dawlyBotLauncher .dawly-bot-face{
+ display:grid!important;place-items:center!important;position:static!important;
+ width:100%!important;height:100%!important;min-width:0!important;flex:0 0 100%!important;
+ margin:0!important;padding:0!important;border:0!important;border-radius:50%!important;
+ background:transparent!important;color:#fff!important;
+}
+#dawlyBotLauncher .dawly-bot-face svg{
+ display:block!important;visibility:visible!important;opacity:1!important;
+ width:34px!important;height:34px!important;fill:none!important;
+ stroke:#fff!important;stroke-width:2.2!important;stroke-linecap:round!important;stroke-linejoin:round!important;
+}
+#dawlyBotLauncher .dawly-bot-prompt,#dawlyBotLauncher .dawly-bot-label,#dawlyBotLauncher .dawly-bot-hint{display:none!important}
+@media(max-width:700px){
+ #dawlyBotLauncher{left:14px!important;right:auto!important;bottom:calc(14px + env(safe-area-inset-bottom,0px))!important;width:58px!important;height:58px!important;min-width:58px!important;max-width:58px!important;min-height:58px!important;max-height:58px!important}
+ #dawlyBotLauncher .dawly-bot-face svg{width:32px!important;height:32px!important}
+}
