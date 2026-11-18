@@ -6477,3 +6477,36 @@ body:has(.cart-drawer.open) .dawly-mini-cart-launcher{opacity:0!important;pointe
  html body #dawlyBotLauncher{left:10px!important}
  html body .floating-home-cart,html body .dawly-mini-cart-launcher{right:10px!important}
 }
+
+
+/* DAWLY DRAWER OPEN STATE + CATEGORY LABEL CONTRAST FIX 2026-11-18 */
+@media(max-width:700px){
+ /* A menu drawer must sit above every floating shortcut. */
+ html body:has(#mobileMenuDrawer.open) #dawlyQuickMenu,
+ html body:has(#mobileMenuDrawer.open) #dawlyBotLauncher,
+ html body:has(#mobileMenuDrawer.open) .floating-home-cart,
+ html body:has(#mobileMenuDrawer.open) .dawly-mini-cart-launcher,
+ html body:has(#mobileMenuDrawer.open) .floating-contact-widget,
+ html body:has(#mobileMenuDrawer.open) .mobile-menu-trigger{
+  opacity:0!important;visibility:hidden!important;pointer-events:none!important;
+  display:none!important;
+ }
+ html body:has(#mobileMenuDrawer.open) #dawlyBotPanel{display:none!important}
+ /* Restore readable hierarchy in the category drawer. */
+ html body #mobileMenuDrawer .mobile-menu-home-label,
+ html body #mobileMenuDrawer .mobile-menu-browse-label,
+ html body #mobileMenuDrawer .mobile-menu-section-title{
+  color:#202832!important;-webkit-text-fill-color:#202832!important;
+  opacity:1!important;visibility:visible!important;
+  font-weight:900!important;
+ }
+ html body #mobileMenuDrawer .mobile-menu-browse-label{
+  display:block!important;padding:18px 22px 10px!important;
+  font-size:15px!important;line-height:1.5!important;
+ }
+ html body #mobileMenuDrawer .mobile-menu-categories button{
+  color:#202832!important;-webkit-text-fill-color:#202832!important;
+  opacity:1!important;background:#fff!important;
+ }
+ html body #mobileMenuDrawer .mobile-menu-category-count{color:#68727d!important}
+}
