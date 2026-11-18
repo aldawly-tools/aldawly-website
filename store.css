@@ -6043,3 +6043,32 @@ body.dawly-about-in-view #dawlyBotLauncher{
 #floatingContactWidget,#dawlyBotLauncher{
  transition:opacity .22s ease,visibility .22s ease,transform .22s ease!important;
 }
+
+
+/* Compact product detail actions: one cart control, no duplicated label */
+.product-detail-actions-compact{
+  display:flex;align-items:center;justify-content:flex-start;flex-wrap:wrap;gap:10px;
+  margin-top:14px;
+}
+.product-detail-actions-compact .detail-order-now,
+.product-detail-actions-compact .detail-whatsapp-button{
+  min-height:48px;padding:10px 20px;border-radius:14px;font-size:15px;font-weight:800;
+  flex:1 1 210px;width:auto;box-shadow:none;
+}
+.product-detail-actions-compact .detail-order-now{background:var(--red,#c8101e)}
+.product-detail-actions-compact .detail-whatsapp-button{background:#119b55}
+.product-detail-actions-compact .detail-add-cart-icon,
+.product-detail-actions-compact .detail-share-icon{
+  width:48px;min-width:48px;height:48px;min-height:48px;padding:0;border-radius:14px;
+  display:inline-flex;align-items:center;justify-content:center;font-size:22px;flex:0 0 48px;
+}
+.product-detail-actions-compact .detail-share-icon{font-size:23px}
+.product-detail-actions-compact .detail-back-link{flex:1 0 100%;text-align:center;margin-top:3px}
+@media(max-width:700px){
+ .product-detail-actions-compact{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+ .product-detail-actions-compact .detail-order-now,
+ .product-detail-actions-compact .detail-whatsapp-button{grid-column:1/-1;width:100%;min-height:46px;font-size:14px}
+ .product-detail-actions-compact .detail-add-cart-icon,
+ .product-detail-actions-compact .detail-share-icon{width:100%;min-width:0;height:44px;min-height:44px;flex:initial}
+ .product-detail-actions-compact .detail-back-link{grid-column:1/-1}
+}
