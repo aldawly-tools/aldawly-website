@@ -724,12 +724,13 @@ let bulkPricePreviewData = null;
 let bulkPriceBusy = false;
 const BULK_PRICE_HISTORY_ID = "priceAdjustmentHistory";
 function parseBulkPrice(value) {
-  const normalized = String(value == null ? "" : value)
+  const original = String(value == null ? "" : value);
+  const match = original.match(/[0-9٠-٩۰-۹][0-9٠-٩۰-۹,]*(?:\.[0-9٠-٩۰-۹]+)?/);
+  if (!match) return null;
+  const normalizedToken = match[0]
     .replace(/[٠-٩]/g, digit => String("٠١٢٣٤٥٦٧٨٩".indexOf(digit)))
     .replace(/[۰-۹]/g, digit => String("۰۱۲۳۴۵۶۷۸۹".indexOf(digit)));
-  const match = normalized.match(/[0-9][0-9,]*(?:\.[0-9]+)?/);
-  if (!match) return null;
-  const number = Number(match[0].replace(/,/g, ""));
+  const number = Number(normalizedToken.replace(/,/g, ""));
   if (!Number.isFinite(number) || number < 0) return null;
   return {number:number, token:match[0]};
 }
