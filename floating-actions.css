@@ -95,3 +95,26 @@ body:has(.cart-drawer.open) #dawlyQuickMenu{opacity:0;pointer-events:none}
  #dawlyBotLauncher{left:14px!important;right:auto!important;bottom:calc(14px + env(safe-area-inset-bottom,0px))!important;width:58px!important;height:58px!important;min-width:58px!important;max-width:58px!important;min-height:58px!important;max-height:58px!important}
  #dawlyBotLauncher .dawly-bot-face svg{width:32px!important;height:32px!important}
 }
+
+
+/* Hide floating launchers only while the page is actively scrolling; restore after scroll settles. */
+body.dawly-is-scrolling #dawlyQuickMenu,
+body.dawly-is-scrolling #dawlyBotLauncher,
+body.dawly-is-scrolling .floating-home-cart,
+body.dawly-is-scrolling .dawly-mini-cart-launcher{
+  opacity:0!important;
+  visibility:hidden!important;
+  pointer-events:none!important;
+  transform:translate3d(0,12px,0) scale(.94)!important;
+}
+#dawlyQuickMenu,
+#dawlyBotLauncher,
+.floating-home-cart,
+.dawly-mini-cart-launcher{
+  transition:opacity .18s ease, transform .18s ease, visibility .18s ease!important;
+}
+@media(prefers-reduced-motion:reduce){
+  #dawlyQuickMenu,#dawlyBotLauncher,.floating-home-cart,.dawly-mini-cart-launcher{
+    transition:none!important;
+  }
+}
