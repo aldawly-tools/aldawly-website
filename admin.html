@@ -552,7 +552,7 @@ function renderProducts() {
   const filtered = products.filter(function (product) {
     const haystack = [product.name, product.brand, product.cat, product.price, product.id, product.specs, product.desc].join(" ").toLocaleLowerCase("ar");
     return !term || haystack.includes(term);
-  });
+  }).sort(function (a, b) { return (Number(b.id) || 0) - (Number(a.id) || 0); });
   if ($("dashProducts")) $("dashProducts").textContent = String(products.length);
   $("listSummary").textContent = term ? "نتائج البحث: " + filtered.length + " من " + products.length : "إجمالي المنتجات: " + products.length;
   $("productList").innerHTML = filtered.map(function (product) {
