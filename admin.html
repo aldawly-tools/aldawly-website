@@ -629,7 +629,7 @@ async function loadAnalytics(force){
   $("sourceGoogle").textContent=analyticsFormat(countSource("google"));
   $("sourceWhatsapp").textContent=analyticsFormat(countSource("whatsapp"));
   $("sourceDirect").textContent=analyticsFormat(countSource("direct"));
-  $("sourceOther").textContent=analyticsFormat(countSource("other")+countSource("instagram")+countSource("tiktok"));
+  $("sourceOther").textContent=analyticsFormat(Math.max(0,sourceTotal-chatgptCount-countSource("facebook")-countSource("google")-countSource("whatsapp")-countSource("direct")));
   $("analyticsSourcesRows").innerHTML=sourceRows.length?sourceRows.map(([key,value])=>'<tr><td style="padding:9px">'+escapeHtml(sourceLabels[key]||key)+'</td><td style="padding:9px">'+analyticsFormat(value)+'</td><td style="padding:9px">'+(sourceTotal?Math.round(value/sourceTotal*100):0)+'%</td></tr>').join(""):'<tr><td colspan="3" style="padding:9px">لا توجد بيانات مصادر خلال آخر 30 يومًا.</td></tr>';
   const views={};
   viewSnap.docs.forEach(d=>{const v=d.data(),id=String(v.productId||"");if(id)views[id]=(views[id]||0)+1;});
