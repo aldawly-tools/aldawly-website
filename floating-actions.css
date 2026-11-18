@@ -1,0 +1,36 @@
+/* DAWLY floating quick menu: persistent cart + compact services menu */
+#dawlyQuickMenu{position:fixed;right:18px;bottom:calc(88px + env(safe-area-inset-bottom,0px));z-index:10060;font-family:Cairo,Tahoma,Arial,sans-serif}
+#dawlyQuickMenuToggle{width:54px;height:54px;border:2px solid #fff;border-radius:50%;display:grid;place-items:center;background:linear-gradient(145deg,#c8101e,#8f0b15);color:#fff;box-shadow:0 7px 22px #17202b38;cursor:pointer;transition:transform .18s,box-shadow .18s}
+#dawlyQuickMenuToggle:hover{transform:translateY(-2px);box-shadow:0 10px 26px #17202b42}
+#dawlyQuickMenuToggle svg{width:25px;height:25px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+#dawlyQuickMenuToggle[aria-expanded=true] .quick-menu-open{display:none}
+#dawlyQuickMenuToggle[aria-expanded=false] .quick-menu-close{display:none}
+#dawlyQuickMenuPanel{position:absolute;right:0;bottom:64px;width:218px;padding:9px;border:1px solid #e6e9ed;border-radius:17px;background:#fff;box-shadow:0 12px 34px #17202b24;display:flex;flex-direction:column;gap:7px}
+#dawlyQuickMenuPanel[hidden]{display:none!important}
+.dawly-quick-menu-heading{padding:5px 8px 7px;color:#65717e;font-size:11px;font-weight:800}
+.dawly-quick-menu-slot{display:flex;align-items:center;min-height:48px;padding:5px 9px;border-radius:12px;background:#f5f6f8;gap:9px}
+.dawly-quick-menu-slot:before{content:"";width:7px;height:7px;border-radius:50%;background:#c8101e;flex:0 0 7px}
+.dawly-quick-menu-slot .floating-contact-widget{position:static!important;inset:auto!important;display:block!important;margin:0!important}
+.dawly-quick-menu-slot .floating-contact-toggle,
+.dawly-quick-menu-slot #dawlyBotLauncher{position:static!important;inset:auto!important;transform:none!important;width:auto!important;height:auto!important;min-width:0!important;min-height:0!important;max-width:none!important;max-height:none!important;padding:0!important;margin:0!important;border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;color:#202832!important;display:flex!important;align-items:center!important;gap:8px!important;font:800 13px Cairo,Tahoma,Arial,sans-serif!important;cursor:pointer!important}
+.dawly-quick-menu-slot .floating-contact-toggle .contact-toggle-phone{width:19px!important;height:19px!important;flex:0 0 19px!important;stroke:#c8101e!important}
+.dawly-quick-menu-slot .floating-contact-toggle .contact-toggle-close{display:none!important}
+.dawly-quick-menu-slot .floating-contact-label{display:inline!important}
+.dawly-quick-menu-slot #dawlyBotLauncher .dawly-bot-face{width:22px!important;height:22px!important;min-width:22px!important;flex:0 0 22px!important;background:#c8101e!important;color:#fff!important}
+.dawly-quick-menu-slot #dawlyBotLauncher .dawly-bot-face svg{width:15px!important;height:15px!important}
+.dawly-quick-menu-slot #dawlyBotLauncher .dawly-bot-prompt{display:inline!important;color:#202832!important;font:800 13px Cairo,Tahoma,Arial,sans-serif!important}
+.dawly-quick-menu-slot #dawlyBotLauncher .dawly-bot-label,
+.dawly-quick-menu-slot #dawlyBotLauncher .dawly-bot-hint{display:none!important}
+.dawly-quick-menu-slot .floating-contact-panel{position:absolute!important;right:0!important;left:auto!important;bottom:calc(100% + 8px)!important;width:min(290px,calc(100vw - 36px))!important;margin:0!important;z-index:10062!important;background:#fff!important;box-shadow:0 10px 28px #17202b26!important}
+.dawly-quick-menu-slot .floating-contact-panel[hidden]{display:none!important}
+.floating-home-cart,.dawly-mini-cart-launcher{position:fixed!important;right:18px!important;left:auto!important;top:auto!important;bottom:calc(18px + env(safe-area-inset-bottom,0px))!important;z-index:10058!important}
+#dawlyBotPanel{z-index:10065!important}
+@media(max-width:700px){
+ #dawlyQuickMenu{right:14px;bottom:calc(82px + env(safe-area-inset-bottom,0px))}
+ #dawlyQuickMenuToggle{width:52px;height:52px}
+ #dawlyQuickMenuPanel{width:210px;bottom:62px}
+ .floating-home-cart,.dawly-mini-cart-launcher{right:14px!important;left:auto!important;bottom:calc(14px + env(safe-area-inset-bottom,0px))!important}
+ #dawlyBotPanel{right:8px!important;left:8px!important;bottom:calc(145px + env(safe-area-inset-bottom,0px))!important;width:calc(100vw - 16px)!important;max-height:calc(100dvh - 165px)!important}
+}
+body:has(.cart-drawer.open) #dawlyQuickMenu{opacity:0;pointer-events:none}
+@media(prefers-reduced-motion:reduce){#dawlyQuickMenuToggle{transition:none}}
