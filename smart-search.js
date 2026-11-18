@@ -152,7 +152,7 @@
   if(!products.length) {
     var attempts=0;
     var refresh=function(){
-      if(Array.isArray(window.DAWLY_PRODUCTS)&&window.DAWLY_PRODUCTS.length){products=window.DAWLY_PRODUCTS;if(input.value.trim())render();return;}
+      if(Array.isArray(window.DAWLY_PRODUCTS)&&window.DAWLY_PRODUCTS.length){products=window.DAWLY_PRODUCTS;buildSearchIndex(products);if(input.value.trim())render();return;}
       if(++attempts<30)window.setTimeout(refresh,300);
     };
     window.setTimeout(refresh,300);
