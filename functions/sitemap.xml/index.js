@@ -17,11 +17,10 @@ function firestoreValue(value) {
 }
 
 export async function onRequest() {
-  const today = new Date().toISOString().slice(0, 10);
-  const urls = new Set([
-    SITE + "/",
-    SITE + "/products.html",
-    SITE + "/advisor.html"
+  const urls = new Map([
+    [SITE + "/", ""],
+    [SITE + "/products.html", ""],
+    [SITE + "/advisor.html", ""]
   ]);
 
   try {
@@ -44,7 +43,9 @@ export async function onRequest() {
         const fields = document.fields || {};
         const id = firestoreValue(fields.id) || document.name.split("/").pop();
         if (id !== undefined && id !== null && String(id).trim() !== "") {
-          urls.add(SITE + "/product.html?id=" + encodeURIComponent(String(id).trim()));
+          const productUrl = SITE + "/product.html?id=" + encodeURIComponent(String(id).trim());
+          const modified = document.updateTime ? String(document.updateTime).slice(0, 10) : "";
+          urls.set(productUrl, modified);
         }
       }
       pageToken = payload.nextPageToken || "";
@@ -54,8 +55,10 @@ export async function onRequest() {
     console.error("Dynamic sitemap product lookup failed:", error);
   }
 
-  const entries = Array.from(urls).map((url) =>
-    "  <url><loc>" + xmlEscape(url) + "</loc><lastmod>" + today + "</lastmod></url>"
+  const entries = Array.from(urls.entries()).map(([url, lastmod]) =>
+    "  <url><loc>" + xmlEscape(url) + "</loc>" +
+    (lastmod ? "<lastmod>" + xmlEscape(lastmod) + "</lastmod>" : "") +
+    "</url>"
   ).join("\n");
 
   return new Response(
