@@ -6205,3 +6205,70 @@ body:has(.cart-drawer.open) .floating-home-cart{opacity:0!important;pointer-even
  .floating-home-cart{width:62px!important;height:62px!important;right:16px!important;bottom:18px!important}
  .floating-home-cart svg{width:29px!important;height:29px!important}
 }
+
+
+/* DAWLY floating controls: vertically stacked, aligned to one side on every page. */
+.floating-contact-widget{
+  position:fixed!important;
+  left:18px!important;right:auto!important;bottom:96px!important;top:auto!important;
+  z-index:10020!important;align-items:flex-start!important;gap:0!important;
+}
+.floating-contact-toggle{
+  position:relative!important;isolation:isolate!important;
+  display:grid!important;place-items:center!important;
+  width:60px!important;height:60px!important;min-width:60px!important;min-height:60px!important;
+  padding:0!important;margin:0!important;gap:0!important;
+  border:3px solid #fff!important;border-radius:50%!important;
+  background:linear-gradient(145deg,#ed1c2b,#b90d1b)!important;color:#fff!important;
+  box-shadow:0 7px 20px rgba(20,28,38,.24)!important;
+  animation:none!important;transform:none!important;
+}
+.floating-contact-toggle::before,.floating-contact-toggle::after{display:none!important;content:none!important;animation:none!important}
+.floating-contact-toggle .contact-toggle-phone,
+.floating-contact-toggle .contact-toggle-close{
+  display:block!important;width:29px!important;height:29px!important;flex:0 0 29px!important;
+  fill:none!important;stroke:#fff!important;stroke-width:2.4!important;
+}
+.floating-contact-toggle .contact-toggle-phone path{fill:none!important;stroke:#fff!important}
+.floating-contact-toggle .contact-toggle-close{display:none!important}
+.floating-contact-toggle.is-open{background:#a90d19!important}
+.floating-contact-toggle.is-open .contact-toggle-phone{display:none!important}
+.floating-contact-toggle.is-open .contact-toggle-close{display:block!important}
+.floating-contact-label{display:none!important}
+.floating-contact-panel{margin-bottom:12px!important}
+.floating-home-cart,.dawly-mini-cart-launcher{
+  position:fixed!important;left:18px!important;right:auto!important;top:auto!important;bottom:20px!important;
+  z-index:10019!important;
+  box-sizing:border-box!important;width:60px!important;min-width:60px!important;
+  height:60px!important;min-height:60px!important;padding:0!important;margin:0!important;
+  display:grid!important;place-items:center!important;gap:0!important;
+  border:3px solid #fff!important;border-radius:50%!important;
+  background:#202832!important;color:#fff!important;
+  box-shadow:0 7px 20px rgba(20,28,38,.25)!important;
+  transform:none!important;
+}
+.floating-home-cart svg{width:29px!important;height:29px!important;stroke:#fff!important;fill:none!important}
+.floating-home-cart-count,.dawly-mini-cart-launcher b{
+  position:absolute!important;top:-5px!important;right:-5px!important;left:auto!important;
+  min-width:24px!important;width:auto!important;height:24px!important;padding:0 5px!important;
+  display:grid!important;place-items:center!important;
+  border:2px solid #fff!important;border-radius:20px!important;
+  background:#d71920!important;color:#fff!important;font:900 13px Arial,sans-serif!important;
+}
+.dawly-mini-cart-launcher-icon{font-size:25px!important;line-height:1!important}
+.dawly-mini-cart-launcher>span:not(.dawly-mini-cart-launcher-icon){display:none!important}
+body:has(.cart-drawer.open) .floating-home-cart,
+body:has(.cart-drawer.open) .dawly-mini-cart-launcher{opacity:0!important;pointer-events:none!important}
+@media(max-width:700px){
+  .floating-contact-widget{left:14px!important;right:auto!important;bottom:calc(168px + env(safe-area-inset-bottom,0px))!important}
+  .floating-contact-toggle{width:56px!important;height:56px!important;min-width:56px!important;min-height:56px!important}
+  .floating-contact-toggle .contact-toggle-phone,.floating-contact-toggle .contact-toggle-close{width:27px!important;height:27px!important;flex-basis:27px!important}
+  .floating-home-cart,.dawly-mini-cart-launcher{
+    left:14px!important;right:auto!important;bottom:calc(96px + env(safe-area-inset-bottom,0px))!important;
+    width:56px!important;min-width:56px!important;height:56px!important;min-height:56px!important;
+  }
+  .floating-home-cart svg{width:27px!important;height:27px!important}
+}
+@media(prefers-reduced-motion:reduce){
+  .floating-contact-widget,.floating-contact-toggle{transition:none!important;animation:none!important}
+}
