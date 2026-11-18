@@ -515,6 +515,7 @@ $("addExtraSpecBtn").addEventListener("click",()=>{
  });
  list.addEventListener("dragend",()=>{document.querySelectorAll(".smart-spec-row").forEach(row=>row.classList.remove("dragging","drag-over"));syncSpecsField();});
 });
+renderCategorySpecs({},[]);
 function resetForm() {
   $("productForm").reset();
   renderCategorySpecs({},[]);
