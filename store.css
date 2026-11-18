@@ -6662,3 +6662,29 @@ body:has(.cart-drawer.open) .dawly-mini-cart-launcher{opacity:0!important;pointe
  .dawly-about-bottom strong{font-size:10.5px}
  .dawly-about-bottom a{padding:8px 11px;font-size:11px}
 }
+
+
+/* MOBILE SCROLL RECOVERY: prevent stale inline overflow locks from freezing the storefront. */
+@media (max-width: 700px) {
+  html {
+    height: auto !important;
+    min-height: 100% !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+  body {
+    height: auto !important;
+    min-height: 100vh !important;
+    overflow-x: hidden !important;
+    overflow-y: visible !important;
+    touch-action: pan-y !important;
+  }
+  body.mobile-category-menu-open,
+  body.quick-view-open,
+  body.dawly-mini-cart-open,
+  body:has(#cartDrawer.open),
+  body:has(#mobileMenuDrawer.open) {
+    overflow: hidden !important;
+  }
+}
