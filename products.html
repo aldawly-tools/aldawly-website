@@ -90,6 +90,54 @@
 .active-brand-banner-reset{flex:0 0 auto;padding:10px 16px;border-radius:9px;background:#d71920;color:#fff;font-weight:800;text-decoration:none}
 @media(max-width:600px){.active-brand-banner{padding:14px;gap:10px}.active-brand-banner-copy{gap:10px}.active-brand-banner-logo{width:78px;height:48px;padding:6px}.active-brand-banner h2{font-size:19px}.active-brand-banner p{font-size:12px}.active-brand-banner-reset{padding:9px 10px;font-size:12px}}
 </style>
+
+<style id="compact-brand-filter-mobile-20261118">
+/* Compact brand selector: keep the product catalog closer on mobile. */
+.brand-filter-panel{
+  align-self:start!important;
+  height:auto!important;
+  max-height:none!important;
+  min-height:0!important;
+}
+.brand-filter-list{
+  flex:0 1 auto!important;
+  height:auto!important;
+  min-height:0!important;
+  max-height:300px!important;
+  gap:3px!important;
+  padding:2px 4px 8px 2px!important;
+}
+.brand-filter-option{
+  min-height:38px!important;
+  padding:4px 8px!important;
+}
+@media(max-width:760px){
+  .brand-filter-panel{
+    padding:10px!important;
+    border-radius:15px!important;
+  }
+  .brand-filter-heading{margin-bottom:8px!important}
+  .brand-filter-search{margin-bottom:9px!important}
+  .brand-filter-search input{min-height:44px!important}
+  .brand-filter-list{
+    max-height:220px!important;
+    min-height:0!important;
+    gap:2px!important;
+    padding:2px 3px 6px 2px!important;
+  }
+  .brand-filter-option{
+    min-height:35px!important;
+    padding:3px 7px!important;
+    border-radius:7px!important;
+  }
+  .brand-filter-logo,.brand-filter-monogram{
+    width:40px!important;height:27px!important;flex-basis:40px!important;
+    padding:2px 4px!important;
+  }
+  .brand-filter-option-name>span:last-child{font-size:12px!important}
+}
+</style>
+
 </head>
 <body>
 <header class="masthead">
