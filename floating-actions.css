@@ -118,3 +118,15 @@ body.dawly-is-scrolling .dawly-mini-cart-launcher{
     transition:none!important;
   }
 }
+
+
+/* Hide the floating mobile Categories button while browsing/scrolling. */
+body.dawly-is-scrolling .mobile-menu-trigger{
+  opacity:0!important;
+  visibility:hidden!important;
+  pointer-events:none!important;
+  transform:translate3d(0,12px,0) scale(.94)!important;
+}
+.mobile-menu-trigger{
+  transition:opacity .18s ease,transform .18s ease,visibility .18s ease!important;
+}
