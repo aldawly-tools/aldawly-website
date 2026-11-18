@@ -162,26 +162,12 @@ function typeWelcomeMessage(){
   if(!messageBox||messageBox.querySelector(".dawly-bot-msg"))return;
   var welcome="أهلاً بيك 👋\nأنا مساعدك الفني في الدولي. أقدر أساعدك تلاقي الأداة المناسبة من الكتالوج.\nقولي هتستخدمها في إيه وعلى أي خامة؟";
   var bubble=document.createElement("div");
-  bubble.className="dawly-bot-msg bot dawly-welcome-typing";
+  bubble.className="dawly-bot-msg bot";
+  bubble.textContent=welcome;
   bubble.setAttribute("aria-label",welcome);
   messageBox.insertBefore(bubble,chips||null);
-  var chars=Array.from(welcome),index=0;
-  var reduced=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  function finish(){
-    bubble.textContent=welcome;
-    bubble.classList.remove("dawly-welcome-typing");
-    if(chips)chips.hidden=false;
-    messageBox.scrollTop=messageBox.scrollHeight;
-  }
-  if(reduced){finish();return;}
-  function typeNext(){
-    if(!bubble.isConnected)return;
-    bubble.textContent+=chars[index++]||"";
-    messageBox.scrollTop=messageBox.scrollHeight;
-    if(index<chars.length)window.setTimeout(typeNext,27);
-    else finish();
-  }
-  window.setTimeout(typeNext,420);
+  if(chips)chips.hidden=false;
+  messageBox.scrollTop=0;
 }
 typeWelcomeMessage();
 /* Avoid overlapping the assistant with the expanded contact/WhatsApp menu. */
