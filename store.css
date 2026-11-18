@@ -6345,3 +6345,65 @@ body:has(.cart-drawer.open) .dawly-mini-cart-launcher{opacity:0!important;pointe
 @media(prefers-reduced-motion:reduce){
  .floating-home-cart,.dawly-mini-cart-launcher,.floating-contact-widget,.floating-contact-toggle{transition:none!important;animation:none!important}
 }
+
+
+/* DAWLY MOBILE FLOATING DOCK — authoritative override 2026-11-18 */
+@media (max-width:700px){
+ html body #dawlyBotLauncher,
+ html body #dawlyBotLauncher.dawly-prompt-visible{
+  position:fixed!important;left:14px!important;right:auto!important;top:auto!important;
+  bottom:calc(16px + env(safe-area-inset-bottom,0px))!important;
+  width:56px!important;min-width:56px!important;max-width:56px!important;
+  height:56px!important;min-height:56px!important;max-height:56px!important;
+  padding:0!important;margin:0!important;display:grid!important;place-items:center!important;
+  border-radius:50%!important;z-index:10090!important;transform:none!important;
+ }
+ html body #dawlyBotLauncher .dawly-bot-face{
+  display:grid!important;place-items:center!important;width:100%!important;height:100%!important;
+  min-width:0!important;flex:0 0 100%!important;margin:0!important;background:transparent!important;color:#fff!important;
+ }
+ html body #dawlyBotLauncher .dawly-bot-face svg{width:30px!important;height:30px!important;stroke:#fff!important}
+ html body #dawlyBotLauncher .dawly-bot-prompt,
+ html body #dawlyBotLauncher .dawly-bot-label,
+ html body #dawlyBotLauncher .dawly-bot-hint{display:none!important}
+ html body #dawlyQuickMenu{
+  position:fixed!important;left:auto!important;right:14px!important;top:auto!important;
+  bottom:calc(88px + env(safe-area-inset-bottom,0px))!important;
+  width:52px!important;height:52px!important;z-index:10080!important;transform:none!important;
+ }
+ html body #dawlyQuickMenuToggle{
+  display:grid!important;place-items:center!important;width:52px!important;height:52px!important;
+  min-width:52px!important;min-height:52px!important;border-radius:50%!important;
+ }
+ html body #dawlyQuickMenuPanel{right:0!important;left:auto!important;bottom:60px!important;width:min(210px,calc(100vw - 28px))!important}
+ html body .floating-home-cart,
+ html body .dawly-mini-cart-launcher{
+  position:fixed!important;left:auto!important;right:14px!important;top:auto!important;
+  bottom:calc(16px + env(safe-area-inset-bottom,0px))!important;
+  width:56px!important;min-width:56px!important;max-width:56px!important;
+  height:56px!important;min-height:56px!important;max-height:56px!important;
+  padding:0!important;margin:0!important;display:grid!important;place-items:center!important;
+  border-radius:50%!important;z-index:10070!important;transform:none!important;
+ }
+ html body .floating-home-cart svg{width:27px!important;height:27px!important}
+ html body .dawly-mini-cart-launcher>span:not(.dawly-mini-cart-launcher-icon){display:none!important}
+ html body .dawly-mini-cart-launcher-icon{font-size:24px!important}
+ html body .floating-home-cart-count,
+ html body .dawly-mini-cart-launcher b{top:-4px!important;right:-4px!important}
+ html body #dawlyBotPanel{
+  position:fixed!important;left:8px!important;right:8px!important;top:auto!important;
+  bottom:calc(82px + env(safe-area-inset-bottom,0px))!important;
+  width:calc(100vw - 16px)!important;max-width:none!important;
+  max-height:calc(100dvh - 100px)!important;z-index:10100!important;
+ }
+ body:has(.cart-drawer.open) #dawlyQuickMenu,
+ body:has(.cart-drawer.open) #dawlyBotLauncher,
+ body:has(.cart-drawer.open) .floating-home-cart,
+ body:has(.cart-drawer.open) .dawly-mini-cart-launcher{opacity:0!important;pointer-events:none!important}
+}
+@media(max-width:360px){
+ html body #dawlyBotLauncher{left:10px!important}
+ html body #dawlyQuickMenu,
+ html body .floating-home-cart,
+ html body .dawly-mini-cart-launcher{right:10px!important}
+}
