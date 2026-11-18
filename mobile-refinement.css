@@ -822,3 +822,54 @@
  }
 }
 @keyframes heroServicesTicker{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+
+/* Improve readability of the moving service ticker on mobile. */
+@media(max-width:700px){
+ html body .hero-shell .hero-services{
+  height:70px!important;
+  min-height:70px!important;
+  max-height:70px!important;
+ }
+ html body .hero-shell .hero-services-track{
+  height:70px!important;
+  gap:10px!important;
+  padding:0 14px!important;
+  animation-duration:32s!important;
+ }
+ html body .hero-shell .hero-services .service-card{
+  height:56px!important;
+  min-height:56px!important;
+  padding:8px 16px!important;
+  gap:10px!important;
+  border:1px solid rgba(255,255,255,.24)!important;
+  border-radius:13px!important;
+  background:linear-gradient(135deg,#202b37,#17212c)!important;
+  color:#fff!important;
+  font-size:14px!important;
+  font-weight:800!important;
+  box-shadow:0 3px 12px rgba(0,0,0,.18)!important;
+ }
+ html body .hero-shell .hero-services .service-card>span:last-child{
+  color:#fff!important;
+  font-size:14px!important;
+  font-weight:800!important;
+  line-height:1.35!important;
+  letter-spacing:0!important;
+  text-shadow:0 1px 1px rgba(0,0,0,.22)!important;
+ }
+ html body .hero-shell .hero-services .service-icon,
+ html body .hero-shell .hero-services .service-icon svg{
+  width:26px!important;
+  height:26px!important;
+  flex:0 0 26px!important;
+ }
+ html body .hero-shell .hero-services .service-icon svg{
+  stroke:#ff6474!important;
+  stroke-width:2.2!important;
+ }
+}
+@media(max-width:380px){
+ html body .hero-shell .hero-services .service-card{padding:8px 13px!important}
+ html body .hero-shell .hero-services .service-card>span:last-child{font-size:13px!important}
+}
