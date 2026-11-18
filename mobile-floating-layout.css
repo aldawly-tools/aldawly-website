@@ -1,0 +1,48 @@
+/* Unified floating controls: three separate corners/levels, no content overlap. */
+@media (max-width: 700px) {
+  #dawlyBotLauncher {
+    position: fixed !important;
+    left: 14px !important; right: auto !important; top: auto !important;
+    bottom: calc(14px + env(safe-area-inset-bottom, 0px)) !important;
+    width: 56px !important; height: 56px !important;
+    min-width: 56px !important; max-width: 56px !important;
+    min-height: 56px !important; max-height: 56px !important;
+    padding: 0 !important; border-radius: 50% !important;
+    z-index: 10070 !important;
+  }
+  #dawlyBotLauncher .dawly-bot-face {
+    width: 100% !important; height: 100% !important;
+    min-width: 0 !important; flex: 0 0 100% !important;
+  }
+  #dawlyBotLauncher .dawly-bot-face svg {
+    width: 30px !important; height: 30px !important;
+  }
+  #dawlyQuickMenu {
+    position: fixed !important;
+    right: 14px !important; left: auto !important; top: auto !important;
+    bottom: calc(82px + env(safe-area-inset-bottom, 0px)) !important;
+    z-index: 10060 !important;
+  }
+  #dawlyQuickMenuToggle { width: 52px !important; height: 52px !important; }
+  #dawlyQuickMenuPanel { bottom: 60px !important; }
+  .floating-home-cart, .dawly-mini-cart-launcher {
+    position: fixed !important;
+    right: 14px !important; left: auto !important; top: auto !important;
+    bottom: calc(14px + env(safe-area-inset-bottom, 0px)) !important;
+    z-index: 10058 !important;
+  }
+  #dawlyBotPanel {
+    left: 8px !important; right: 8px !important;
+    bottom: calc(82px + env(safe-area-inset-bottom, 0px)) !important;
+    width: calc(100vw - 16px) !important;
+    max-height: calc(100dvh - 105px) !important;
+    z-index: 10075 !important;
+  }
+  body:has(.cart-drawer.open) #dawlyQuickMenu,
+  body:has(.cart-drawer.open) #dawlyBotLauncher { opacity: 0 !important; pointer-events: none !important; }
+}
+@media (max-width: 360px) {
+  #dawlyBotLauncher { left: 10px !important; }
+  #dawlyQuickMenu { right: 10px !important; }
+  .floating-home-cart, .dawly-mini-cart-launcher { right: 10px !important; }
+}
