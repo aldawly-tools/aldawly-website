@@ -6640,3 +6640,25 @@ body:has(.cart-drawer.open) .dawly-mini-cart-launcher{opacity:0!important;pointe
  .dawly-about-features b{font-size:10px}
  .dawly-about-features small{font-size:9px}
 }
+
+
+/* Extra compact About card on phones: shorter visual footprint. */
+@media (max-width: 600px){
+ .dawly-about-section{padding-top:12px;padding-bottom:16px}
+ .dawly-about-section .section-heading{margin-bottom:8px}
+ .dawly-about-card{border-radius:15px}
+ .dawly-about-topline{padding:8px 12px;font-size:8px}
+ .dawly-about-mark{width:25px;height:25px;font-size:15px}
+ .dawly-about-content{padding:11px 12px 12px}
+ .dawly-about-kicker{display:none}
+ .dawly-about-content h3{font-size:21px;line-height:1.25;margin:0 0 7px}
+ .dawly-about-content>p{font-size:12px;line-height:1.55}
+ .dawly-about-features{gap:6px;margin-top:10px}
+ .dawly-about-features>div{grid-template-columns:1fr;grid-template-rows:auto auto;gap:4px;padding:7px 3px}
+ .dawly-about-icon{width:24px;height:24px;font-size:14px}
+ .dawly-about-features b{font-size:10px}
+ .dawly-about-features small{display:none}
+ .dawly-about-bottom{margin-top:9px;padding-top:9px;gap:7px}
+ .dawly-about-bottom strong{font-size:10.5px}
+ .dawly-about-bottom a{padding:8px 11px;font-size:11px}
+}
