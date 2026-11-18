@@ -231,6 +231,7 @@ button:disabled{opacity:.6;cursor:wait}
       <button type="button" class="dashboard-tab active" data-tab="dashboardPanel" role="tab" aria-selected="true"><span>⌂</span> الرئيسية</button>
       <button type="button" class="dashboard-tab" data-tab="productPanel" role="tab" aria-selected="false"><span>＋</span> إضافة منتج</button>
       <button type="button" class="dashboard-tab" data-tab="catalogPanel" role="tab" aria-selected="false"><span>▦</span> إدارة المنتجات</button>
+      <button type="button" class="dashboard-tab" data-tab="pricingPanel" role="tab" aria-selected="false"><span>٪</span> إدارة الأسعار</button>
       <button type="button" class="dashboard-tab" data-tab="ordersPanel" role="tab" aria-selected="false"><span>🛒</span> الطلبات</button>
       <button type="button" class="dashboard-tab" data-tab="ordersPanel" data-filter="cancelled" role="tab" aria-selected="false"><span>⊘</span> الطلبات الملغية</button>
       <button type="button" class="dashboard-tab" data-tab="postPanel" role="tab" aria-selected="false"><span>✎</span> منشئ البوستات</button>
@@ -340,6 +341,28 @@ button:disabled{opacity:.6;cursor:wait}
  <small class="muted" style="display:block;margin-top:9px">القيمة تقديرية من أسعار الأصناف المحفوظة داخل الطلبات، وقد لا تشمل الأصناف التي لم يُسجل لها سعر.</small>
 </section>
 <div class="field"><label for="orderSearch">بحث في الطلبات</label><input id="orderSearch" type="search" placeholder="رقم الطلب أو اسم العميل أو الهاتف"></div><div class="field"><label for="orderFilter">تصفية الطلبات حسب الحالة</label><select id="orderFilter"><option value="all">كل الطلبات</option><option value="new">جديد</option><option value="confirmed">تم التأكيد</option><option value="shipped">تم الشحن</option><option value="delivered">تم التسليم</option><option value="cancelled">ملغي</option></select></div><div class="actions" style="gap:10px;align-items:end;flex-wrap:wrap"><div class="field" style="flex:1;min-width:130px"><label for="orderDateFrom">من تاريخ</label><input id="orderDateFrom" type="date"></div><div class="field" style="flex:1;min-width:130px"><label for="orderDateTo">إلى تاريخ</label><input id="orderDateTo" type="date"></div><button class="light" id="clearOrderDates" type="button">مسح التاريخ</button></div><div id="ordersList" class="products"><p class="muted">جارٍ تحميل الطلبات…</p></div></section>\n    <div class="card admin-panel hidden" id="catalogPanel" role="tabpanel"><div class="actions" style="justify-content:space-between;align-items:center"><h2 style="margin:0">المنتجات الحالية (<span id="count">0</span>)</h2><div class="actions"><button class="light" id="importBtn" type="button">استيراد products.js</button><button class="light" id="exportBtn" type="button">تنزيل نسخة</button></div></div><input id="importFile" type="file" accept=".js,.txt,text/javascript,text/plain" hidden><p class="muted">الصور المرفوعة محفوظة في قاعدة المتجر؛ نسخة products.js تحفظ بيانات المنتجات فقط.</p><div class="field"><label for="productSearch">ابحث في المنتجات</label><input id="productSearch" type="search" placeholder="اسم المنتج أو الماركة أو القسم أو رقم المنتج"></div><p class="muted" id="listSummary" aria-live="polite"></p><div class="products" id="productList"></div></div>
+    <section class="card admin-panel hidden" id="pricingPanel" role="tabpanel">
+      <div class="product-control-heading"><span>٪</span><div><strong>إدارة الأسعار بالجملة</strong><small>تعديل أسعار المنتجات دفعة واحدة مع معاينة وسجل تراجع</small></div></div>
+      <p class="muted">اختر زيادة أو تخفيض، واكتب النسبة. سيتم تطبيقها على كل المنتجات ذات السعر الرقمي فقط. المنتجات التي سعرها عند الاستفسار أو لا يحتوي على رقم ستظل كما هي.</p>
+      <div class="product-control-grid">
+        <div class="field"><label for="bulkPriceMode">نوع التعديل</label><select id="bulkPriceMode"><option value="increase">زيادة الأسعار</option><option value="decrease">تخفيض الأسعار</option></select></div>
+        <div class="field"><label for="bulkPricePercent">النسبة المئوية (%)</label><input id="bulkPricePercent" type="number" min="0.01" max="500" step="0.01" value="10" inputmode="decimal"><small>من 0.01% إلى 500% كحد أقصى للعملية الواحدة.</small></div>
+      </div>
+      <div class="actions" style="margin-top:14px"><button class="light" id="previewBulkPricesBtn" type="button">معاينة الأسعار الجديدة</button><button class="red" id="applyBulkPricesBtn" type="button" disabled>تطبيق التعديل على الكل</button></div>
+      <p class="status" id="bulkPriceStatus" aria-live="polite"></p>
+      <div id="bulkPricePreview" class="hidden" style="margin-top:14px">
+        <div class="order-top"><strong>معاينة قبل الحفظ</strong><span class="pill" id="bulkPriceCount"></span></div>
+        <div class="muted" id="bulkPriceSummary" style="margin:8px 0"></div>
+        <div style="overflow:auto;max-height:360px;border:1px solid #e6e8eb;border-radius:12px">
+          <table style="width:100%;border-collapse:collapse;min-width:440px;font-size:13px;text-align:right">
+            <thead style="position:sticky;top:0;background:#f5f6f8"><tr><th style="padding:10px">المنتج</th><th style="padding:10px">السعر الحالي</th><th style="padding:10px">السعر الجديد</th></tr></thead>
+            <tbody id="bulkPricePreviewRows"></tbody>
+          </table>
+        </div>
+      </div>
+      <div class="actions" style="margin-top:16px"><button class="light" id="undoBulkPricesBtn" type="button">التراجع عن آخر تعديل جماعي</button></div>
+      <p class="muted">التراجع متاح لآخر عملية جماعية مكتملة فقط، ولن يعيد سعر منتج تم تعديله يدويًا بعد العملية.</p>
+    </section>
     <section class="card admin-panel hidden" id="postPanel" role="tabpanel">
       <h2>منشئ بوستات فيسبوك</h2><p class="muted">اختار منتجًا من المتجر وسيتم تجهيز نص تسويقي قابل للتعديل والنسخ. راجع السعر والمواصفات قبل النشر.</p>
       <div class="field"><label for="postProduct">اختيار المنتج</label><select id="postProduct"><option value="">اختر المنتج</option></select></div>
@@ -361,7 +384,7 @@ import { getAuth, GoogleAuthProvider, onAuthStateChanged, signInWithPopup, signI
 import { collection, deleteDoc, doc, getDoc, getDocs, getFirestore, setDoc, serverTimestamp, writeBatch, query, orderBy, updateDoc, runTransaction, where, getCountFromServer } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-firestore.js";
 
 const $ = function (id) { return document.getElementById(id); };
-const ids = ["dashboardPanel", "productPanel", "catalogPanel", "ordersPanel", "postPanel", "analyticsPanel"];
+const ids = ["dashboardPanel", "productPanel", "catalogPanel", "pricingPanel", "ordersPanel", "postPanel", "analyticsPanel"];
 const config = window.DAWLY_FIREBASE_CONFIG || {};
 const ADMIN_EMAILS = new Set(["elgoharemahmoud@gmail.com", "ahmedelgohare90@gmail.com"]);
 function isAuthorizedAdmin(user) {
@@ -695,6 +718,151 @@ async function loadProducts(force) {
   renderProducts();
   refreshPostProducts();
 }
+
+// إدارة الأسعار بالجملة: معاينة مستقلة، سجل آخر عملية، وتراجع آمن.
+let bulkPricePreviewData = null;
+let bulkPriceBusy = false;
+const BULK_PRICE_HISTORY_ID = "priceAdjustmentHistory";
+function parseBulkPrice(value) {
+  const normalized = String(value == null ? "" : value)
+    .replace(/[٠-٩]/g, digit => String("٠١٢٣٤٥٦٧٨٩".indexOf(digit)))
+    .replace(/[۰-۹]/g, digit => String("۰۱۲۳۴۵۶۷۸۹".indexOf(digit)));
+  const match = normalized.match(/[0-9][0-9,]*(?:\.[0-9]+)?/);
+  if (!match) return null;
+  const number = Number(match[0].replace(/,/g, ""));
+  if (!Number.isFinite(number) || number < 0) return null;
+  return {number:number, token:match[0]};
+}
+function formatBulkPrice(original, nextValue) {
+  const parsed = parseBulkPrice(original);
+  if (!parsed) return String(original);
+  const formatted = Math.round(nextValue).toLocaleString("en-US");
+  return String(original).replace(parsed.token, formatted);
+}
+function bulkPriceMessage(value) {
+  const node = $("bulkPriceStatus");
+  if (node) node.textContent = value || "";
+}
+function renderBulkPricePreview() {
+  const data = bulkPricePreviewData;
+  if (!data) { $("bulkPricePreview").classList.add("hidden"); $("applyBulkPricesBtn").disabled = true; return; }
+  $("bulkPricePreview").classList.remove("hidden");
+  $("bulkPriceCount").textContent = data.changes.length + " منتج";
+  $("bulkPriceSummary").textContent = (data.mode === "increase" ? "زيادة " : "تخفيض ") + data.percent + "% — سيتم تجاوز " + data.skipped + " منتج لعدم وجود سعر رقمي.";
+  $("bulkPricePreviewRows").innerHTML = data.changes.slice(0,150).map(function(change) {
+    return '<tr style="border-top:1px solid #edf0f2"><td style="padding:9px">' + escapeHtml(change.name) + '</td><td style="padding:9px;white-space:nowrap">' + escapeHtml(change.oldPrice) + '</td><td style="padding:9px;white-space:nowrap;color:#b20f19;font-weight:700">' + escapeHtml(change.newPrice) + '</td></tr>';
+  }).join("") + (data.changes.length > 150 ? '<tr><td colspan="3" style="padding:10px;color:#68707a">تظهر أول 150 نتيجة في المعاينة، وسيتم تطبيق العملية على كل المنتجات المطابقة.</td></tr>' : "");
+  $("applyBulkPricesBtn").disabled = !data.changes.length || bulkPriceBusy;
+}
+$("previewBulkPricesBtn").addEventListener("click", async function() {
+  const button = $("previewBulkPricesBtn");
+  if (bulkPriceBusy) return;
+  button.disabled = true;
+  try {
+    if (!auth || !auth.currentUser || !isAuthorizedAdmin(auth.currentUser)) throw new Error("سجّل الدخول بحساب الإدارة المصرح به أولًا.");
+    await loadProducts(true);
+    const percent = Number($("bulkPricePercent").value);
+    const mode = $("bulkPriceMode").value;
+    if (!Number.isFinite(percent) || percent <= 0 || percent > 500) throw new Error("اكتب نسبة صحيحة أكبر من صفر ولا تتجاوز 500%.");
+    const factor = mode === "increase" ? 1 + percent / 100 : 1 - percent / 100;
+    const changes = [];
+    let skipped = 0;
+    products.forEach(function(product) {
+      const oldPrice = String(product.price == null ? "" : product.price);
+      const parsed = parseBulkPrice(oldPrice);
+      if (!parsed) { skipped++; return; }
+      const nextNumber = Math.max(0, parsed.number * factor);
+      const newPrice = formatBulkPrice(oldPrice, nextNumber);
+      if (newPrice === oldPrice) { skipped++; return; }
+      changes.push({id:String(product.id),name:String(product.name || "منتج بدون اسم"),oldPrice:oldPrice,newPrice:newPrice});
+    });
+    bulkPricePreviewData = {mode:mode,percent:percent,changes:changes,skipped:skipped,createdAt:Date.now()};
+    renderBulkPricePreview();
+    bulkPriceMessage(changes.length ? "تم تجهيز المعاينة. راجع الأسعار ثم اضغط تطبيق التعديل." : "لم يتم العثور على منتجات بأسعار رقمية قابلة للتعديل.");
+  } catch(error) {
+    bulkPricePreviewData = null;
+    renderBulkPricePreview();
+    bulkPriceMessage(error && error.message ? error.message : "تعذرت معاينة الأسعار.");
+  } finally { button.disabled = false; }
+});
+$("applyBulkPricesBtn").addEventListener("click", async function() {
+  const button = $("applyBulkPricesBtn");
+  const preview = bulkPricePreviewData;
+  if (!preview || !preview.changes.length || bulkPriceBusy) return;
+  if (!window.confirm("تأكيد تطبيق " + (preview.mode === "increase" ? "زيادة" : "تخفيض") + " بنسبة " + preview.percent + "% على " + preview.changes.length + " منتج؟ سيتم حفظ نسخة للتراجع.")) return;
+  bulkPriceBusy = true;
+  button.disabled = true;
+  $("previewBulkPricesBtn").disabled = true;
+  bulkPriceMessage("جارٍ حفظ سجل العملية وتحديث الأسعار… لا تغلق الصفحة.");
+  const historyRef = doc(db, "storeMeta", BULK_PRICE_HISTORY_ID);
+  const batchId = "bulk_" + Date.now();
+  try {
+    const existingHistory = await getDoc(historyRef);
+    if (existingHistory.exists() && existingHistory.data().status === "applying") throw new Error("توجد عملية أسعار سابقة غير مكتملة. راجع اتصال Firebase قبل بدء عملية جديدة.");
+    const history = {
+      batchId:batchId,status:"applying",mode:preview.mode,percent:preview.percent,
+      createdAt:serverTimestamp(),createdBy:auth.currentUser.email,
+      changes:preview.changes.map(change=>({id:change.id,name:change.name,oldPrice:change.oldPrice,newPrice:change.newPrice}))
+    };
+    await setDoc(historyRef,history);
+    for (let i=0;i<preview.changes.length;i+=400) {
+      const batch = writeBatch(db);
+      preview.changes.slice(i,i+400).forEach(function(change) {
+        batch.update(doc(db,"products",change.id),{price:change.newPrice,updatedAt:serverTimestamp()});
+      });
+      await batch.commit();
+    }
+    await updateDoc(historyRef,{status:"completed",completedAt:serverTimestamp()});
+    products = products.map(function(product) {
+      const change = preview.changes.find(item=>item.id===String(product.id));
+      return change ? Object.assign({},product,{price:change.newPrice}) : product;
+    });
+    saveCatalogCache();renderProducts();refreshPostProducts();
+    bulkPricePreviewData = null;renderBulkPricePreview();
+    bulkPriceMessage("تم تعديل أسعار " + preview.changes.length + " منتج بنجاح. يمكنك التراجع عن العملية من الزر بالأسفل.");
+  } catch(error) {
+    console.error("Bulk price update failed:",error);
+    bulkPriceMessage("لم تكتمل العملية بالكامل: " + (error && error.message ? error.message : "خطأ غير معروف") + ". راجع سجل العملية قبل إعادة المحاولة.");
+  } finally {
+    bulkPriceBusy = false;
+    button.disabled = !bulkPricePreviewData || !bulkPricePreviewData.changes.length;
+    $("previewBulkPricesBtn").disabled = false;
+  }
+});
+$("undoBulkPricesBtn").addEventListener("click", async function() {
+  const button = $("undoBulkPricesBtn");
+  if (bulkPriceBusy) return;
+  if (!auth || !auth.currentUser || !isAuthorizedAdmin(auth.currentUser)) { bulkPriceMessage("سجّل الدخول بحساب الإدارة أولًا."); return; }
+  if (!window.confirm("هل تريد التراجع عن آخر تعديل جماعي مكتمل؟ سيتم استرجاع الأسعار التي لم تتغير يدويًا بعد العملية فقط.")) return;
+  bulkPriceBusy = true;button.disabled = true;
+  bulkPriceMessage("جارٍ فحص سجل آخر عملية…");
+  const historyRef = doc(db,"storeMeta",BULK_PRICE_HISTORY_ID);
+  try {
+    const snap = await getDoc(historyRef);
+    if (!snap.exists() || snap.data().status !== "completed" || snap.data().undoneAt) throw new Error("لا توجد عملية جماعية مكتملة قابلة للتراجع.");
+    const changes = Array.isArray(snap.data().changes) ? snap.data().changes : [];
+    const restore = [];
+    let skipped = 0;
+    for (const change of changes) {
+      const productRef = doc(db,"products",String(change.id));
+      const current = await getDoc(productRef);
+      if (!current.exists() || String(current.data().price) !== String(change.newPrice)) { skipped++; continue; }
+      restore.push({ref:productRef,oldPrice:change.oldPrice});
+    }
+    for (let i=0;i<restore.length;i+=400) {
+      const batch = writeBatch(db);
+      restore.slice(i,i+400).forEach(item=>batch.update(item.ref,{price:item.oldPrice,updatedAt:serverTimestamp()}));
+      await batch.commit();
+    }
+    await updateDoc(historyRef,{undoneAt:serverTimestamp(),undoneBy:auth.currentUser.email,undoRestored:restore.length,undoSkipped:skipped});
+    await loadProducts(true);
+    bulkPriceMessage("تم التراجع عن تعديل " + restore.length + " منتج. تم تخطي " + skipped + " منتج لأن سعره تغير بعد العملية.");
+  } catch(error) {
+    console.error("Bulk price undo failed:",error);
+    bulkPriceMessage("تعذر التراجع: " + (error && error.message ? error.message : "خطأ غير معروف"));
+  } finally { bulkPriceBusy = false;button.disabled = false; }
+});
+
 const orderStatusLabels={new:"جديد",confirmed:"تم التأكيد",shipped:"تم الشحن",delivered:"تم التسليم",cancelled:"ملغي"};
 const orderWhatsappLabels={awaiting_customer_send:"بانتظار إرسال العميل عبر واتساب"};
 let orders=[];
