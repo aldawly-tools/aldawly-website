@@ -6139,3 +6139,12 @@ body.dawly-mini-cart-open{overflow:hidden}
 .dawly-mini-cart-launcher.just-added{animation:dawlyCartNudge .45s ease}
 @keyframes dawlyCartNudge{50%{transform:scale(1.06)}}
 @media(max-width:600px){.dawly-mini-cart-launcher{right:0;top:44%;bottom:auto;min-height:44px;padding:0 11px;font-size:12px;border-radius:12px 0 0 12px;box-shadow:0 5px 18px rgba(0,0,0,.22)}}
+
+
+/* Per-product quantity controls beside Add to Cart */
+.card-cart-actions{display:flex;align-items:center;gap:8px;width:100%;margin-top:10px}
+.card-cart-actions>[hidden],.card-qty-control[hidden]{display:none!important}
+.card-cart-actions .product-add-cart-prominent{flex:1;min-width:0;margin:0}
+.card-qty-control{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:43px;padding:4px 7px;border:1px solid #d71920;border-radius:11px;background:#fff;direction:ltr;flex:1}
+.card-qty-control button{width:34px;height:32px;border:0;border-radius:8px;background:#fcebed;color:#b51220;font-size:21px;line-height:1;font-weight:900;cursor:pointer}
+.card-qty-control b{min-width:22px;text-align:center;color:#202832;font-size:16px;font-weight:900;font-variant-numeric:tabular-nums}
