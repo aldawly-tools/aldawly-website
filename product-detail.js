@@ -525,7 +525,9 @@
       const item = miniCartProducts().find(p => String(p.id) === String(line.id));
       if (!item) return "";
       const qty = Math.max(1, Number(line.qty) || 1);
-      const price = miniCartPrice(item.price);
+      const basePrice = miniCartPrice(item.price);
+      const discountPercent = Math.max(0,Math.min(90,Number(item.discountPercent)||0));
+      const price = basePrice===null?null:(discountPercent?Math.round(basePrice*(1-discountPercent/100)*100)/100:basePrice);
       if (price !== null) { total += price * qty; priced++; }
       count += qty;
       const imageId = (Array.isArray(item.imageIds) && item.imageIds[0]) || item.imageId || "";
