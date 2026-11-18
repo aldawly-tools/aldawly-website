@@ -102,7 +102,7 @@ button:disabled{opacity:.6;cursor:wait}
   .smart-spec-row{display:grid;grid-template-columns:32px minmax(0,.9fr) minmax(0,1.2fr) auto;gap:8px;align-items:center;padding:9px;background:#fff;border:1px solid #e7e9ed;border-radius:11px}
   .smart-spec-row.dragging{opacity:.45;border-color:#d71920}.smart-spec-row.drag-over{border-color:#d71920;background:#fff7f7}
   .smart-spec-row input{min-width:0}.spec-drag-handle{display:grid;place-items:center;width:30px;height:38px;border-radius:8px;background:#f2f3f5;color:#707780;cursor:grab;user-select:none;font-size:18px}
-  .spec-fixed-name{font-size:13px;font-weight:800;color:#353b42;padding:8px 2px}.smart-spec-row button{padding:8px 10px;min-height:40px}
+  .spec-fixed-name{font-size:13px;font-weight:800;color:#353b42;padding:8px 2px}.smart-spec-row button{padding:8px 10px;min-height:40px}.spec-row-actions{display:flex;gap:4px;align-items:center}.spec-row-actions .spec-move{padding:5px 8px;min-width:30px;min-height:34px}.spec-row-actions .spec-remove{padding:5px 8px;min-height:34px}
   .specs-extra-head{margin:20px 0 10px;padding-top:14px;border-top:1px solid #e8eaed}.specs-extra-head b{display:block;font-size:14px}
   @media(max-width:700px){.smart-spec-row{grid-template-columns:28px minmax(0,.85fr) minmax(0,1.15fr) auto;padding:7px;gap:6px}.spec-drag-handle{width:27px}.smart-spec-row button{padding:7px}.spec-fixed-name{font-size:12px}}
 
@@ -468,8 +468,17 @@ function makeSpecRow(name,value,fixed){
  else{label=document.createElement("input");label.type="text";label.placeholder="اسم المواصفة";label.value=name;label.setAttribute("data-spec-name","");}
  const input=document.createElement("input");input.type="text";input.placeholder="اكتب القيمة";input.value=value||"";input.setAttribute("data-spec-value","");
  row.append(handle,label,input);
- if(!fixed){const remove=document.createElement("button");remove.type="button";remove.className="danger";remove.textContent="حذف";remove.addEventListener("click",()=>{row.remove();syncSpecsField();});row.append(remove);}
- else{const spacer=document.createElement("span");spacer.setAttribute("aria-hidden","true");row.append(spacer);}
+ const actions=document.createElement("div");actions.className="spec-row-actions";
+ function moveRow(direction){
+  const sibling=direction<0?row.previousElementSibling:row.nextElementSibling;
+  if(!sibling)return;
+  row.parentNode.insertBefore(row,direction<0?sibling:sibling.nextSibling);syncSpecsField();
+ }
+ const up=document.createElement("button");up.type="button";up.className="light spec-move";up.textContent="↑";up.title="تحريك لأعلى";up.setAttribute("aria-label","تحريك المواصفة لأعلى");up.addEventListener("click",()=>moveRow(-1));
+ const down=document.createElement("button");down.type="button";down.className="light spec-move";down.textContent="↓";down.title="تحريك لأسفل";down.setAttribute("aria-label","تحريك المواصفة لأسفل");down.addEventListener("click",()=>moveRow(1));
+ actions.append(up,down);
+ if(!fixed){const remove=document.createElement("button");remove.type="button";remove.className="danger spec-remove";remove.textContent="حذف";remove.addEventListener("click",()=>{row.remove();syncSpecsField();});actions.append(remove);}
+ row.append(actions);
  input.addEventListener("input",syncSpecsField);if(!fixed)label.addEventListener("input",syncSpecsField);
  return row;
 }
