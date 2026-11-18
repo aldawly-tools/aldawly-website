@@ -1591,7 +1591,7 @@ $("productForm").addEventListener("submit", async function (event) {
     saveCatalogCache();
     renderProducts();
     resetForm();
-    message(saveStatus, "تم حفظ المنتج، وسيظهر للزوار عند تحديث الصفحة.");
+    message(saveStatus, previous ? "تم تحديث المنتج بنجاح." : "تم إضافة المنتج بنجاح.");
   } catch (error) {
     if (!productSaved && uploadedImageIds.length) {
       try {
