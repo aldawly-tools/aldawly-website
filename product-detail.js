@@ -160,7 +160,7 @@
       '<div class="product-detail-actions">' +
       '<button class="button-primary detail-add-cart" type="button" data-detail-add="' + escapeHtml(item.id) + '"' + (stockKnown && item.stock === 0 ? ' disabled aria-disabled="true"' : '') + '>' + (stockKnown && item.stock === 0 ? 'غير متاح حاليًا' : 'أضف إلى السلة') + '</button>' +
       '<button class="button-primary detail-order-now" type="button" data-detail-order-now="' + escapeHtml(item.id) + '"' + (stockKnown && item.stock === 0 ? ' disabled aria-disabled="true"' : '') + '><span class="detail-action-icon" aria-hidden="true">🛒</span><span>' + (stockKnown && item.stock === 0 ? 'غير متاح حاليًا' : 'أكمل طلبك الآن') + '</span></button>' +
-      '<a class="detail-whatsapp-button" href="https://wa.me/201024787222?text=' + encodeURIComponent(message) + '" target="_blank" rel="noopener noreferrer"><span class="detail-action-icon" aria-hidden="true">💬</span><span>استفسر عبر واتساب</span></a>' +
+      '<button class="detail-whatsapp-button" type="button" data-whatsapp-share="' + escapeHtml(item.id) + '"><span class="detail-action-icon" aria-hidden="true">💬</span><span>استفسر بالصورة عبر واتساب</span></button>' +
       '<button class="button-outline detail-add-cart" type="button" data-detail-add="' + escapeHtml(item.id) + '"' + (stockKnown && item.stock === 0 ? ' disabled aria-disabled="true"' : '') + '><span class="detail-action-icon" aria-hidden="true">＋</span><span>' + (stockKnown && item.stock === 0 ? 'غير متاح حاليًا' : 'أضف إلى السلة') + '</span></button>' +
       '<button class="button-outline share-product-button" type="button" data-share-product="' + escapeHtml(item.id) + '"><span class="detail-action-icon" aria-hidden="true">↗</span><span>مشاركة المنتج</span></button>' +
       '<a class="detail-back-link" href="products.html">← العودة إلى المنتجات</a></div>' + '<div class="product-trust-strip" aria-label="مميزات الخدمة"><div><b>🚚</b><span>شحن لجميع المحافظات</span></div><div><b>✓</b><span>تأكيد الطلب عبر واتساب</span></div><div><b>🛠</b><span>مساعدة في اختيار العدد</span></div></div>' + specsHtml + '</div></article>';
@@ -342,6 +342,46 @@
     field.remove();
     return copied;
   }
+
+  root.addEventListener("click", async function (event) {
+    const whatsappButton = event.target.closest("[data-whatsapp-share]");
+    if (!whatsappButton) return;
+    const item = (cloudProducts || fallbackProducts).find(function (p) { return String(p.id) === String(whatsappButton.dataset.whatsappShare); });
+    if (!item) { alert("تعذر تحميل بيانات المنتج."); return; }
+    const name = cleanProductName(item.name || "منتج من متجر الدولي");
+    const productUrl = new URL("product?id=" + encodeURIComponent(item.id), window.location.href).toString();
+    const caption = [
+      "السلام عليكم، أريد الاستفسار عن المنتج:",
+      "🧰 " + name,
+      item.brand ? "🏷️ الماركة: " + displayBrand(item.brand) : "",
+      "💰 السعر: " + formatPrice(item.price),
+      item.cat ? "📂 القسم: " + item.cat : "",
+      "🔗 رابط المنتج: " + productUrl,
+      "الدولي للعدد الأصلية والمستوردة"
+    ].filter(Boolean).join("\n");
+    whatsappButton.disabled = true;
+    const originalLabel = whatsappButton.textContent;
+    try {
+      if (!window.DAWLY_CREATE_PRODUCT_SHARE_FILE) throw new Error("مشاركة الصورة غير متاحة");
+      const file = await window.DAWLY_CREATE_PRODUCT_SHARE_FILE(item, productUrl, whatsappButton);
+      if (navigator.share && navigator.canShare && navigator.canShare({files:[file]})) {
+        await navigator.share({files:[file], title:name, text:caption});
+      } else {
+        await copyShareCaption(caption);
+        window.open("https://wa.me/201024787222?text=" + encodeURIComponent(caption), "_blank", "noopener");
+        alert("المتصفح لا يدعم إرفاق الصور مباشرة. تم فتح واتساب بالتفاصيل والرابط؛ يمكنك إرفاق الصورة يدويًا.");
+      }
+    } catch (error) {
+      if (error && error.name === "AbortError") return;
+      console.error("WhatsApp product image share failed:", error);
+      await copyShareCaption(caption);
+      window.open("https://wa.me/201024787222?text=" + encodeURIComponent(caption), "_blank", "noopener");
+      alert("تعذر تجهيز الصورة تلقائيًا. تم فتح واتساب بالتفاصيل والرابط.");
+    } finally {
+      whatsappButton.disabled = false;
+      whatsappButton.textContent = originalLabel;
+    }
+  });
 
   root.addEventListener("click", async function (event) {
     const shareButton = event.target.closest("[data-share-product]");
