@@ -174,6 +174,27 @@ window.addEventListener("load", function () {
  <div><h3>روابط سريعة</h3><div class="footer-links"><a href="products.html">المنتجات</a><a href="advisor.html">مساعد اختيار العدد</a><a href="index.html#brands">الماركات</a></div></div>
  <div><h3>نسعد بخدمتك</h3><p>للاستفسار عن الأسعار والتوفر، تواصل معنا مباشرة.</p><a class="button-primary" href="https://wa.me/201024787222" target="_blank" rel="noopener">تواصل عبر واتساب</a><br><a href="https://www.facebook.com/wurth.tools" target="_blank" rel="noopener noreferrer">تابعنا على فيسبوك</a></div>
 </div></footer>
+<div class="floating-contact-widget" id="floatingContactWidget">
+ <div class="floating-contact-panel" id="floatingContactPanel" hidden aria-label="أرقام التواصل">
+  <div class="floating-contact-heading"><strong>تواصل مع الدولي</strong><span>اختر الاتصال أو واتساب</span></div>
+  <div class="floating-contact-row">
+   <div class="floating-contact-number"><strong>01024787222</strong><small>خدمة العملاء</small></div>
+   <a class="floating-contact-action call" href="tel:+201024787222" aria-label="اتصال على 01024787222">اتصال</a>
+   <a class="floating-contact-action wa" href="https://wa.me/201024787222" target="_blank" rel="noopener" aria-label="واتساب 01024787222">واتساب</a>
+  </div>
+  <div class="floating-contact-row">
+   <div class="floating-contact-number"><strong>01002878301</strong><small>خدمة العملاء</small></div>
+   <a class="floating-contact-action call" href="tel:+201002878301" aria-label="اتصال على 01002878301">اتصال</a>
+   <a class="floating-contact-action wa" href="https://wa.me/201002878301" target="_blank" rel="noopener" aria-label="واتساب 01002878301">واتساب</a>
+  </div>
+ </div>
+ <button class="floating-contact-toggle" id="floatingContactToggle" type="button" aria-label="عرض أرقام الاتصال والواتساب" aria-expanded="false">
+  <svg class="contact-toggle-phone" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a8 8 0 0 0-8 8v2M20 13v-2a8 8 0 0 0-8-8M4 13h3v6H5a2 2 0 0 1-2-2v-2a2 2 0 0 1 1-2ZM20 13h-3v6h2a2 2 0 0 0 2-2v-2a2 2 0 0 0-1-2Z"/></svg>
+  <svg class="contact-toggle-close" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg>
+  <span class="floating-contact-label">تواصل معنا</span>
+ </button>
+</div>
+<script>(function(){var b=document.getElementById('floatingContactToggle'),p=document.getElementById('floatingContactPanel');if(!b||!p)return;b.addEventListener('click',function(){var open=p.hidden;p.hidden=!open;b.classList.toggle('is-open',open);b.setAttribute('aria-expanded',String(open));});document.addEventListener('click',function(e){if(!p.hidden&&!e.target.closest('#floatingContactWidget')){p.hidden=true;b.classList.remove('is-open');b.setAttribute('aria-expanded','false');}});})();</script>
 <script src="products.js?v=live-refresh-20261114-1"></script>
 <script src="firebase-config.js?v=live-refresh-20261114-1"></script>
 <script type="module" src="traffic-analytics.js?v=visitor-analytics-fix-20261117-2"></script>
