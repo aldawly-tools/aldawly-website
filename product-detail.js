@@ -158,9 +158,9 @@
       '<p class="product-detail-description">' + escapeHtml(cleanProductCopy(item.desc || "للاستفسار عن مواصفات المنتج وتفاصيله، تواصل معنا مباشرة.")) + '</p>' +
       '<div class="product-detail-price"><span class="detail-price-value">' + price + '</span><small>' + (formatPrice(item.price).startsWith("EGP ") ? 'السعر بالجنيه المصري' : 'يُرجى تأكيد السعر عند التواصل') + '</small></div>' + stockHtml +
       '<div class="product-detail-actions product-detail-actions-compact">' +
-      '<button class="button-primary detail-order-now" type="button" data-detail-order-now="' + escapeHtml(item.id) + '"' + (stockKnown && item.stock === 0 ? ' disabled aria-disabled="true"' : '') + '><span class="detail-action-icon" aria-hidden="true">🛒</span><span>' + (stockKnown && item.stock === 0 ? 'غير متاح حاليًا' : 'أكمل طلبك الآن') + '</span></button>' +
+      '<div class="detail-cart-state" data-detail-cart-state="' + escapeHtml(item.id) + '"><button class="button-primary detail-order-now" type="button" data-detail-order-now="' + escapeHtml(item.id) + '"' + (stockKnown && item.stock === 0 ? ' disabled aria-disabled="true"' : '') + '><span aria-hidden="true">🛒</span><span>أضف إلى السلة</span></button><div class="detail-in-cart" hidden><span class="detail-in-cart-label">✓ في سلتك</span><div class="detail-qty-control"><button type="button" data-detail-cart-qty="-1" aria-label="تقليل الكمية">−</button><b aria-live="polite">1</b><button type="button" data-detail-cart-qty="1" aria-label="زيادة الكمية">+</button></div></div></div>' +
       '<button class="detail-whatsapp-button" type="button" data-whatsapp-share="' + escapeHtml(item.id) + '"><span class="detail-action-icon" aria-hidden="true">💬</span><span>استفسر بالصورة عبر واتساب</span></button>' +
-      '<button class="button-outline detail-add-cart detail-add-cart-icon" type="button" data-detail-add="' + escapeHtml(item.id) + '" aria-label="أضف المنتج إلى السلة" title="أضف إلى السلة"' + (stockKnown && item.stock === 0 ? ' disabled aria-disabled="true"' : '') + '><svg width="21" height="21" style="display:block!important;width:21px!important;height:21px!important;max-width:21px!important;max-height:21px!important;flex:none!important;overflow:visible" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 4h2l2.2 11.2a2 2 0 0 0 2 1.6h8.9a2 2 0 0 0 1.9-1.4L22 8H6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><circle cx="10" cy="20" r="1.4" fill="currentColor"/><circle cx="18" cy="20" r="1.4" fill="currentColor"/></svg></button>' +
+       +
       '<button class="button-outline share-product-button detail-share-icon" type="button" data-share-product="' + escapeHtml(item.id) + '" aria-label="مشاركة المنتج" title="مشاركة المنتج"><svg width="21" height="21" style="display:block!important;width:21px!important;height:21px!important;max-width:21px!important;max-height:21px!important;flex:none!important;overflow:visible" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 16V3m0 0L7 8m5-5 5 5M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>' +
       '<a class="detail-back-link" href="products.html">← العودة إلى المنتجات</a></div>' + '<div class="product-trust-strip" aria-label="مميزات الخدمة"><div><b>🚚</b><span>شحن لجميع المحافظات</span></div><div><b>✓</b><span>تأكيد الطلب عبر واتساب</span></div><div><b>🛠</b><span>مساعدة في اختيار العدد</span></div></div>' + specsHtml + '</div></article>';
 
@@ -190,6 +190,7 @@
         }).join("") + '</div></section>'
       : "";
     root.insertAdjacentHTML("beforeend", relatedHtml);
+    syncDetailCartUI();
     if (typeof window.DAWLY_LOAD_PRODUCT_IMAGE === "function") {
       root.querySelectorAll("[data-related-image]").forEach(function (image) {
         window.DAWLY_LOAD_PRODUCT_IMAGE(image.dataset.relatedImage).then(function (url) {
@@ -548,6 +549,23 @@
       }
     });
   }
+  function syncDetailCartUI() {
+    const state = root.querySelector("[data-detail-cart-state]");
+    if (!state) return;
+    let lines = [];
+    try { lines = JSON.parse(localStorage.getItem(getMiniCartKey()) || "[]"); } catch (_) {}
+    if (!Array.isArray(lines)) lines = [];
+    const id = String(state.getAttribute("data-detail-cart-state") || "");
+    const line = lines.find(entry => String(entry.id) === id);
+    const qty = line ? Math.max(0, Number(line.qty) || 0) : 0;
+    const add = state.querySelector("[data-detail-order-now]");
+    const inCart = state.querySelector(".detail-in-cart");
+    const number = state.querySelector(".detail-qty-control b");
+    if (add) add.hidden = qty > 0;
+    if (inCart) inCart.hidden = qty === 0;
+    if (number) number.textContent = String(qty);
+  }
+
   function openMiniCart() {
     const shell = ensureMiniCart();
     renderMiniCart();
@@ -564,10 +582,34 @@
   }
 
   root.addEventListener("click", function (event) {
-    const button = event.target.closest("[data-detail-add], [data-detail-order-now]");
+    const qtyButton = event.target.closest("[data-detail-cart-qty]");
+    if (qtyButton) {
+      let lines = [];
+      try { lines = JSON.parse(localStorage.getItem(getMiniCartKey()) || "[]"); } catch (_) {}
+      if (!Array.isArray(lines)) lines = [];
+      const id = String(root.querySelector("[data-detail-cart-state]")?.getAttribute("data-detail-cart-state") || "");
+      const line = lines.find(entry => String(entry.id) === id);
+      if (line) {
+        const delta = Number(qtyButton.dataset.detailCartQty || 0);
+        const item = miniCartProducts().find(product => String(product.id) === id);
+        const next = Math.max(0, Math.min(99, Number(line.qty || 1) + delta));
+        if (item && Number.isInteger(item.stock) && item.stock >= 0 && next > item.stock) {
+          alert("الكمية المطلوبة أكبر من المتاح بالمخزون."); return;
+        }
+        if (next === 0) lines = lines.filter(entry => String(entry.id) !== id);
+        else line.qty = next;
+        localStorage.setItem(getMiniCartKey(), JSON.stringify(lines));
+        localStorage.setItem("dawly_cart_last_updated_v1", String(Date.now()));
+        window.dispatchEvent(new CustomEvent("dawly-cart-updated", {detail:{cart:lines}}));
+        renderMiniCart();
+        syncDetailCartUI();
+      }
+      return;
+    }
+    const button = event.target.closest("[data-detail-order-now]");
     if (!button || button.disabled) return;
-    const directOrder = button.hasAttribute("data-detail-order-now");
-    const id = directOrder ? button.dataset.detailOrderNow : button.dataset.detailAdd;
+    const directOrder = true;
+    const id = button.dataset.detailOrderNow;
     const item = (cloudProducts || fallbackProducts).find(function (product) { return String(product.id) === String(id); });
     if (!item) { alert("تعذر تحميل بيانات المنتج. حدّث الصفحة وحاول مرة أخرى."); return; }
     if (Number.isInteger(item.stock) && item.stock >= 0 && item.stock === 0) {
@@ -618,26 +660,13 @@
       launcher.classList.add("just-added");
       window.setTimeout(function(){ if (launcher.isConnected) launcher.classList.remove("just-added"); }, 900);
     }
-    if (directOrder) {
-      const label = button.querySelector("span:last-child");
-      if (label) label.textContent = "تمت الإضافة للسلة ✓";
-      button.classList.add("is-added");
-      button.setAttribute("aria-live", "polite");
-      button.disabled = true;
-      window.setTimeout(function () {
-        if (!button.isConnected) return;
-        if (label) label.textContent = "أكمل طلبك الآن";
-        button.classList.remove("is-added");
-        button.disabled = false;
-      }, 1800);
-      return;
-    }
-    // The compact cart icon also opens the side cart without leaving this page.
+    syncDetailCartUI();
     return;
   });
 
   window.addEventListener("dawly-cart-updated", function () {
     if (document.getElementById("dawlyMiniCart")) renderMiniCart();
+    syncDetailCartUI();
   });
   window.addEventListener("dawly-products-updated", function (event) {
     if (!Array.isArray(event.detail)) return;
