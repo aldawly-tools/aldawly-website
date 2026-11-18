@@ -216,13 +216,18 @@
     const amount = parsePrice(value);
     return amount === null ? cleanProductCopy(value || "السعر عند الاستفسار") : money(amount);
   }
+  function productPricing(item) {
+    const base=parsePrice(item && item.price),percent=Math.max(0,Math.min(90,Number(item && item.discountPercent)||0));
+    return {base:base,current:base===null?null:(percent?Math.round(base*(1-percent/100)*100)/100:base),percent:percent};
+  }
+  function productCurrentPrice(item){return productPricing(item).current;}
   function cartPricing() {
     let total = 0;
     let pricedCount = 0;
     cart.forEach(function (line) {
       const item = products.find(function (entry) { return String(entry.id) === String(line.id) || (entry._docId !== undefined && String(entry._docId) === String(line.id)); });
       if (!item) return;
-      const price = parsePrice(item.price);
+      const price = productCurrentPrice(item);
       if (price === null) return;
       total += price * line.qty;
       pricedCount += 1;
@@ -582,10 +587,11 @@
           ? '<img data-cloud-image="' + escapeHtml(item.imageId) + '" alt="' + escapeHtml(name) + '" loading="lazy">'
           : '<span class="product-placeholder" aria-hidden="true">' + escapeHtml(item.icon || "🔧") + '</span>';
       const detailUrl = "product.html?id=" + encodeURIComponent(String(item.id));
-      const currentPrice = parsePrice(item.price);
-      const compareAtPrice = parsePrice(item.oldPrice ?? item.compareAtPrice ?? item.originalPrice);
-      const discountPercent = currentPrice !== null && compareAtPrice !== null && compareAtPrice > currentPrice
-        ? Math.round((compareAtPrice - currentPrice) / compareAtPrice * 100) : 0;
+      const pricing = productPricing(item);
+      const legacyCompare = parsePrice(item.oldPrice ?? item.compareAtPrice ?? item.originalPrice);
+      const currentPrice = pricing.current;
+      const compareAtPrice = pricing.percent ? pricing.base : legacyCompare;
+      const discountPercent = pricing.percent || (currentPrice !== null && compareAtPrice !== null && compareAtPrice > currentPrice ? Math.round((compareAtPrice-currentPrice)/compareAtPrice*100) : 0);
       const stockKnown = Number.isInteger(item.stock) && item.stock >= 0;
       const stockOut = item.availability === "unavailable" || (item.availability !== "available" && stockKnown && item.stock === 0);
       const availabilityLabel = item.availability === "ask" ? '<span class="stock-status">استفسر عن التوفر</span>' : stockOut ? '<span class="stock-status out">غير متوفر حاليًا</span>' : '<span class="stock-status">متوفر — يُرجى التأكيد عند الطلب</span>';
@@ -596,7 +602,7 @@
         '<h3 class="product-name"><a class="product-name-link" href="' + detailUrl + '">' + escapeHtml(name) + '</a></h3>' +
         '<div class="product-card-status">' + stockLabel + '</div>' +
         '<p class="product-description">' + escapeHtml(description) + '</p>' +
-        '<span class="product-price' + (currentPrice === null ? ' price-on-request' : '') + '">' + escapeHtml(formatPrice(item.price)) + (discountPercent ? '<del>' + escapeHtml(money(compareAtPrice)) + '</del><em class="product-discount">خصم ' + discountPercent + '%</em>' : '') + '<small>' + (currentPrice === null ? 'السعر عند التواصل' : '') + '</small></span>' +
+        '<span class="product-price' + (currentPrice === null ? ' price-on-request' : '') + '">' + (pricing.percent ? '<strong>'+escapeHtml(money(currentPrice))+'</strong><del>'+escapeHtml(money(compareAtPrice))+'</del><em class="product-discount">خصم '+discountPercent+'%</em>' : (discountPercent ? escapeHtml(money(currentPrice))+'<del>'+escapeHtml(money(compareAtPrice))+'</del><em class="product-discount">خصم '+discountPercent+'%</em>' : escapeHtml(formatPrice(item.price)))) + '<small>' + (currentPrice === null ? 'السعر عند التواصل' : '') + '</small></span>' +
         '<div class="card-cart-actions"><button class="button-primary home-shelf-add product-add-cart-prominent" type="button" data-add="' + escapeHtml(item.id) + '"' + (stockOut ? ' disabled aria-disabled="true"' : '') + '><span class="add-cart-icon" aria-hidden="true">🛒</span><span>أضف إلى السلة</span></button></div>' +
         '<div class="product-card-tools" aria-label="إجراءات المنتج"><button class="quick-view-trigger" type="button" data-quick-view="' + escapeHtml(item.id) + '" aria-label="معاينة سريعة" title="معاينة سريعة">◉</button><button class="share-product-button" type="button" data-share-product="' + escapeHtml(item.id) + '" aria-label="مشاركة المنتج" title="مشاركة المنتج">↗</button></div>' +
         '</div></article>';
@@ -640,7 +646,7 @@
       if (!item) {
         return '<div class="cart-row"><div><strong>منتج محفوظ في السلة</strong><small>تعذر تحميل بيانات المنتج. حدّث صفحة المنتجات ثم أعد فتح السلة.</small><div class="quantity"><span>الكمية: ' + line.qty + '</span></div></div><button class="remove-item" type="button" data-remove="' + escapeHtml(line.id) + '">حذف</button></div>';
       }
-      const price = parsePrice(item.price);
+      const price = productCurrentPrice(item);
       const lineTotal = price === null ? "" : '<small class="cart-line-total">مجموع هذا المنتج: ' + escapeHtml(money(price * line.qty)) + '</small>';
       const cartDescription = cleanProductCopy(item.desc || item.description || item.details || item.specs || item.title || "");
       const cartDetails = cartDescription ? '<button class="cart-details-toggle" type="button" data-cart-details aria-expanded="false">عرض التفاصيل الفنية <span aria-hidden="true">＋</span></button><small class="cart-product-description" hidden><b>التفاصيل: </b>' + escapeHtml(cartDescription.length > 260 ? cartDescription.slice(0,257) + "…" : cartDescription) + '</small>' : '';
@@ -1399,7 +1405,7 @@
           (entry._docId !== undefined && String(entry._docId) === String(line.id));
       });
       if (!item) return null;
-      const parsedPrice = parsePrice(item.price);
+      const parsedPrice = productCurrentPrice(item);
       return {
         name: cleanOrderProductName(item.name),
         qty: Number(line.qty || 0),
