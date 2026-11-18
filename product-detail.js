@@ -488,7 +488,24 @@
       alert("تعذر حفظ السلة على هذا الجهاز. تأكد من إعدادات المتصفح وحاول مرة أخرى.");
       return;
     }
-    window.location.href = directOrder ? "products.html?cart=1&direct=1" : "products.html";
+    // Keep the customer on this product page after using "Complete your order".
+    // The cart is already saved locally above; give clear inline confirmation.
+    window.dispatchEvent(new CustomEvent("dawly-cart-updated", {detail:{productId:item.id, cart:cart}}));
+    if (directOrder) {
+      const label = button.querySelector("span:last-child");
+      if (label) label.textContent = "تمت الإضافة للسلة ✓";
+      button.classList.add("is-added");
+      button.setAttribute("aria-live", "polite");
+      button.disabled = true;
+      window.setTimeout(function () {
+        if (!button.isConnected) return;
+        if (label) label.textContent = "أكمل طلبك الآن";
+        button.classList.remove("is-added");
+        button.disabled = false;
+      }, 1800);
+      return;
+    }
+    window.location.href = "products.html";
   });
 
   window.addEventListener("dawly-products-updated", function (event) {
