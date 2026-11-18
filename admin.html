@@ -460,6 +460,7 @@ function specRowsFromUI(){
  return rows;
 }
 function syncSpecsField(){$("specs").value=specRowsFromUI().map(row=>row.name+": "+row.value).join("\n");}
+function collectSpecsText(){syncSpecsField();return $("specs").value;}
 function makeSpecRow(name,value,fixed){
  const row=document.createElement("div");row.className="smart-spec-row";row.draggable=true;row.dataset.fixed=fixed?"true":"false";row.dataset.specName=name;
  const handle=document.createElement("span");handle.className="spec-drag-handle";handle.textContent="⠿";handle.title="اسحب لترتيب المواصفة";
