@@ -293,6 +293,89 @@ main > #about{order:5!important}
 .mobile-menu-main-links a{display:flex;align-items:center;min-height:68px;padding:12px 22px;border-bottom:1px solid #e7e9ec;color:#202832!important;text-decoration:none!important;font-family:Cairo,Tahoma,sans-serif;font-size:19px;font-weight:900}
 .mobile-menu-main-links a:active{background:#f4f5f7;color:#c8101e!important}
 .mobile-menu-browse-label,#mobileMenuCategories{display:none!important}
+
+<style id="dawly-mobile-drawer-premium-20261118">
+@media(max-width:700px){
+  /* Compact right-side drawer: keep the storefront visible behind it. */
+  html body .mobile-menu-overlay{
+    inset:0!important;
+    background:rgba(16,22,29,.42)!important;
+    z-index:10020!important;
+  }
+  html body .mobile-menu-drawer{
+    inset:0 0 0 auto!important;
+    width:min(390px,86vw)!important;
+    max-width:390px!important;
+    height:100dvh!important;
+    max-height:100dvh!important;
+    padding:0 0 max(22px,env(safe-area-inset-bottom))!important;
+    border-radius:20px 0 0 20px!important;
+    box-shadow:-14px 0 42px rgba(18,27,38,.18)!important;
+    overflow-y:auto!important;
+    background:linear-gradient(180deg,#fff 0%,#fff 82%,#fff8f8 100%)!important;
+    z-index:10030!important;
+  }
+  html body .mobile-menu-drawer.open{transform:translateX(0)!important}
+  html body .mobile-menu-close{
+    position:absolute!important;top:20px!important;right:18px!important;
+    display:grid!important;place-items:center!important;
+    width:42px!important;height:42px!important;
+    border:1px solid #edf0f2!important;border-radius:13px!important;
+    background:#f7f8fa!important;color:#202832!important;
+    font-size:30px!important;line-height:1!important;
+  }
+  html body .mobile-menu-home-label{
+    margin:82px 0 0!important;padding:0 22px 15px!important;
+    color:#202832!important;font-size:17px!important;font-weight:1000!important;
+    line-height:1.5!important;
+  }
+  html body .mobile-menu-home-label:after{
+    content:"";display:block;width:42px;height:4px;margin-top:10px;
+    border-radius:9px;background:#c8101e;
+  }
+  html body .mobile-menu-main-links{
+    display:flex!important;flex-direction:column!important;gap:7px!important;
+    margin:8px 12px 0!important;padding:0!important;
+  }
+  html body .mobile-menu-main-links a{
+    display:flex!important;align-items:center!important;gap:13px!important;
+    min-height:56px!important;padding:8px 13px!important;
+    border:1px solid #edf0f2!important;border-radius:13px!important;
+    background:#fff!important;color:#202832!important;
+    font-family:Cairo,Tahoma,sans-serif!important;font-size:16px!important;
+    font-weight:900!important;text-decoration:none!important;
+    transition:background .18s,border-color .18s,transform .18s!important;
+  }
+  html body .mobile-menu-main-links a:before{
+    content:"";display:grid;place-items:center;flex:0 0 36px;
+    width:36px;height:36px;border-radius:11px;
+    background:#fff0f1;color:#c8101e;font-size:19px;font-weight:900;
+  }
+  html body .mobile-menu-main-links a:nth-child(1):before{content:"⌂"}
+  html body .mobile-menu-main-links a:nth-child(2):before{content:"▦"}
+  html body .mobile-menu-main-links a:nth-child(3):before{content:"♧"}
+  html body .mobile-menu-main-links a:nth-child(4):before{content:"☎"}
+  html body .mobile-menu-main-links a:nth-child(5):before{content:"ⓘ"}
+  html body .mobile-menu-main-links a:after{
+    content:"‹";margin-right:auto;color:#a0a7af;font-size:23px;font-weight:500;
+  }
+  html body .mobile-menu-main-links a:active{
+    background:#fff5f5!important;border-color:#f1c4c8!important;
+    color:#b80f1b!important;transform:scale(.99);
+  }
+  html body.mobile-category-menu-open .mobile-menu-trigger,
+  html body.mobile-category-menu-open .floating-home-cart,
+  html body.mobile-category-menu-open .floating-contact-widget,
+  html body.mobile-category-menu-open #dawlyQuickMenu,
+  html body.mobile-category-menu-open #dawlyBotLauncher{
+    opacity:0!important;visibility:hidden!important;pointer-events:none!important;
+  }
+}
+@media(max-width:380px){
+  html body .mobile-menu-drawer{width:90vw!important}
+  html body .mobile-menu-main-links a{min-height:53px!important;font-size:15px!important}
+}
+</style>
 </style>
 </head>
 
