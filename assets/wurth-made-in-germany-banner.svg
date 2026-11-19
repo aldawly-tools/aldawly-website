@@ -32,7 +32,7 @@
   <path d="M300 0H610L585 32H275Z" fill="#e40019"/>
   <path d="M610 0H920L895 32H585Z" fill="#ffcc00"/>
  </g>
- <text x="10" y="455" font-family="Arial,sans-serif" font-size="92" font-weight="800" fill="#fff">Made in Germany</text>
+ <text x="10" y="455" font-family="Arial,sans-serif" font-size="104" font-weight="900" fill="#fff">Made in Germany</text>
  <g transform="translate(1040 380) rotate(-4)">
   <path d="M0 0Q70 -26 140 0V42Q70 16 0 42Z" fill="#050505"/>
   <path d="M0 42Q70 16 140 42V84Q70 58 0 84Z" fill="#e40019"/>
