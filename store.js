@@ -527,10 +527,17 @@
 
   const listingControls = document.createElement("div");
   listingControls.className = "product-listing-controls";
-  listingControls.innerHTML = '<p class="product-results-count" aria-live="polite"></p><button class="button-primary" type="button" data-load-more hidden>عرض 12 منتج إضافي</button>';
+  listingControls.innerHTML = '<p class="product-results-count" aria-live="polite"></p><label class="product-sort-control"><span>ترتيب حسب</span><select id="productSort" aria-label="ترتيب المنتجات"><option value="newest">الأحدث أولاً</option><option value="price-asc">السعر: الأقل أولاً</option><option value="price-desc">السعر: الأعلى أولاً</option></select></label><button class="button-primary" type="button" data-load-more hidden>عرض 12 منتج إضافي</button>';
   grid.insertAdjacentElement("afterend", listingControls);
   const resultsCount = listingControls.querySelector(".product-results-count");
   const loadMoreButton = listingControls.querySelector("[data-load-more]");
+  const productSort = listingControls.querySelector("#productSort");
+  let productSortMode = "newest";
+  productSort.addEventListener("change", function () {
+    productSortMode = productSort.value;
+    visibleProductCount = pageSize;
+    renderProducts();
+  });
   loadMoreButton.addEventListener("click", function () {
     visibleProductCount += pageSize;
     renderProducts();
@@ -575,6 +582,36 @@
         return score;
       }
       filtered.sort(function(a,b) { return relevance(b) - relevance(a); });
+    }
+    if (terms.length) {
+      // Keep relevance as the primary order for search results.
+      // Explicit price sorting can still be applied when the customer chooses it.
+      if (productSortMode !== "newest") {
+        const relevanceOrder = new Map(filtered.map(function(item,index){return [String(item.id),index];}));
+        filtered.sort(function(a,b) {
+          const pa = productPricing(a).current, pb = productPricing(b).current;
+          if (pa === null && pb !== null) return 1;
+          if (pb === null && pa !== null) return -1;
+          return productSortMode === "price-asc" ? (pa||0)-(pb||0) : (pb||0)-(pa||0);
+        });
+      }
+    } else {
+      filtered.sort(function(a,b) {
+        if (productSortMode === "price-asc" || productSortMode === "price-desc") {
+          const pa = productPricing(a).current, pb = productPricing(b).current;
+          if (pa === null && pb !== null) return 1;
+          if (pb === null && pa !== null) return -1;
+          return productSortMode === "price-asc" ? (pa||0)-(pb||0) : (pb||0)-(pa||0);
+        }
+        function stamp(item) {
+          const value = item && item.createdAt;
+          if (value && typeof value === "object" && Number.isFinite(Number(value.seconds))) return Number(value.seconds);
+          if (typeof value === "number" && Number.isFinite(value)) return value > 1e12 ? value/1000 : value;
+          const parsed = value ? Date.parse(value) : NaN;
+          return Number.isFinite(parsed) ? parsed/1000 : 0;
+        }
+        return stamp(b)-stamp(a) || Number(b.id||0)-Number(a.id||0);
+      });
     }
     const emptyMessage = activeBrand
       ? 'لا توجد منتجات مسجلة لماركة ' + escapeHtml(activeBrand) + ' حاليًا.'
