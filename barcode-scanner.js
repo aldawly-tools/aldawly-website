@@ -3,17 +3,17 @@
  var trigger=document.getElementById("openBarcodeScanner");
  if(!trigger||trigger.dataset.bound==="1")return;
  trigger.dataset.bound="1";
- var modal=null,stream=null,reader=null,controls=null,scanTimer=null,scanning=false;
+ var modal=null,stream=null,reader=null,controls=null,scanTimer=null,scanning=false,torchOn=false;
  function ensureModal(){
   if(modal)return modal;
   modal=document.createElement("div");
   modal.id="barcodeScannerModal";
   modal.className="barcode-scanner-modal";
   modal.hidden=true;
-  modal.innerHTML='<div class="barcode-scanner-panel" role="dialog" aria-modal="true" aria-labelledby="barcodeScannerTitle"><div class="barcode-scanner-head"><div><h2 id="barcodeScannerTitle">مسح باركود المنتج</h2><p>وجّه كاميرا الهاتف نحو الباركود</p></div><button type="button" class="barcode-scanner-close" aria-label="إغلاق">×</button></div><div class="barcode-video-wrap"><video id="barcodeScannerVideo" playsinline muted></video><span class="barcode-scan-frame" aria-hidden="true"></span></div><p class="barcode-scanner-status" id="barcodeScannerStatus" role="status" aria-live="polite">جاري تجهيز الكاميرا...</p><div class="barcode-scanner-actions"><button type="button" class="barcode-start-button" id="barcodeScannerRetry">تشغيل الكاميرا</button><button type="button" class="barcode-cancel-button" id="barcodeScannerCancel">إلغاء</button></div><p class="barcode-scanner-note">تأكد من وجود رقم الباركود في بيانات المنتج داخل لوحة الإدارة.</p></div>';
+  modal.innerHTML='<div class="barcode-scanner-panel" role="dialog" aria-modal="true" aria-labelledby="barcodeScannerTitle"><div class="barcode-scanner-head"><div><h2 id="barcodeScannerTitle">مسح باركود المنتج</h2><p>وجّه كاميرا الهاتف نحو الباركود</p></div><button type="button" class="barcode-scanner-close" aria-label="إغلاق">×</button></div><div class="barcode-video-wrap"><video id="barcodeScannerVideo" playsinline muted></video><span class="barcode-scan-frame" aria-hidden="true"></span></div><button type="button" class="barcode-torch-button" id="barcodeScannerTorch" aria-pressed="false" disabled>🔦 تشغيل فلاش الهاتف</button><p class="barcode-scanner-status" id="barcodeScannerStatus" role="status" aria-live="polite">جاري تجهيز الكاميرا...</p><div class="barcode-scanner-actions"><button type="button" class="barcode-start-button" id="barcodeScannerRetry">تشغيل الكاميرا</button><button type="button" class="barcode-cancel-button" id="barcodeScannerCancel">إلغاء</button></div><p class="barcode-scanner-note">تأكد من وجود رقم الباركود في بيانات المنتج داخل لوحة الإدارة. الفلاش متاح حسب دعم الهاتف والمتصفح.</p></div>';
   document.body.appendChild(modal);
   modal.addEventListener("click",function(e){if(e.target===modal||e.target.closest(".barcode-scanner-close")||e.target.closest("#barcodeScannerCancel"))closeScanner();});
-  modal.querySelector("#barcodeScannerRetry").addEventListener("click",startScanner);
+  modal.querySelector("#barcodeScannerRetry").addEventListener("click",startScanner);\n  modal.querySelector("#barcodeScannerTorch").addEventListener("click",toggleTorch);
   return modal;
  }
  function status(message){var el=document.getElementById("barcodeScannerStatus");if(el)el.textContent=message;}
@@ -26,7 +26,7 @@
   var video=document.getElementById("barcodeScannerVideo");
   if(video){try{video.pause();video.srcObject=null;}catch(e){}}
  }
- function closeScanner(){stopCamera();if(modal)modal.hidden=true;document.body.classList.remove("barcode-scanner-open");}
+ function closeScanner(){stopCamera();if(modal)modal.hidden=true;document.body.classList.remove("barcode-scanner-open");}\n function currentVideoTrack(){var video=document.getElementById("barcodeScannerVideo");var activeStream=stream||(video&&video.srcObject);return activeStream&&activeStream.getVideoTracks?activeStream.getVideoTracks()[0]:null;}\n function syncTorchAvailability(){var button=document.getElementById("barcodeScannerTorch"),track=currentVideoTrack(),caps=null;if(!button)return;try{caps=track&&track.getCapabilities?track.getCapabilities():null;}catch(e){}var supported=!!(caps&&caps.torch);button.disabled=!supported;button.title=supported?"تشغيل أو إيقاف فلاش الهاتف":"الفلاش غير مدعوم في هذه الكاميرا أو المتصفح";button.textContent=supported?(torchOn?"🔦 إيقاف الفلاش":"🔦 تشغيل فلاش الهاتف"):"🔦 الفلاش غير مدعوم";}\n async function toggleTorch(){var track=currentVideoTrack();if(!track){status("شغّل الكاميرا أولاً لتتمكن من تشغيل الفلاش.");return;}var caps=null;try{caps=track.getCapabilities?track.getCapabilities():null;}catch(e){}if(!caps||!caps.torch){status("هذا الهاتف أو المتصفح لا يدعم تشغيل الفلاش من الكاميرا.");syncTorchAvailability();return;}try{var next=!torchOn;await track.applyConstraints({advanced:[{torch:next}]});torchOn=next;var button=document.getElementById("barcodeScannerTorch");if(button){button.setAttribute("aria-pressed",String(torchOn));button.classList.toggle("is-on",torchOn);}syncTorchAvailability();status(torchOn?"تم تشغيل فلاش الهاتف.":"تم إيقاف فلاش الهاتف.");}catch(e){status("تعذر تغيير الفلاش. قد لا يدعم الهاتف هذه الخاصية أثناء التصوير.");syncTorchAvailability();}}
  function loadZXing(){
   return new Promise(function(resolve,reject){
    if(window.ZXing&&window.ZXing.BrowserMultiFormatReader){resolve(window.ZXing);return;}
@@ -55,7 +55,7 @@
   var formats=["ean_13","ean_8","upc_a","upc_e","code_128","code_39","itf","qr_code","data_matrix","codabar"];
   var detector=new window.BarcodeDetector({formats:formats});
   stream=await navigator.mediaDevices.getUserMedia({audio:false,video:{facingMode:{ideal:"environment"},width:{ideal:1280},height:{ideal:720}}});
-  video.srcObject=stream;await video.play();scanning=true;status("الكاميرا تعمل — ضع الباركود داخل الإطار");
+  video.srcObject=stream;await video.play();scanning=true;syncTorchAvailability();status("الكاميرا تعمل — ضع الباركود داخل الإطار");
   async function tick(){
    if(!scanning)return;
    try{var results=await detector.detect(video);if(results&&results.length&&results[0].rawValue){found(results[0].rawValue);return;}}
@@ -87,7 +87,7 @@
     try{await startNative(video);}catch(nativeError){stopCamera();if(nativeError&&nativeError.name==="NotAllowedError")throw nativeError;await startZXing(video);}
    }else{await startZXing(video);}
   }catch(e){stopCamera();status(e&&e.name==="NotAllowedError"?"لم تسمح بالوصول للكاميرا. فعّل إذن الكاميرا للموقع من إعدادات المتصفح.":(e.message||"تعذر تشغيل الكاميرا. حاول مرة أخرى."));}
-  finally{retry.disabled=false;}
+  finally{retry.disabled=false;syncTorchAvailability();}
  }
  trigger.addEventListener("click",function(){ensureModal();modal.hidden=false;document.body.classList.add("barcode-scanner-open");startScanner();});
  document.addEventListener("keydown",function(e){if(e.key==="Escape"&&modal&&!modal.hidden)closeScanner();});
