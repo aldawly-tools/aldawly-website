@@ -69,3 +69,10 @@
   #dawlyBotPanel{bottom:calc(145px + env(safe-area-inset-bottom,0px))!important}
 }
 @media(min-width:701px){.dawly-app-dock{display:none!important}}
+
+/* Final mobile navigation cleanup: one five-item dock, no duplicate floating controls. */
+@media(max-width:700px){
+ .dawly-app-dock{grid-template-columns:repeat(5,minmax(0,1fr))!important}
+ #dawlyQuickMenu,#dawlyBotLauncher,.floating-contact-widget,.floating-home-cart,.dawly-mini-cart-launcher,.mobile-menu-trigger{display:none!important;opacity:0!important;visibility:hidden!important;pointer-events:none!important}
+ .dawly-app-dock button{cursor:pointer!important}
+}
