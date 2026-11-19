@@ -3,8 +3,8 @@
 if(document.getElementById("dawlyBotLauncher")) return;
 var fullPage=document.body.dataset.assistantPage==="true";
 var products=Array.isArray(window.DAWLY_PRODUCTS)?window.DAWLY_PRODUCTS:[];
-var opened=false, history=[], chatTurns=[], aiSetupNoticeShown=false, aiBusy=false;
-function norm(v){return String(v==null?"":v).toLocaleLowerCase("ar").normalize("NFD").replace(/[\u064B-\u065F\u0670\u0640]/g,"").replace(/[أإآٱ]/g,"ا").replace(/ى/g,"ي").replace(/ة/g,"ه").replace(/[٠-٩]/g,function(d){return String("٠١٢٣٤٥٦٧٨٩".indexOf(d));}).replace(/[۰-۹]/g,function(d){return String("۰۱۲۳۴۵۶۷۸۹".indexOf(d));}).replace(/[^\p{L}\p{N}.]+/gu," ").trim().replace(/\s+/g," ");}
+var opened=false, history=[], chatTurns=[], aiSetupNoticeShown=false, aiBusy=false, catalogReady=Array.isArray(window.DAWLY_PRODUCTS)&&window.DAWLY_PRODUCTS.length>0, catalogWaiters=[];
+function waitForCatalog(){if(Array.isArray(window.DAWLY_PRODUCTS)&&window.DAWLY_PRODUCTS.length){products=window.DAWLY_PRODUCTS;catalogReady=true;return Promise.resolve(true);}return new Promise(function(resolve){var done=false;var timer=setTimeout(function(){if(done)return;done=true;resolve(false);},12000);catalogWaiters.push(function(){if(done)return;done=true;clearTimeout(timer);resolve(Array.isArray(window.DAWLY_PRODUCTS)&&window.DAWLY_PRODUCTS.length>0);});});}\nfunction norm(v){return String(v==null?"":v).toLocaleLowerCase("ar").normalize("NFD").replace(/[\u064B-\u065F\u0670\u0640]/g,"").replace(/[أإآٱ]/g,"ا").replace(/ى/g,"ي").replace(/ة/g,"ه").replace(/[٠-٩]/g,function(d){return String("٠١٢٣٤٥٦٧٨٩".indexOf(d));}).replace(/[۰-۹]/g,function(d){return String("۰۱۲۳۴۵۶۷۸۹".indexOf(d));}).replace(/[^\p{L}\p{N}.]+/gu," ").trim().replace(/\s+/g," ");}
 function esc(v){return String(v==null?"":v).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];});}
 function ptext(p){return norm([p.name,p.brand,p.brandName,p.manufacturer,p.cat,p.category,p.desc,p.description,p.specs,p.sku,p.code,p.model,p.partNumber].join(" "));}
 var stop=("في من على عن الى الي او و هل ايه اي ما ماذا عايز عاوز محتاج عند لل من فضلك لو سمحت ممكن يكون تكون فيه حاجه حاجة حاجات اداة اداه الاداة المنتج منتجات").split(" ");
@@ -172,6 +172,6 @@ if(!fullPage){
 document.getElementById("dawlyBotClose").addEventListener("click",function(){if(fullPage){window.location.href="index.html";return;}opened=false;panel.hidden=true;});
 document.getElementById("dawlyBotForm").addEventListener("submit",function(e){e.preventDefault();send(document.getElementById("dawlyBotInput").value);});
 panel.addEventListener("click",function(e){var b=e.target.closest(".dawly-bot-chips button");if(b)send(b.textContent);});
-window.addEventListener("dawly-products-updated",function(e){if(Array.isArray(e.detail))products=e.detail;});
-window.addEventListener("dawly-catalog-ready",function(){products=Array.isArray(window.DAWLY_PRODUCTS)?window.DAWLY_PRODUCTS:products;loadImages(panel);});
+window.addEventListener("dawly-products-updated",function(e){if(Array.isArray(e.detail)){products=e.detail;if(products.length){catalogReady=true;catalogWaiters.splice(0).forEach(function(fn){fn();});}}});
+window.addEventListener("dawly-catalog-ready",function(){products=Array.isArray(window.DAWLY_PRODUCTS)?window.DAWLY_PRODUCTS:products;catalogReady=true;catalogWaiters.splice(0).forEach(function(fn){fn();});loadImages(panel);});
 })();
