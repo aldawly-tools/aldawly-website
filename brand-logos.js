@@ -31,6 +31,14 @@ import { doc, getDoc, getFirestore } from "https://www.gstatic.com/firebasejs/13
     tile.append(mark,name);tiles.appendChild(tile);return tile;
   }
   async function loadLogo(tile,brand,imageId){
+    if(key(brand)==="elora"){
+      let img=tile.querySelector(".brand-logo");
+      if(!img){img=document.createElement("img");img.className="brand-logo";img.alt="ELORA logo";img.loading="lazy";img.decoding="async";tile.insertBefore(img,tile.querySelector(".brand-name-sr"));}
+      img.src="https://www.elora.de/wp-content/uploads/2021/02/elora-logo.png";
+      tile.classList.remove("brand-text-logo");
+      const mark=tile.querySelector(".brand-text-mark");if(mark)mark.remove();
+      return;
+    }
     if(!imageId||tile.dataset.logoLoaded===imageId)return;
     tile.dataset.logoLoaded=imageId;
     try{
