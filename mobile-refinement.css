@@ -873,3 +873,24 @@
  html body .hero-shell .hero-services .service-card{padding:8px 13px!important}
  html body .hero-shell .hero-services .service-card>span:last-child{font-size:13px!important}
 }
+
+
+/* Display the new Würth brand artwork on mobile below the main hero copy. */
+@media(max-width:700px){
+ .hero-shell .hero-grid{
+  grid-template-areas:"copy" "photo" "services"!important;
+  grid-template-columns:minmax(0,1fr)!important;
+ }
+ .hero-shell .hero-photo{
+  grid-area:photo!important;display:block!important;position:relative!important;
+  width:100%!important;height:auto!important;min-height:0!important;
+  max-height:none!important;aspect-ratio:16/6!important;
+  overflow:hidden!important;border-radius:0!important;
+  background:#090b0f!important;
+ }
+ .hero-shell .hero-photo img{
+  position:absolute!important;inset:0!important;width:100%!important;height:100%!important;
+  min-height:0!important;object-fit:contain!important;object-position:center!important;
+  padding:4px!important;background:#090b0f!important;
+ }
+}
