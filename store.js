@@ -276,6 +276,12 @@
       .trim()
       .replace(/\s+/g, " ");
   }
+  function searchTermVariants(term) {
+    return term === "بنطه" ? ["بنطه", "بنط"] : [term];
+  }
+  function searchTermMatches(text, term) {
+    return searchTermVariants(term).some(function(variant) { return text.includes(variant); });
+  }
   function normalizeBrand(name) {
     return normalizeSearchText(name).replace(/\s/g, "");
   }
@@ -583,7 +589,7 @@
         .map(function(value){ return normalizeSearchText(value).replace(/\s/g, ""); });
       const searchMatch = scannedBarcode
         ? exactCodes.includes(normalizeSearchText(scannedBarcode).replace(/\s/g, ""))
-        : (!terms.length || terms.every(function (term) { return searchable.includes(term); }));
+        : (!terms.length || terms.every(function (term) { return searchTermMatches(searchable, term); }));
       return categoryMatch && brandMatch && searchMatch;
     });
     if (terms.length) {
@@ -594,14 +600,17 @@
         const description = normalizeSearchText([item.desc, item.specs, item.cat].filter(Boolean).join(" "));
         let score = 0;
         terms.forEach(function(term) {
-          if (code === term) score += 120;
-          else if (code.split(" ").some(function(part){ return part === term; })) score += 90;
-          else if (code.includes(term)) score += 65;
-          if (name === term) score += 55;
-          else if (name.startsWith(term)) score += 35;
-          else if (name.includes(term)) score += 25;
-          if (brand.includes(term)) score += 18;
-          if (description.includes(term)) score += 5;
+          const matchTerm = searchTermVariants(term).find(function(variant) {
+            return name.includes(variant) || brand.includes(variant) || code.includes(variant) || description.includes(variant);
+          }) || term;
+          if (code === matchTerm) score += 120;
+          else if (code.split(" ").some(function(part){ return part === matchTerm; })) score += 90;
+          else if (code.includes(matchTerm)) score += 65;
+          if (name === matchTerm) score += 55;
+          else if (name.startsWith(matchTerm)) score += 35;
+          else if (name.includes(matchTerm)) score += 25;
+          if (brand.includes(matchTerm)) score += 18;
+          if (description.includes(matchTerm)) score += 5;
         });
         return score;
       }
