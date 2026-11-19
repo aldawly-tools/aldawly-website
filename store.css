@@ -6688,3 +6688,57 @@ body:has(.cart-drawer.open) .dawly-mini-cart-launcher{opacity:0!important;pointe
     overflow: hidden !important;
   }
 }
+
+
+/* About Dawly: final readability and touch-target refinement. */
+@media (max-width: 600px) {
+  .dawly-about-content { padding: 15px 13px 14px; }
+  .dawly-about-kicker {
+    display: inline-block;
+    margin: 0 0 9px;
+    font-size: 10px;
+  }
+  .dawly-about-content h3 {
+    font-size: clamp(22px, 6vw, 25px);
+    line-height: 1.38;
+    margin-bottom: 9px;
+  }
+  .dawly-about-content > p {
+    font-size: 13px;
+    line-height: 1.75;
+  }
+  .dawly-about-features {
+    gap: 7px;
+    margin-top: 13px;
+  }
+  .dawly-about-features > div {
+    min-width: 0;
+    min-height: 76px;
+    align-content: center;
+    padding: 9px 4px;
+  }
+  .dawly-about-features b { font-size: 10.5px; line-height: 1.4; }
+  .dawly-about-bottom {
+    margin-top: 12px;
+    padding-top: 11px;
+    gap: 10px;
+  }
+  .dawly-about-bottom strong { font-size: 12px; line-height: 1.6; }
+  .dawly-about-bottom a {
+    min-height: 44px;
+    padding: 10px 14px;
+    font-size: 13px;
+    border-radius: 11px;
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .dawly-about-card { transition: box-shadow .25s ease, border-color .25s ease; }
+  .dawly-about-card:hover {
+    border-color: rgba(200,16,30,.42);
+    box-shadow: 0 18px 44px rgba(16,24,32,.18);
+  }
+}
+.dawly-about-bottom a:focus-visible {
+  outline: 3px solid rgba(255,255,255,.9);
+  outline-offset: 3px;
+}
