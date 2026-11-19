@@ -1,4 +1,4 @@
-const CACHE_NAME = "aldawly-tools-v25-remove-image-search";
+const CACHE_NAME = "aldawly-tools-v26-remove-camera-control";
 const APP_SHELL = [
   "/",
   "/index.html",
