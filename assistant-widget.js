@@ -4,7 +4,8 @@ if(document.getElementById("dawlyBotLauncher")) return;
 var fullPage=document.body.dataset.assistantPage==="true";
 var products=Array.isArray(window.DAWLY_PRODUCTS)?window.DAWLY_PRODUCTS:[];
 var opened=false, history=[], chatTurns=[], aiSetupNoticeShown=false, aiBusy=false, catalogReady=Array.isArray(window.DAWLY_PRODUCTS)&&window.DAWLY_PRODUCTS.length>0, catalogWaiters=[];
-function waitForCatalog(){if(Array.isArray(window.DAWLY_PRODUCTS)&&window.DAWLY_PRODUCTS.length){products=window.DAWLY_PRODUCTS;catalogReady=true;return Promise.resolve(true);}return new Promise(function(resolve){var done=false;var timer=setTimeout(function(){if(done)return;done=true;resolve(false);},12000);catalogWaiters.push(function(){if(done)return;done=true;clearTimeout(timer);resolve(Array.isArray(window.DAWLY_PRODUCTS)&&window.DAWLY_PRODUCTS.length>0);});});}\nfunction norm(v){return String(v==null?"":v).toLocaleLowerCase("ar").normalize("NFD").replace(/[\u064B-\u065F\u0670\u0640]/g,"").replace(/[أإآٱ]/g,"ا").replace(/ى/g,"ي").replace(/ة/g,"ه").replace(/[٠-٩]/g,function(d){return String("٠١٢٣٤٥٦٧٨٩".indexOf(d));}).replace(/[۰-۹]/g,function(d){return String("۰۱۲۳۴۵۶۷۸۹".indexOf(d));}).replace(/[^\p{L}\p{N}.]+/gu," ").trim().replace(/\s+/g," ");}
+function waitForCatalog(){if(Array.isArray(window.DAWLY_PRODUCTS)&&window.DAWLY_PRODUCTS.length){products=window.DAWLY_PRODUCTS;catalogReady=true;return Promise.resolve(true);}return new Promise(function(resolve){var done=false;var timer=setTimeout(function(){if(done)return;done=true;resolve(false);},12000);catalogWaiters.push(function(){if(done)return;done=true;clearTimeout(timer);resolve(Array.isArray(window.DAWLY_PRODUCTS)&&window.DAWLY_PRODUCTS.length>0);});});}
+function norm(v){return String(v==null?"":v).toLocaleLowerCase("ar").normalize("NFD").replace(/[\u064B-\u065F\u0670\u0640]/g,"").replace(/[أإآٱ]/g,"ا").replace(/ى/g,"ي").replace(/ة/g,"ه").replace(/[٠-٩]/g,function(d){return String("٠١٢٣٤٥٦٧٨٩".indexOf(d));}).replace(/[۰-۹]/g,function(d){return String("۰۱۲۳۴۵۶۷۸۹".indexOf(d));}).replace(/[^\p{L}\p{N}.]+/gu," ").trim().replace(/\s+/g," ");}
 function esc(v){return String(v==null?"":v).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];});}
 function ptext(p){return norm([p.name,p.brand,p.brandName,p.manufacturer,p.cat,p.category,p.desc,p.description,p.specs,p.sku,p.code,p.model,p.partNumber].join(" "));}
 var stop=("في من على عن الى الي او و هل ايه اي ما ماذا عايز عاوز محتاج عند لل من فضلك لو سمحت ممكن يكون تكون فيه حاجه حاجة حاجات اداة اداه الاداة المنتج منتجات").split(" ");
@@ -125,12 +126,13 @@ function reply(q){
  // Stable local assistant: answer only from the store catalog, without external AI calls.
  replyFallback(q);
 }
-function send(q){
- q=String(q||"").trim();if(!q)return;
- msg(q,"user");
- chatTurns.push({role:"user",content:q});chatTurns=chatTurns.slice(-8);
+async function send(q){
+ q=String(q||"").trim();if(!q||aiBusy)return;
+ var input=document.getElementById("dawlyBotInput"),submit=document.querySelector("#dawlyBotForm button");
+ msg(q,"user");chatTurns.push({role:"user",content:q});chatTurns=chatTurns.slice(-8);
+ if(input)input.value="";
+ if(!products.length){aiBusy=true;if(input)input.disabled=true;if(submit)submit.disabled=true;var ready=await waitForCatalog();aiBusy=false;if(input)input.disabled=false;if(submit)submit.disabled=false;if(!ready){msg("مش قادر أوصل لكتالوج المنتجات حاليًا. راجع اتصال الموقع بقاعدة البيانات أو جرّب تحديث الصفحة، وتقدر تتواصل معنا على واتساب 01024787222.","bot");return;}}
  reply(q);
- var i=document.getElementById("dawlyBotInput");i.value="";
 }
 var launcher=document.createElement("button");launcher.id="dawlyBotLauncher";launcher.type="button";launcher.setAttribute("aria-label","افتح مساعد الدولي");launcher.innerHTML='<span class="dawly-bot-face" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M3 13v-2a9 9 0 0 1 18 0v2"/><rect x="2.5" y="11" width="4.5" height="8" rx="2"/><rect x="17" y="11" width="4.5" height="8" rx="2"/><path d="M19 19a5 5 0 0 1-5 3h-2"/></svg></span><span class="dawly-bot-prompt">تحدث مع مساعد الدولي</span>';
 var panel=document.createElement("section");panel.id="dawlyBotPanel";panel.hidden=true;panel.setAttribute("aria-label","مساعد الدولي");panel.innerHTML='<header class="dawly-bot-head"><div class="dawly-bot-avatar">🤖</div><div><strong>مساعد الدولي</strong><small>مساعد فني للعدد والمنتجات</small></div><button type="button" id="dawlyBotClose" aria-label="إغلاق">×</button></header><div class="dawly-bot-messages" id="dawlyBotMessages" aria-live="polite"><div class="dawly-bot-chips" id="dawlyBotChips" hidden><button type="button">طقم مفكات WÜRTH</button><button type="button">بنط HSS للمعادن</button><button type="button">أدوات النجارة</button></div></div><form class="dawly-bot-form" id="dawlyBotForm"><input id="dawlyBotInput" autocomplete="off" placeholder="اسم الأداة أو الاستخدام أو المقاس..." aria-label="اكتب سؤالك"><button type="submit">إرسال</button></form><a class="dawly-bot-wa" href="https://wa.me/201024787222" target="_blank" rel="noopener">محتاج تأكيد فني؟ كلمنا واتساب</a>';
