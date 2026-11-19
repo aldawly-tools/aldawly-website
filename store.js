@@ -555,7 +555,7 @@
       if (searchable === undefined) {
         searchable = normalizeSearchText([
           item.name, brand, item.brand, item.cat, item.desc, item.specs,
-          item.sku, item.code, item.model, item.partNumber, item.id
+          item.sku, item.code, item.barcode, item.barCode, item.ean, item.ean13, item.gtin, item.upc, item.model, item.partNumber, item.id
         ].join(" "));
         productSearchCache.set(item, searchable);
       }
