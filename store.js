@@ -566,7 +566,7 @@
       function relevance(item) {
         const name = normalizeSearchText(item.name);
         const brand = normalizeSearchText(productBrand(item));
-        const code = normalizeSearchText([item.sku, item.code, item.model, item.partNumber, item.id].filter(Boolean).join(" "));
+        const code = normalizeSearchText([item.sku, item.code, item.barcode, item.barCode, item.ean, item.ean13, item.gtin, item.upc, item.model, item.partNumber, item.id].filter(Boolean).join(" "));
         const description = normalizeSearchText([item.desc, item.specs, item.cat].filter(Boolean).join(" "));
         let score = 0;
         terms.forEach(function(term) {
