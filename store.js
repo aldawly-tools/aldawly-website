@@ -363,11 +363,21 @@
       details: document.getElementById("checkoutDetailsStep"),
       whatsapp: document.getElementById("checkoutWhatsappStep")
     };
+    if (step === "whatsapp" && steps.whatsapp) {
+      const link = document.getElementById("orderWhatsappLink");
+      if (!link || !link.getAttribute("href") || link.getAttribute("href") === "#") step = "details";
+    }
     Object.keys(steps).forEach(function(key) { if (steps[key]) steps[key].hidden = key !== step; });
     const progress = cartDrawer && cartDrawer.querySelector(".order-progress");
-    if (progress) progress.querySelectorAll("span").forEach(function(node, index) {
-      node.classList.toggle("is-active", index === ({review:0,details:1,whatsapp:2}[step]));
-      node.classList.toggle("is-complete", index < ({review:0,details:1,whatsapp:2}[step]));
+    const activeIndex = ({review:0,details:1,whatsapp:2}[step]);
+    if (progress) progress.querySelectorAll("[data-checkout-step]").forEach(function(node, index) {
+      node.classList.toggle("is-active", index === activeIndex);
+      node.classList.toggle("is-complete", index < activeIndex);
+      if (index === activeIndex) node.setAttribute("aria-current", "step");
+      else node.removeAttribute("aria-current");
+      const available = index !== 2 || !!(steps.whatsapp && document.getElementById("orderWhatsappLink") && document.getElementById("orderWhatsappLink").getAttribute("href") && document.getElementById("orderWhatsappLink").getAttribute("href") !== "#");
+      node.disabled = !available;
+      node.setAttribute("aria-disabled", String(!available));
     });
     const totalBox = document.querySelector(".cart-sticky-footer");
     if (totalBox) totalBox.hidden = step === "whatsapp";
@@ -1032,6 +1042,13 @@
     if (event.target.closest("#continueCheckout")) {
       if (!cart.length) return;
       setCheckoutStep("details");
+      return;
+    }
+    const progressStep = event.target.closest("[data-checkout-step]");
+    if (progressStep && !progressStep.disabled) {
+      const requestedStep = progressStep.dataset.checkoutStep;
+      if (requestedStep === "details" && !cart.length) return;
+      setCheckoutStep(requestedStep);
       return;
     }
     if (event.target.closest("#backToCartReview")) { setCheckoutStep("review"); return; }
