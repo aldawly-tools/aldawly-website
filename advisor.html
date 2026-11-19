@@ -57,8 +57,9 @@ footer{text-align:center;color:var(--muted);font-size:12px;padding:20px}
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <script>if ("serviceWorker" in navigator) { window.addEventListener("load", () => navigator.serviceWorker.register("./service-worker.js").catch(error => console.warn("App offline support:", error))); }</script>
  <script src="site-routing.js?v=canonical-cloudflare-20261114"></script>
+<link rel="stylesheet" href="assistant-widget.css?v=unified-advisor-chat-20261119-1">
 </head>
-<body>
+<body class="dawly-assistant-page" data-assistant-page="true">
 <header><div class="wrap">
 <div class="top"><div class="brand"><span class="brand-main">الدولي</span><span class="brand-tagline">العدد الأصلية والمستوردة</span></div><span class="tag">مساعد اختيار العدد الذكي</span><a href="products.html" style="color:#fff;text-decoration:underline">العودة للمتجر</a></div>
 <h1>اختار العِدّة المناسبة لشغلك</h1>
@@ -101,6 +102,10 @@ footer{text-align:center;color:var(--muted);font-size:12px;padding:20px}
 <p class="notice">اختيار المهنة يجهّز بيانات الترشيح فقط؛ راجع الخامة والتفاصيل ثم اعرض الترشيح. لو مفيش منتج مطابق، تقدر تسأل فريق الدولي على واتساب.</p>
 </aside>
 </div>
+<section class="card" style="margin-top:20px" aria-label="محادثة مساعد الدولي">
+<h2>أو اسأل مساعد الدولي مباشرة</h2><p class="sub">اكتب اسم الأداة أو الاستخدام أو الموديل، وسيبحث لك في كتالوج المنتجات. تقدر تستخدم الأسئلة بالأعلى أو المحادثة هنا.</p>
+<div id="assistantPageChat"></div>
+</section>
 </main>
 <footer>الدولي — العدد الأصلية والمستوردة — مساعد اختيار العدد<br><a href="https://www.facebook.com/wurth.tools" target="_blank" rel="noopener noreferrer">تابعنا على فيسبوك</a></footer>
 <script src="products.js"></script>
@@ -161,5 +166,6 @@ if (Array.isArray(event.detail)) window.DAWLY_PRODUCTS = event.detail;
 });
 </script>
 <script type="module" src="product-cloud.js?v=product-admin-2"></script>
+<script src="assistant-widget.js?v=unified-advisor-chat-20261119-1"></script>
 <script type="module" src="visitor-counter.js?v=all-pages-dedup-20261118-2"></script>
 </body></html>
