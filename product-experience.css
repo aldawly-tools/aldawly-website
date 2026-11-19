@@ -559,3 +559,4 @@ form#searchForm button.barcode-scan-trigger:active,
   height:48px!important;min-height:48px!important;border-radius:14px!important;
  }
 }
+\n\n/* Camera torch toggle for barcode scanner */\n.barcode-torch-button{display:flex!important;align-items:center!important;justify-content:center!important;gap:9px!important;width:100%!important;min-height:48px!important;margin:12px 0 0!important;padding:10px 14px!important;border:1px solid #e2e5e9!important;border-radius:12px!important;background:#f4f6f8!important;color:#343d47!important;font:900 14px Tahoma,Arial,sans-serif!important;cursor:pointer!important}\n.barcode-torch-button:not(:disabled){border-color:#e7b8bd!important;background:#fff4f4!important;color:#b80f19!important}\n.barcode-torch-button.is-on{background:#d71920!important;border-color:#d71920!important;color:#fff!important;box-shadow:0 5px 16px rgba(215,25,32,.2)!important}\n.barcode-torch-button:disabled{opacity:.62!important;cursor:not-allowed!important}\n
