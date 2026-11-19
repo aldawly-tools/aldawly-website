@@ -1,4 +1,4 @@
-const CACHE_NAME = "aldawly-tools-v19-image-gallery-fix";
+const CACHE_NAME = "aldawly-tools-v20-api-no-cache";
 const APP_SHELL = [
   "/",
   "/index.html",
@@ -18,7 +18,10 @@ self.addEventListener("activate", event => {
 });
 self.addEventListener("fetch", event => {
   const request = event.request;
-  if (request.method !== "GET" || new URL(request.url).origin !== self.location.origin) return;
+  const requestUrl = new URL(request.url);
+  if (request.method !== "GET" || requestUrl.origin !== self.location.origin) return;
+  // API responses are dynamic and must never enter the offline asset cache.
+  if (requestUrl.pathname.startsWith("/api/")) return;
   event.respondWith(fetch(request, {cache:"no-store"}).then(response => {
     if (response && response.ok) {
       const copy = response.clone();
