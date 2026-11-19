@@ -564,6 +564,57 @@ $("addExtraSpecBtn").addEventListener("click",()=>{
  list.addEventListener("dragend",()=>{document.querySelectorAll(".smart-spec-row").forEach(row=>row.classList.remove("dragging","drag-over"));syncSpecsField();});
 });
 renderCategorySpecs({},[]);
+
+async function findAndSaveOfficialBrandLogo(brandName) {
+  const brand=String(brandName||"").trim(); if(!brand)return null;
+  const slug=encodeURIComponent(brand.toLocaleLowerCase("en")).replace(/%/g,"_").slice(0,110);
+  const logoId="brand_logo_"+slug, logoRef=doc(db,"productImages",logoId);
+  const existing=await getDoc(logoRef);
+  if(existing.exists()&&String(existing.data().data||"").startsWith("data:image/"))return logoId;
+  const statusNode=$("brandLogoStatus");
+  if(statusNode)statusNode.textContent="جارٍ البحث عن شعار "+brand+"…";
+  const endpoint=new URL("https://commons.wikimedia.org/w/api.php");
+  endpoint.search=new URLSearchParams({
+    action:"query",format:"json",origin:"*",generator:"search",
+    gsrsearch:'"' + brand + '" logo',gsrnamespace:"6",gsrlimit:"12",
+    prop:"imageinfo",iiprop:"url|size|mime",iiurlwidth:"720"
+  }).toString();
+  const response=await fetch(endpoint.toString(),{mode:"cors",credentials:"omit"});
+  if(!response.ok)throw new Error("تعذر البحث في مكتبة الشعارات.");
+  const payload=await response.json(),pages=Object.values(payload.query&&payload.query.pages||{});
+  const normalized=brand.toLocaleLowerCase("en").normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]/g,"");
+  const aliases=normalized==="wurth"||normalized==="wrth"?["wurth","wuerth"]:[normalized];
+  const candidates=pages.map(function(page){
+    const info=page.imageinfo&&page.imageinfo[0],title=String(page.title||"");
+    const titleKey=title.toLocaleLowerCase("en").normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]/g,"");
+    const mime=String(info&&info.mime||"");
+    const matches=aliases.some(function(alias){return alias&&titleKey.includes(alias);})||title.toLocaleLowerCase("ar").includes(brand.toLocaleLowerCase("ar"));
+    const score=(matches?10:0)+(/logo|logotype|brand|wordmark/i.test(title)?5:0)+(/svg|png/i.test(mime)?2:0);
+    return {title:title,url:info&&(info.thumburl||info.url),mime:mime,width:Number(info&&info.width||0),height:Number(info&&info.height||0),score:score};
+  }).filter(function(item){return item.url&&item.score>=10&&/^image\/(svg\+xml|png|jpeg|webp)$/i.test(item.mime)&&item.width>=80&&item.height>=25;})
+    .sort(function(x,y){return y.score-x.score;});
+  if(!candidates.length)throw new Error("لم يتم العثور على صورة شعار مطابقة بوضوح لاسم الماركة.");
+  let dataUrl="",sourceTitle="";
+  for(const candidate of candidates.slice(0,4)){
+    try{
+      const imageResponse=await fetch(candidate.url,{mode:"cors",credentials:"omit"});if(!imageResponse.ok)continue;
+      const bitmap=await createImageBitmap(await imageResponse.blob());
+      const scale=Math.min(640/bitmap.width,240/bitmap.height,1),canvas=document.createElement("canvas");
+      canvas.width=Math.max(1,Math.round(bitmap.width*scale));canvas.height=Math.max(1,Math.round(bitmap.height*scale));
+      const context=canvas.getContext("2d");context.clearRect(0,0,canvas.width,canvas.height);context.drawImage(bitmap,0,0,canvas.width,canvas.height);
+      if(bitmap.close)bitmap.close();
+      const compressed=await new Promise(function(resolve){canvas.toBlob(resolve,"image/webp",0.88);});
+      if(!compressed||compressed.size>650000)continue;
+      dataUrl=await new Promise(function(resolve,reject){const reader=new FileReader();reader.onload=function(){resolve(String(reader.result||""));};reader.onerror=reject;reader.readAsDataURL(compressed);});
+      sourceTitle=candidate.title;break;
+    }catch(error){console.warn("Brand logo candidate skipped:",candidate.title,error);}
+  }
+  if(!dataUrl)throw new Error("عُثر على نتائج لكن تعذر حفظ صورة الشعار.");
+  await setDoc(logoRef,{data:dataUrl,kind:"brandLogo",brand:brand,source:"Wikimedia Commons",sourceTitle:sourceTitle,updatedAt:serverTimestamp()});
+  if(statusNode)statusNode.textContent="تم حفظ صورة شعار "+brand+" تلقائيًا.";
+  return logoId;
+}
+
 function resetForm() {
   $("productForm").reset();
   renderCategorySpecs({},[]);
@@ -1807,10 +1858,22 @@ $("productForm").addEventListener("submit", async function (event) {
       image = "";
     }
     imageId = imageIds[0] || null;
+    const productBrand=$("brand").value.trim();
+    let brandLogoImageId=previous&&previous.brandLogoImageId?previous.brandLogoImageId:null;
+    if(productBrand){
+      const oldBrand=previous?String(previous.brand||"").trim().toLocaleLowerCase("ar"):"";
+      const newBrand=productBrand.toLocaleLowerCase("ar");
+      if(!brandLogoImageId||oldBrand!==newBrand){
+        if(oldBrand!==newBrand)brandLogoImageId=null;
+        try{brandLogoImageId=await findAndSaveOfficialBrandLogo(productBrand);}
+        catch(logoError){console.warn("Official brand logo search failed; product save continues:",logoError);const node=$("brandLogoStatus");if(node)node.textContent="لم يتم العثور على شعار مطابق بوضوح؛ تم حفظ المنتج دون استبدال أي شعار آخر."}
+      }
+    }
     const product = {
       id:id,
       name:$("name").value.trim(),
-      brand:$("brand").value.trim(),
+      brand:productBrand,
+      brandLogoImageId:brandLogoImageId,
       cat:$("cat").value,
       desc:$("desc").value.trim(),
       specs:collectSpecsText(),
