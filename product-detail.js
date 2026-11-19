@@ -128,7 +128,7 @@
         ? '<img id="detailMainImage" src="' + escapeHtml(firstGallery.url) + '" alt="' + escapeHtml(name) + '" loading="eager" fetchpriority="high" decoding="async">'
         : '<img id="detailMainImage" data-cloud-image="' + escapeHtml(firstGallery.id) + '" alt="' + escapeHtml(name) + '" loading="eager" fetchpriority="high" decoding="async">')
       : '<span class="product-detail-placeholder" aria-hidden="true">' + escapeHtml(item.icon || "🔧") + '</span>';
-    const galleryHtml = uniqueGallery.length > 1 ? '<div class="detail-image-thumbs" id="detailImageThumbs" aria-label="صور المنتج"></div>' : '';
+    const galleryHtml = uniqueGallery.length > 1 ? '<div class="detail-image-thumbs" id="detailImageThumbs" aria-label="صور المنتج"></div><div class="detail-gallery-dots" id="detailGalleryDots" aria-label="التنقل بين صور المنتج">' + uniqueGallery.map(function(_,index){return '<button type="button" data-gallery-dot="' + index + '" class="' + (index===0?'active':'') + '" aria-label="الصورة ' + (index+1) + '" aria-current="' + (index===0?'true':'false') + '"></button>';}).join("") + '</div>' : '';
     const galleryControls = uniqueGallery.length > 1 ? '<button class="detail-gallery-nav prev" type="button" data-gallery-step="-1" hidden aria-label="الصورة السابقة">‹</button><button class="detail-gallery-nav next" type="button" data-gallery-step="1" hidden aria-label="الصورة التالية">›</button>' : '';
     const brand = item.brand ? escapeHtml(displayBrand(item.brand)) + ' · ' : "";
     const basePrice = parsePrice(item.price);
@@ -166,6 +166,7 @@
       '<p class="product-detail-description">' + escapeHtml(cleanProductCopy(item.desc || "للاستفسار عن مواصفات المنتج وتفاصيله، تواصل معنا مباشرة.")) + '</p>' +
       '<div class="product-detail-price"><span class="detail-price-value">' + price + '</span><small>' + (formatPrice(item.price).startsWith("EGP ") ? 'السعر بالجنيه المصري' : 'يُرجى تأكيد السعر عند التواصل') + '</small></div>' + stockHtml +
       '<div class="product-detail-actions product-detail-actions-compact">' +
+      '<div class="detail-quantity-control"><label for="detailQuantity">الكمية</label><div class="detail-quantity-stepper"><button type="button" data-qty-step="-1" aria-label="تقليل الكمية">−</button><input id="detailQuantity" data-detail-qty type="number" inputmode="numeric" min="1" max="99" value="1" aria-label="الكمية المطلوبة"><button type="button" data-qty-step="1" aria-label="زيادة الكمية">+</button></div></div>' +
       '<button class="button-primary detail-order-now" type="button" data-detail-order-now="' + escapeHtml(item.id) + '"' + (stockKnown && item.stock === 0 ? ' disabled aria-disabled="true"' : '') + '><span class="detail-action-icon" aria-hidden="true">🛒</span><span>' + (stockKnown && item.stock === 0 ? 'غير متاح حاليًا' : 'أكمل طلبك الآن') + '</span></button>' +
       '<button class="detail-whatsapp-button" type="button" data-whatsapp-share="' + escapeHtml(item.id) + '"><span class="detail-action-icon" aria-hidden="true">💬</span><span>استفسر بالصورة عبر واتساب</span></button>' +
       '<button class="button-outline share-product-button detail-share-icon" type="button" data-share-product="' + escapeHtml(item.id) + '" aria-label="مشاركة المنتج" title="مشاركة المنتج"><svg width="21" height="21" style="display:block!important;width:21px!important;height:21px!important;max-width:21px!important;max-height:21px!important;flex:none!important;overflow:visible" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 16V3m0 0L7 8m5-5 5 5M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>' +
@@ -196,7 +197,7 @@
           return '<a class="related-card" href="product?id=' + encodeURIComponent(product.id) + '"><div class="related-visual">' + relatedImage + '</div><div class="related-info"><small>' + escapeHtml(product.brand ? displayBrand(product.brand) : product.cat || "منتجات") + '</small><strong>' + escapeHtml(relatedName) + '</strong><span>' + escapeHtml(formatPrice(product.price)) + '</span></div></a>';
         }).join("") + '</div></section>'
       : "";
-    root.insertAdjacentHTML("beforeend", relatedHtml);
+    root.insertAdjacentHTML("beforeend", relatedHtml + '<div class="mobile-purchase-bar" aria-label="إضافة المنتج إلى السلة"><div class="mobile-purchase-price"><small>السعر</small><strong>' + price + '</strong></div><button class="mobile-purchase-add" type="button" data-detail-order-now="' + escapeHtml(item.id) + '"' + (stockKnown && item.stock === 0 ? ' disabled aria-disabled="true"' : '') + '><span aria-hidden="true">🛒</span> أضف إلى السلة</button></div>');
     if (typeof window.DAWLY_LOAD_PRODUCT_IMAGE === "function") {
       root.querySelectorAll("[data-related-image]").forEach(function (image) {
         window.DAWLY_LOAD_PRODUCT_IMAGE(image.dataset.relatedImage).then(function (url) {
@@ -246,6 +247,8 @@
         if (active) thumb.setAttribute("aria-current", "true");
         else thumb.removeAttribute("aria-current");
       });
+      const dots = root.querySelectorAll("[data-gallery-dot]");
+      dots.forEach(function(dot,dotIndex){dot.classList.toggle("active",dotIndex===index);dot.setAttribute("aria-current",dotIndex===index?"true":"false");});
     }
     async function showGalleryImage(index) {
       if (!mainImage || !uniqueGallery.length) return;
@@ -268,6 +271,8 @@
         const thumbUrl = source.url ? ' src="' + escapeHtml(source.url) + '"' : "";
         return '<button type="button" class="detail-image-thumb' + (index === 0 ? ' active' : '') + '" data-image-index="' + index + '" aria-current="' + (index === 0 ? 'true' : 'false') + '" aria-label="عرض الصورة ' + (index + 1) + '"><img data-gallery-thumb="' + index + '"' + thumbUrl + ' alt="" loading="lazy" decoding="async"></button>';
       }).join("");
+      const dotsBox=root.querySelector("#detailGalleryDots");
+      if(dotsBox)dotsBox.addEventListener("click",function(event){const dot=event.target.closest("[data-gallery-dot]");if(dot)showGalleryImage(Number(dot.dataset.galleryDot));});
       thumbBox.addEventListener("click", function (event) {
         const button = event.target.closest("[data-image-index]");
         if (button) showGalleryImage(Number(button.dataset.imageIndex));
@@ -573,6 +578,8 @@
   }
 
   root.addEventListener("click", function (event) {
+    const qtyStep=event.target.closest("[data-qty-step]");
+    if(qtyStep){const field=root.querySelector("[data-detail-qty]");if(field){const next=Math.max(1,Math.min(99,(Number(field.value)||1)+Number(qtyStep.dataset.qtyStep)));field.value=String(next);}return;}
     const button = event.target.closest("[data-detail-order-now]");
     if (!button || button.disabled) return;
     const directOrder = true;
@@ -602,15 +609,18 @@
       alert("تعذر قراءة السلة المحفوظة. حدّث الصفحة وحاول مرة أخرى.");
       return;
     }
+    const quantityField=root.querySelector("[data-detail-qty]");
+    const requestedQty=Math.max(1,Math.min(99,Math.floor(Number(quantityField&&quantityField.value)||1)));
+    if(Number.isInteger(item.stock)&&item.stock>=0&&requestedQty>item.stock){alert("الكمية المطلوبة أكبر من المتاح بالمخزون.");return;}
     const line = cart.find(function (entry) { return String(entry.id) === String(id); });
     if (line) {
-      if (Number.isInteger(item.stock) && item.stock >= 0 && line.qty >= item.stock) {
-        alert("الكمية المطلوبة أكبر من المتاح بالمخزون.");
+      if (Number.isInteger(item.stock) && item.stock >= 0 && line.qty + requestedQty > item.stock) {
+        alert("إجمالي الكمية في السلة أكبر من المتاح بالمخزون.");
         return;
       }
-      line.qty = Math.min(99, line.qty + 1);
+      line.qty = Math.min(99, line.qty + requestedQty);
     } else {
-      cart.push({id:item.id,qty:1});
+      cart.push({id:item.id,qty:requestedQty});
     }
     try {
       localStorage.setItem(cartKey, JSON.stringify(cart));
@@ -620,7 +630,7 @@
       return;
     }
     if (typeof window.DAWLY_TRACK_CONVERSION === "function") {
-      window.DAWLY_TRACK_CONVERSION("add_to_cart", {productId:String(item.id),productName:item.name,brand:item.brand || "",itemCount:1});
+      window.DAWLY_TRACK_CONVERSION("add_to_cart", {productId:String(item.id),productName:item.name,brand:item.brand || "",itemCount:requestedQty});
     }
     // Keep the product page open and show the Amazon-style mini cart.
     window.dispatchEvent(new CustomEvent("dawly-cart-updated", {detail:{productId:item.id, cart:cart}}));
