@@ -182,3 +182,26 @@
     margin:0!important;
   }
 }
+
+
+/* Ensure both quantity stepper controls remain visible on narrow screens. */
+@media(max-width:700px){
+ #productDetail .detail-quantity-stepper{
+   display:flex!important;flex-direction:row!important;flex-wrap:nowrap!important;
+   width:138px!important;min-width:138px!important;max-width:138px!important;
+   flex:0 0 138px!important;overflow:hidden!important;box-sizing:border-box!important;
+ }
+ #productDetail .detail-quantity-stepper button{
+   display:flex!important;visibility:visible!important;opacity:1!important;
+   align-items:center!important;justify-content:center!important;
+   width:42px!important;min-width:42px!important;max-width:42px!important;
+   height:46px!important;flex:0 0 42px!important;
+   color:#bd101d!important;background:#fff!important;font-size:24px!important;
+   line-height:1!important;padding:0!important;
+ }
+ #productDetail .detail-quantity-stepper input{
+   display:block!important;visibility:visible!important;opacity:1!important;
+   width:52px!important;min-width:52px!important;max-width:52px!important;
+   height:46px!important;flex:0 0 52px!important;box-sizing:border-box!important;
+ }
+}
