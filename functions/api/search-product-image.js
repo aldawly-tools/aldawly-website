@@ -73,7 +73,7 @@ export async function onRequest(context) {
     const prompt = "أنت مساعد بصري يفهم أي صورة. صف أولا الشيء الرئيسي الظاهر في الصورة بدقة، حتى لو لم يكن أداة. ثم ابحث فقط عن تطابق حقيقي له داخل قائمة منتجات متجر العدد. إذا كانت الصورة لشيء غير موجود في الكتالوج مثل طعام أو مناديل أو سيارة، اشرح ما تراه وأعد matches فارغة. لا تقترح أداة مختلفة لمجرد أنها الأقرب. طابق نوع المنتج ووظيفته وشكله ومقاسه أو موديله وعلامته التجارية عند وضوحها، ولا تعتمد على اللون أو تشابه الاسم وحدهما. أعد نتيجة واحدة أو اثنتين فقط عند وجود تطابق قوي، وإلا أعد قائمة فارغة. لا تخترع بيانات. أعد JSON فقط: {\"matches\":[{\"i\":رقم المنتج,\"confidence\":0 إلى 100,\"reason\":\"سبب محدد بالعربية\"}],\"identified\":\"وصف ما يظهر بالصورة بالعربية\" ,\"brand\":\"الماركة إن ظهرت وإلا فارغ\",\"keywords\":[\"كلمات قصيرة\"]}. قائمة المنتجات: " + JSON.stringify(catalog)
 
     const encoded = image.slice(image.indexOf(",") + 1);
-    const aiResponse = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=" + encodeURIComponent(context.env.GEMINI_API_KEY), {
+    const aiResponse = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent?key=" + encodeURIComponent(context.env.GEMINI_API_KEY), {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({
