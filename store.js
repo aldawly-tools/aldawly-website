@@ -527,11 +527,11 @@
 
   const listingControls = document.createElement("div");
   listingControls.className = "product-listing-controls";
-  listingControls.innerHTML = '<p class="product-results-count" aria-live="polite"></p><label class="product-sort-control"><span>ترتيب حسب</span><select id="productSort" aria-label="ترتيب المنتجات"><option value="newest">الأحدث أولاً</option><option value="price-asc">السعر: الأقل أولاً</option><option value="price-desc">السعر: الأعلى أولاً</option></select></label><button class="button-primary" type="button" data-load-more hidden>عرض 12 منتج إضافي</button>';
+  listingControls.innerHTML = '<p class="product-results-count" aria-live="polite"></p><button class="button-primary" type="button" data-load-more hidden>عرض 12 منتج إضافي</button>';
   grid.insertAdjacentElement("afterend", listingControls);
   const resultsCount = listingControls.querySelector(".product-results-count");
   const loadMoreButton = listingControls.querySelector("[data-load-more]");
-  const productSort = listingControls.querySelector("#productSort");
+  const productSort = document.getElementById("productSort");
   let productSortMode = "newest";
   productSort.addEventListener("change", function () {
     productSortMode = productSort.value;
