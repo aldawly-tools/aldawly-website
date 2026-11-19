@@ -22,12 +22,13 @@ import { collection, doc, getDoc, getDocs, getFirestore } from "https://www.gsta
     });
   }
   function makeTile(brand){
-    const tile=document.createElement("a");tile.className="brand-word brand-tile";
+    const tile=document.createElement("a");tile.className="brand-word brand-tile brand-text-logo";
     tile.href="products.html?brand="+encodeURIComponent(brand)+"#productGrid";
     tile.dataset.brandTarget=tile.href;tile.setAttribute("aria-label","منتجات "+brand);
     const img=document.createElement("img");img.className="brand-logo";img.alt=brand+" logo";img.loading="lazy";img.decoding="async";
+    const mark=document.createElement("span");mark.className="brand-text-mark";mark.textContent=brand;
     const name=document.createElement("span");name.className="brand-name-sr";name.textContent=brand;
-    tile.append(img,name);tiles.appendChild(tile);return tile;
+    tile.append(mark,name);tiles.appendChild(tile);return tile;
   }
   async function loadLogo(tile,brand,imageId){
     if(!imageId||tile.dataset.logoLoaded===imageId)return;
@@ -47,12 +48,12 @@ import { collection, doc, getDoc, getDocs, getFirestore } from "https://www.gsta
     const brands=new Map();
     (Array.isArray(products)?products:[]).forEach(function(product){
       const brand=String(product.brand||"").trim(),imageId=String(product.brandLogoImageId||"").trim();
-      if(!brand||!imageId)return;const k=key(brand);
+      if(!brand)return;const k=key(brand);
       if(!brands.has(k))brands.set(k,{brand:brand,imageId:imageId});
     });
     const signature=Array.from(brands.values()).map(function(x){return key(x.brand)+":"+x.imageId;}).join("|");
     if(signature===lastSignature)return;lastSignature=signature;
-    for(const entry of brands.values()){const tile=existingTile(entry.brand)||makeTile(entry.brand);await loadLogo(tile,entry.brand,entry.imageId);}
+    for(const entry of brands.values()){const tile=existingTile(entry.brand)||makeTile(entry.brand);if(entry.imageId)await loadLogo(tile,entry.brand,entry.imageId);}
   }
   function start(){if(Array.isArray(window.DAWLY_PRODUCTS))renderBrandLogos(window.DAWLY_PRODUCTS);}
   window.addEventListener("dawly-products-updated",function(event){renderBrandLogos(event.detail);});
