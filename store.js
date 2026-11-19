@@ -681,7 +681,7 @@
     }
     if (!skipPersist) persistCart();
     const count = cart.reduce(function (sum, line) { return sum + line.qty; }, 0);
-    cartCount.textContent = String(count);
+    if (cartCount) cartCount.textContent = String(count);
     const floatingHomeCartCount = document.getElementById("floatingHomeCartCount");
     if (floatingHomeCartCount) floatingHomeCartCount.textContent = String(count);
     checkout.disabled = count === 0;
