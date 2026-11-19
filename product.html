@@ -235,6 +235,26 @@ window.addEventListener("load", function () {
  </button>
 </div>
 <script>(function(){var b=document.getElementById('floatingContactToggle'),p=document.getElementById('floatingContactPanel');if(!b||!p)return;b.addEventListener('click',function(){var open=p.hidden;p.hidden=!open;b.classList.toggle('is-open',open);b.setAttribute('aria-expanded',String(open));});document.addEventListener('click',function(e){if(!p.hidden&&!e.target.closest('#floatingContactWidget')){p.hidden=true;b.classList.remove('is-open');b.setAttribute('aria-expanded','false');}});})();</script>
+
+<nav class="dawly-app-dock" aria-label="التنقل السريع">
+ <a href="index.html" aria-label="الرئيسية"><svg viewBox="0 0 24 24"><path d="m3 10 9-7 9 7M5 9v12h14V9M9 21v-7h6v7"/></svg><span>الرئيسية</span></a>
+ <a href="products.html#categories" aria-label="الأقسام"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg><span>الأقسام</span></a>
+ <a class="is-active" href="products.html" aria-label="المنتجات" aria-current="page"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg><span>المنتجات</span></a>
+ <button type="button" id="dawlyDockCart" aria-label="سلة المشتريات"><span class="dock-cart-icon"><svg viewBox="0 0 24 24"><path d="M3 4h2l2.2 11.2a2 2 0 0 0 2 1.6h8.6a2 2 0 0 0 2-1.6L21 8H6M10 21a1 1 0 1 0 0-2 1 1 0 0 0 0 2ZM18 21a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z"/></svg><span class="dock-count" id="dawlyDockCartCount">0</span></span><span>السلة</span></button>
+ <a href="advisor.html" aria-label="المساعد"><svg viewBox="0 0 24 24"><path d="M4 13v-2a8 8 0 0 1 16 0v2M4 13h3v6H5a2 2 0 0 1-2-2v-2a2 2 0 0 1 1-2ZM20 13h-3v6h2a2 2 0 0 0 2-2v-2a2 2 0 0 1-1-2Z"/></svg><span>المساعد</span></a>
+</nav>
+<script id="dawly-product-dock-actions">
+(function(){
+ if(!window.matchMedia('(max-width:700px)').matches)return;
+ var dock=document.querySelector('.dawly-app-dock');
+ if(dock){var lastY=window.scrollY||0,ticking=false;function updateDock(){var y=window.scrollY||0,delta=y-lastY;if(y<45)dock.classList.remove('dawly-dock-hidden');else if(delta>7)dock.classList.add('dawly-dock-hidden');else if(delta< -7)dock.classList.remove('dawly-dock-hidden');lastY=y;ticking=false;}window.addEventListener('scroll',function(){if(!ticking){ticking=true;window.requestAnimationFrame(updateDock);}},{passive:true});}
+ var cartButton=document.getElementById('dawlyDockCart'),cartLauncher=document.getElementById('floatingHomeCart');
+ if(cartButton)cartButton.addEventListener('click',function(){if(cartLauncher)cartLauncher.click();});
+ function syncDockCart(){var source=document.getElementById('floatingHomeCartCount'),target=document.getElementById('dawlyDockCartCount');if(source&&target)target.textContent=source.textContent||'0';}
+ syncDockCart();var count=document.getElementById('floatingHomeCartCount');if(count&&window.MutationObserver)new MutationObserver(syncDockCart).observe(count,{childList:true,characterData:true,subtree:true});
+})();
+</script>
+
 <script src="products.js?v=live-refresh-20261114-1"></script>
  <script src="store.js?v=unified-cart-all-pages-20261119-1"></script>
 <script src="firebase-config.js?v=live-refresh-20261114-1"></script>
