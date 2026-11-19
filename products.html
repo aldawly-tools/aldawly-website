@@ -85,10 +85,10 @@
 .active-brand-banner.is-visible{display:flex}
 .active-brand-banner-copy{display:flex;align-items:center;gap:16px;min-width:0}
 .active-brand-banner-logo{width:112px;height:58px;object-fit:contain;flex:0 0 auto;padding:8px 12px;border:1px solid #e8ebef;border-radius:10px;background:#fff}
-.active-brand-banner h2{margin:0;color:#17191c;font-size:clamp(20px,2.4vw,30px);font-weight:1000;line-height:1.3}
+.active-brand-banner h2{margin:0;color:#17191c;font-size:clamp(20px,2.4vw,30px);font-weight:1000;line-height:1.3;overflow-wrap:anywhere}
 .active-brand-banner p{margin:5px 0 0;color:#68717b;font-size:14px}
 .active-brand-banner-reset{flex:0 0 auto;padding:10px 16px;border-radius:9px;background:#d71920;color:#fff;font-weight:800;text-decoration:none}
-@media(max-width:600px){.active-brand-banner{padding:14px;gap:10px}.active-brand-banner-copy{gap:10px}.active-brand-banner-logo{width:78px;height:48px;padding:6px}.active-brand-banner h2{font-size:19px}.active-brand-banner p{font-size:12px}.active-brand-banner-reset{padding:9px 10px;font-size:12px}}
+@media(max-width:600px){.active-brand-banner{padding:12px 14px;gap:10px;min-height:84px}.active-brand-banner-copy{flex:1}.active-brand-banner h2{font-size:19px;line-height:1.35}.active-brand-banner p{line-height:1.4}.active-brand-banner-copy{gap:10px}.active-brand-banner-logo{width:78px;height:48px;padding:6px}.active-brand-banner h2{font-size:19px}.active-brand-banner p{font-size:12px}.active-brand-banner-reset{padding:9px 10px;font-size:12px}}
 </style>
 
 <style id="compact-brand-filter-mobile-20261118">
@@ -358,7 +358,8 @@
   'beta':{name:'BETA',logo:'https://static.cdnlogo.com/logos/b/13/beta-tools.svg'},
   'dewalt':{name:'DEWALT',logo:'https://upload.wikimedia.org/wikipedia/commons/8/89/DeWalt_Logo.svg'},
   'milwaukee':{name:'MILWAUKEE',logo:'https://upload.wikimedia.org/wikipedia/commons/d/de/Milwaukee_Logo.svg'},
-  'makita':{name:'MAKITA',logo:'https://upload.wikimedia.org/wikipedia/commons/7/71/Makita_Logo.svg'}
+  'makita':{name:'MAKITA',logo:'https://upload.wikimedia.org/wikipedia/commons/7/71/Makita_Logo.svg'},
+  'elora':{name:'ELORA',logo:'https://www.elora.de/wp-content/uploads/2021/02/elora-logo.png'}
  };
  var item=known[brand.toLowerCase()]||{name:brand.toUpperCase(),logo:''};
  var banner=document.getElementById('activeBrandBanner');
