@@ -630,3 +630,84 @@ body.product-page{
  .product-page #productDetail .product-detail-description{font-size:14px!important}
  .product-page #productDetail .product-trust-strip>div{font-size:11px!important;padding:8px 5px!important}
 }
+
+
+/* Usability polish: clearer purchase hierarchy, accessible focus and product specs */
+.product-page #productDetail .product-detail-info{
+ display:flex!important;flex-direction:column!important;align-items:stretch!important;
+ gap:12px!important;
+}
+.product-page #productDetail .product-detail-category{
+ width:max-content!important;max-width:100%!important;
+ color:#526579!important;font-size:12px!important;font-weight:900!important;
+}
+.product-page #productDetail .product-detail-title{
+ color:#172b40!important;font-weight:900!important;
+ text-wrap:pretty!important;
+}
+.product-page #productDetail .product-detail-description{
+ color:#58697a!important;max-width:68ch!important;
+}
+.product-page #productDetail .product-detail-price{
+ background:linear-gradient(135deg,#fff7f7 0%,#fff 72%)!important;
+ border:1px solid #efd4d7!important;
+}
+.product-page #productDetail .detail-price-value{
+ display:flex!important;align-items:center!important;flex-wrap:wrap!important;gap:9px!important;
+ font-size:clamp(22px,2.4vw,30px)!important;font-weight:950!important;
+}
+.product-page #productDetail .detail-price-value del{
+ color:#84909c!important;font-size:14px!important;font-weight:700!important;
+}
+.product-page #productDetail .detail-price-value .product-discount{
+ display:inline-flex!important;align-items:center!important;
+ padding:4px 9px!important;border-radius:7px!important;
+ background:#c8101e!important;color:#fff!important;font-size:11px!important;
+}
+.product-page #productDetail .detail-stock-status{
+ display:flex!important;align-items:center!important;gap:8px!important;
+ padding:11px 13px!important;font-size:13px!important;font-weight:800!important;
+}
+.product-page #productDetail .detail-stock-status:not(.out):before{
+ content:"";width:8px;height:8px;flex:0 0 8px;border-radius:50%;background:#169653;
+ box-shadow:0 0 0 4px rgba(22,150,83,.11);
+}
+.product-page #productDetail .detail-stock-status.out:before{
+ content:"";width:8px;height:8px;flex:0 0 8px;border-radius:50%;background:#c8101e;
+}
+.product-page #productDetail .product-detail-actions button:focus-visible,
+.product-page #productDetail .detail-image-thumb:focus-visible,
+.product-page #productDetail .detail-gallery-nav:focus-visible,
+.product-page #productDetail .product-detail-image:focus-visible{
+ outline:3px solid rgba(200,16,30,.42)!important;outline-offset:3px!important;
+}
+.product-page #productDetail .product-spec-row{
+ display:grid!important;grid-template-columns:minmax(105px,.75fr) minmax(0,1.5fr)!important;
+ gap:14px!important;align-items:start!important;padding:13px 14px!important;
+ border-bottom:1px solid #e8edf2!important;
+}
+.product-page #productDetail .product-spec-row:nth-child(odd){
+ background:#f7f9fb!important;border-radius:8px!important;
+}
+.product-page #productDetail .product-spec-row strong{font-weight:900!important}
+.product-page #productDetail .product-spec-row span{overflow-wrap:anywhere!important;line-height:1.8!important}
+.product-page #productDetail .product-spec-source-link{
+ display:inline-flex!important;align-items:center!important;gap:5px!important;
+ font-weight:900!important;text-decoration:none!important;
+}
+.product-page #productDetail .product-spec-source-link:hover{text-decoration:underline!important}
+@media(max-width:640px){
+ .product-page #productDetail .product-detail-info{gap:10px!important}
+ .product-page #productDetail .product-detail-actions button{width:100%!important}
+ .product-page #productDetail .product-spec-row{
+  grid-template-columns:minmax(92px,.8fr) minmax(0,1.4fr)!important;
+  gap:9px!important;padding:11px 9px!important;font-size:13px!important;
+ }
+}
+@media(prefers-reduced-motion:reduce){
+ .product-page #productDetail *,
+ .product-page #productDetail *:before,
+ .product-page #productDetail *:after{
+  scroll-behavior:auto!important;transition:none!important;animation:none!important;
+ }
+}
