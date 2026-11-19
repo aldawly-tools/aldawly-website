@@ -13,7 +13,9 @@ function status(s){var n=modal&&modal.querySelector("#dawlyImageSearchStatus");i
 function styles(){
  if(document.getElementById("dawlyLocalImageSearchStyles"))return;
  var css=[
- "#dawlyImageSearchOpen{border:1px solid #d71920;background:#fff;color:#bd1720;border-radius:12px;padding:10px 15px;font:800 14px Cairo,Arial;cursor:pointer;min-height:44px}",
+ "#dawlyImageSearchOpen{display:inline-flex;align-items:center;justify-content:center;gap:7px;flex:0 0 auto;white-space:nowrap;border:1px solid #d71920;background:#fff;color:#bd1720;border-radius:12px;padding:10px 15px;font:800 14px Cairo,Arial;cursor:pointer;min-height:44px}",
+"#dawlyImageSearchOpen svg{width:18px;height:18px;flex:0 0 18px;fill:none;stroke:currentColor;stroke-width:1.8}",
+"@media(max-width:700px){.product-toolbar{flex-wrap:wrap}.product-toolbar-note{flex:1 1 auto}#dawlyImageSearchOpen{min-height:42px;padding:8px 10px;font-size:12px}.product-sort-control{flex:1 1 100%!important}}",
  "#dawlyImageSearchOverlay{position:fixed;inset:0;z-index:10050;background:rgba(13,20,29,.68);display:none;align-items:center;justify-content:center;padding:18px}",
  "#dawlyImageSearchOverlay.is-open{display:flex}",
  "#dawlyImageSearchModal{width:min(720px,100%);max-height:90vh;overflow:auto;background:#fff;border-radius:20px;padding:22px;box-shadow:0 22px 80px #0005;direction:rtl;color:#202832;font-family:Cairo,Arial}",
@@ -103,7 +105,11 @@ async function search(){
 function mount(){
  if(document.getElementById("dawlyImageSearchOpen"))return;
  var toolbar=document.querySelector(".product-toolbar");if(!toolbar)return;
- var b=node("button",{id:"dawlyImageSearchOpen",type:"button",text:"⌕ البحث بصورة المنتج"});b.onclick=open;toolbar.insertBefore(b,toolbar.firstChild);
+ var b=node("button",{id:"dawlyImageSearchOpen",type:"button","aria-label":"البحث بصورة المنتج"});
+ b.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="6" width="17" height="13.5" rx="2"/><path d="M8 6l1.5-2h5L16 6"/><circle cx="12" cy="12.5" r="3.5"/></svg><span>البحث بالصورة</span>';
+ b.onclick=open;
+ var sort=toolbar.querySelector(".product-sort-control");
+ toolbar.insertBefore(b,sort);
 }
 function init(){mount();var n=0;var retry=function(){if(!document.getElementById("dawlyImageSearchOpen")&&n++<20){mount();setTimeout(retry,250);}};retry();window.addEventListener("dawly-products-updated",function(e){if(Array.isArray(e.detail))products=e.detail;});}
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init);else init();
