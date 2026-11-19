@@ -529,3 +529,33 @@
 .barcode-scanner-note{margin:11px 0 0!important;color:#77818b!important;font-size:10px!important;line-height:1.6!important}
 body.barcode-scanner-open{overflow:hidden!important}
 @media(max-width:420px){.barcode-scanner-panel{padding:14px!important}.barcode-video-wrap{min-height:210px!important}}
+
+
+/* High-contrast barcode button override for the header search form. */
+form#searchForm button.barcode-scan-trigger,
+#searchForm button#openBarcodeScanner{
+ display:inline-flex!important;align-items:center!important;justify-content:center!important;
+ flex:0 0 48px!important;width:48px!important;min-width:48px!important;
+ height:48px!important;min-height:48px!important;padding:10px!important;
+ margin:0 5px!important;border:0!important;border-radius:14px!important;
+ background:#c8101e!important;color:#fff!important;
+ box-shadow:0 3px 9px rgba(200,16,30,.20)!important;
+ opacity:1!important;visibility:visible!important;
+}
+form#searchForm button.barcode-scan-trigger svg,
+#searchForm button#openBarcodeScanner svg{
+ display:block!important;width:27px!important;height:27px!important;
+ fill:none!important;stroke:#fff!important;stroke-width:2.2!important;
+ stroke-linecap:round!important;stroke-linejoin:round!important;opacity:1!important;
+}
+form#searchForm button.barcode-scan-trigger:active,
+#searchForm button#openBarcodeScanner:active{
+ background:#a90d18!important;transform:scale(.96)!important;
+}
+@media(max-width:700px){
+ form#searchForm button.barcode-scan-trigger,
+ #searchForm button#openBarcodeScanner{
+  flex-basis:48px!important;width:48px!important;min-width:48px!important;
+  height:48px!important;min-height:48px!important;border-radius:14px!important;
+ }
+}
