@@ -1,4 +1,4 @@
-const CACHE_NAME = "aldawly-tools-v27-remove-all-extra-search-buttons";
+const CACHE_NAME = "aldawly-tools-v28-cart-added-label";
 const APP_SHELL = [
   "/",
   "/index.html",
