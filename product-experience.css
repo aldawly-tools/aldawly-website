@@ -478,3 +478,29 @@
  .product-card .product-info,.home-shelf-card .product-info{padding:8px!important}
  .product-card .product-name,.home-shelf-card .product-name{font-size:11px!important}
 }
+
+
+/* Screenshot follow-up: compact card content and remove legacy floating overlays on mobile. */
+@media(max-width:700px){
+ #productGrid.product-grid{align-items:start!important;grid-auto-rows:auto!important}
+ #productGrid .product-card{
+   height:auto!important;min-height:0!important;align-self:start!important;
+ }
+ #productGrid .product-card .product-info{
+   flex:0 0 auto!important;height:auto!important;min-height:0!important;
+   gap:7px!important;
+ }
+ #productGrid .product-card .product-price{
+   margin-top:0!important;min-height:0!important;
+ }
+ #productGrid .product-card .card-cart-actions{
+   margin-top:5px!important;flex:0 0 auto!important;
+ }
+ #productGrid .product-card .product-card-tools{margin-top:0!important}
+ /* Keep only the unified bottom navigation; hide older floating shortcuts. */
+ #dawlyQuickMenu,#dawlyBotLauncher,.floating-home-cart,
+ .dawly-mini-cart-launcher,.floating-contact-widget,.mobile-menu-trigger{
+   display:none!important;opacity:0!important;visibility:hidden!important;
+   pointer-events:none!important;
+ }
+}
