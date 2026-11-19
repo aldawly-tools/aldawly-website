@@ -549,7 +549,7 @@
     visibleProductCount = pageSize;
     renderProducts();
   });
-  loadMoreButton.addEventListener("click", function () {
+  if (loadMoreButton) loadMoreButton.addEventListener("click", function () {
     visibleProductCount += pageSize;
     renderProducts();
   });
@@ -806,14 +806,16 @@
 
   if (brandFilterSearch) brandFilterSearch.addEventListener("input", drawBrandFilters);
 
-  document.getElementById("searchForm").addEventListener("submit", function (event) {
+  const searchForm = document.getElementById("searchForm");
+  const searchInput = document.getElementById("searchInput");
+  if (searchForm && searchInput) searchForm.addEventListener("submit", function (event) {
     event.preventDefault();
     query = document.getElementById("searchInput").value;
     visibleProductCount = pageSize;
     renderProducts();
     document.getElementById("products").scrollIntoView({behavior:"smooth"});
   });
-  document.getElementById("searchInput").addEventListener("input", function (event) {
+  if (searchInput) searchInput.addEventListener("input", function (event) {
     query = event.target.value;
     visibleProductCount = pageSize;
     renderProducts();
@@ -836,6 +838,13 @@
   }
 
   document.addEventListener("click", function (event) {
+    const detailAddButton = event.target.closest("[data-detail-order-now]");
+    if (detailAddButton && !detailAddButton.disabled) {
+      addToCart(detailAddButton.dataset.detailOrderNow);
+      setCheckoutStep("review");
+      setDrawer(true);
+      return;
+    }
     const quickViewButton = event.target.closest("[data-quick-view]");
     if (quickViewButton) {
       const item = products.find(function (entry) { return String(entry.id) === String(quickViewButton.dataset.quickView); });
