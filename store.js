@@ -533,7 +533,7 @@
   const loadMoreButton = listingControls.querySelector("[data-load-more]");
   const productSort = document.getElementById("productSort");
   let productSortMode = "newest";
-  productSort.addEventListener("change", function () {
+  if (productSort) productSort.addEventListener("change", function () {
     productSortMode = productSort.value;
     visibleProductCount = pageSize;
     renderProducts();
