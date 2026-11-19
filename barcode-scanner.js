@@ -84,7 +84,7 @@
   try{
    if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia)throw new Error("الكاميرا غير متاحة. افتح الموقع من متصفح حديث عبر اتصال آمن HTTPS.");
    if("BarcodeDetector" in window){
-    try{await startNative(video);}catch(nativeError){stopCamera();await startZXing(video);}
+    try{await startNative(video);}catch(nativeError){stopCamera();if(nativeError&&nativeError.name==="NotAllowedError")throw nativeError;await startZXing(video);}
    }else{await startZXing(video);}
   }catch(e){stopCamera();status(e&&e.name==="NotAllowedError"?"لم تسمح بالوصول للكاميرا. فعّل إذن الكاميرا للموقع من إعدادات المتصفح.":(e.message||"تعذر تشغيل الكاميرا. حاول مرة أخرى."));}
   finally{retry.disabled=false;}
