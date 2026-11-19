@@ -70,32 +70,52 @@ export async function onRequest(context) {
       code: clean(p && (p.code || p.sku || p.productCode || p.barcode || p.model || p.partNumber), 55)
     })).filter(p => p.n);
 
-    const prompt = "أنت مساعد بصري يفهم أي صورة. صف أولا الشيء الرئيسي الظاهر في الصورة بدقة، حتى لو لم يكن أداة. ثم ابحث فقط عن تطابق حقيقي له داخل قائمة منتجات متجر العدد. إذا كانت الصورة لشيء غير موجود في الكتالوج مثل طعام أو مناديل أو سيارة، اشرح ما تراه وأعد matches فارغة. لا تقترح أداة مختلفة لمجرد أنها الأقرب. طابق نوع المنتج ووظيفته وشكله ومقاسه أو موديله وعلامته التجارية عند وضوحها، ولا تعتمد على اللون أو تشابه الاسم وحدهما. أعد نتيجة واحدة أو اثنتين فقط عند وجود تطابق قوي، وإلا أعد قائمة فارغة. لا تخترع بيانات. أعد JSON فقط: {\"matches\":[{\"i\":رقم المنتج,\"confidence\":0 إلى 100,\"reason\":\"سبب محدد بالعربية\"}],\"identified\":\"وصف ما يظهر بالصورة بالعربية\" ,\"brand\":\"الماركة إن ظهرت وإلا فارغ\",\"keywords\":[\"كلمات قصيرة\"]}. قائمة المنتجات: " + JSON.stringify(catalog)
-
     const encoded = image.slice(image.indexOf(",") + 1);
-    const aiResponse = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent?key=" + encodeURIComponent(context.env.GEMINI_API_KEY), {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({
-        contents: [{ parts: [{ text: prompt }, { inline_data: { mime_type: mimeType, data: encoded } }] }],
-        generationConfig: { responseMimeType: "application/json", temperature: 0.1, maxOutputTokens: 1600 }
-      }),
-      signal: AbortSignal.timeout(45000)
-    });
-    const data = await aiResponse.json().catch(() => ({}));
-    if (!aiResponse.ok) {
-      const apiMessage = clean(data.error && data.error.message, 260);
-      console.error("Gemini visual search failed", aiResponse.status, apiMessage);
-      const publicMessage = aiResponse.status === 429 ? "خدمة البحث الذكي وصلت للحد المؤقت للاستخدام. انتظر دقيقة ثم حاول مرة أخرى." : aiResponse.status === 403 || aiResponse.status === 401 ? "مفتاح خدمة الذكاء الاصطناعي غير صالح أو لا يملك صلاحية الاستخدام. راجع GEMINI_API_KEY في Cloudflare." : aiResponse.status === 404 ? "موديل Gemini المحدد غير متاح لهذا المفتاح. يلزم تحديث إعداد الموديل." : "فشل تحليل الصورة من Gemini (HTTP " + aiResponse.status + "). " + (apiMessage || "راجع إعدادات مفتاح Gemini وحصته في Cloudflare.");
-      return reply({ error: publicMessage, diagnostic: { status: aiResponse.status, message: apiMessage } }, 502, origin);
+    const model = "gemini-3.8-flash";
+    async function askGemini(parts, maxOutputTokens) {
+      const response = await fetch("https://generativelanguage.googleapis.com/v1beta/models/" + model + ":generateContent?key=" + encodeURIComponent(context.env.GEMINI_API_KEY), {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({
+          contents: [{ parts }],
+          generationConfig: { responseMimeType: "application/json", temperature: 0.05, maxOutputTokens },
+        }),
+        signal: AbortSignal.timeout(45000)
+      });
+      const result = await response.json().catch(() => ({}));
+      if (!response.ok) {
+        const apiMessage = clean(result.error && result.error.message, 260);
+        console.error("Gemini visual search failed", response.status, apiMessage);
+        const publicMessage = response.status === 429 ? "خدمة البحث الذكي وصلت للحد المؤقت للاستخدام. انتظر دقيقة ثم حاول مرة أخرى." : response.status === 403 || response.status === 401 ? "مفتاح خدمة الذكاء الاصطناعي غير صالح أو لا يملك صلاحية الاستخدام. راجع GEMINI_API_KEY في Cloudflare." : response.status === 404 ? "موديل Gemini المحدد غير متاح لهذا المفتاح. راجع إعداد الموديل وصلاحية المفتاح." : "فشل تحليل الصورة من Gemini (HTTP " + response.status + "). " + (apiMessage || "راجع إعدادات مفتاح Gemini وحصته في Cloudflare.");
+        throw Object.assign(new Error(publicMessage), { status: response.status, apiMessage });
+      }
+      const output = result.candidates?.[0]?.content?.parts?.map(part => part.text || "").join("") || "";
+      if (!output) throw new Error("لم ترجع خدمة الذكاء الاصطناعي وصفًا للصورة. جرّب صورة أوضح.");
+      try { return JSON.parse(output); }
+      catch (_) { throw new Error("تعذر قراءة نتيجة تحليل الصورة. حاول مرة أخرى بصورة أوضح."); }
     }
-    const output = data.candidates?.[0]?.content?.parts?.map(part => part.text || "").join("") || "";
-    const parsed = JSON.parse(output);
+
+    // Stage 1: identify the photographed object without showing the model the store catalog.
+    const vision = await askGemini([
+      { text: "حلل الصورة فقط دون محاولة تخمين منتجات متجر. أعد JSON فقط بهذا الشكل: {\\"object_type\\":\\"نوع الشيء المحدد\\",\\"brand\\":\\"العلامة الظاهرة أو فارغ\\",\\"model\\":\\"الموديل أو الكود الظاهر أو فارغ\\",\\"visual_features\\":[\\"سمات مميزة مرئية\\"]}. اذكر ما تراه فعلاً. إذا كانت الصورة غير واضحة أو لا تحتوي على أداة، قل ذلك صراحة ولا تخترع علامة أو موديل." },
+      { inline_data: { mime_type: mimeType, data: encoded } }
+    ], 500);
+    const objectType = clean(vision.object_type, 120);
+    const visibleBrand = clean(vision.brand, 70);
+    const visibleModel = clean(vision.model, 70);
+    const visualFeatures = Array.isArray(vision.visual_features) ? vision.visual_features.slice(0, 6).map(x => clean(x, 90)) : [];
+    if (!objectType || /غير واضحة|لا يمكن|غير معروف|لا يظهر/i.test(objectType)) {
+      return reply({ matches: [], identified: objectType || "الصورة غير واضحة بما يكفي للتعرف على الأداة.", brand: visibleBrand, keywords: visualFeatures }, 200, origin);
+    }
+
+    // Stage 2: compare the independently identified object against catalog records.
+    const prompt = "أنت مدقق مطابقة منتجات، ومهمتك منع النتائج الخاطئة. تحليل الصورة المستقل: نوع الشيء=" + objectType + "؛ العلامة الظاهرة=" + (visibleBrand || "غير واضحة") + "؛ الموديل الظاهر=" + (visibleModel || "غير واضح") + "؛ السمات المرئية=" + JSON.stringify(visualFeatures) + ".\nقارن هذا الوصف مع المنتجات التالية. شروط إلزامية: لا تطابق منتجاً من فئة أو وظيفة مختلفة. لا تعتبر تشابه اللون أو الشكل العام أو كلمة مشتركة دليلاً كافياً. إذا اختلف نوع الأداة أو استخدامها فاستبعد المنتج. إذا كانت العلامة أو الموديل واضحين فلا تختر منتجاً بعلامة/موديل مختلف. إذا لم يوجد تطابق قوي أعد matches فارغة. أعد منتجاً واحداً فقط غالباً، واثنين كحد أقصى إذا كانا متقاربين فعلاً. confidence يعبر عن تطابق النوع والوظيفة والسمات، وليس مجرد قرب بصري. لا تخترع معلومات. أعد JSON فقط: {\\"matches\\":[{\\"i\\":رقم المنتج كما في القائمة،\\"confidence\\":0 إلى 100،\\"reason\\":\\"سبب محدد بالعربية يوضح تطابق النوع والوظيفة\\ "}]}\nقائمة المنتجات: " + JSON.stringify(catalog);
+    const parsed = await askGemini([{ text: prompt }], 900);
     const matches = Array.isArray(parsed.matches) ? parsed.matches.slice(0, 2).map(match => ({
       i: Number(match.i),
       confidence: Math.max(0, Math.min(100, Number(match.confidence) || 0)),
       reason: clean(match.reason, 130)
-    })).filter(match => Number.isInteger(match.i) && match.i >= 0 && match.i < candidates.length && match.confidence >= 78) : [];
+    })).filter(match => Number.isInteger(match.i) && match.i >= 0 && match.i < candidates.length && match.confidence >= 86) : [];
     return reply({
       matches,
       identified: clean(parsed.identified, 180),
