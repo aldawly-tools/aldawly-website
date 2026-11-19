@@ -6742,3 +6742,160 @@ body:has(.cart-drawer.open) .dawly-mini-cart-launcher{opacity:0!important;pointe
   outline: 3px solid rgba(255,255,255,.9);
   outline-offset: 3px;
 }
+
+
+/* DAWLY premium storefront header refresh — no customer account area. */
+.masthead {
+  position: relative;
+  background: #fff;
+  border-bottom: 1px solid #dce1e7;
+  box-shadow: 0 5px 18px rgba(17, 25, 35, .055);
+}
+.masthead::before {
+  content: "";
+  display: block;
+  height: 5px;
+  background: linear-gradient(90deg, #151b22 0 72%, #d71920 72% 100%);
+}
+.masthead-grid {
+  min-height: 112px;
+  grid-template-columns: minmax(290px, 360px) minmax(260px, 1fr) minmax(145px, 190px);
+  gap: clamp(14px, 2vw, 30px);
+  padding-block: 12px;
+}
+.brand { gap: 13px; }
+.brand-mark, .brand-mark svg {
+  width: 66px;
+  height: 66px;
+}
+.brand-mark { flex-basis: 66px; }
+.brand-name { font-size: clamp(27px, 2.5vw, 36px); }
+.brand-tag {
+  margin-top: 4px;
+  font-size: clamp(16px, 1.55vw, 21px);
+  line-height: 1.35;
+}
+.search-form {
+  height: 56px;
+  border: 2px solid #e0e4e9;
+  border-radius: 999px;
+  box-shadow: 0 5px 16px rgba(16, 24, 40, .07);
+  transition: border-color .2s ease, box-shadow .2s ease;
+}
+.search-form:focus-within {
+  border-color: rgba(215, 25, 32, .65);
+  box-shadow: 0 0 0 4px rgba(215, 25, 32, .08);
+}
+.search-form input { padding-inline: 22px; font-size: 15px; }
+.search-form button {
+  width: 60px;
+  flex-basis: 60px;
+  margin: 4px;
+  border-radius: 50%;
+}
+.head-actions { gap: 12px; }
+.head-action {
+  min-height: 46px;
+  padding: 8px 10px;
+  border-radius: 12px;
+  color: #26313c;
+  transition: background .2s ease, color .2s ease;
+}
+.head-action:hover { background: #f3f5f7; color: var(--red); }
+.cart-button {
+  min-height: 48px;
+  padding: 8px 13px;
+  border: 1px solid #f0c9cc;
+  border-radius: 13px;
+  background: #fff5f5;
+  color: #b80f17;
+  transition: background .2s ease, transform .2s ease;
+}
+.cart-button:hover { background: #ffe9ea; transform: translateY(-1px); }
+.cart-icon svg { width: 29px; height: 29px; }
+.main-nav {
+  background: #171d24;
+  border-bottom: 3px solid var(--red);
+  box-shadow: 0 5px 15px rgba(15, 23, 42, .12);
+}
+.nav-row { min-height: 56px; gap: 6px; }
+.nav-link {
+  color: #f5f7fa;
+  border-radius: 9px;
+  margin-block: 5px;
+  padding-inline: clamp(9px, 1.2vw, 17px);
+  transition: background .2s ease, color .2s ease;
+}
+.nav-link:hover { color: #fff; background: rgba(255,255,255,.09); }
+.nav-link.active {
+  color: #fff;
+  background: var(--red);
+  box-shadow: 0 4px 12px rgba(215,25,32,.22);
+}
+.nav-link .red-mark { color: #ff7279; }
+@media (max-width: 850px) {
+  .masthead-grid {
+    min-height: 0;
+    grid-template-columns: minmax(0,1fr) auto;
+    gap: 11px;
+    padding-block: 12px;
+  }
+  .brand-mark, .brand-mark svg { width: 54px; height: 54px; }
+  .brand-mark { flex-basis: 54px; }
+  .brand-name { font-size: 25px; }
+  .brand-tag { font-size: 15px; }
+  .search-form { height: 49px; }
+  .head-actions { gap: 7px; }
+  .head-action { display: none; }
+  .cart-button { min-height: 44px; padding: 7px 10px; }
+  .main-nav { background: #171d24; }
+  .nav-row { min-height: 48px; }
+}
+@media (max-width: 600px) {
+  .masthead::before { height: 4px; }
+  .masthead-grid {
+    grid-template-columns: minmax(0,1fr) auto;
+    gap: 9px;
+    padding-block: 10px;
+  }
+  .brand { gap: 8px; }
+  .brand-mark, .brand-mark svg { width: 47px; height: 47px; }
+  .brand-mark { flex-basis: 47px; }
+  .brand-name { font-size: 23px; }
+  .brand-tag { font-size: 12px; line-height: 1.35; }
+  .head-actions { justify-content: flex-start; }
+  .cart-button { min-height: 43px; padding: 6px 9px; }
+  .cart-button > span:last-child { display: none; }
+  .cart-icon svg { width: 27px; height: 27px; }
+  .search-form {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    height: 46px;
+    border-radius: 999px;
+  }
+  .search-form input { font-size: 13px; padding-inline: 15px; }
+  .search-form button { width: 40px; flex-basis: 40px; }
+  .search-form button svg { width: 21px; height: 21px; }
+  .main-nav { border-bottom-width: 2px; }
+  .nav-row {
+    display: flex;
+    min-height: 47px;
+    gap: 5px;
+    padding: 4px 3%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-width: none;
+  }
+  .nav-row::-webkit-scrollbar { display: none; }
+  .nav-link {
+    flex: 0 0 auto;
+    min-height: 37px;
+    margin-block: 1px;
+    padding-inline: 12px;
+    font-size: 12px;
+    white-space: nowrap;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .search-form, .head-action, .cart-button, .nav-link { transition: none; }
+}
