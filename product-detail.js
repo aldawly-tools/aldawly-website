@@ -91,6 +91,11 @@
     const name = cleanProductName(item.name || "منتج من الدولي");
     const seoDescription = cleanProductCopy(item.desc || item.specs || "تفاصيل المنتج من متجر الدولي للعدد الأصلية والمستوردة.").replace(/\s+/g, " ").slice(0, 160);
     document.title = name + " | الدولي";
+    // Prepare the share image in the background before the visitor taps Share.
+    if (typeof window.DAWLY_PREPARE_PRODUCT_SHARE === "function") {
+      const shareUrl = new URL("product.html?id=" + encodeURIComponent(String(item.id)), window.location.href).toString();
+      window.DAWLY_PREPARE_PRODUCT_SHARE(item, shareUrl, null);
+    }
     updateMeta("name", "description", seoDescription);
     updateMeta("property", "og:type", "product");
     updateMeta("property", "og:title", name + " | الدولي");
