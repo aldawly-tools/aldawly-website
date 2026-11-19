@@ -1,4 +1,4 @@
-const CACHE_NAME = "aldawly-tools-v17-offline-fallback";
+const CACHE_NAME = "aldawly-tools-v18-offline-fallback";
 const APP_SHELL = [
   "/",
   "/index.html",
