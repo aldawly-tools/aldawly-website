@@ -6899,3 +6899,124 @@ body:has(.cart-drawer.open) .dawly-mini-cart-launcher{opacity:0!important;pointe
 @media (prefers-reduced-motion: reduce) {
   .search-form, .head-action, .cart-button, .nav-link { transition: none; }
 }
+
+
+/* CHECKOUT MOBILE OVERLAP FIX — 2026-11-19
+   Header remains in its own flex row; only the order content scrolls.
+   No checkout fields, order logic, payment links or WhatsApp flow are changed. */
+html body aside#cartDrawer.cart-drawer{
+  display:flex!important;
+  flex-direction:column!important;
+  box-sizing:border-box!important;
+  height:100vh!important;
+  height:100dvh!important;
+  max-height:100dvh!important;
+  overflow:hidden!important;
+  padding: max(8px, env(safe-area-inset-top, 0px)) 14px max(12px, env(safe-area-inset-bottom, 0px))!important;
+}
+html body aside#cartDrawer.cart-drawer > .drawer-head{
+  position:relative!important;
+  top:auto!important;
+  z-index:3!important;
+  flex:0 0 auto!important;
+  min-height:0!important;
+  margin:0!important;
+  padding:12px 10px 14px!important;
+  align-items:center!important;
+  gap:10px!important;
+  background:linear-gradient(135deg,#fff 0%,#fff7f7 100%)!important;
+  border-bottom:1px solid #eceff2!important;
+}
+html body aside#cartDrawer.cart-drawer > .drawer-head .order-drawer-title{
+  min-width:0!important;
+  flex:1 1 auto!important;
+}
+html body aside#cartDrawer.cart-drawer > .drawer-head .order-drawer-title h2{
+  font-size:clamp(18px,4.8vw,22px)!important;
+  line-height:1.4!important;
+  overflow-wrap:anywhere!important;
+}
+html body aside#cartDrawer.cart-drawer > .drawer-head .order-drawer-title p{
+  font-size:11px!important;
+  line-height:1.7!important;
+}
+html body aside#cartDrawer.cart-drawer > .drawer-head .drawer-close{
+  flex:0 0 auto!important;
+  min-height:42px!important;
+  white-space:nowrap!important;
+}
+html body aside#cartDrawer.cart-drawer > .cart-scroll-area{
+  position:relative!important;
+  display:block!important;
+  flex:1 1 auto!important;
+  min-height:0!important;
+  height:auto!important;
+  overflow-x:hidden!important;
+  overflow-y:auto!important;
+  overscroll-behavior:contain!important;
+  -webkit-overflow-scrolling:touch!important;
+  padding:12px 3px calc(28px + env(safe-area-inset-bottom,0px)) 0!important;
+  scroll-padding-top:12px!important;
+  scroll-padding-bottom:28px!important;
+}
+#cartDrawer .checkout-details-step{
+  display:block;
+  min-width:0!important;
+  padding-top:2px!important;
+  overflow:visible!important;
+}
+#cartDrawer .checkout-details-step[hidden]{display:none!important}
+#cartDrawer .checkout-step-heading{
+  position:relative!important;
+  top:auto!important;
+  margin:0 0 12px!important;
+  padding:9px 0 11px!important;
+  line-height:1.5!important;
+}
+#cartDrawer .checkout-fields{
+  min-width:0!important;
+  margin:12px 0!important;
+  overflow:visible!important;
+}
+#cartDrawer .checkout-fields input,
+#cartDrawer .checkout-fields select,
+#cartDrawer .checkout-fields textarea{
+  box-sizing:border-box!important;
+  min-height:48px!important;
+  max-width:100%!important;
+  line-height:1.6!important;
+}
+#cartDrawer .checkout-fields textarea{
+  min-height:88px!important;
+  resize:vertical!important;
+}
+#cartDrawer .checkout-action-note{
+  flex-wrap:wrap!important;
+  line-height:1.7!important;
+}
+#cartDrawer #checkout{
+  position:sticky!important;
+  bottom:0!important;
+  z-index:4!important;
+  display:block!important;
+  width:100%!important;
+  min-height:54px!important;
+  margin:12px 0 0!important;
+  padding:13px 12px!important;
+  box-shadow:0 -5px 14px rgba(255,255,255,.92),0 7px 18px rgba(200,16,30,.18)!important;
+}
+@media(max-width:600px){
+  html body aside#cartDrawer.cart-drawer{
+    width:min(620px,96vw)!important;
+    max-width:96vw!important;
+    border-radius:16px 0 0 16px!important;
+  }
+  html body aside#cartDrawer.cart-drawer > .drawer-head{
+    padding:10px 8px 12px!important;
+  }
+  #cartDrawer .order-eyebrow{font-size:9px!important}
+  #cartDrawer .order-drawer-title h2{font-size:18px!important}
+  #cartDrawer .drawer-close{padding:8px 10px!important;font-size:12px!important}
+  #cartDrawer .cart-scroll-area{padding-top:10px!important}
+  #cartDrawer .checkout-fields{padding:12px!important;gap:9px!important}
+}
