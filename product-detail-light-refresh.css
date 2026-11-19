@@ -148,3 +148,20 @@ body.product-page .product-detail-header>.button-outline:focus{
 .product-detail-layout .product-detail-price .detail-price-value strong{font-size:1.2em;font-weight:1000;color:#b20f19}
 .product-detail-layout .product-detail-price .detail-price-value del{font-size:14px;color:#7a8189;font-weight:700}
 .product-detail-layout .product-detail-price .detail-price-value .product-discount{display:inline-block;padding:4px 9px;border-radius:999px;background:#c8101e;color:#fff;font-size:12px;font-style:normal;font-weight:900}
+
+/* Product page: replace the fixed purchase strip with the unified five-item app dock. */
+@media(max-width:700px){
+ body.product-page{padding-bottom:calc(82px + env(safe-area-inset-bottom,0px))!important}
+ body.product-page .mobile-purchase-bar{display:none!important}
+ body.product-page #floatingHomeCart{display:none!important}
+ .product-page .dawly-app-dock{position:fixed!important;left:0!important;right:0!important;bottom:0!important;z-index:10055!important;display:grid!important;direction:rtl!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;min-height:68px!important;padding:6px 5px calc(6px + env(safe-area-inset-bottom,0px))!important;background:rgba(255,255,255,.98)!important;border-top:1px solid #e5e8eb!important;box-shadow:0 -4px 16px rgba(15,25,35,.07)!important}
+ .product-page .dawly-app-dock a,.product-page .dawly-app-dock button{display:flex!important;min-width:0!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:3px!important;padding:3px!important;border:0!important;background:transparent!important;color:#858c94!important;text-decoration:none!important;font:700 10px/1.3 Cairo,Tahoma,sans-serif!important}
+ .product-page .dawly-app-dock svg{width:24px!important;height:24px!important;stroke:currentColor!important;fill:none!important;stroke-width:1.8!important;stroke-linecap:round!important;stroke-linejoin:round!important}
+ .product-page .dawly-app-dock .is-active{color:#c8101e!important}
+ .product-page .dawly-app-dock .dock-cart-icon{position:relative!important}
+ .product-page .dawly-app-dock .dock-count{position:absolute!important;top:-5px!important;right:-9px!important;min-width:16px!important;height:16px!important;padding:0 4px!important;border-radius:99px!important;background:#c8101e!important;color:#fff!important;font:800 9px/16px Arial,sans-serif!important}
+ .product-page .dawly-app-dock{transition:transform .28s ease,opacity .22s ease!important;will-change:transform}
+ .product-page .dawly-app-dock.dawly-dock-hidden{transform:translate3d(0,120%,0)!important;opacity:0!important;pointer-events:none!important}
+}
+@media(min-width:701px){.product-page .dawly-app-dock{display:none!important}}
+@media(prefers-reduced-motion:reduce){.product-page .dawly-app-dock{transition:none!important}}
