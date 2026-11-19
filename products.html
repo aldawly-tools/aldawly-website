@@ -368,6 +368,7 @@
  if(!banner||!title||!logo)return;
  title.textContent='منتجات '+item.name;
  if(item.logo){logo.src=item.logo;logo.alt='شعار '+item.name;logo.hidden=false;}
+ else{logo.removeAttribute('src');logo.alt='';logo.hidden=true;}
  banner.classList.add('is-visible');
 })();
 </script>
