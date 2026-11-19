@@ -896,7 +896,7 @@
 }
 
 
-/* Final mobile banner sizing: compact Würth artwork without empty black bands. */
+/* Keep the full Würth banner visible on every mobile width. */
 @media(max-width:1100px) and (orientation:portrait){
  .hero-shell .hero-grid{
   grid-template-areas:"copy" "photo" "services"!important;
@@ -905,14 +905,14 @@
  }
  .hero-shell .hero-photo{
   grid-area:photo!important;display:block!important;position:relative!important;
-  width:100%!important;height:225px!important;min-height:225px!important;max-height:225px!important;
-  aspect-ratio:auto!important;overflow:hidden!important;border-radius:0!important;
+  width:100%!important;height:auto!important;min-height:0!important;max-height:none!important;
+  aspect-ratio:8 / 3!important;overflow:hidden!important;border-radius:0!important;
   margin:0!important;padding:0!important;background:#090b0f!important;
  }
  .hero-shell .hero-photo img{
   position:absolute!important;inset:0!important;display:block!important;
   width:100%!important;height:100%!important;min-height:0!important;max-height:none!important;
-  object-fit:cover!important;object-position:center!important;
+  object-fit:contain!important;object-position:center!important;
   padding:0!important;margin:0!important;background:#090b0f!important;
  }
  .hero-shell .hero-services{grid-area:services!important}
