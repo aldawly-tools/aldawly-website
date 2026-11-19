@@ -118,12 +118,12 @@ export async function onRequest(context) {
     })).filter(match => Number.isInteger(match.i) && match.i >= 0 && match.i < candidates.length && match.confidence >= 86) : [];
     return reply({
       matches,
-      identified: clean(parsed.identified, 180),
-      brand: clean(parsed.brand, 70),
-      keywords: Array.isArray(parsed.keywords) ? parsed.keywords.slice(0, 8).map(x => clean(x, 45)) : []
+      identified: objectType + (visibleModel ? " — " + visibleModel : ""),
+      brand: visibleBrand,
+      keywords: visualFeatures
     }, 200, origin);
   } catch (error) {
     console.error("Gemini visual search error:", error?.message || error);
-    return reply({ error: "حدث خطأ أثناء البحث بالصورة. حاول بصورة أوضح." }, 500, origin);
+    return reply({ error: clean(error?.message || "حدث خطأ أثناء البحث بالصورة. حاول بصورة أوضح.", 300) }, error?.status === 429 ? 429 : 500, origin);
   }
 }
