@@ -70,6 +70,21 @@
     }
     return null;
   }
+  const preparedFiles = new Map();
+  const preparedReadyFiles = new Map();
+  window.DAWLY_PREPARE_PRODUCT_SHARE = function (item, productUrl, shareButton) {
+    const key = String(item && item.id || "");
+    if (!key) return Promise.resolve(null);
+    if (preparedFiles.has(key)) return preparedFiles.get(key);
+    const task = window.DAWLY_CREATE_PRODUCT_SHARE_FILE(item, productUrl, shareButton)
+      .then(function (file) { if (file) preparedReadyFiles.set(key, file); return file; })
+      .catch(function (error) { preparedFiles.delete(key); console.warn("Share image preparation failed:", error); return null; });
+    preparedFiles.set(key, task);
+    return task;
+  };
+  window.DAWLY_GET_PREPARED_PRODUCT_SHARE = function (id) {
+    return preparedReadyFiles.get(String(id || "")) || null;
+  };
   window.DAWLY_CREATE_PRODUCT_SHARE_FILE = async function (item, productUrl, shareButton) {
     const image = await getProductImage(item, shareButton);
     const canvas = document.createElement("canvas");
