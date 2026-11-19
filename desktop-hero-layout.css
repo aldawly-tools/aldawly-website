@@ -257,3 +257,25 @@
   }
   .hero-shell .hero-services-track .service-card:nth-child(n+5){display:none!important}
 }
+
+
+/* Multi-brand hero showcase on desktop and wide screens. */
+@media(min-width:1101px){
+ .hero-shell .hero-brand-showcase{
+  grid-area:photo!important;display:flex!important;flex-direction:column!important;
+  justify-content:center!important;align-items:stretch!important;gap:22px!important;
+  min-height:430px!important;height:100%!important;padding:28px 22px!important;
+  background:radial-gradient(ellipse at 50% 0%,rgba(190,0,25,.24),transparent 55%),linear-gradient(145deg,#101820,#080b10)!important;
+ }
+ .hero-shell .hero-brands-heading{text-align:center!important;color:#fff!important}
+ .hero-shell .hero-brands-kicker{display:inline-block!important;padding:6px 14px!important;border:1px solid rgba(255,70,90,.4)!important;border-radius:30px!important;color:#ff8490!important;font-size:13px!important;font-weight:800!important}
+ .hero-shell .hero-brands-heading h3{margin:12px 0 4px!important;color:#fff!important;font-size:clamp(22px,2vw,30px)!important;font-weight:900!important}
+ .hero-shell .hero-brands-heading p{margin:0!important;color:#c5cbd2!important;font-size:14px!important}
+ .hero-shell .hero-brands-grid{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:12px!important}
+ .hero-shell .hero-brand-card{min-height:110px!important;padding:15px 10px!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:9px!important;border:1px solid rgba(255,255,255,.20)!important;border-radius:15px!important;background:linear-gradient(145deg,#202a34,#11171e)!important;text-decoration:none!important}
+ .hero-shell .hero-brand-card img{display:block!important;width:auto!important;height:38px!important;max-width:88%!important;object-fit:contain!important;filter:brightness(0) invert(1)!important}
+ .hero-shell .hero-brand-card:nth-child(4) img{filter:none!important;max-width:78%!important}
+ .hero-shell .hero-brand-origin{font-size:13px!important;font-weight:800!important;color:#f4f5f7!important}
+ .hero-shell .hero-brands-footer{display:flex!important;justify-content:center!important;gap:14px!important;color:#dce1e6!important;font-size:13px!important;font-weight:800!important}
+ .hero-shell .hero-brands-footer i{width:1px!important;background:rgba(255,255,255,.3)!important}
+}
