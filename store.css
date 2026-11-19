@@ -5078,6 +5078,10 @@ html body aside#cartDrawer.cart-drawer>.cart-scroll-area>.payment-followup{
 #cartDrawer .drawer-close{flex:0 0 auto;border:1px solid #e3e6e9!important;border-radius:10px!important;background:#fff!important;padding:9px 11px!important;font-size:12px!important}
 #cartDrawer .order-progress{display:flex;align-items:center;justify-content:space-between;gap:6px;padding:15px 2px 17px;color:#89919a;font-size:10px;font-weight:800;white-space:nowrap}
 #cartDrawer .order-progress span{display:flex;align-items:center;gap:5px}
+#cartDrawer .order-progress button{appearance:none;-webkit-appearance:none;border:0;background:transparent;padding:0;margin:0;display:flex;align-items:center;gap:5px;color:inherit;font:inherit;white-space:nowrap;cursor:pointer;touch-action:manipulation}
+#cartDrawer .order-progress button:focus-visible{outline:2px solid #c8101e;outline-offset:4px;border-radius:8px}
+#cartDrawer .order-progress button:disabled{cursor:not-allowed;opacity:.55}
+#cartDrawer .order-progress button.is-active,#cartDrawer .order-progress button.is-complete{color:#b71925}
 #cartDrawer .order-progress b{width:22px;height:22px;display:grid;place-items:center;border-radius:50%;background:#edf0f2;color:#68717b;font-size:11px}
 #cartDrawer .order-progress .is-active{color:#b71925}
 #cartDrawer .order-progress .is-active b{background:#c8101e;color:#fff}
