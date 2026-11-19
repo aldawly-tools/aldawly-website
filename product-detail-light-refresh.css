@@ -166,23 +166,24 @@ body.product-page .product-detail-header>.button-outline:focus{
 @media(min-width:701px){.product-page .dawly-app-dock{display:none!important}}
 @media(prefers-reduced-motion:reduce){.product-page .dawly-app-dock{transition:none!important}}
 
-/* Related product images: enlarge the visible product by 35% without stretching. */
+/* Related product images: zoom the actual product within its frame. */
 .product-page #productDetail .related-visual{
   overflow:hidden!important;
 }
 .product-page #productDetail .related-visual img{
   box-sizing:border-box!important;
+  display:block!important;
   width:100%!important;
   height:100%!important;
   max-width:100%!important;
   max-height:100%!important;
   padding:0!important;
   object-fit:contain!important;
-  transform:scale(1.35)!important;
+  transform:scale(1.8)!important;
   transform-origin:center center!important;
 }
 @media(max-width:640px){
   .product-page #productDetail .related-visual img{
-    transform:scale(1.35)!important;
+    transform:scale(1.8)!important;
   }
 }
