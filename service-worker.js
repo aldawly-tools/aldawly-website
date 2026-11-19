@@ -1,4 +1,4 @@
-const CACHE_NAME = "aldawly-tools-v20-api-no-cache";
+const CACHE_NAME = "aldawly-tools-v21-gallery-refresh";
 const APP_SHELL = [
   "/",
   "/index.html",
