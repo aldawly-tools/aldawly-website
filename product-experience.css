@@ -355,3 +355,16 @@
  #productGrid .product-name{font-size:11px!important}
  #productGrid .card-cart-actions .button-primary{font-size:10px!important}
 }
+
+.product-toolbar{
+ display:flex;align-items:center;justify-content:space-between;gap:12px;
+ margin:12px 0 14px;padding:11px 13px;
+ border:1px solid #e5e8ec;border-radius:13px;background:linear-gradient(135deg,#fff,#f8f9fb);
+}
+.product-toolbar-note{color:#69737e;font-size:12px;font-weight:800}
+@media(max-width:700px){
+ .product-toolbar{margin:9px 0 11px;padding:9px 10px;gap:8px}
+ .product-toolbar-note{font-size:10px}
+ .product-sort-control{width:auto!important;flex:1;justify-content:flex-end!important;gap:6px!important;font-size:11px!important}
+ .product-sort-control select{max-width:70%!important;min-width:0!important}
+}
