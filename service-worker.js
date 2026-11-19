@@ -1,4 +1,4 @@
-const CACHE_NAME = "aldawly-tools-v24-system-image-picker";
+const CACHE_NAME = "aldawly-tools-v25-remove-image-search";
 const APP_SHELL = [
   "/",
   "/index.html",
