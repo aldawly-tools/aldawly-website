@@ -276,7 +276,7 @@
     const labels = {
       wurth:"WÜRTH",bosch:"BOSCH",wera:"WERA",knipex:"KNIPEX",beta:"Beta",
       dewalt:"DEWALT",gesipa:"GESIPA",bahco:"BAHCO",hazet:"HAZET",
-      koken:"KOKEN",modeco:"MODECO",luxtools:"LUX-TOOLS",riss:"RISS"
+      koken:"KOKEN",modeco:"MODECO",luxtools:"LUX-TOOLS",riss:"RISS",elora:"ELORA"
     };
     return labels[normalizeBrand(name)] || cleanProductCopy(name);
   }
@@ -293,7 +293,7 @@
       ["normex","Normex"],["modeco","MODECO"],["bahco","BAHCO"],
       ["hazet","HAZET"],["knipex","KNIPEX"],["bosch","BOSCH"],
       ["dewalt","DEWALT"],["makita","Makita"],["koken","KOKEN"],
-      ["wurth","WÜRTH"],["wera","WERA"],["beta","Beta"],["riss","RISS"]
+      ["wurth","WÜRTH"],["wera","WERA"],["beta","Beta"],["riss","RISS"],["elora","ELORA"]
     ];
     const match = known.find(function (entry) { return searchable.includes(entry[0]); });
     return match ? match[1] : "";
@@ -463,7 +463,8 @@
       "dewalt":"https://upload.wikimedia.org/wikipedia/commons/8/89/DeWalt_Logo.svg",
       "milwaukee":"https://upload.wikimedia.org/wikipedia/commons/d/de/Milwaukee_Logo.svg",
       "makita":"https://upload.wikimedia.org/wikipedia/commons/7/71/Makita_Logo.svg",
-      "beta":"https://static.cdnlogo.com/logos/b/13/beta-tools.svg"
+      "beta":"https://static.cdnlogo.com/logos/b/13/beta-tools.svg",
+      "elora":"https://www.elora.de/wp-content/uploads/2021/02/elora-logo.png"
     };
     const key = normalizeBrand(label);
     return logos[key] || "";
