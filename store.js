@@ -837,6 +837,17 @@
     }, true);
   }
 
+  // Prepare share image on touch-down, before the native share sheet opens.
+  document.addEventListener("pointerdown", function (event) {
+    const button = event.target.closest("[data-share-product]");
+    if (!button || typeof window.DAWLY_PREPARE_PRODUCT_SHARE !== "function") return;
+    const id = String(button.dataset.shareProduct || "");
+    const item = products.find(function (entry) { return String(entry.id) === id; });
+    if (!item) return;
+    const url = new URL("product.html?id=" + encodeURIComponent(id), window.location.href).toString();
+    window.DAWLY_PREPARE_PRODUCT_SHARE(item, url, button);
+  }, {passive:true});
+
   document.addEventListener("click", function (event) {
     const detailAddButton = event.target.closest("[data-detail-order-now]");
     if (detailAddButton && !detailAddButton.disabled) {
@@ -889,7 +900,6 @@
       return;
     }
     const shareButton = event.target.closest("[data-share-product]");
-
     if (shareButton) {
       const id = String(shareButton.dataset.shareProduct || "");
       const item = products.find(function (entry) { return String(entry.id) === id; });
@@ -905,44 +915,54 @@
         "📝 التفاصيل: " + description.slice(0, 700),
         "🔗 رابط المنتج: " + productUrl,
         "الدولي للعدد الأصلية والمستوردة"
-      ].filter(Boolean).join("\\n");
-      // Open the native share sheet immediately within the tap gesture.
-      // Waiting for image generation first can make Android/Chrome reject navigator.share.
+      ].filter(Boolean).join("\n");
       shareButton.disabled = true;
       const oldLabel = shareButton.textContent;
-      let sharePromise = null;
       try {
-        if (navigator.share) {
-          sharePromise = navigator.share({title:name, text:caption, url:productUrl});
-        } else if (navigator.clipboard && navigator.clipboard.writeText) {
-          sharePromise = navigator.clipboard.writeText(caption).then(function () {
-            alert("تم نسخ تفاصيل المنتج والرابط. يمكنك لصقها في واتساب أو فيسبوك.");
-          });
-        } else {
-          const field = document.createElement("textarea");
-          field.value = caption;
-          field.style.position = "fixed";
-          field.style.opacity = "0";
-          document.body.appendChild(field);
-          field.select();
-          const copied = document.execCommand("copy");
-          field.remove();
-          alert(copied ? "تم نسخ تفاصيل المنتج والرابط. يمكنك لصقها في واتساب أو فيسبوك." : "تعذر النسخ تلقائيًا. افتح تفاصيل المنتج وانسخ الرابط للمشاركة.");
-        }
-      } catch (error) {
-        sharePromise = Promise.reject(error);
-      }
-      if (sharePromise && typeof sharePromise.then === "function") {
-        sharePromise.catch(function (error) {
-          if (!error || error.name !== "AbortError") {
-            console.error("Product share failed:", error);
-            alert("تعذرت المشاركة من المتصفح. حاول نسخ رابط المنتج من صفحة التفاصيل.");
+        const preparedTask = typeof window.DAWLY_GET_PREPARED_PRODUCT_SHARE === "function"
+          ? window.DAWLY_GET_PREPARED_PRODUCT_SHARE(id) : null;
+        if (preparedTask && typeof navigator.share === "function" && navigator.canShare) {
+          // Use a ready file only; never await before calling navigator.share.
+          const readyFile = preparedTask;
+          if (readyFile && navigator.canShare({files:[readyFile]})) {
+            navigator.share({title:name, text:caption, files:[readyFile]}).catch(function (error) {
+              if (!error || error.name !== "AbortError") {
+                console.error("Product image share failed:", error);
+                alert("تعذرت مشاركة الصورة. جرّب مرة أخرى.");
+              }
+            }).finally(function () { shareButton.disabled = false; shareButton.textContent = oldLabel; });
+            return;
           }
-        }).finally(function () {
-          shareButton.disabled = false;
-          shareButton.textContent = oldLabel;
-        });
-      } else {
+        }
+        if (typeof navigator.share === "function") {
+          navigator.share({title:name, text:caption, url:productUrl}).catch(function (error) {
+            if (!error || error.name !== "AbortError") {
+              console.error("Product share failed:", error);
+              alert("تعذرت المشاركة. جرّب مرة أخرى أو انسخ رابط المنتج.");
+            }
+          }).finally(function () { shareButton.disabled = false; shareButton.textContent = oldLabel; });
+          return;
+        }
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(caption).then(function () {
+            alert("تم نسخ تفاصيل المنتج والرابط. يمكنك لصقها في واتساب أو فيسبوك.");
+          }).catch(function () { alert("تعذر النسخ تلقائيًا. انسخ رابط المنتج من شريط العنوان."); })
+            .finally(function () { shareButton.disabled = false; shareButton.textContent = oldLabel; });
+          return;
+        }
+        const field = document.createElement("textarea");
+        field.value = caption;
+        field.style.position = "fixed";
+        field.style.opacity = "0";
+        document.body.appendChild(field);
+        field.select();
+        const copied = document.execCommand("copy");
+        field.remove();
+        alert(copied ? "تم نسخ تفاصيل المنتج والرابط. يمكنك لصقها في واتساب أو فيسبوك." : "تعذر النسخ تلقائيًا. انسخ رابط المنتج من شريط العنوان.");
+      } catch (error) {
+        console.error("Product share failed:", error);
+        alert("تعذرت المشاركة. جرّب مرة أخرى.");
+      } finally {
         shareButton.disabled = false;
         shareButton.textContent = oldLabel;
       }
