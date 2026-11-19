@@ -10,7 +10,7 @@ modal.innerHTML='<section class="local-image-panel" role="dialog" aria-modal="tr
 document.body.appendChild(modal);
 var input=modal.querySelector("#localImageFile"),preview=modal.querySelector(".local-image-preview"),run=modal.querySelector(".local-image-run"),status=modal.querySelector("[aria-live]"),results=modal.querySelector(".local-image-results"),selected=null;
 var trigger=document.createElement("button");trigger.type="button";trigger.className="image-search-trigger";trigger.title="البحث بصورة";trigger.setAttribute("aria-label","البحث بصورة المنتج");trigger.innerHTML='<svg viewBox="0 0 24 24"><path d="M4 7h3l1.5-2h7L17 7h3v12H4z"/><circle cx="12" cy="13" r="3.5"/><path d="M18 3v4M16 5h4"/></svg>';
-var barcode=document.getElementById("openBarcodeScanner");if(barcode&&barcode.parentNode)barcode.parentNode.insertBefore(trigger,barcode);
+var searchForm=document.getElementById("searchForm"),searchButton=searchForm&&searchForm.querySelector('button[type="submit"]');if(searchButton&&searchButton.parentNode)searchButton.parentNode.insertBefore(trigger,searchButton);
 function close(){modal.classList.remove("open");document.body.style.overflow="";}
 trigger.addEventListener("click",function(){modal.classList.add("open");document.body.style.overflow="hidden";});
 modal.querySelector(".local-image-close").addEventListener("click",close);modal.addEventListener("click",function(e){if(e.target===modal)close();});
