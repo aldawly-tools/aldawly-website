@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 600" role="img" aria-labelledby="title desc">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 30 1600 550" role="img" aria-labelledby="title desc">
 <title id="title">Würth — Made in Germany</title><desc id="desc">Würth-inspired red and white emblem with Made in Germany text and German flag colors.</desc>
 <defs>
  <linearGradient id="bg" x2="1" y2="1"><stop stop-color="#202329"/><stop offset=".55" stop-color="#08090c"/><stop offset="1" stop-color="#24252a"/></linearGradient>
@@ -39,5 +39,5 @@
   <path d="M0 84Q70 58 140 84V126Q70 100 0 126Z" fill="#ffcc00"/>
  </g>
 </g>
-<path d="M0 580H1600" stroke="#d40019" stroke-width="14"/>
+<path d="M0 570H1600" stroke="#d40019" stroke-width="14"/>
 </svg>
