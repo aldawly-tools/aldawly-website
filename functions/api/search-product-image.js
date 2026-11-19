@@ -65,11 +65,12 @@ export async function onRequest(context) {
       n: clean(p && p.name, 110),
       b: clean(p && p.brand, 50),
       c: clean(p && p.category, 55),
-      d: clean(p && p.description, 180),
-      code: clean(p && (p.code || p.sku || p.productCode), 45)
+      d: clean(p && (p.description || p.desc || p.details), 220),
+      specs: clean(p && (p.specs || p.features || p.technicalDetails), 180),
+      code: clean(p && (p.code || p.sku || p.productCode || p.barcode || p.model || p.partNumber), 55)
     })).filter(p => p.n);
 
-    const prompt = "أنت خبير في العدد اليدوية والكهربائية ومستلزمات الورش. افحص صورة العميل ثم طابق الشيء الظاهر مع قائمة منتجات المتجر المرفقة. أعد JSON فقط بالشكل {"matches":[{"i":رقم المنتج من القائمة,"confidence":0 إلى 100,"reason":"سبب قصير بالعربية"}],"identified":"وصف الشيء الظاهر بالعربية","brand":"الماركة إن كانت مقروءة وإلا فارغ","keywords":["كلمات بحث قصيرة"]}. اختر فقط المنتجات التي تطابق نوع الأداة وشكلها ووظيفتها بوضوح، ولا تعتبر تشابه اللون وحده تطابقا. لا تخترع موديل أو مواصفات. إذا لم يوجد تطابق مناسب أعد matches فارغة. لا تضع أي رقم i غير موجود في القائمة. أعد أفضل 8 نتائج كحد أقصى وبترتيب الثقة.\nقائمة المنتجات (i رقم ثابت): " + JSON.stringify(catalog);
+    const prompt = "أنت فني متخصص في العدد اليدوية والكهربائية. المطلوب مطابقة صورة العميل مع منتج حقيقي من القائمة، وليس اقتراح أداة من نفس المجال فقط.\nقواعد صارمة: 1) حدد نوع الأداة ووظيفتها أولا. 2) لا تعتبر المنتج مطابقا لمجرد أن اسمه قريب أو لونه مشابه. 3) طابق الشكل والبنية وعدد القطع والرأس/الفك/الشفرة/الملحقات الظاهرة، ثم الماركة والموديل إذا كانا واضحين. 4) اقرأ أوصاف ومواصفات وأكواد المنتج؛ لا تتجاهلها. 5) إذا كانت الصورة أو بيانات المنتج لا تكفي لإثبات التطابق، أعد matches فارغة. 6) لا ترفع الثقة لمجرد أن هذا أفضل خيار متاح؛ الثقة يجب أن تعبر عن تطابق حقيقي. 7) أعد منتجا واحدا فقط إذا كان واضحا، أو منتجين كحد أقصى إذا كانا متقاربين فعلا. 8) لا تخترع مواصفات أو أكواد.\nأعد JSON فقط: {\"matches\":[{\"i\":رقم المنتج من القائمة,\"confidence\":0 إلى 100,\"reason\":\"سبب محدد للتطابق بالعربية\"}],\"identified\":\"وصف دقيق لما يظهر بالصورة\",\"brand\":\"الماركة المقروءة أو فارغ\",\"keywords\":[\"كلمات بحث\"]}.\nلا ترجع نتيجة إلا إذا كان نوع الأداة ووظيفتها متطابقين بوضوح؛ عند الشك أعد قائمة فارغة. القائمة: " + JSON.stringify(catalog)
 
     const encoded = image.slice(image.indexOf(",") + 1);
     const aiResponse = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=" + encodeURIComponent(context.env.GEMINI_API_KEY), {
@@ -88,11 +89,11 @@ export async function onRequest(context) {
     }
     const output = data.candidates?.[0]?.content?.parts?.map(part => part.text || "").join("") || "";
     const parsed = JSON.parse(output);
-    const matches = Array.isArray(parsed.matches) ? parsed.matches.slice(0, 8).map(match => ({
+    const matches = Array.isArray(parsed.matches) ? parsed.matches.slice(0, 2).map(match => ({
       i: Number(match.i),
       confidence: Math.max(0, Math.min(100, Number(match.confidence) || 0)),
       reason: clean(match.reason, 130)
-    })).filter(match => Number.isInteger(match.i) && match.i >= 0 && match.i < candidates.length && match.confidence >= 35) : [];
+    })).filter(match => Number.isInteger(match.i) && match.i >= 0 && match.i < candidates.length && match.confidence >= 78) : [];
     return reply({
       matches,
       identified: clean(parsed.identified, 180),
