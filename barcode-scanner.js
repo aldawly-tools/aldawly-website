@@ -43,17 +43,9 @@
   if(!scanning)return;
   stopCamera();
   closeScanner();
-  var input=document.getElementById("searchInput");
-  if(!input)return;
-  input.value=String(code||"").trim();
-  input.dispatchEvent(new Event("input",{bubbles:true}));
-  var form=document.getElementById("searchForm");
-  if(form)form.dispatchEvent(new Event("submit",{bubbles:true,cancelable:true}));
-  setTimeout(function(){
-   var grid=document.getElementById("productGrid");
-   var empty=grid&&grid.querySelector(".empty-state, .no-products, [data-empty-state]");
-   if(grid&&grid.children.length===0){window.alert("تمت قراءة الباركود ("+input.value+")، لكن لم نعثر على منتج بهذا الرقم. أضف الباركود أو رقم الصنف للمنتج من لوحة الإدارة.");}
-  },450);
+  var cleanCode=String(code||"").trim();
+  if(!cleanCode)return;
+  document.dispatchEvent(new CustomEvent("dawly:barcode-scanned",{detail:{code:cleanCode}}));
  }
  async function startNative(video){
   var formats=["ean_13","ean_8","upc_a","upc_e","code_128","code_39","itf","qr_code","data_matrix","codabar"];
