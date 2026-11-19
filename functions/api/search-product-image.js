@@ -70,7 +70,7 @@ export async function onRequest(context) {
       code: clean(p && (p.code || p.sku || p.productCode || p.barcode || p.model || p.partNumber), 55)
     })).filter(p => p.n);
 
-    const prompt = "أنت فني متخصص في العدد اليدوية والكهربائية. المطلوب مطابقة صورة العميل مع منتج حقيقي من القائمة، وليس اقتراح أداة من نفس المجال فقط.\nقواعد صارمة: 1) حدد نوع الأداة ووظيفتها أولا. 2) لا تعتبر المنتج مطابقا لمجرد أن اسمه قريب أو لونه مشابه. 3) طابق الشكل والبنية وعدد القطع والرأس/الفك/الشفرة/الملحقات الظاهرة، ثم الماركة والموديل إذا كانا واضحين. 4) اقرأ أوصاف ومواصفات وأكواد المنتج؛ لا تتجاهلها. 5) إذا كانت الصورة أو بيانات المنتج لا تكفي لإثبات التطابق، أعد matches فارغة. 6) لا ترفع الثقة لمجرد أن هذا أفضل خيار متاح؛ الثقة يجب أن تعبر عن تطابق حقيقي. 7) أعد منتجا واحدا فقط إذا كان واضحا، أو منتجين كحد أقصى إذا كانا متقاربين فعلا. 8) لا تخترع مواصفات أو أكواد.\nأعد JSON فقط: {\"matches\":[{\"i\":رقم المنتج من القائمة,\"confidence\":0 إلى 100,\"reason\":\"سبب محدد للتطابق بالعربية\"}],\"identified\":\"وصف دقيق لما يظهر بالصورة\",\"brand\":\"الماركة المقروءة أو فارغ\",\"keywords\":[\"كلمات بحث\"]}.\nلا ترجع نتيجة إلا إذا كان نوع الأداة ووظيفتها متطابقين بوضوح؛ عند الشك أعد قائمة فارغة. القائمة: " + JSON.stringify(catalog)
+    const prompt = "أنت مساعد بصري يفهم أي صورة. صف أولا الشيء الرئيسي الظاهر في الصورة بدقة، حتى لو لم يكن أداة. ثم ابحث فقط عن تطابق حقيقي له داخل قائمة منتجات متجر العدد. إذا كانت الصورة لشيء غير موجود في الكتالوج مثل طعام أو مناديل أو سيارة، اشرح ما تراه وأعد matches فارغة. لا تقترح أداة مختلفة لمجرد أنها الأقرب. طابق نوع المنتج ووظيفته وشكله ومقاسه أو موديله وعلامته التجارية عند وضوحها، ولا تعتمد على اللون أو تشابه الاسم وحدهما. أعد نتيجة واحدة أو اثنتين فقط عند وجود تطابق قوي، وإلا أعد قائمة فارغة. لا تخترع بيانات. أعد JSON فقط: {\"matches\":[{\"i\":رقم المنتج,\"confidence\":0 إلى 100,\"reason\":\"سبب محدد بالعربية\"}],\"identified\":\"وصف ما يظهر بالصورة بالعربية\" ,\"brand\":\"الماركة إن ظهرت وإلا فارغ\",\"keywords\":[\"كلمات قصيرة\"]}. قائمة المنتجات: " + JSON.stringify(catalog)
 
     const encoded = image.slice(image.indexOf(",") + 1);
     const aiResponse = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=" + encodeURIComponent(context.env.GEMINI_API_KEY), {
@@ -84,8 +84,10 @@ export async function onRequest(context) {
     });
     const data = await aiResponse.json().catch(() => ({}));
     if (!aiResponse.ok) {
-      console.error("Gemini visual search failed", aiResponse.status);
-      return reply({ error: "تعذر على خدمة الذكاء الاصطناعي تحليل الصورة الآن. حاول مرة أخرى بعد قليل." }, 502, origin);
+      const apiMessage = clean(data.error && data.error.message, 260);
+      console.error("Gemini visual search failed", aiResponse.status, apiMessage);
+      const publicMessage = aiResponse.status === 429 ? "خدمة البحث الذكي وصلت للحد المؤقت للاستخدام. انتظر دقيقة ثم حاول مرة أخرى." : aiResponse.status === 403 || aiResponse.status === 401 ? "مفتاح خدمة الذكاء الاصطناعي غير صالح أو لا يملك صلاحية الاستخدام. راجع GEMINI_API_KEY في Cloudflare." : aiResponse.status === 404 ? "موديل Gemini المحدد غير متاح لهذا المفتاح. يلزم تحديث إعداد الموديل." : "فشل تحليل الصورة من Gemini (HTTP " + aiResponse.status + "). " + (apiMessage || "راجع إعدادات مفتاح Gemini وحصته في Cloudflare.");
+      return reply({ error: publicMessage, diagnostic: { status: aiResponse.status, message: apiMessage } }, 502, origin);
     }
     const output = data.candidates?.[0]?.content?.parts?.map(part => part.text || "").join("") || "";
     const parsed = JSON.parse(output);
