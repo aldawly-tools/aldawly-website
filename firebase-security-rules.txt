@@ -12,7 +12,7 @@ service cloud.firestore {
 
     // Public visitor counter: one anonymous record per browser per day.
     match /siteVisits/{visitId} {
-      allow read: if isStoreAdmin();
+      allow read: if true;
       allow create: if request.resource.data.keys().hasOnly(["visitorId", "day", "createdAt"])
         && request.resource.data.visitorId is string
         && request.resource.data.visitorId.size() >= 16
