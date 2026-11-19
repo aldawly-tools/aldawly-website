@@ -451,7 +451,7 @@ main > #about{order:5!important}
     function removeCameraButton(){
       var form=document.getElementById('searchForm');
       if(!form)return;
-      form.querySelectorAll('button:not([type="submit"]),[data-image-search],.image-search-trigger').forEach(function(el){el.remove();});
+      form.querySelectorAll('button:not([type="submit"]):not(.dawly-search-suggestion),[data-image-search],.image-search-trigger').forEach(function(el){el.remove();});
     }
     removeCameraButton();
     if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',removeCameraButton,{once:true});
