@@ -1,6 +1,6 @@
 
 import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-app.js";
-import { collection, doc, getDoc, getDocs, getFirestore } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-firestore.js";
+import { doc, getDoc, getFirestore } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-firestore.js";
 (function(){
   const config = window.DAWLY_FIREBASE_CONFIG || {};
   const section = document.getElementById("brands");
@@ -59,6 +59,4 @@ import { collection, doc, getDoc, getDocs, getFirestore } from "https://www.gsta
   window.addEventListener("dawly-products-updated",function(event){renderBrandLogos(event.detail);});
   window.addEventListener("dawly-catalog-ready",start);
   if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",start,{once:true});else start();
-  getDocs(collection(db,"products")).then(function(snapshot){renderBrandLogos(snapshot.docs.map(function(item){return item.data();}));})
-    .catch(function(error){console.warn("Brand cards will use currently published logos:",error);});
 })();
