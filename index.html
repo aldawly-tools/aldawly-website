@@ -344,6 +344,37 @@ main > #about{order:5!important}
 </style>
 <link rel="stylesheet" href="mobile-menu-final.css?v=20261118-2">
 <link rel="stylesheet" href="app-home-redesign.css?v=20261119-1">
+
+<style id="dawly-mobile-latest-cards-fix-20261119">
+/* Fix mobile latest-products shelf: prevent stretched white card bodies and oversized cards. */
+@media(max-width:700px){
+ .home-products-shelf{width:100%;max-width:100%;overflow:hidden;box-sizing:border-box}
+ .home-products-shelf .home-products-viewport{width:100%;max-width:100%;overflow-x:auto!important;overflow-y:hidden!important;box-sizing:border-box;scroll-snap-type:x mandatory!important;overscroll-behavior-inline:contain}
+ .home-products-shelf .home-products-track{display:flex!important;align-items:flex-start!important;flex-flow:row nowrap!important;width:max-content!important;min-width:0!important;gap:10px!important;padding:2px 2px 10px!important;box-sizing:border-box}
+ .home-products-shelf .home-products-track>.home-shelf-card{
+  display:flex!important;flex:0 0 min(76vw,340px)!important;width:min(76vw,340px)!important;max-width:min(76vw,340px)!important;
+  height:auto!important;min-height:0!important;align-self:flex-start!important;box-sizing:border-box!important;
+  overflow:hidden!important;scroll-snap-align:start!important;
+ }
+ .home-products-shelf .home-products-track>.home-shelf-card>.product-visual{
+  display:grid!important;flex:0 0 158px!important;width:100%!important;height:158px!important;min-height:158px!important;max-height:158px!important;
+  padding:6px!important;box-sizing:border-box!important;overflow:hidden!important;background:#fff!important;
+ }
+ .home-products-shelf .home-products-track>.home-shelf-card>.product-visual img{
+  display:block!important;width:100%!important;height:100%!important;max-width:100%!important;max-height:100%!important;
+  object-fit:contain!important;padding:5px!important;box-sizing:border-box!important;
+ }
+ .home-products-shelf .home-products-track>.home-shelf-card>.product-info{
+  display:flex!important;flex:0 0 auto!important;flex-direction:column!important;justify-content:flex-start!important;
+  align-items:stretch!important;width:100%!important;height:auto!important;min-height:0!important;max-height:none!important;
+  padding:10px!important;gap:6px!important;box-sizing:border-box!important;
+ }
+ .home-products-shelf .home-products-track>.home-shelf-card .product-name{min-height:0!important;height:auto!important;max-height:3.1em!important;line-height:1.5!important}
+ .home-products-shelf .home-products-track>.home-shelf-card .product-price{margin:2px 0 0!important;min-height:0!important}
+ .home-products-shelf .home-products-track>.home-shelf-card .product-add-cart-prominent,
+ .home-products-shelf .home-products-track>.home-shelf-card .home-shelf-add{flex:0 0 auto!important;width:100%!important;min-height:40px!important;margin-top:4px!important}
+}
+</style>
 </head>
 
 <body>
