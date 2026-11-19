@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 600" role="img" aria-labelledby="title desc">
+<title id="title">Würth — Made in Germany</title><desc id="desc">Würth-inspired red and white emblem with Made in Germany text and German flag colors.</desc>
+<defs>
+ <linearGradient id="bg" x2="1" y2="1"><stop stop-color="#202329"/><stop offset=".55" stop-color="#08090c"/><stop offset="1" stop-color="#24252a"/></linearGradient>
+ <linearGradient id="red" x2=".2" y2="1"><stop stop-color="#ff3037"/><stop offset=".48" stop-color="#e00012"/><stop offset="1" stop-color="#9f0010"/></linearGradient>
+ <linearGradient id="white" x2="0" y2="1"><stop stop-color="#fff"/><stop offset="1" stop-color="#d9dce1"/></linearGradient>
+ <filter id="shadow" x="-30%" y="-30%" width="160%" height="170%"><feGaussianBlur in="SourceAlpha" stdDeviation="18"/><feOffset dy="12"/><feComponentTransfer><feFuncA type="linear" slope=".55"/></feComponentTransfer><feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+ <filter id="glow"><feGaussianBlur stdDeviation="20"/></filter>
+</defs>
+<rect width="1600" height="600" fill="url(#bg)"/>
+<ellipse cx="310" cy="280" rx="330" ry="250" fill="#c90018" opacity=".16" filter="url(#glow)"/>
+<path d="M0 0H1600V600H0Z" fill="none" stroke="#fff" stroke-opacity=".06" stroke-width="3"/>
+<g filter="url(#shadow)" transform="translate(55 55)">
+ <rect width="445" height="490" rx="72" fill="url(#white)"/>
+ <path d="M0 72Q0 0 72 0H373Q445 0 445 72V294H0Z" fill="url(#red)"/>
+ <path d="M0 294H445" stroke="#fff" stroke-opacity=".55" stroke-width="5"/>
+ <path d="M152 86h141v52h-40v38h-61v-38h-40z" fill="#fff"/>
+ <path d="M152 212h141l-9 56q-6 42-61 62-55-20-61-62z" fill="#fff"/>
+ <path d="M212 287h21v47l-10 10-11-10z" fill="#fff"/>
+ <g transform="translate(48 348)">
+  <path d="M0 4h36v24H0z" fill="#d40017"/>
+  <path d="M9 4h18v8h-5v7h-8v-7H9z" fill="#fff"/>
+  <path d="M9 16h18l-2 8q-7 8-14 0z" fill="#fff"/>
+  <text x="48" y="55" font-family="Arial,sans-serif" font-size="63" font-weight="900" letter-spacing="-3" fill="#101114">WÜRTH</text>
+ </g>
+</g>
+<g transform="translate(570 105)">
+ <text x="0" y="190" font-family="Arial,sans-serif" font-size="190" font-weight="900" letter-spacing="-7" fill="#fff">WÜRTH</text>
+ <path d="M8 250H980" stroke="#fff" stroke-opacity=".24" stroke-width="3"/>
+ <g transform="translate(10 285)">
+  <path d="M0 0H300L275 32H0Z" fill="#050505"/>
+  <path d="M300 0H610L585 32H275Z" fill="#e40019"/>
+  <path d="M610 0H920L895 32H585Z" fill="#ffcc00"/>
+ </g>
+ <text x="10" y="455" font-family="Arial,sans-serif" font-size="92" font-weight="800" fill="#fff">Made in Germany</text>
+ <g transform="translate(1040 380) rotate(-4)">
+  <path d="M0 0Q70 -26 140 0V42Q70 16 0 42Z" fill="#050505"/>
+  <path d="M0 42Q70 16 140 42V84Q70 58 0 84Z" fill="#e40019"/>
+  <path d="M0 84Q70 58 140 84V126Q70 100 0 126Z" fill="#ffcc00"/>
+ </g>
+</g>
+<path d="M0 580H1600" stroke="#d40019" stroke-width="14"/>
+</svg>
