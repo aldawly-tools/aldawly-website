@@ -34,7 +34,8 @@ import { getFirestore, doc, setDoc, serverTimestamp } from "https://www.gstatic.
    try{localStorage.setItem("aldawly_visitor_id",visitorId);}catch(e){}
   }
 
-  await setDoc(doc(db,"siteVisits",visitorId+"_"+day),{visitorId,day,createdAt:serverTimestamp()});
+  // The dedicated visitor-counter script owns siteVisits creation. Avoid a duplicate
+  // setDoc here because Firestore rules intentionally reject updates to daily records.
 
   const rawSource=String(params.get("utm_source")||document.referrer||"direct").toLowerCase();
   let source="direct";
