@@ -79,3 +79,106 @@
  .product-page .mobile-purchase-add{flex:1 1 auto!important;min-width:0!important;min-height:52px!important;
    padding:8px 10px!important;font-size:clamp(14px,3.8vw,17px)!important;white-space:nowrap!important}
 }
+
+/* Final mobile repair: keep quantity and share controls inside their own full-width rows. */
+@media (max-width:700px){
+  #productDetail .product-detail-info .detail-quantity-control{
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr) auto!important;
+    grid-template-areas:"stepper label"!important;
+    align-items:center!important;
+    justify-content:stretch!important;
+    gap:12px!important;
+    width:100%!important;
+    max-width:100%!important;
+    min-width:0!important;
+    box-sizing:border-box!important;
+    padding:12px!important;
+    margin:8px 0!important;
+    overflow:visible!important;
+  }
+  #productDetail .detail-quantity-control>label{
+    grid-area:label!important;
+    position:static!important;
+    display:block!important;
+    width:auto!important;
+    min-width:0!important;
+    max-width:none!important;
+    margin:0!important;
+    padding:0!important;
+    white-space:nowrap!important;
+    word-break:normal!important;
+    overflow-wrap:normal!important;
+    writing-mode:horizontal-tb!important;
+    transform:none!important;
+    text-align:right!important;
+    line-height:1.4!important;
+  }
+  #productDetail .detail-quantity-stepper{
+    grid-area:stepper!important;
+    display:flex!important;
+    justify-self:start!important;
+    align-self:center!important;
+    width:max-content!important;
+    max-width:100%!important;
+    min-width:0!important;
+    margin:0!important;
+    position:static!important;
+    flex-wrap:nowrap!important;
+  }
+  #productDetail .product-detail-actions{
+    display:flex!important;
+    flex-direction:column!important;
+    align-items:stretch!important;
+    width:100%!important;
+    max-width:100%!important;
+    min-width:0!important;
+    gap:10px!important;
+  }
+  #productDetail .product-detail-actions .detail-share-icon,
+  #productDetail .product-detail-actions .share-product-button{
+    order:3!important;
+    display:flex!important;
+    flex-direction:row!important;
+    flex-wrap:nowrap!important;
+    align-items:center!important;
+    justify-content:center!important;
+    gap:10px!important;
+    position:static!important;
+    width:100%!important;
+    min-width:0!important;
+    max-width:100%!important;
+    min-height:48px!important;
+    height:auto!important;
+    box-sizing:border-box!important;
+    margin:0!important;
+    padding:10px 14px!important;
+    white-space:nowrap!important;
+    word-break:normal!important;
+    overflow-wrap:normal!important;
+    writing-mode:horizontal-tb!important;
+    transform:none!important;
+    text-align:center!important;
+    line-height:1.4!important;
+    overflow:visible!important;
+  }
+  #productDetail .product-detail-actions .detail-share-icon span,
+  #productDetail .product-detail-actions .share-product-button span{
+    display:inline-block!important;
+    flex:0 1 auto!important;
+    width:auto!important;
+    min-width:0!important;
+    white-space:nowrap!important;
+    word-break:normal!important;
+    overflow-wrap:normal!important;
+    writing-mode:horizontal-tb!important;
+  }
+  #productDetail .product-detail-actions .detail-share-icon svg,
+  #productDetail .product-detail-actions .share-product-button svg{
+    display:block!important;
+    flex:0 0 20px!important;
+    width:20px!important;
+    height:20px!important;
+    margin:0!important;
+  }
+}
