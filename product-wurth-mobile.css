@@ -205,3 +205,16 @@
    height:46px!important;flex:0 0 52px!important;box-sizing:border-box!important;
  }
 }
+
+
+/* Final polish: remove the redundant outer frame around the quantity stepper. */
+@media(max-width:700px){
+ #productDetail .product-detail-info .detail-quantity-control{
+   border:0!important;
+   background:transparent!important;
+   box-shadow:none!important;
+   outline:0!important;
+   padding:0!important;
+   border-radius:0!important;
+ }
+}
