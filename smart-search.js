@@ -54,6 +54,12 @@
       .replace(/[۰-۹]/g, function(d){return String("۰۱۲۳۴۵۶۷۸۹".indexOf(d));})
       .replace(/[^\p{L}\p{N}]+/gu, " ").trim().replace(/\s+/g, " ");
   }
+  function termVariants(term) {
+    return term === "بنطه" ? ["بنطه", "بنط"] : [term];
+  }
+  function matchesTerm(text, term) {
+    return termVariants(term).some(function(variant) { return text.includes(variant); });
+  }
   function esc(value) {
     return String(value == null ? "" : value).replace(/[&<>"']/g,function(c){
       return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];
@@ -71,13 +77,14 @@
   function score(entry, terms) {
     var total=0;
     terms.forEach(function(t){
-      if(!entry.hay.includes(t)) return;
-      total += entry.name===t?100:entry.name.startsWith(t)?65:entry.name.includes(t)?45:0;
-      if(entry.brand.includes(t)) total+=35;
-      if(entry.code.split(" ").some(function(x){return x===t;})) total+=90;
-      else if(entry.code.includes(t)) total+=50;
-      if(entry.category.includes(t)) total+=12;
-      if(entry.details.includes(t)) total+=5;
+      var matched=termVariants(t).find(function(variant){return entry.hay.includes(variant);});
+      if(!matched)return;
+      total += entry.name===matched?100:entry.name.startsWith(matched)?65:entry.name.includes(matched)?45:0;
+      if(entry.brand.includes(matched)) total+=35;
+      if(entry.code.split(" ").some(function(x){return x===matched;})) total+=90;
+      else if(entry.code.includes(matched)) total+=50;
+      if(entry.category.includes(matched)) total+=12;
+      if(entry.details.includes(matched)) total+=5;
     });
     return total;
   }
@@ -94,7 +101,7 @@
     var terms=norm(input.value).split(" ").filter(Boolean);
     if(!terms.length){hide();return;}
     var matches=searchIndex.map(function(entry){return {p:entry.p,s:score(entry,terms),hay:entry.hay};})
-      .filter(function(x){return x.s>0 && terms.every(function(t){return x.hay.includes(t);});})
+      .filter(function(x){return x.s>0 && terms.every(function(t){return matchesTerm(x.hay,t);});})
       .sort(function(a,b){return b.s-a.s;}).slice(0,7);
     activeIndex=-1;
     if(!matches.length){
