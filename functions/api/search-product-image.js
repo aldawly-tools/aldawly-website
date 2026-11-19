@@ -48,7 +48,13 @@ export async function onRequest(context) {
   try {
     const length = Number(request.headers.get("content-length") || 0);
     if (length > 5_500_000) return reply({ error: "حجم الصورة أو بيانات المنتجات أكبر من المسموح." }, 413, origin);
-    const body = await request.json();
+    const rawBody = await request.text();
+    if (new TextEncoder().encode(rawBody).byteLength > 5_500_000) {
+      return reply({ error: "حجم الصورة أو بيانات المنتجات أكبر من المسموح." }, 413, origin);
+    }
+    let body;
+    try { body = JSON.parse(rawBody); }
+    catch (_) { return reply({ error: "بيانات البحث غير صالحة." }, 400, origin); }
     const image = body && body.image;
     const mimeType = String(body && body.mimeType || "");
     const candidates = Array.isArray(body && body.products) ? body.products.slice(0, 500) : [];
