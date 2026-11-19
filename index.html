@@ -19,7 +19,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400..900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="store.css?v=checkout-mobile-safe-20261119-1">
+<link rel="stylesheet" href="store.css?v=clickable-checkout-steps-20261119-1">
  <link rel="stylesheet" href="floating-actions.css?v=hide-categories-on-scroll-20261118">
 <link rel="stylesheet" href="assistant-widget.css?v=assistant-visible-20261118-3">
 
@@ -596,11 +596,11 @@ main > #about{order:5!important}
 <div class="cart-overlay" id="cartOverlay"></div>
 <aside class="cart-drawer" id="cartDrawer" aria-label="سلة المشتريات" aria-modal="true" role="dialog">
  <div class="drawer-head"><h2>سلة المشتريات</h2><button class="drawer-close" type="button" id="closeCart">إغلاق ✕</button></div>
- <div class="order-progress" aria-label="خطوات إتمام الطلب">
-  <span class="is-active"><b>1</b> مراجعة المنتجات</span>
-  <span><b>2</b> بيانات التوصيل</span>
-  <span><b>3</b> واتساب</span>
- </div>
+ <nav class="order-progress" aria-label="خطوات إتمام الطلب">
+  <button type="button" class="is-active" data-checkout-step="review" aria-current="step"><b>1</b> مراجعة المنتجات</button>
+  <button type="button" data-checkout-step="details"><b>2</b> بيانات التوصيل</button>
+  <button type="button" data-checkout-step="whatsapp" disabled aria-disabled="true"><b>3</b> واتساب</button>
+ </nav>
  <div class="cart-scroll-area">
   <section id="cartReviewStep" class="checkout-step">
    <div class="cart-items" id="cartItems"></div>
