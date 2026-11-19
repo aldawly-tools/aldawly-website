@@ -7024,3 +7024,21 @@ html body aside#cartDrawer.cart-drawer > .cart-scroll-area{
   #cartDrawer .cart-scroll-area{padding-top:10px!important}
   #cartDrawer .checkout-fields{padding:12px!important;gap:9px!important}
 }
+
+
+/* Clear visual state for products already added to the cart */
+.product-add-cart-prominent.is-in-cart,
+button.is-in-cart {
+  background: #c4c8d0 !important;
+  border-color: #c4c8d0 !important;
+  color: #686868 !important;
+  cursor: default !important;
+  box-shadow: none !important;
+  opacity: 1 !important;
+}
+.product-add-cart-prominent.is-in-cart:disabled,
+button.is-in-cart:disabled {
+  background: #c4c8d0 !important;
+  color: #686868 !important;
+  opacity: 1 !important;
+}
