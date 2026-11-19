@@ -48,3 +48,34 @@
  .product-page .dawly-mini-cart-launcher{bottom:calc(104px + env(safe-area-inset-bottom))!important}
  .product-page .floating-contact-widget{bottom:calc(104px + env(safe-area-inset-bottom))!important}
 }
+
+/* Mobile layout corrections based on the live product-page screenshot */
+@media(max-width:700px){
+ .product-page .detail-quantity-control{
+   display:flex!important;flex-direction:row!important;align-items:center!important;
+   justify-content:space-between!important;gap:14px!important;width:100%!important;
+   min-width:0!important;padding:12px 14px!important;box-sizing:border-box!important;
+ }
+ .product-page .detail-quantity-control>label{
+   display:block!important;flex:0 0 auto!important;width:auto!important;min-width:72px!important;
+   white-space:nowrap!important;word-break:keep-all!important;overflow-wrap:normal!important;
+   text-align:right!important;font-size:15px!important;line-height:1.4!important;
+ }
+ .product-page .detail-quantity-stepper{flex:0 0 auto!important;white-space:nowrap!important}
+ .product-page .product-detail-actions{width:100%!important;min-width:0!important;align-items:stretch!important}
+ .product-page .product-detail-actions .share-product-button{
+   display:flex!important;align-items:center!important;justify-content:center!important;gap:10px!important;
+   width:100%!important;min-width:0!important;min-height:48px!important;padding:10px 16px!important;
+   border-radius:12px!important;font-size:15px!important;font-weight:800!important;
+   color:#303943!important;background:#f5f6f7!important;border:1px solid #e0e3e7!important;
+ }
+ .product-page .product-detail-actions .share-product-button svg{width:20px!important;height:20px!important}
+ .product-page .mobile-purchase-bar{
+   box-sizing:border-box!important;direction:rtl!important;gap:10px!important;
+   padding:9px 12px calc(9px + env(safe-area-inset-bottom))!important;
+ }
+ .product-page .mobile-purchase-price{flex:0 0 108px!important;min-width:0!important;text-align:center!important}
+ .product-page .mobile-purchase-price strong{font-size:15px!important;white-space:nowrap!important}
+ .product-page .mobile-purchase-add{flex:1 1 auto!important;min-width:0!important;min-height:52px!important;
+   padding:8px 10px!important;font-size:clamp(14px,3.8vw,17px)!important;white-space:nowrap!important}
+}
