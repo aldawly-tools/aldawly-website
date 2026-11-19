@@ -57,6 +57,10 @@ import { getFirestore, doc, setDoc, serverTimestamp } from "https://www.gstatic.
           });
           try { localStorage.setItem(visitFlag, "1"); } catch (error) {}
         } catch (writeError) {
+          // A pre-existing daily record is expected for returning visitors after this update.
+          if (writeError && writeError.code === "permission-denied") {
+            try { localStorage.setItem(visitFlag, "1"); } catch (error) {}
+          }
           console.warn("Visitor record was not created:", writeError);
         }
       }
