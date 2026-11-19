@@ -24,7 +24,7 @@
 <link rel="stylesheet" href="assistant-widget.css?v=assistant-visible-20261118-3">
 
 <link rel="stylesheet" href="visitor-counter.css?v=20261115-1">
-<link rel="stylesheet" href="product-experience.css?v=remove-camera-20261120-1">
+<link rel="stylesheet" href="product-experience.css?v=remove-camera-search-20261120-1">
 <link rel="stylesheet" href="mobile-refinement.css?v=restore-original-hero-20261119-7">
 <link rel="stylesheet" href="catalog-color-refinement.css?v=red-active-categories-20261115">
 <link rel="stylesheet" href="business-section-colors.css?v=business-red-contrast-20261115">
@@ -446,6 +446,22 @@ main > #about{order:5!important}
    <input id="searchInput" type="search" placeholder="ابحث باسم الأداة أو الماركة أو الموديل أو رقم الصنف" aria-label="ابحث عن المنتجات">
    <button type="submit" aria-label="بحث"><svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></svg></button>
   </form>
+  <script id="remove-discontinued-search-camera">
+  (function(){
+    function removeCameraButton(){
+      var form=document.getElementById('searchForm');
+      if(!form)return;
+      form.querySelectorAll('button.barcode-scan-trigger,button#openBarcodeScanner,[data-image-search],.image-search-trigger').forEach(function(el){el.remove();});
+    }
+    removeCameraButton();
+    if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',removeCameraButton,{once:true});
+    if(window.MutationObserver){
+      var form=document.getElementById('searchForm');
+      if(form)new MutationObserver(removeCameraButton).observe(form,{childList:true,subtree:true});
+      new MutationObserver(removeCameraButton).observe(document.documentElement,{childList:true,subtree:true});
+    }
+  })();
+  </script>
   <div class="head-actions">
    
 
