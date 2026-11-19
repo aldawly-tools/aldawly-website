@@ -1,4 +1,4 @@
-const CACHE_NAME = "aldawly-tools-v22-gallery-only";
+const CACHE_NAME = "aldawly-tools-v23-native-gallery-picker";
 const APP_SHELL = [
   "/",
   "/index.html",
