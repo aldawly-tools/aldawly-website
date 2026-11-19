@@ -197,7 +197,7 @@
           return '<a class="related-card" href="product?id=' + encodeURIComponent(product.id) + '"><div class="related-visual">' + relatedImage + '</div><div class="related-info"><small>' + escapeHtml(product.brand ? displayBrand(product.brand) : product.cat || "منتجات") + '</small><strong>' + escapeHtml(relatedName) + '</strong><span>' + escapeHtml(formatPrice(product.price)) + '</span></div></a>';
         }).join("") + '</div></section>'
       : "";
-    root.insertAdjacentHTML("beforeend", relatedHtml + '<div class="mobile-purchase-bar" aria-label="إضافة المنتج إلى السلة"><div class="mobile-purchase-price"><small>السعر</small><strong>' + price + '</strong></div><button class="mobile-purchase-add" type="button" data-detail-order-now="' + escapeHtml(item.id) + '"' + (stockKnown && item.stock === 0 ? ' disabled aria-disabled="true"' : '') + '><span aria-hidden="true">🛒</span> أضف إلى السلة</button></div>');
+    root.insertAdjacentHTML("beforeend", relatedHtml);
     if (typeof window.DAWLY_LOAD_PRODUCT_IMAGE === "function") {
       root.querySelectorAll("[data-related-image]").forEach(function (image) {
         window.DAWLY_LOAD_PRODUCT_IMAGE(image.dataset.relatedImage).then(function (url) {
