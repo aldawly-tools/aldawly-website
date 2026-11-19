@@ -222,6 +222,12 @@
     return {base:base,current:base===null?null:(percent?Math.round(base*(1-percent/100)*100)/100:base),percent:percent};
   }
   function productCurrentPrice(item){return productPricing(item).current;}
+  function isItemInCart(item) {
+    if (!item) return false;
+    return cart.some(function (line) {
+      return String(line.id) === String(item.id) || (item._docId !== undefined && item._docId !== null && String(line.id) === String(item._docId));
+    });
+  }
   function cartPricing() {
     let total = 0;
     let pricedCount = 0;
@@ -402,10 +408,11 @@
           ? '<img data-cloud-image="' + escapeHtml(item.imageId) + '" alt="' + escapeHtml(name) + '" loading="lazy" decoding="async" draggable="false">'
           : '<span class="product-placeholder" aria-hidden="true">' + escapeHtml(item.icon || "🔧") + '</span>';
       const soldOut = item.availability === "unavailable" || (item.availability !== "available" && Number.isInteger(item.stock) && item.stock === 0);
+      const alreadyInCart = isItemInCart(item);
       const availabilityLabel = item.availability === "ask" ? '<span class="stock-status">استفسر عن التوفر</span>' : soldOut ? '<span class="stock-status out">غير متوفر حاليًا</span>' : '<span class="stock-status">متوفر — يُرجى التأكيد عند الطلب</span>';
       const pricing=productPricing(item);
       const shelfPrice=pricing.current===null?escapeHtml(formatPrice(item.price)):(pricing.percent?'<strong>'+escapeHtml(money(pricing.current))+'</strong><del>'+escapeHtml(money(pricing.base))+'</del><em class="product-discount">خصم '+pricing.percent+'%</em>':escapeHtml(formatPrice(item.price)));
-      return '<article class="product-card home-shelf-card"><a class="product-visual product-open-link" href="' + url + '">' + image + '</a><div class="product-info"><span class="product-category">' + escapeHtml(displayBrand(productBrand(item)) || item.cat || "منتجات") + '</span><h3 class="product-name"><a href="' + url + '">' + escapeHtml(name) + '</a></h3><div class="product-card-status">' + availabilityLabel + '</div><span class="product-price' + ((item.price === null || item.price === undefined || item.price === "") ? ' price-on-request' : '') + '">' + shelfPrice + '<small>' + (item.price === null || item.price === undefined || item.price === "" ? 'السعر عند التواصل' : '') + '</small></span><button class="button-primary home-shelf-add product-add-cart-prominent" type="button" data-add="' + escapeHtml(item.id) + '"' + (soldOut ? ' disabled aria-disabled="true"' : '') + '>' + (soldOut ? 'غير متاح حاليًا' : '<span class="add-cart-icon" aria-hidden="true">🛒</span><span>أضف إلى السلة</span>') + '</button><button class="quick-view-trigger" type="button" data-quick-view="' + escapeHtml(item.id) + '">معاينة سريعة</button></div></article>';
+      return '<article class="product-card home-shelf-card"><a class="product-visual product-open-link" href="' + url + '">' + image + '</a><div class="product-info"><span class="product-category">' + escapeHtml(displayBrand(productBrand(item)) || item.cat || "منتجات") + '</span><h3 class="product-name"><a href="' + url + '">' + escapeHtml(name) + '</a></h3><div class="product-card-status">' + availabilityLabel + '</div><span class="product-price' + ((item.price === null || item.price === undefined || item.price === "") ? ' price-on-request' : '') + '">' + shelfPrice + '<small>' + (item.price === null || item.price === undefined || item.price === "" ? 'السعر عند التواصل' : '') + '</small></span><button class="button-primary home-shelf-add product-add-cart-prominent" type="button" data-add="' + escapeHtml(item.id) + '"' + (soldOut || alreadyInCart ? ' disabled aria-disabled="true"' : '') + (alreadyInCart ? ' class="button-primary home-shelf-add product-add-cart-prominent is-in-cart"' : '') + '>' + (soldOut ? 'غير متاح حاليًا' : alreadyInCart ? '<span>مضاف بالفعل</span>' : '<span class="add-cart-icon" aria-hidden="true">🛒</span><span>أضف إلى السلة</span>') + '</button><button class="quick-view-trigger" type="button" data-quick-view="' + escapeHtml(item.id) + '">معاينة سريعة</button></div></article>';
     }
     const featuredGrid = document.getElementById("featuredProductsGrid");
     if (featuredGrid) {
@@ -649,6 +656,7 @@
       const discountPercent = pricing.percent || (currentPrice !== null && compareAtPrice !== null && compareAtPrice > currentPrice ? Math.round((compareAtPrice-currentPrice)/compareAtPrice*100) : 0);
       const stockKnown = Number.isInteger(item.stock) && item.stock >= 0;
       const stockOut = item.availability === "unavailable" || (item.availability !== "available" && stockKnown && item.stock === 0);
+      const alreadyInCart = isItemInCart(item);
       const availabilityLabel = item.availability === "ask" ? '<span class="stock-status">استفسر عن التوفر</span>' : stockOut ? '<span class="stock-status out">غير متوفر حاليًا</span>' : '<span class="stock-status">متوفر — يُرجى التأكيد عند الطلب</span>';
       const stockLabel = availabilityLabel;
       return '<article class="product-card home-shelf-card catalog-card" id="product-' + encodeURIComponent(item.id) + '">' +
@@ -659,7 +667,7 @@
         '<div class="product-card-status">' + stockLabel + '</div>' +
         '<p class="product-description">' + escapeHtml(description) + '</p>' +
         '<span class="product-price' + (currentPrice === null ? ' price-on-request' : '') + '">' + (pricing.percent ? '<strong>'+escapeHtml(money(currentPrice))+'</strong><del>'+escapeHtml(money(compareAtPrice))+'</del><em class="product-discount">خصم '+discountPercent+'%</em>' : (discountPercent ? escapeHtml(money(currentPrice))+'<del>'+escapeHtml(money(compareAtPrice))+'</del><em class="product-discount">خصم '+discountPercent+'%</em>' : escapeHtml(formatPrice(item.price)))) + '<small>' + (currentPrice === null ? 'السعر عند التواصل' : '') + '</small></span>' +
-        '<div class="card-cart-actions"><button class="button-primary home-shelf-add product-add-cart-prominent" type="button" data-add="' + escapeHtml(item.id) + '"' + (stockOut ? ' disabled aria-disabled="true"' : '') + '><span class="add-cart-icon" aria-hidden="true">🛒</span><span>أضف إلى السلة</span></button></div>' +
+        '<div class="card-cart-actions"><button class="button-primary home-shelf-add product-add-cart-prominent' + (alreadyInCart ? ' is-in-cart' : '') + '" type="button" data-add="' + escapeHtml(item.id) + '"' + (stockOut || alreadyInCart ? ' disabled aria-disabled="true"' : '') + '>' + (alreadyInCart ? '<span>مضاف بالفعل</span>' : '<span class="add-cart-icon" aria-hidden="true">🛒</span><span>أضف إلى السلة</span>') + '</button></div>' +
         '<div class="product-card-tools" aria-label="إجراءات المنتج"><button class="quick-view-trigger" type="button" data-quick-view="' + escapeHtml(item.id) + '" aria-label="معاينة سريعة" title="معاينة سريعة">◉</button><button class="share-product-button" type="button" data-share-product="' + escapeHtml(item.id) + '" aria-label="مشاركة المنتج" title="مشاركة المنتج">↗</button></div>' +
         '</div></article>';
     }).join("") || '<p class="empty-cart">' + emptyMessage + '</p>';
@@ -808,6 +816,7 @@
     // Keep the catalog visible after adding; the cart opens only when the shopper taps its button.
     setDrawer(false);
     renderProducts();
+    renderHomeShelves();
   }
 
   if (brandFilterSearch) brandFilterSearch.addEventListener("input", drawBrandFilters);
