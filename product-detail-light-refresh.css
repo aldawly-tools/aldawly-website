@@ -166,24 +166,36 @@ body.product-page .product-detail-header>.button-outline:focus{
 @media(min-width:701px){.product-page .dawly-app-dock{display:none!important}}
 @media(prefers-reduced-motion:reduce){.product-page .dawly-app-dock{transition:none!important}}
 
-/* Related product images: zoom the actual product within its frame. */
+/* Related recommendations: larger image stage and fill the frame so products read clearly. */
 .product-page #productDetail .related-visual{
+  display:grid!important;
+  place-items:center!important;
+  width:100%!important;
+  height:clamp(220px,28vw,300px)!important;
+  min-height:220px!important;
+  aspect-ratio:4/3!important;
   overflow:hidden!important;
+  background:linear-gradient(145deg,#fff,#f5f6f8)!important;
 }
 .product-page #productDetail .related-visual img{
-  box-sizing:border-box!important;
   display:block!important;
+  box-sizing:border-box!important;
   width:100%!important;
   height:100%!important;
   max-width:100%!important;
   max-height:100%!important;
   padding:0!important;
-  object-fit:contain!important;
-  transform:scale(1.8)!important;
-  transform-origin:center center!important;
+  object-fit:cover!important;
+  object-position:center!important;
+  transform:none!important;
 }
 @media(max-width:640px){
+  .product-page #productDetail .related-visual{
+    height:clamp(185px,54vw,235px)!important;
+    min-height:185px!important;
+  }
   .product-page #productDetail .related-visual img{
-    transform:scale(1.8)!important;
+    object-fit:cover!important;
+    object-position:center!important;
   }
 }
