@@ -22,15 +22,15 @@ async function search(){if(!selected)return;run.disabled=true;results.innerHTML=
  products=Array.isArray(window.DAWLY_PRODUCTS)?window.DAWLY_PRODUCTS:products;
  if(!products.length){status.textContent="كتالوج المنتجات لسه بيحمّل. انتظر لحظة وجرب تاني.";return;}
  var compressed=await compressImage(selected);
- var catalog=products.map(function(p){return {name:p.name||p.title||"",brand:p.brand||"",category:p.category||p.section||"",description:p.description||p.details||"",code:p.code||p.sku||p.productCode||""};});
+ var catalog=products.map(function(p){return {name:p.name||p.title||"",brand:p.brand||"",category:p.category||p.section||"",description:p.description||p.desc||p.details||"",specs:p.specs||p.features||p.technicalDetails||"",category:p.category||p.section||p.cat||"",code:p.code||p.sku||p.productCode||p.barcode||p.model||p.partNumber||""};});
  var response=await fetch("/api/search-product-image",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({image:compressed.data,mimeType:compressed.mimeType,products:catalog})});
  var data=await response.json().catch(function(){return {};});
  if(!response.ok)throw Error(data.error||"تعذر الاتصال بخدمة البحث الذكي.");
  var matches=Array.isArray(data.matches)?data.matches:[];
  if(!matches.length){status.textContent=(data.identified?"الصورة تبدو: "+data.identified+". ":"")+"ملقتش منتج مطابق بدرجة كافية في الكتالوج. جرّب صورة أقرب للأداة أو صوّر اسم الموديل.";return;}
- results.innerHTML=matches.map(function(match){var p=products[match.i];if(!p)return "";var src=p.image&&/^https?:|^data:image\\//i.test(String(p.image))?String(p.image):"",im=src?'<img src="'+esc(src)+'" alt="">':(p.imageId?'<img data-image-search-id="'+esc(p.imageId)+'" alt="">':"");return '<a class="local-image-result" href="product.html?id='+encodeURIComponent(String(p.id||p._docId||""))+'">'+im+'<span><strong>'+esc(p.name||p.title||"منتج من الدولي")+'</strong><small>مطابقة ذكية '+Math.round(match.confidence)+'%'+(match.reason?" — "+esc(match.reason):"")+'</small></span></a>';}).join("");
+ results.innerHTML=matches.map(function(match){var p=products[match.i];if(!p)return "";var src=p.image&&/^https?:|^data:image\\//i.test(String(p.image))?String(p.image):"",im=src?'<img src="'+esc(src)+'" alt="">':(p.imageId?'<img data-image-search-id="'+esc(p.imageId)+'" alt="">':"");return '<a class="local-image-result" href="product.html?id='+encodeURIComponent(String(p.id||p._docId||""))+'">'+im+'<span><strong>'+esc(p.name||p.title||"منتج من الدولي")+'</strong><small>مطابقة قوية '+Math.round(match.confidence)+'%'+(match.reason?" — "+esc(match.reason):"")+'</small></span></a>';}).join("");
  results.querySelectorAll("img[data-image-search-id]").forEach(function(img){var id=img.getAttribute("data-image-search-id");if(typeof window.DAWLY_LOAD_PRODUCT_IMAGE==="function")window.DAWLY_LOAD_PRODUCT_IMAGE(id).then(function(u){if(u)img.src=u;}).catch(function(){});});
- status.textContent=(data.identified?"تم التعرف على: "+data.identified+". ":"")+"دي أقرب المنتجات المطابقة من الكتالوج. النسبة تقديرية وليست ضمانًا للموديل.";
+ status.textContent=(data.identified?"تم التعرف على: "+data.identified+". ":"")+"عرضت المنتجات ذات التطابق الأقوى فقط. لو المنتج غير مطابق، ابعت صورة أوضح أو صورة للعلامة والموديل.";
  }catch(e){status.textContent=e.message||"تعذر تحليل الصورة. جرّب صورة أوضح وبإضاءة جيدة.";}finally{run.disabled=false;}}
 run.addEventListener("click",search);window.addEventListener("dawly-products-updated",function(e){if(Array.isArray(e.detail)){products=e.detail;cache.clear();}});window.addEventListener("dawly-catalog-ready",function(){if(Array.isArray(window.DAWLY_PRODUCTS))products=window.DAWLY_PRODUCTS;});
 })();
