@@ -587,7 +587,6 @@
       // Keep relevance as the primary order for search results.
       // Explicit price sorting can still be applied when the customer chooses it.
       if (productSortMode !== "newest") {
-        const relevanceOrder = new Map(filtered.map(function(item,index){return [String(item.id),index];}));
         filtered.sort(function(a,b) {
           const pa = productPricing(a).current, pb = productPricing(b).current;
           if (pa === null && pb !== null) return 1;
@@ -639,6 +638,7 @@
         '<a class="product-visual product-open-link" href="' + detailUrl + '" aria-label="عرض تفاصيل المنتج: ' + escapeHtml(name) + '">' + visual + '</a>' +
         '<div class="product-info"><span class="product-category">' + (productBrand(item) ? escapeHtml(displayBrand(productBrand(item))) + ' · ' : '') + escapeHtml(item.cat || "منتجات") + '</span>' +
         '<h3 class="product-name"><a class="product-name-link" href="' + detailUrl + '">' + escapeHtml(name) + '</a></h3>' +
+        (item.model || item.sku || item.partNumber || item.code ? '<span class="product-sku">رقم الموديل: ' + escapeHtml(item.model || item.sku || item.partNumber || item.code) + '</span>' : '') +
         '<div class="product-card-status">' + stockLabel + '</div>' +
         '<p class="product-description">' + escapeHtml(description) + '</p>' +
         '<span class="product-price' + (currentPrice === null ? ' price-on-request' : '') + '">' + (pricing.percent ? '<strong>'+escapeHtml(money(currentPrice))+'</strong><del>'+escapeHtml(money(compareAtPrice))+'</del><em class="product-discount">خصم '+discountPercent+'%</em>' : (discountPercent ? escapeHtml(money(currentPrice))+'<del>'+escapeHtml(money(compareAtPrice))+'</del><em class="product-discount">خصم '+discountPercent+'%</em>' : escapeHtml(formatPrice(item.price)))) + '<small>' + (currentPrice === null ? 'السعر عند التواصل' : '') + '</small></span>' +
