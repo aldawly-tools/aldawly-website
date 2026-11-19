@@ -166,7 +166,7 @@
       '<p class="product-detail-description">' + escapeHtml(cleanProductCopy(item.desc || "للاستفسار عن مواصفات المنتج وتفاصيله، تواصل معنا مباشرة.")) + '</p>' +
       '<div class="product-detail-price"><span class="detail-price-value">' + price + '</span><small>' + (formatPrice(item.price).startsWith("EGP ") ? 'السعر بالجنيه المصري' : 'يُرجى تأكيد السعر عند التواصل') + '</small></div>' + stockHtml +
       '<div class="product-detail-actions product-detail-actions-compact">' +
-      '<div class="detail-quantity-control"><label for="detailQuantity">الكمية</label><div class="detail-quantity-stepper"><button type="button" data-qty-step="-1" aria-label="تقليل الكمية">−</button><input id="detailQuantity" data-detail-qty type="number" inputmode="numeric" min="1" max="99" value="1" aria-label="الكمية المطلوبة"><button type="button" data-qty-step="1" aria-label="زيادة الكمية">+</button></div></div>' +
+      '' +
       '<button class="button-primary detail-order-now" type="button" data-detail-order-now="' + escapeHtml(item.id) + '"' + (stockKnown && item.stock === 0 ? ' disabled aria-disabled="true"' : '') + '><span class="detail-action-icon" aria-hidden="true">🛒</span><span>' + (stockKnown && item.stock === 0 ? 'غير متاح حاليًا' : 'أكمل طلبك الآن') + '</span></button>' +
       '<button class="detail-whatsapp-button" type="button" data-whatsapp-share="' + escapeHtml(item.id) + '"><span class="detail-action-icon" aria-hidden="true">💬</span><span>استفسر بالصورة عبر واتساب</span></button>' +
       '<button class="button-outline share-product-button detail-share-icon" type="button" data-share-product="' + escapeHtml(item.id) + '" aria-label="مشاركة المنتج" title="مشاركة المنتج"><svg width="21" height="21" style="display:block!important;width:21px!important;height:21px!important;max-width:21px!important;max-height:21px!important;flex:none!important;overflow:visible" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 16V3m0 0L7 8m5-5 5 5M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span>مشاركة المنتج</span></button>' +
@@ -578,8 +578,6 @@
   }
 
   root.addEventListener("click", function (event) {
-    const qtyStep=event.target.closest("[data-qty-step]");
-    if(qtyStep){const field=root.querySelector("[data-detail-qty]");if(field){const next=Math.max(1,Math.min(99,(Number(field.value)||1)+Number(qtyStep.dataset.qtyStep)));field.value=String(next);}return;}
     const button = event.target.closest("[data-detail-order-now]");
     if (!button || button.disabled) return;
     const directOrder = true;
@@ -609,8 +607,7 @@
       alert("تعذر قراءة السلة المحفوظة. حدّث الصفحة وحاول مرة أخرى.");
       return;
     }
-    const quantityField=root.querySelector("[data-detail-qty]");
-    const requestedQty=Math.max(1,Math.min(99,Math.floor(Number(quantityField&&quantityField.value)||1)));
+    const requestedQty=1;
     if(Number.isInteger(item.stock)&&item.stock>=0&&requestedQty>item.stock){alert("الكمية المطلوبة أكبر من المتاح بالمخزون.");return;}
     const line = cart.find(function (entry) { return String(entry.id) === String(id); });
     if (line) {
