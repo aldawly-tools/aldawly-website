@@ -57,6 +57,7 @@
   let activeCategory = "الكل";
   let activeBrand = (new URLSearchParams(window.location.search).get("brand") || "").trim();
   let query = "";
+  let scannedBarcode = "";
   const pageSize = 12;
   let visibleProductCount = pageSize;
   // سلة جديدة مستقلة؛ لا تستورد أي بيانات قديمة أو تنتقل عبر روابط المنتجات.
@@ -570,7 +571,12 @@
         ].join(" "));
         productSearchCache.set(item, searchable);
       }
-      const searchMatch = !terms.length || terms.every(function (term) { return searchable.includes(term); });
+      const exactCodes = [item.barcode, item.barCode, item.ean, item.ean13, item.gtin, item.upc, item.sku, item.code, item.partNumber]
+        .filter(function(value){ return value != null && String(value).trim() !== ""; })
+        .map(function(value){ return normalizeSearchText(value).replace(/\s/g, ""); });
+      const searchMatch = scannedBarcode
+        ? exactCodes.includes(normalizeSearchText(scannedBarcode).replace(/\s/g, ""))
+        : (!terms.length || terms.every(function (term) { return searchable.includes(term); }));
       return categoryMatch && brandMatch && searchMatch;
     });
     if (terms.length) {
@@ -816,9 +822,34 @@
     document.getElementById("products").scrollIntoView({behavior:"smooth"});
   });
   if (searchInput) searchInput.addEventListener("input", function (event) {
+    scannedBarcode = "";
     query = event.target.value;
     visibleProductCount = pageSize;
     renderProducts();
+  });
+
+  // Barcode scans must match a stored product identifier exactly, never fuzzy text.
+  document.addEventListener("dawly:barcode-scanned", function(event) {
+    const code = String(event.detail && event.detail.code || "").trim();
+    if (!code) return;
+    scannedBarcode = code;
+    query = code;
+    activeCategory = "الكل";
+    activeBrand = "";
+    if (searchInput) searchInput.value = code;
+    visibleProductCount = pageSize;
+    renderProducts();
+    const normalizedCode = normalizeSearchText(code).replace(/\s/g, "");
+    const exactCount = products.filter(function(item) {
+      if (item.hiddenFromStore === true) return false;
+      return [item.barcode,item.barCode,item.ean,item.ean13,item.gtin,item.upc,item.sku,item.code,item.partNumber]
+        .filter(function(value){return value != null && String(value).trim() !== "";})
+        .some(function(value){return normalizeSearchText(value).replace(/\s/g,"") === normalizedCode;});
+    }).length;
+    if (exactCount === 0) window.alert("تمت قراءة الكود: " + code + "\nلكن لا يوجد منتج مسجل بنفس رقم الباركود في الكتالوج. راجع بيانات الباركود في لوحة الإدارة.");
+    else if (exactCount > 1) window.alert("تم العثور على " + exactCount + " منتجات بنفس الباركود. راجع بيانات الأصناف لتجنب التكرار.");
+    const productsSection = document.getElementById("products");
+    if (productsSection) productsSection.scrollIntoView({behavior:"smooth"});
   });
 
   // Handle cart removal in capture phase so other page widgets cannot swallow the click.
