@@ -44,6 +44,22 @@ export async function onRequest(context) {
   }
 
   if (request.method === "GET") {
+    const topLimit = Number(url.searchParams.get("top") || 0);
+    if (topLimit > 0) {
+      const limit = Math.max(1, Math.min(50, Math.floor(topLimit)));
+      try {
+        const result = await env.DB.prepare(
+          "SELECT product_id, COUNT(*) AS total FROM product_views GROUP BY product_id ORDER BY total DESC, product_id ASC LIMIT ?"
+        ).bind(limit).all();
+        return json({ items: (result.results || []).map(row => ({
+          productId: String(row.product_id),
+          total: Number(row.total) || 0
+        })) });
+      } catch (error) {
+        console.error("Product view ranking failed:", error && error.message || error);
+        return json({ error: "تعذر تحميل ترتيب مشاهدات المنتجات." }, 500);
+      }
+    }
     const id = String(url.searchParams.get("id") || "");
     if (!/^[a-zA-Z0-9_-]{1,80}$/.test(id)) return json({ error: "Invalid product id" }, 400);
     try {
