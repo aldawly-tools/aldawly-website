@@ -1,39 +1,61 @@
-const PROJECT_ID = "wurth-29a1b";
-const API_KEY = "AIzaSyBRkIA7yD9kYm9BKCdMDExvKtVDjsCMY";
+function json(data, status = 200) {
+  return new Response(JSON.stringify(data), {
+    status,
+    headers: { "content-type": "application/json; charset=utf-8", "cache-control": "no-store" }
+  });
+}
+
+function cairoDay() {
+  const parts = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Africa/Cairo", year: "numeric", month: "2-digit", day: "2-digit"
+  }).formatToParts(new Date());
+  const value = type => parts.find(part => part.type === type).value;
+  return value("year") + "-" + value("month") + "-" + value("day");
+}
 
 export async function onRequest(context) {
-  if (context.request.method !== "GET") {
-    return new Response(JSON.stringify({ error: "Method not allowed" }), {
-      status: 405, headers: { "content-type": "application/json; charset=utf-8", "cache-control": "no-store" }
-    });
-  }
-  const id = String(new URL(context.request.url).searchParams.get("id") || "");
-  if (!/^[a-zA-Z0-9_-]{1,80}$/.test(id)) {
-    return new Response(JSON.stringify({ error: "Invalid product id" }), {
-      status: 400, headers: { "content-type": "application/json; charset=utf-8", "cache-control": "no-store" }
-    });
-  }
-  try {
-    const url = "https://firestore.googleapis.com/v1/projects/" + PROJECT_ID +
-      "/databases/(default)/documents/productViewCounts/" + encodeURIComponent(id) +
-      "?key=" + encodeURIComponent(API_KEY);
-    const response = await fetch(url, { headers: { accept: "application/json" }, signal: AbortSignal.timeout(8000) });
-    if (response.status === 404) {
-      return new Response(JSON.stringify({ total: 0 }), {
-        status: 200, headers: { "content-type": "application/json; charset=utf-8", "cache-control": "no-store" }
-      });
+  const { request, env } = context;
+  if (!env.DB) return json({ error: "قاعدة عداد المشاهدات غير مربوطة بعد." }, 503);
+
+  const url = new URL(request.url);
+  if (request.method === "POST") {
+    const origin = request.headers.get("Origin");
+    if (origin && new URL(origin).origin !== url.origin) return json({ error: "Forbidden" }, 403);
+    let body;
+    try { body = await request.json(); } catch (_) { return json({ error: "Invalid JSON" }, 400); }
+    const id = String(body.productId || "");
+    const visitorId = String(body.visitorId || "");
+    if (!/^[a-zA-Z0-9_-]{1,80}$/.test(id) || !/^[a-zA-Z0-9_-]{16,100}$/.test(visitorId)) {
+      return json({ error: "Invalid product or visitor id" }, 400);
     }
-    if (!response.ok) throw new Error("Firestore returned " + response.status);
-    const document = await response.json();
-    const total = Number(document.fields && document.fields.total &&
-      (document.fields.total.integerValue ?? document.fields.total.doubleValue)) || 0;
-    return new Response(JSON.stringify({ total: Math.max(0, total) }), {
-      status: 200, headers: { "content-type": "application/json; charset=utf-8", "cache-control": "no-store" }
-    });
-  } catch (error) {
-    console.error("Product view count unavailable:", error && error.message || error);
-    return new Response(JSON.stringify({ error: "تعذر تحميل عدد المشاهدات." }), {
-      status: 503, headers: { "content-type": "application/json; charset=utf-8", "cache-control": "no-store" }
-    });
+    const day = cairoDay();
+    try {
+      await env.DB.prepare(
+        "INSERT OR IGNORE INTO product_views (visitor_id, product_id, view_day) VALUES (?, ?, ?)"
+      ).bind(visitorId, id, day).run();
+      const row = await env.DB.prepare(
+        "SELECT COUNT(*) AS total FROM product_views WHERE product_id = ?"
+      ).bind(id).first();
+      return json({ total: Number(row && row.total) || 0 });
+    } catch (error) {
+      console.error("Product view insert failed:", error && error.message || error);
+      return json({ error: "تعذر تسجيل مشاهدة المنتج." }, 500);
+    }
   }
+
+  if (request.method === "GET") {
+    const id = String(url.searchParams.get("id") || "");
+    if (!/^[a-zA-Z0-9_-]{1,80}$/.test(id)) return json({ error: "Invalid product id" }, 400);
+    try {
+      const row = await env.DB.prepare(
+        "SELECT COUNT(*) AS total FROM product_views WHERE product_id = ?"
+      ).bind(id).first();
+      return json({ total: Number(row && row.total) || 0 });
+    } catch (error) {
+      console.error("Product view count failed:", error && error.message || error);
+      return json({ error: "تعذر تحميل عدد المشاهدات." }, 500);
+    }
+  }
+
+  return json({ error: "Method not allowed" }, 405);
 }
