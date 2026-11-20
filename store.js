@@ -751,12 +751,18 @@
     }
   }
 
+  function renderCartAndProductCards(skipPersist) {
+    renderCart(skipPersist);
+    renderProducts();
+    renderHomeShelves();
+  }
+
   // مزامنة التغييرات بين تبويبات الموقع المفتوحة على نفس المتصفح فقط.
   window.addEventListener("storage", function(event) {
     if (event.key !== cartStorageKey || event.newValue == null) return;
     try {
       cart = normalizeCart(JSON.parse(event.newValue));
-      renderCart(true);
+      renderCartAndProductCards(true);
     } catch (error) {}
   });
 
@@ -769,10 +775,8 @@
     products = event.detail;
     productSearchCache = new WeakMap();
     drawCategories();
-    renderProducts();
     renderBrandAvailability();
-    renderCart();
-    renderHomeShelves();
+    renderCartAndProductCards();
   });
   // Direct mobile category-menu handler: keep taps reliable on touch browsers.
   if (mobileMenuCategories) {
@@ -813,14 +817,12 @@
       }
       line.qty += 1;
     } else cart.push({id:id, qty:1});
-    renderCart();
+    renderCartAndProductCards();
     if (typeof window.DAWLY_TRACK_CONVERSION === "function") {
       window.DAWLY_TRACK_CONVERSION("add_to_cart", {productId:String(item.id),productName:item.name,brand:productBrand(item),itemCount:1});
     }
     // Keep the catalog visible after adding; the cart opens only when the shopper taps its button.
     setDrawer(false);
-    renderProducts();
-    renderHomeShelves();
   }
 
   if (brandFilterSearch) brandFilterSearch.addEventListener("input", drawBrandFilters);
@@ -876,8 +878,10 @@
       const id = String(button.getAttribute("data-remove") || "");
       const before = cart.length;
       cart = cart.filter(function(line) { return String(line.id) !== id; });
-      if (cart.length !== before) pendingOrder = null;
-      if (cart.length !== before) renderCart();
+      if (cart.length !== before) {
+        pendingOrder = null;
+        renderCartAndProductCards();
+      }
     }, true);
   }
 
@@ -1060,8 +1064,7 @@
           line.qty = Math.max(0, Number(line.qty || 0) - 1);
           if (!line.qty) cart = cart.filter(function(entry){ return String(entry.id) !== id; });
           pendingOrder = null;
-          renderCart();
-          renderProducts();
+          renderCartAndProductCards();
         }
       } else {
         addToCart(id);
@@ -1098,8 +1101,7 @@
         pendingOrder = null;
         line.qty = nextQty;
         if (line.qty <= 0) cart = cart.filter(function (entry) { return String(entry.id) !== String(line.id); });
-        renderCart();
-        renderProducts();
+        renderCartAndProductCards();
       }
       return;
     }
@@ -1107,8 +1109,7 @@
     if (remove) {
       pendingOrder = null;
       cart = cart.filter(function (entry) { return String(entry.id) !== String(remove.dataset.remove); });
-      renderCart();
-      renderProducts();
+      renderCartAndProductCards();
       return;
     }
     if (event.target.closest("#openCart") || event.target.closest("#floatingHomeCart") || event.target.closest("[data-open-cart]") || event.target.closest("#cartQuickbarOpen")) { setCheckoutStep("review"); setDrawer(true); return; }
@@ -1601,7 +1602,7 @@
     // The order snapshot is already prepared and WhatsApp has been opened.
     // Clear only the shopping cart; keep the prepared order and PDF data intact.
     cart = [];
-    renderCart();
+    renderCartAndProductCards();
   });
 
   // Keep the active checkout field visible when the mobile keyboard opens.
@@ -1629,10 +1630,8 @@
     if (event.key === "Escape") { setDrawer(false); setMobileMenu(false); setFloatingContact(false); }
   });
   drawCategories();
-  renderProducts();
-  renderHomeShelves();
   renderBrandAvailability();
-  renderCart();
+  renderCartAndProductCards();
   const initialParams = new URLSearchParams(window.location.search);
   if (initialParams.get("cart") === "1") {
     const directOrder = initialParams.get("direct") === "1";
