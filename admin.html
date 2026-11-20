@@ -1912,8 +1912,8 @@ $("productForm").addEventListener("submit", async function (event) {
       updatedAt:serverTimestamp()
     };
     await setDoc(doc(db, "products", String(id)), product);
-    await markCatalogChanged();
     productSaved = true;
+    await markCatalogChanged();
     if (imageChanged && previousImageIds.length) {
       const obsoleteIds = previousImageIds.filter(function (oldId) { return !imageIds.includes(oldId); });
       if (obsoleteIds.length) {
