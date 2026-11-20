@@ -1,9 +1,8 @@
 import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-app.js";
-import { collection, doc, getDoc, getDocs, getFirestore } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-firestore.js";
+import { collection, doc, getDoc, getDocs, getFirestore, onSnapshot } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-firestore.js";
 
 const config = window.DAWLY_FIREBASE_CONFIG || {};
 const CACHE_KEY = "aldawly_catalog_cache_v1";
-const CACHE_TTL = 15 * 60 * 1000;
 
 function publishProducts(products) {
   window.DAWLY_PRODUCTS = products;
@@ -21,9 +20,9 @@ function readCatalogCache() {
   } catch (_) { return null; }
 }
 
-function writeCatalogCache(products) {
+function writeCatalogCache(products, catalogVersion) {
   try {
-    localStorage.setItem(CACHE_KEY, JSON.stringify({savedAt:Date.now(), products:products}));
+    localStorage.setItem(CACHE_KEY, JSON.stringify({savedAt:Date.now(), catalogVersion:Number(catalogVersion)||0, products:products}));
   } catch (error) {
     console.warn("Catalog cache could not be saved:", error);
   }
@@ -98,7 +97,8 @@ if (!config.apiKey || !config.projectId) {
     const cached = readCatalogCache();
     if (cached && cached.products.length) publishProducts(cached.products);
 
-    async function refreshCatalog() {
+    let catalogVersion = null;
+    async function refreshCatalog(version) {
       try {
         const snapshot = await getDocs(collection(db, "products"));
         const products = snapshot.docs.map(function (item) {
@@ -111,7 +111,7 @@ if (!config.apiKey || !config.projectId) {
           if (Number.isFinite(aNumber) && Number.isFinite(bNumber)) return aNumber - bNumber;
           return String(a.id).localeCompare(String(b.id), "en");
         });
-        writeCatalogCache(products);
+        writeCatalogCache(products, version == null ? catalogVersion : version);
         publishProducts(products);
         window.dispatchEvent(new Event("dawly-catalog-ready"));
       } catch (error) {
@@ -124,14 +124,35 @@ if (!config.apiKey || !config.projectId) {
     }
 
     window.DAWLY_REFRESH_CATALOG = refreshCatalog;
-    if (!cached || !cached.products.length || Date.now() - Number(cached.savedAt) > CACHE_TTL) {
-      refreshCatalog();
-    } else {
+    if (cached && cached.products.length) {
+      publishProducts(cached.products);
       window.dispatchEvent(new Event("dawly-catalog-ready"));
     }
 
-    // An admin tab on the same device can update the shared cache. Reflect it
-    // immediately without another Firestore read.
+    // Listen to the lightweight catalog version document. Admin changes bump
+    // this value, so every open storefront refreshes only when the catalog changes.
+    let firstMetaSnapshot = true;
+    onSnapshot(doc(db, "storeMeta", "catalog"), function (snapshot) {
+      const nextVersion = snapshot.exists() ? Number(snapshot.data().version || 0) : 0;
+      if (firstMetaSnapshot) {
+        firstMetaSnapshot = false;
+        catalogVersion = nextVersion;
+        if (!cached || !cached.products.length || Number(cached.catalogVersion) !== nextVersion) {
+          refreshCatalog(nextVersion);
+        }
+        return;
+      }
+      if (nextVersion !== catalogVersion) {
+        catalogVersion = nextVersion;
+        refreshCatalog(nextVersion);
+      }
+    }, function (error) {
+      console.warn("Catalog version listener failed:", error);
+      // Keep the cached catalog available if live synchronization is unavailable.
+      if (!cached || !cached.products.length) refreshCatalog(catalogVersion);
+    });
+
+    // Same-browser admin tabs can still publish their cache immediately.
     window.addEventListener("storage", function (event) {
       if (event.key !== CACHE_KEY || !event.newValue) return;
       try {
