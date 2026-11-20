@@ -396,7 +396,7 @@ button:disabled{opacity:.6;cursor:wait}
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-app.js";
 import { getAuth, GoogleAuthProvider, onAuthStateChanged, signInWithPopup, signOut } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-auth.js";
-import { collection, deleteDoc, doc, getDoc, getDocs, getFirestore, setDoc, serverTimestamp, writeBatch, query, orderBy, updateDoc, runTransaction, where, getCountFromServer } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-firestore.js";
+import { collection, deleteDoc, doc, getDoc, getDocs, getFirestore, setDoc, serverTimestamp, writeBatch, query, orderBy, updateDoc, runTransaction, where, getCountFromServer, increment } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-firestore.js";
 
 const $ = function (id) { return document.getElementById(id); };
 const ids = ["dashboardPanel", "productPanel", "catalogPanel", "pricingPanel", "ordersPanel", "postPanel", "analyticsPanel"];
@@ -413,6 +413,9 @@ let auth = null;
 let products = [];
 let productsLoaded = false;
 const CATALOG_CACHE_KEY = "aldawly_catalog_cache_v1";
+async function markCatalogChanged() {
+  await setDoc(doc(db, "storeMeta", "catalog"), {initialized:true, updatedAt:serverTimestamp(), version:increment(1)}, {merge:true});
+}
 function saveCatalogCache() {
   try { localStorage.setItem(CATALOG_CACHE_KEY, JSON.stringify({savedAt:Date.now(), products:products})); }
   catch (error) { console.warn("تعذر تحديث ذاكرة كتالوج المنتجات:", error); }
@@ -783,7 +786,7 @@ async function ensureCatalog() {
   const meta = await getDoc(metaRef);
   if (meta.exists()) return;
   // Do not seed sample or placeholder products. Only owner-added products belong in the live catalog.
-  await setDoc(metaRef, {initialized:true, updatedAt:serverTimestamp(), seeded:false});
+  await setDoc(metaRef, {initialized:true, updatedAt:serverTimestamp(), seeded:false, version:0});
 }
 async function loadProducts(force) {
   if (productsLoaded && !force) { renderProducts(); return; }
@@ -893,6 +896,7 @@ $("applyBulkPricesBtn").addEventListener("click", async function() {
       });
       await batch.commit();
     }
+    await markCatalogChanged();
     await updateDoc(historyRef,{status:"completed",completedAt:serverTimestamp()});
     products = products.map(function(product) {
       const change = preview.changes.find(item=>item.id===String(product.id));
@@ -935,6 +939,7 @@ $("undoBulkPricesBtn").addEventListener("click", async function() {
       restore.slice(i,i+400).forEach(item=>batch.update(item.ref,{price:item.oldPrice,updatedAt:serverTimestamp()}));
       await batch.commit();
     }
+    if (restore.length) await markCatalogChanged();
     await updateDoc(historyRef,{undoneAt:serverTimestamp(),undoneBy:auth.currentUser.email,undoRestored:restore.length,undoSkipped:skipped});
     await loadProducts(true);
     bulkPriceMessage("تم التراجع عن تعديل " + restore.length + " منتج. تم تخطي " + skipped + " منتج لأن سعره تغير بعد العملية.");
@@ -986,6 +991,7 @@ $("applyBulkDiscountBtn").addEventListener("click",async function(){
   const prev=await getDoc(ref);if(prev.exists()&&prev.data().status==="applying")throw Error("هناك عملية خصم سابقة غير مكتملة؛ راجع سجلها أولًا.");
   await setDoc(ref,{status:"applying",scope:d.scope,percent:d.percent,createdAt:serverTimestamp(),createdBy:auth.currentUser.email,changes:d.changes.map(c=>({id:c.id,oldPercent:c.oldPercent,newPercent:c.newPercent}))});
   for(let i=0;i<d.changes.length;i+=400){const batch=writeBatch(db);d.changes.slice(i,i+400).forEach(c=>batch.update(doc(db,"products",c.id),{discountPercent:c.newPercent,updatedAt:serverTimestamp()}));await batch.commit();}
+  await markCatalogChanged();
   await updateDoc(ref,{status:"completed",completedAt:serverTimestamp()});
   products=products.map(p=>{const c=d.changes.find(x=>x.id===String(p.id));return c?Object.assign({},p,{discountPercent:c.newPercent}):p;});
   saveCatalogCache();renderProducts();refreshPostProducts();bulkDiscountPreviewData=null;renderBulkDiscountPreview();
@@ -1003,6 +1009,7 @@ $("undoBulkDiscountBtn").addEventListener("click",async function(){
   const restore=[];let skipped=0;
   for(const c of snap.data().changes||[]){const pr=doc(db,"products",String(c.id)),cur=await getDoc(pr);if(!cur.exists()||Number(cur.data().discountPercent||0)!==Number(c.newPercent)){skipped++;continue;}restore.push({ref:pr,value:c.oldPercent});}
   for(let i=0;i<restore.length;i+=400){const batch=writeBatch(db);restore.slice(i,i+400).forEach(x=>batch.update(x.ref,{discountPercent:x.value,updatedAt:serverTimestamp()}));await batch.commit();}
+  if(restore.length)await markCatalogChanged();
   await updateDoc(ref,{undoneAt:serverTimestamp(),undoRestored:restore.length,undoSkipped:skipped});await loadProducts(true);
   discountMessage("تم التراجع عن الخصم في "+restore.length+" منتج، وتخطي "+skipped+" منتج تغيّر خصمه يدويًا.");
  }catch(e){discountMessage("تعذر التراجع: "+(e.message||"خطأ غير معروف"));}
@@ -1520,7 +1527,7 @@ async function importProducts(file) {
     records.slice(start, start + 400).forEach(function (record) {
       batch.set(doc(db, "products", String(record.id)), record);
     });
-    if (start + 400 >= records.length) batch.set(doc(db, "storeMeta", "catalog"), {initialized:true,updatedAt:serverTimestamp()});
+    if (start + 400 >= records.length) batch.set(doc(db, "storeMeta", "catalog"), {initialized:true,updatedAt:serverTimestamp(),version:increment(1)}, {merge:true});
     await batch.commit();
   }
   await loadProducts(true);
@@ -1645,6 +1652,7 @@ async function deleteProduct(id) {
       batch.delete(doc(db, "productImages", imageId));
     });
     await batch.commit();
+    await markCatalogChanged();
     products = products.filter(function (item) { return String(item.id) !== String(id); });
     productsLoaded = true;
     saveCatalogCache();
@@ -1904,6 +1912,7 @@ $("productForm").addEventListener("submit", async function (event) {
       updatedAt:serverTimestamp()
     };
     await setDoc(doc(db, "products", String(id)), product);
+    await markCatalogChanged();
     productSaved = true;
     if (imageChanged && previousImageIds.length) {
       const obsoleteIds = previousImageIds.filter(function (oldId) { return !imageIds.includes(oldId); });
