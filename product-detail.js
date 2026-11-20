@@ -176,10 +176,27 @@
 
     const viewCountNode = root.querySelector("[data-product-view-count] [data-view-number]");
     if (viewCountNode) {
-      fetch("/api/product-view-count?id=" + encodeURIComponent(String(item.id)), {cache:"no-store"})
-        .then(function(response){ if(!response.ok) throw new Error("count unavailable"); return response.json(); })
-        .then(function(data){ if(viewCountNode.isConnected) viewCountNode.textContent = new Intl.NumberFormat("ar-EG").format(Math.max(0, Number(data.total)||0)); })
-        .catch(function(){ if(viewCountNode.isConnected) viewCountNode.textContent = "—"; });
+      (async function () {
+        try {
+          let visitorId = "";
+          try { visitorId = localStorage.getItem("aldawly_visitor_id") || ""; } catch (_) {}
+          if (!visitorId) {
+            visitorId = (crypto.randomUUID ? crypto.randomUUID() : "v-" + Math.random().toString(36).slice(2) + Date.now().toString(36));
+            try { localStorage.setItem("aldawly_visitor_id", visitorId); } catch (_) {}
+          }
+          const response = await fetch("/api/product-view-count", {
+            method: "POST",
+            headers: { "content-type": "application/json" },
+            cache: "no-store",
+            body: JSON.stringify({ productId: String(item.id), visitorId: visitorId })
+          });
+          if (!response.ok) throw new Error("count unavailable");
+          const data = await response.json();
+          if (viewCountNode.isConnected) viewCountNode.textContent = new Intl.NumberFormat("ar-EG").format(Math.max(0, Number(data.total)||0));
+        } catch (_) {
+          if (viewCountNode.isConnected) viewCountNode.textContent = "—";
+        }
+      })();
     }
 
     const allProducts = cloudProducts || fallbackProducts;
