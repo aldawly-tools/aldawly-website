@@ -44,7 +44,7 @@ function styles(){
 function build(){
  styles();
  var overlay=node("div",{id:"dawlyImageSearchOverlay"});
- overlay.innerHTML='<section id="dawlyImageSearchModal" role="dialog" aria-modal="true" aria-labelledby="dawlyImageSearchTitle"><div class="dawly-is-head"><h2 id="dawlyImageSearchTitle">البحث بصورة المنتج</h2><button id="dawlyImageSearchClose" type="button" aria-label="إغلاق">×</button></div><div class="dawly-is-drop"><strong>اختر صورة الأداة من جهازك</strong><p>البحث يتم محليًا داخل صور منتجات كتالوج الدولي فقط، دون إرسال الصورة إلى أي خدمة خارجية.</p><img id="dawlyImageSearchPreview" alt="معاينة الصورة المختارة"><input id="dawlyImageSearchFile" type="file" accept="image/jpeg,image/png,image/webp"><button id="dawlyImageSearchChoose" type="button">اختر صورة المنتج　＋</button></div><div class="dawly-is-actions"><button id="dawlyImageSearchRun" type="button" disabled>ابحث عن منتجات مشابهة</button><button id="dawlyImageSearchClear" type="button">مسح الصورة</button></div><p id="dawlyImageSearchStatus" role="status" aria-live="polite">النتائج تقريبية حسب التشابه البصري مع صور المنتجات المتاحة.</p><div id="dawlyImageSearchResults"></div></section>';
+ overlay.innerHTML='<section id="dawlyImageSearchModal" role="dialog" aria-modal="true" aria-labelledby="dawlyImageSearchTitle"><div class="dawly-is-head"><h2 id="dawlyImageSearchTitle">البحث بصورة المنتج</h2><button id="dawlyImageSearchClose" type="button" aria-label="إغلاق">×</button></div><div class="dawly-is-drop"><strong>اختر صورة الأداة من جهازك</strong><p>البحث يتم محليًا داخل صور منتجات كتالوج الدولي فقط، دون إرسال الصورة إلى أي خدمة خارجية.</p><img id="dawlyImageSearchPreview" alt="معاينة الصورة المختارة"><input id="dawlyImageSearchFile" type="file" accept="image/jpeg,image/png,image/webp"><button id="dawlyImageSearchChoose" type="button">اختر صورة المنتج　＋</button></div><div class="dawly-is-actions"><button id="dawlyImageSearchRun" type="button" disabled>ابحث عن منتجات مشابهة</button><button id="dawlyImageSearchClear" type="button">مسح الصورة</button></div><p id="dawlyImageSearchStatus" role="status" aria-live="polite">البحث يقارن شكل المنتج وتفاصيله وألوانه، ويعرض النتائج ذات التشابه الواضح فقط.</p><div id="dawlyImageSearchResults"></div></section>';
  document.body.appendChild(overlay);modal=overlay;
  var file=overlay.querySelector("#dawlyImageSearchFile");
  overlay.querySelector("#dawlyImageSearchChoose").onclick=function(){file.click();};
@@ -67,14 +67,19 @@ function close(){if(modal)modal.classList.remove("is-open");document.body.style.
 function clear(){selected="";var f=modal.querySelector("#dawlyImageSearchFile");f.value="";var p=modal.querySelector("#dawlyImageSearchPreview");p.removeAttribute("src");p.style.display="none";modal.querySelector("#dawlyImageSearchRun").disabled=true;modal.querySelector("#dawlyImageSearchResults").innerHTML="";status("اختر صورة لبدء البحث المحلي.");}
 function loadImage(src){return new Promise(function(resolve,reject){var im=new Image();if(src.indexOf("data:")!==0)im.crossOrigin="anonymous";im.onload=function(){resolve(im);};im.onerror=reject;im.src=src;});}
 function describe(im){
- var c=document.createElement("canvas");c.width=c.height=64;var x=c.getContext("2d",{willReadFrequently:true});x.drawImage(im,0,0,64,64);
- var d=x.getImageData(0,0,64,64).data,g=new Float32Array(4096),h=new Array(48).fill(0),sp=new Array(192).fill(0),ed=new Array(128).fill(0);
- for(var y=0;y<64;y++)for(var xx=0;xx<64;xx++){var k=(y*64+xx)*4,r=d[k],gg=d[k+1],b=d[k+2];g[y*64+xx]=.299*r+.587*gg+.114*b;if(d[k+3]<20)continue;h[Math.min(3,r>>6)*12+Math.min(3,gg>>6)*3+Math.min(2,Math.floor(b/86))]++;var z=(Math.floor(y/16)*4+Math.floor(xx/16))*12;sp[z+Math.min(3,r>>6)]++;sp[z+4+Math.min(3,gg>>6)]++;sp[z+8+Math.min(3,b>>6)]++;}
- for(var yy=1;yy<63;yy++)for(var xxx=1;xxx<63;xxx++){var gx=g[yy*64+xxx+1]-g[yy*64+xxx-1],gy=g[(yy+1)*64+xxx]-g[(yy-1)*64+xxx],m=Math.hypot(gx,gy);if(m<18)continue;var a=Math.atan2(gy,gx)+Math.PI,bin=Math.min(7,Math.floor(a/(2*Math.PI)*8)),z=(Math.floor(yy/16)*4+Math.floor(xxx/16))*8;ed[z+bin]+=m;}
+ var c=document.createElement("canvas");c.width=c.height=64;var x=c.getContext("2d",{willReadFrequently:true});
+ // Preserve the source aspect ratio; stretching product photos creates misleading matches.
+ x.fillStyle="#fff";x.fillRect(0,0,64,64);
+ var scale=Math.min(64/im.naturalWidth,64/im.naturalHeight),w=im.naturalWidth*scale,hgt=im.naturalHeight*scale;
+ x.drawImage(im,(64-w)/2,(64-hgt)/2,w,hgt);
+ var d=x.getImageData(0,0,64,64).data,g=new Float32Array(4096),h=new Array(48).fill(0),sp=new Array(192).fill(0),ed=new Array(128).fill(0),shape=new Array(64).fill(0),shapeCount=new Array(64).fill(0);
+ for(var y=0;y<64;y++)for(var xx=0;xx<64;xx++){var k=(y*64+xx)*4,r=d[k],gg=d[k+1],b=d[k+2];g[y*64+xx]=(.299*r+.587*gg+.114*b)/255;if(d[k+3]<20)continue;h[Math.min(3,r>>6)*12+Math.min(3,gg>>6)*3+Math.min(2,Math.floor(b/86))]++;var z=(Math.floor(y/16)*4+Math.floor(xx/16))*12;sp[z+Math.min(3,r>>6)]++;sp[z+4+Math.min(3,gg>>6)]++;sp[z+8+Math.min(3,b>>6)]++;var si=(Math.floor(y/8)*8+Math.floor(xx/8));shape[si]+=g[y*64+xx];shapeCount[si]++;}
+ for(var si=0;si<64;si++)shape[si]=shapeCount[si]?shape[si]/shapeCount[si]:1;
+ for(var yy=1;yy<63;yy++)for(var xxx=1;xxx<63;xxx++){var gx=g[yy*64+xxx+1]-g[yy*64+xxx-1],gy=g[(yy+1)*64+xxx]-g[(yy-1)*64+xxx],m=Math.hypot(gx,gy);if(m<.07)continue;var a=Math.atan2(gy,gx)+Math.PI,bin=Math.min(7,Math.floor(a/(2*Math.PI)*8)),z=(Math.floor(yy/16)*4+Math.floor(xxx/16))*8;ed[z+bin]+=m;}
  function n(a){var sum=a.reduce(function(v,q){return v+q;},0)||1;return a.map(function(v){return v/sum;});}
- return {h:n(h),sp:n(sp),ed:n(ed)};
+ return {h:n(h),sp:n(sp),ed:n(ed),shape:shape};
 }
-function sim(a,b){function dist(x,y){var s=0;for(var i=0;i<x.length;i++)s+=Math.abs(x[i]-y[i]);return s/2;}return Math.max(0,Math.min(100,Math.round(100*(1-(dist(a.h,b.h)*.25+dist(a.sp,b.sp)*.42+dist(a.ed,b.ed)*.33)))));}
+function sim(a,b){function dist(x,y){var s=0;for(var i=0;i<x.length;i++)s+=Math.abs(x[i]-y[i]);return s/2;}function shapeDist(x,y){var s=0;for(var i=0;i<x.length;i++)s+=Math.abs(x[i]-y[i]);return s/x.length;}var distance=dist(a.h,b.h)*.15+dist(a.sp,b.sp)*.25+dist(a.ed,b.ed)*.25+shapeDist(a.shape,b.shape)*.35;return Math.max(0,Math.min(100,Math.round(100*(1-distance))));}
 async function source(p){
  var direct=p.image||p.imageUrl||p.imageURL||p.photo||p.img||"";
  if(direct&&/^data:image\//i.test(String(direct)))return String(direct);
@@ -94,8 +99,8 @@ async function search(){
   var list=products.filter(function(p){return p&&p.hiddenFromStore!==true;}).slice(0,500);if(!list.length)throw Error("catalog");
   var scored=[],done=0,failed=0,next=0;
   async function worker(){while(next<list.length){var i=next++,p=list[i];try{var d=await productDescriptor(p);if(d)scored.push({p:p,s:sim(target,d)});else failed++;}catch(e){failed++;}done++;if(done%5===0||done===list.length)status("مقارنة صور الكتالوج محليًا: "+done+" / "+list.length);}}
-  await Promise.all([worker(),worker(),worker(),worker()]);scored.sort(function(a,b){return b.s-a.s;});var top=scored.filter(function(x){return x.s>=18;}).slice(0,12);if(!top.length)top=scored.slice(0,6);
-  if(!top.length){status("لا توجد صور منتجات متاحة للمقارنة في الكتالوج.");return;}
+  await Promise.all([worker(),worker(),worker(),worker()]);scored.sort(function(a,b){return b.s-a.s;});var top=scored.filter(function(x){return x.s>=34;}).slice(0,8);
+  if(!top.length){status("لم نعثر على تطابق بصري قوي. جرّب صورة أوضح للمنتج وحده، بخلفية بسيطة وإضاءة جيدة.");return;}
   out.innerHTML=top.map(function(x){var p=x.p,n=String(p.name||"منتج من الدولي").replace(/[&<>"\']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","\'":"&#39;"}[c];}),brand=String(p.brand||p.brandName||p.cat||"").replace(/</g,"&lt;"),price=String(p.price||"السعر عند التواصل").replace(/</g,"&lt;"),img=p.image||p.imageUrl||p.imageURL||p.photo||"",iid=p.imageId||"",href="product.html?id="+encodeURIComponent(String(p.id));var picture=img?'<img src="'+img.replace(/"/g,"%22")+'" alt="'+n+'" loading="lazy">':iid?'<img data-cloud-image="'+String(iid).replace(/"/g,"%22")+'" alt="'+n+'" loading="lazy">':'<span>🔧</span>';return '<a class="dawly-is-result" href="'+href+'">'+picture+'<span><strong>'+n+'</strong><small>'+brand+' · تشابه بصري '+x.s+'%</small><b>'+price+'</b></span></a>';}).join("");
   out.querySelectorAll("img[data-cloud-image]").forEach(function(im){if(typeof window.DAWLY_LOAD_PRODUCT_IMAGE==="function"){window.DAWLY_LOAD_PRODUCT_IMAGE(im.dataset.cloudImage).then(function(url){if(url&&im.isConnected)im.src=url;}).catch(function(){});}});
   status("اكتمل البحث داخل الموقع فقط. تمت مقارنة "+done+" منتجًا؛ تعذر تحميل "+failed+" صورة.");
