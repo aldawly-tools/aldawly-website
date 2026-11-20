@@ -40,19 +40,19 @@
     function cleanVoiceQuery(value){
       return String(value||"")
         .replace(/(?:من فضلك|لو سمحت|عاوز|عايزة|عايز|عاوزة|محتاج|محتاجة|هاتلي|هات|وريني|ابحث عن|دورلي على|دور على|عايز اشوف|عاوز اشوف)/g," ")
-        .replace(/\\s+/g," ").trim();
+        .replace(/\s+/g," ").trim();
     }
     function catalogMatchScore(phrase){
       var query=cleanVoiceQuery(phrase).toLocaleLowerCase("ar");
       if(!query)return 0;
-      var terms=query.split(/\\s+/).filter(Boolean);
+      var terms=query.split(/\s+/).filter(Boolean);
       var catalog=Array.isArray(window.DAWLY_PRODUCTS)?window.DAWLY_PRODUCTS:[];
       if(!catalog.length)return 0;
       var best=0;
       catalog.forEach(function(product){
         var name=String(product&&product.name||"").toLocaleLowerCase("ar")
           .replace(/[أإآ]/g,"ا").replace(/ى/g,"ي").replace(/ة/g,"ه");
-        var words=name.split(/[^\\p{L}\\p{N}]+/u).filter(Boolean);
+        var words=name.split(/[^\p{L}\p{N}]+/u).filter(Boolean);
         var matched=terms.filter(function(term){
           term=term.replace(/[أإآ]/g,"ا").replace(/ى/g,"ي").replace(/ة/g,"ه");
           return words.some(function(word){return word===term||word.startsWith(term)||term.startsWith(word);});
