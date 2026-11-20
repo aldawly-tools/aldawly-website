@@ -252,3 +252,27 @@ exports.analyzeProductImage = onRequest(
     }
   }
 );
+
+
+// Maintain a public aggregate for each product. The event marker makes retries idempotent.
+exports.aggregateProductViews = onDocumentCreated(
+  { document: "productViews/{viewId}", region: "me-central1", retry: true },
+  async (event) => {
+    const data = event.data && event.data.data();
+    const productId = String(data && data.productId || "").replace(/[^a-zA-Z0-9_-]/g, "").slice(0, 80);
+    if (!productId) return;
+    const db = getFirestore();
+    const markerRef = db.collection("processedProductViewEvents").doc(String(event.id).replace(/[^a-zA-Z0-9_-]/g, "_"));
+    const countRef = db.collection("productViewCounts").doc(productId);
+    await db.runTransaction(async (transaction) => {
+      const marker = await transaction.get(markerRef);
+      if (marker.exists) return;
+      transaction.create(markerRef, { productId, processedAt: FieldValue.serverTimestamp() });
+      transaction.set(countRef, {
+        productId,
+        total: FieldValue.increment(1),
+        updatedAt: FieldValue.serverTimestamp()
+      }, { merge: true });
+    });
+  }
+);
