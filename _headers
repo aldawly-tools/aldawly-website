@@ -1,5 +1,10 @@
 /*
   Cache-Control: no-store, no-cache, must-revalidate, max-age=0
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: SAMEORIGIN
+  Referrer-Policy: strict-origin-when-cross-origin
+  Strict-Transport-Security: max-age=31536000
+  Permissions-Policy: camera=(self), microphone=(self), geolocation=()
 
 /*.html
   Cache-Control: no-store, no-cache, must-revalidate, max-age=0
