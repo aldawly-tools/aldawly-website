@@ -37,14 +37,48 @@
     recognition.maxAlternatives=3;
     var finalText="";
     recognition.onstart=function(){finalText="";state(true,"جاري الاستماع… اضغط لإيقاف التسجيل");};
+    function cleanVoiceQuery(value){
+      return String(value||"")
+        .replace(/(?:من فضلك|لو سمحت|عاوز|عايزة|عايز|عاوزة|محتاج|محتاجة|هاتلي|هات|وريني|ابحث عن|دورلي على|دور على|عايز اشوف|عاوز اشوف)/g," ")
+        .replace(/\\s+/g," ").trim();
+    }
+    function catalogMatchScore(phrase){
+      var query=cleanVoiceQuery(phrase).toLocaleLowerCase("ar");
+      if(!query)return 0;
+      var terms=query.split(/\\s+/).filter(Boolean);
+      var catalog=Array.isArray(window.DAWLY_PRODUCTS)?window.DAWLY_PRODUCTS:[];
+      if(!catalog.length)return 0;
+      var best=0;
+      catalog.forEach(function(product){
+        var name=String(product&&product.name||"").toLocaleLowerCase("ar")
+          .replace(/[أإآ]/g,"ا").replace(/ى/g,"ي").replace(/ة/g,"ه");
+        var words=name.split(/[^\\p{L}\\p{N}]+/u).filter(Boolean);
+        var matched=terms.filter(function(term){
+          term=term.replace(/[أإآ]/g,"ا").replace(/ى/g,"ي").replace(/ة/g,"ه");
+          return words.some(function(word){return word===term||word.startsWith(term)||term.startsWith(word);});
+        }).length;
+        best=Math.max(best,matched/terms.length);
+      });
+      return best;
+    }
     recognition.onresult=function(event){
       var interim="";
       for(var i=event.resultIndex;i<event.results.length;i++){
-        var phrase=event.results[i][0].transcript||"";
-        if(event.results[i].isFinal)finalText+=phrase+" ";
+        var result=event.results[i], candidates=[];
+        for(var a=0;a<result.length;a++){
+          candidates.push({text:result[a].transcript||"",confidence:Number(result[a].confidence)||0,index:a});
+        }
+        candidates.sort(function(a,b){
+          var scoreA=catalogMatchScore(a.text),scoreB=catalogMatchScore(b.text);
+          if(scoreA!==scoreB)return scoreB-scoreA;
+          return b.confidence-a.confidence;
+        });
+        var phrase=candidates.length?candidates[0].text:"";
+        phrase=cleanVoiceQuery(phrase);
+        if(result.isFinal)finalText+=(phrase||"")+" ";
         else interim+=phrase;
       }
-      var value=(finalText+interim).trim();
+      var value=cleanVoiceQuery(finalText+interim).trim();
       if(value){input.value=value;input.dispatchEvent(new Event("input",{bubbles:true}));}
     };
     recognition.onerror=function(event){
