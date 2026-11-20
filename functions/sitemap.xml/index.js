@@ -43,7 +43,7 @@ export async function onRequest() {
         const fields = document.fields || {};
         const id = firestoreValue(fields.id) || document.name.split("/").pop();
         if (id !== undefined && id !== null && String(id).trim() !== "") {
-          const productUrl = SITE + "/product.html?id=" + encodeURIComponent(String(id).trim());
+          const productUrl = SITE + "/product?id=" + encodeURIComponent(String(id).trim());
           const modified = document.updateTime ? String(document.updateTime).slice(0, 10) : "";
           urls.set(productUrl, modified);
         }
