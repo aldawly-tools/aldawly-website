@@ -141,3 +141,7 @@ body{background:radial-gradient(ellipse at 50% 0%,#3b424a 0%,#20252b 46%,#111519
  .related-products .related-visual{min-height:118px!important}
  .related-products .related-info strong{min-height:38px!important}
 }
+
+/* User request: remove the two decorative red/navy lines above the product card. */
+.product-page .product-detail-layout::before,
+.product-page .product-detail-layout::after{display:none!important;content:none!important;background:none!important;border:0!important;animation:none!important;}
