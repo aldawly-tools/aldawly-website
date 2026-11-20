@@ -163,6 +163,7 @@
       '<div class="product-gallery-column"><div class="product-detail-image" id="detailImage" tabindex="0" role="button" aria-label="تكبير صورة ' + escapeHtml(name) + '" title="اضغط لتكبير الصورة">' + image + galleryControls + '</div>' + galleryHtml + '</div>' +
       '<div class="product-detail-info"><span class="product-detail-category">' + brand + escapeHtml(item.cat || "منتجات") + '</span>' +
       '<h1 class="product-detail-title">' + escapeHtml(name) + '</h1>' +
+      '<div class="product-view-count" data-product-view-count="' + escapeHtml(item.id) + '" style="display:inline-flex;align-items:center;gap:7px;margin:5px 0 12px;padding:6px 11px;border:1px solid #e6e9ed;border-radius:20px;background:#f8fafc;color:#58616b;font-size:12px;font-weight:800"><span aria-hidden="true">👁</span><span>المشاهدات: </span><strong data-view-number>—</strong></div>' +
       '<p class="product-detail-description">' + escapeHtml(cleanProductCopy(item.desc || "للاستفسار عن مواصفات المنتج وتفاصيله، تواصل معنا مباشرة.")) + '</p>' +
       '<div class="product-detail-price"><span class="detail-price-value">' + price + '</span><small>' + (formatPrice(item.price).startsWith("EGP ") ? 'السعر بالجنيه المصري' : 'يُرجى تأكيد السعر عند التواصل') + '</small></div>' + stockHtml +
       '<div class="product-detail-actions product-detail-actions-compact">' +
@@ -172,6 +173,14 @@
       '<button class="button-outline share-product-button detail-share-icon" type="button" data-share-product="' + escapeHtml(item.id) + '" aria-label="مشاركة المنتج" title="مشاركة المنتج"><svg width="21" height="21" style="display:block!important;width:21px!important;height:21px!important;max-width:21px!important;max-height:21px!important;flex:none!important;overflow:visible" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 16V3m0 0L7 8m5-5 5 5M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span>مشاركة المنتج</span></button>' +
       '<a class="detail-back-link" href="products.html">← العودة إلى المنتجات</a></div>' + '<div class="product-trust-strip" aria-label="مميزات الخدمة"><div><b>🚚</b><span>شحن لجميع المحافظات</span></div><div><b>✓</b><span>تأكيد الطلب عبر واتساب</span></div><div><b>🛠</b><span>مساعدة في اختيار العدد</span></div></div>' + '</div>' + (specsHtml ? '<div class="product-specs-column">' + specsHtml + '</div>' : '<div class="product-specs-column product-specs-empty"></div>') + '</article>';
 
+
+    const viewCountNode = root.querySelector("[data-product-view-count] [data-view-number]");
+    if (viewCountNode) {
+      fetch("/api/product-view-count?id=" + encodeURIComponent(String(item.id)), {cache:"no-store"})
+        .then(function(response){ if(!response.ok) throw new Error("count unavailable"); return response.json(); })
+        .then(function(data){ if(viewCountNode.isConnected) viewCountNode.textContent = new Intl.NumberFormat("ar-EG").format(Math.max(0, Number(data.total)||0)); })
+        .catch(function(){ if(viewCountNode.isConnected) viewCountNode.textContent = "—"; });
+    }
 
     const allProducts = cloudProducts || fallbackProducts;
     const relatedProducts = allProducts.filter(function (product) {
