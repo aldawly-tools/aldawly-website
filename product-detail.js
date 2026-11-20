@@ -286,13 +286,24 @@
       const dots = root.querySelectorAll("[data-gallery-dot]");
       dots.forEach(function(dot,dotIndex){dot.classList.toggle("active",dotIndex===index);dot.setAttribute("aria-current",dotIndex===index?"true":"false");});
     }
+    let galleryChangeToken = 0;
     async function showGalleryImage(index) {
       if (!mainImage || !uniqueGallery.length) return;
       const activeIndex = (index + uniqueGallery.length) % uniqueGallery.length;
-      updateGallerySelection(activeIndex);
+      const changeToken = ++galleryChangeToken;
       const url = await loadGalleryUrl(activeIndex);
-      if (!url || !mainImage.isConnected) return;
+      if (!url || !mainImage.isConnected || changeToken !== galleryChangeToken) return;
+      // Load the next image completely before replacing the visible one.
+      const preloaded = new Image();
+      preloaded.decoding = "async";
+      preloaded.src = url;
+      try {
+        if (preloaded.decode) await preloaded.decode();
+        else await new Promise(function(resolve,reject){preloaded.onload=resolve;preloaded.onerror=reject;});
+      } catch (error) { return; }
+      if (!mainImage.isConnected || changeToken !== galleryChangeToken) return;
       mainImage.src = url;
+      updateGallerySelection(activeIndex);
       if (thumbBox) {
         const activeThumb = thumbBox.querySelectorAll(".detail-image-thumb")[activeIndex];
         if (activeThumb && activeThumb.scrollIntoView) activeThumb.scrollIntoView({behavior:"smooth",block:"nearest",inline:"nearest"});
