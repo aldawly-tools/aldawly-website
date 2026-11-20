@@ -176,6 +176,23 @@
  <a class="nav-link" href="#contact">تواصل معنا</a>
  <a class="nav-link" href="#about">عن الدولي</a>
 </div></nav>
+<script id="dawly-active-top-navigation">
+(function(){
+ var nav=document.querySelector('.main-nav');if(!nav)return;
+ var links=Array.from(nav.querySelectorAll('.nav-link'));
+ function activate(link){links.forEach(function(item){var on=item===link;item.classList.toggle('active',on);if(on)item.setAttribute('aria-current','page');else item.removeAttribute('aria-current');});}
+ function resolve(){var path=location.pathname.split('/').pop()||'index.html';var hash=location.hash;
+  var link=links.find(function(a){var href=a.getAttribute('href')||'';return hash&&href===hash;});
+  if(!link){link=links.find(function(a){return (a.getAttribute('href')||'').split('?')[0]===path;});}
+  if(!link&&path==='advisor.html')link=links.find(function(a){return (a.getAttribute('href')||'').indexOf('advisor.html')>=0;});
+  if(!link)link=links.find(function(a){return (a.getAttribute('href')||'').indexOf('index.html')>=0;});
+  if(link)activate(link);
+ }
+ links.forEach(function(link){link.addEventListener('click',function(){activate(link);});});
+ window.addEventListener('hashchange',resolve);window.addEventListener('pageshow',resolve);resolve();
+})();
+</script>
+
 <button class="mobile-menu-trigger" id="openMobileMenu" type="button" aria-label="فتح قائمة الأقسام" aria-controls="mobileMenuDrawer" aria-expanded="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg><span>الأقسام</span></button>
 <div class="mobile-menu-overlay" id="mobileMenuOverlay"></div>
 <aside class="mobile-menu-drawer" id="mobileMenuDrawer" aria-label="قائمة أقسام المتجر" aria-modal="true" role="dialog" aria-hidden="true">
