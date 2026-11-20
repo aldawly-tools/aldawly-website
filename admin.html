@@ -295,6 +295,9 @@ button:disabled{opacity:.6;cursor:wait}
       <div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;min-width:300px"><thead><tr><th style="text-align:right;padding:9px">المصدر</th><th style="text-align:right;padding:9px">عدد الزيارات</th><th style="text-align:right;padding:9px">النسبة</th></tr></thead><tbody id="analyticsSourcesRows"><tr><td colspan="3">جارٍ التحميل…</td></tr></tbody></table></div>
       <h3 style="margin:20px 0 10px">المنتجات الأكثر مشاهدة — آخر 30 يومًا</h3>
       <div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;min-width:360px"><thead><tr><th style="text-align:right;padding:9px">المنتج</th><th style="text-align:right;padding:9px">الماركة</th><th style="text-align:right;padding:9px">المشاهدات</th></tr></thead><tbody id="analyticsTopProductsRows"><tr><td colspan="3">جارٍ التحميل…</td></tr></tbody></table></div>
+      <h3 style="margin:20px 0 10px">الأكثر مشاهدة إجماليًا</h3>
+      <p class="muted" style="margin:0 0 8px">ترتيب تراكمي من عداد مشاهدات المنتجات، وليس آخر 30 يومًا فقط.</p>
+      <div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;min-width:360px"><thead><tr><th style="text-align:right;padding:9px">الترتيب</th><th style="text-align:right;padding:9px">المنتج</th><th style="text-align:right;padding:9px">الماركة</th><th style="text-align:right;padding:9px">إجمالي المشاهدات</th></tr></thead><tbody id="analyticsAllTimeTopRows"><tr><td colspan="4" style="padding:9px">جارٍ التحميل…</td></tr></tbody></table></div>
       <h3 style="margin:20px 0 10px">المنتجات الأكثر إضافة للسلة — آخر 30 يومًا</h3>
       <div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;min-width:360px"><thead><tr><th style="text-align:right;padding:9px">المنتج</th><th style="text-align:right;padding:9px">العدد</th></tr></thead><tbody id="analyticsCartProductsRows"><tr><td colspan="2">جارٍ التحميل…</td></tr></tbody></table></div>
       <h3 style="margin:20px 0 10px">المنتجات الأقل مشاهدة — آخر 30 يومًا</h3>
@@ -726,6 +729,20 @@ async function loadAnalytics(force){
   }).join(""):'<tr><td colspan="3" style="padding:9px">لا توجد مشاهدات مسجلة خلال آخر 30 يومًا.</td></tr>';
   const low=products.map(p=>({id:String(p.id),count:views[String(p.id)]||0,product:p})).sort((a,b)=>a.count-b.count||String(a.product.name||"").localeCompare(String(b.product.name||""),"ar")).slice(0,10);
   $("analyticsLowProductsRows").innerHTML=low.length?low.map(row=>'<tr><td style="padding:9px">'+escapeHtml(row.product.name||("منتج رقم "+row.id))+'</td><td style="padding:9px">'+escapeHtml(row.product.brand||"—")+'</td><td style="padding:9px"><b>'+analyticsFormat(row.count)+'</b></td></tr>').join(""):'<tr><td colspan="3" style="padding:9px">لا توجد منتجات في الكتالوج.</td></tr>';
+  try{
+   const response=await fetch("/api/product-view-count?top=10",{cache:"no-store"});
+   if(!response.ok)throw new Error("تعذر تحميل ترتيب المشاهدات");
+   const ranking=await response.json();
+   const rows=Array.isArray(ranking.items)?ranking.items:[];
+   $("analyticsAllTimeTopRows").innerHTML=rows.length?rows.map((row,index)=>{
+    const id=String(row.productId||"");
+    const p=products.find(item=>String(item.id)===id);
+    return '<tr><td style="padding:9px">'+(index+1)+'</td><td style="padding:9px">'+escapeHtml(p?p.name:"منتج رقم "+id)+'</td><td style="padding:9px">'+escapeHtml(p&&p.brand||"—")+'</td><td style="padding:9px"><b>'+analyticsFormat(row.total)+'</b></td></tr>';
+   }).join(""):'<tr><td colspan="4" style="padding:9px">لا توجد مشاهدات مسجلة بعد.</td></tr>';
+  }catch(viewRankError){
+   console.warn("All-time product view ranking unavailable:",viewRankError);
+   $("analyticsAllTimeTopRows").innerHTML='<tr><td colspan="4" style="padding:9px">تعذر تحميل الترتيب. تحقق من نشر خدمة عداد المشاهدات.</td></tr>';
+  }
   analyticsLoadedAt=Date.now();
   if(statusNode)statusNode.textContent="تم تحديث الإحصائيات بنجاح. آخر تحديث: "+new Date().toLocaleTimeString("ar-EG",{timeZone:EGYPT_TIME_ZONE});
  }catch(error){
