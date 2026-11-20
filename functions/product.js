@@ -35,24 +35,65 @@ export async function onRequest(context) {
       : new URL("/fb-product-image?id=" + encodeURIComponent(id), requestUrl.origin).toString();
     const canonical = new URL("/product?id=" + encodeURIComponent(id), requestUrl.origin).toString();
 
+    const title = name + (brand ? " | " + brand : "") + " | الدولي للعدد الأصلية";
+    const shortDescription = description.slice(0, 160);
+    const priceText = String(product.price == null ? "" : product.price)
+      .replace(/[٠-٩]/g, digit => String("٠١٢٣٤٥٦٧٨٩".indexOf(digit)))
+      .replace(/[۰-۹]/g, digit => String("۰۱۲۳۴۵۶۷۸۹".indexOf(digit)))
+      .replace(/[,،٬\s]/g, "")
+      .replace(/(?:جنيه(?:مصري)?|ج\.?م\.?|EGP|LE)/gi, "");
+    const numericPrice = /^\d+(?:\.\d+)?$/.test(priceText) ? Number(priceText) : NaN;
+
+    const structuredProduct = {
+      "@context": "https://schema.org",
+      "@type": "Product",
+      "name": name,
+      "description": shortDescription,
+      "image": imageUrl,
+      "url": canonical
+    };
+    if (brand) structuredProduct.brand = { "@type": "Brand", "name": brand };
+    if (product.cat) structuredProduct.category = String(product.cat).slice(0, 100);
+    if (Number.isFinite(numericPrice) && numericPrice > 0) {
+      structuredProduct.offers = {
+        "@type": "Offer",
+        "url": canonical,
+        "priceCurrency": "EGP",
+        "price": numericPrice,
+        "seller": { "@type": "Organization", "name": "الدولي للعدد الأصلية والمستوردة" }
+      };
+    }
+    const jsonLd = JSON.stringify(structuredProduct)
+      .replace(/</g, "\\u003c")
+      .replace(/>/g, "\\u003e")
+      .replace(/&/g, "\\u0026");
+
     const tags = [
       '<meta property="og:type" content="product">',
-      '<meta property="og:title" content="' + htmlEscape(name + (brand ? " | " + brand : "") + " | الدولي") + '">',
-      '<meta property="og:description" content="' + htmlEscape(description) + '">',
+      '<meta property="og:title" content="' + htmlEscape(title) + '">',
+      '<meta property="og:description" content="' + htmlEscape(shortDescription) + '">',
       '<meta property="og:url" content="' + htmlEscape(canonical) + '">',
       '<meta property="og:image" content="' + htmlEscape(imageUrl) + '">',
       '<meta property="og:image:secure_url" content="' + htmlEscape(imageUrl) + '">',
       '<meta property="og:image:alt" content="' + htmlEscape(name) + '">',
       '<meta name="twitter:card" content="summary_large_image">',
-      '<meta name="twitter:title" content="' + htmlEscape(name + " | الدولي") + '">',
+      '<meta name="twitter:title" content="' + htmlEscape(title) + '">',
       '<meta name="twitter:description" content="' + htmlEscape(description) + '">',
       '<meta name="twitter:image" content="' + htmlEscape(imageUrl) + '">'
     ].join("\n");
 
-    const socialKeys = /(?:property|name)=["'](?:og:type|og:title|og:description|og:url|og:image|og:image:secure_url|og:image:alt|twitter:card|twitter:title|twitter:description|twitter:image)["']/i;
+    const socialKeys = /(?:property|name)=["'](?:og:type|og:title|og:description|og:url|og:image|og:image:secure_url|og:image:alt|twitter:card|twitter:title|twitter:description|twitter:image|description)["']/i;
+    const tagsWithSeo = [
+      '<meta name="description" content="' + htmlEscape(shortDescription) + '">',
+      '<link rel="canonical" href="' + htmlEscape(canonical) + '">',
+      '<script type="application/ld+json">' + jsonLd + '</script>',
+      tags
+    ].join("\n");
     const html = (await page.text())
       .replace(/<meta\b[^>]*>/gi, tag => socialKeys.test(tag) ? "" : tag)
-      .replace("</head>", tags + "\n</head>");
+      .replace(/<link\b[^>]*rel=["']canonical["'][^>]*>/gi, "")
+      .replace(/<title>[\s\S]*?<\/title>/i, "<title>" + htmlEscape(title) + "</title>")
+      .replace("</head>", tagsWithSeo + "\n</head>");
 
     return new Response(html, {
       status: 200,
