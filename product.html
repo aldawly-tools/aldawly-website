@@ -134,6 +134,10 @@
  #productDetail .product-detail-actions .detail-order-now{min-height:53px!important;font-size:15px!important}
  #productDetail .product-detail-actions .detail-add-cart{min-height:46px!important;font-size:14px!important}
 }
+
+/* Remove the animated red/navy decorative lines above the product image. */
+.product-page .product-detail-layout::before,
+.product-page .product-detail-layout::after{display:none!important;content:none!important;}
 </style><script>
 /* Prevent stale offline copies from replacing the live storefront. */
 window.addEventListener("load", function () {
