@@ -395,7 +395,7 @@ button:disabled{opacity:.6;cursor:wait}
 <script src="onesignal-init.js?v=6"></script>
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-app.js";
-import { getAuth, GoogleAuthProvider, onAuthStateChanged, signInWithPopup, signInWithRedirect, getRedirectResult, signOut } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-auth.js";
+import { getAuth, GoogleAuthProvider, onAuthStateChanged, signInWithPopup, signOut } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-auth.js";
 import { collection, deleteDoc, doc, getDoc, getDocs, getFirestore, setDoc, serverTimestamp, writeBatch, query, orderBy, updateDoc, runTransaction, where, getCountFromServer } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-firestore.js";
 
 const $ = function (id) { return document.getElementById(id); };
@@ -1664,21 +1664,17 @@ $("loginBtn").addEventListener("click", async function () {
   try {
     const provider = new GoogleAuthProvider();
     provider.setCustomParameters({prompt:"select_account"});
-    try {
-      await signInWithPopup(auth, provider);
-    } catch (popupError) {
-      if (popupError.code === "auth/popup-blocked" || popupError.code === "auth/operation-not-supported-in-this-environment") {
-        await signInWithRedirect(auth, provider);
-      } else {
-        throw popupError;
-      }
-    }
+    // Use popup authentication only. Redirect authentication can lose its
+    // temporary session state on mobile Chrome and partitioned browsers.
+    await signInWithPopup(auth, provider);
   } catch (error) {
     console.error("Firebase sign-in error:", error);
     const messages = {
       "auth/unauthorized-domain":"عنوان الموقع غير مضاف إلى النطاقات المصرح بها في Firebase Authentication.",
       "auth/operation-not-allowed":"تسجيل الدخول بحساب Google غير مفعّل في Firebase Authentication.",
-      "auth/popup-blocked":"المتصفح منع نافذة الدخول. افتح الصفحة في Chrome وحاول مرة أخرى.",
+      "auth/popup-blocked":"Chrome منع نافذة تسجيل الدخول. اسمح بالنوافذ المنبثقة لهذا الموقع ثم حاول مرة أخرى.",
+      "auth/popup-closed-by-user":"تم إغلاق نافذة Google قبل اكتمال تسجيل الدخول. حاول مرة أخرى.",
+      "auth/cancelled-popup-request":"يوجد طلب تسجيل دخول مفتوح بالفعل. انتظر لحظة ثم حاول مرة أخرى.",
       "auth/network-request-failed":"تعذر الاتصال. تحقق من الإنترنت وحاول مرة أخرى."
     };
     message(status, messages[error.code] || ("تعذر تسجيل الدخول (" + (error.code || "خطأ غير معروف") + "). افتح الموقع في Chrome وحاول مرة أخرى."));
@@ -1945,14 +1941,6 @@ if (!readyConfig()) {
     const app = initializeApp(config);
     db = getFirestore(app);
     auth = getAuth(app);
-    getRedirectResult(auth).then(function (result) {
-      if (result && result.user) {
-        message(status, "تم تسجيل الدخول بنجاح.");
-      }
-    }).catch(function (error) {
-      console.error("Google redirect result error:", error);
-      message(status, "تعذر إكمال دخول Google (" + (error.code || error.message || "خطأ غير معروف") + ").");
-    });
     message(status, "خدمة الدخول جاهزة. اضغط دخول بحساب Google.");
     onAuthStateChanged(auth, async function (user) {
       if (!user) {
