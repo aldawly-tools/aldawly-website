@@ -572,18 +572,22 @@
       const brandMatch = !activeBrand || normalizeBrand(brand) === normalizeBrand(activeBrand);
       let searchable = productSearchCache.get(item);
       if (searchable === undefined) {
-        searchable = normalizeSearchText([
-          item.name, brand, item.brand, item.cat, item.desc, item.specs,
-          item.sku, item.code, item.barcode, item.barCode, item.ean, item.ean13, item.gtin, item.upc, item.model, item.partNumber, item.id
-        ].join(" "));
+        // Keep ordinary text search tightly scoped to the product name.
+        // Brand, description and specifications must not pull unrelated products into results.
+        searchable = normalizeSearchText(item.name || "");
         productSearchCache.set(item, searchable);
       }
       const exactCodes = [item.barcode, item.barCode, item.ean, item.ean13, item.gtin, item.upc, item.sku, item.code, item.partNumber]
         .filter(function(value){ return value != null && String(value).trim() !== ""; })
         .map(function(value){ return normalizeSearchText(value).replace(/\s/g, ""); });
+      const nameWords = searchable.split(" ").filter(Boolean);
       const searchMatch = scannedBarcode
         ? exactCodes.includes(normalizeSearchText(scannedBarcode).replace(/\s/g, ""))
-        : (!terms.length || terms.every(function (term) { return searchable.includes(term); }));
+        : (!terms.length || terms.every(function (term) {
+            return nameWords.some(function (word) {
+              return word.startsWith(term) || term.startsWith(word);
+            });
+          }));
       return categoryMatch && brandMatch && searchMatch;
     });
     if (terms.length) {
