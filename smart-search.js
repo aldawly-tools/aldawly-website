@@ -69,15 +69,17 @@
     }).filter(function(entry){return entry.hay;});
   }
   function score(entry, terms) {
+    var nameWords=entry.name.split(" ").filter(Boolean);
+    // Search product names only; descriptions, brands and specifications must not create false matches.
+    var allNameTermsMatch=terms.every(function(term){
+      return nameWords.some(function(word){return word.startsWith(term)||term.startsWith(word);});
+    });
+    if(!allNameTermsMatch)return -1;
     var total=0;
-    terms.forEach(function(t){
-      if(!entry.hay.includes(t)) return;
-      total += entry.name===t?100:entry.name.startsWith(t)?65:entry.name.includes(t)?45:0;
-      if(entry.brand.includes(t)) total+=35;
-      if(entry.code.split(" ").some(function(x){return x===t;})) total+=90;
-      else if(entry.code.includes(t)) total+=50;
-      if(entry.category.includes(t)) total+=12;
-      if(entry.details.includes(t)) total+=5;
+    terms.forEach(function(term){
+      if(entry.name===term)total+=100;
+      else if(entry.name.startsWith(term))total+=65;
+      else total+=45;
     });
     return total;
   }
@@ -94,7 +96,7 @@
     var terms=norm(input.value).split(" ").filter(Boolean);
     if(!terms.length){hide();return;}
     var matches=searchIndex.map(function(entry){return {p:entry.p,s:score(entry,terms),hay:entry.hay};})
-      .filter(function(x){return x.s>0 && terms.every(function(t){return x.hay.includes(t);});})
+      .filter(function(x){return x.s>0;})
       .sort(function(a,b){return b.s-a.s;}).slice(0,7);
     activeIndex=-1;
     if(!matches.length){
