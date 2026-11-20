@@ -5030,7 +5030,7 @@ html body aside#cartDrawer.cart-drawer>.cart-scroll-area>.payment-followup{
 .home-products-shelf .home-products-viewport{padding:3px 0 9px!important;scroll-padding-inline:12px!important}
 .home-products-shelf .home-products-track{gap:12px!important}
 .home-products-shelf .home-shelf-card{scroll-snap-align:start!important}
-.home-shelf-progress{width:76px;height:4px;margin:8px auto 0;border-radius:99px;overflow:hidden;background:#e5e7eb}
+.home-shelf-progress{width:76px;height:4px;margin:8px auto 0;border-radius:99px;overflow:hidden;background:#e5e7eb};display:none!important
 .home-shelf-progress span{display:block;width:8%;height:100%;border-radius:99px;background:#c8101e;transition:width .18s ease}
 @media(max-width:640px){
  .home-products-shelf .home-products-track{gap:10px!important}
