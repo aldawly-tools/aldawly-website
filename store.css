@@ -7058,3 +7058,24 @@ button.is-in-cart:disabled {
   content:none!important;
   display:none!important;
 }
+
+
+/* Keep product detail gallery frame stable and show every image without cropping. */
+.product-detail-shell .product-detail-image{
+  aspect-ratio:1 / 1!important;
+  height:auto!important;
+  min-height:0!important;
+  max-height:560px!important;
+}
+.product-detail-shell .product-detail-image img{
+  width:100%!important;
+  height:100%!important;
+  max-width:100%!important;
+  max-height:100%!important;
+  object-fit:contain!important;
+  object-position:center!important;
+}
+@media(max-width:700px){
+  .product-detail-shell .product-detail-image{aspect-ratio:1 / 1!important;max-height:430px!important}
+  .product-detail-shell .product-detail-image img{max-height:100%!important;padding:12px!important}
+}
