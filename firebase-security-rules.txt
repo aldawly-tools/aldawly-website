@@ -58,6 +58,12 @@ service cloud.firestore {
       allow delete: if isStoreAdmin();
     }
 
+    // Public read-only aggregate counts; only the trusted Cloud Function writes them.
+    match /productViewCounts/{productId} {
+      allow read: if true;
+      allow write: if false;
+    }
+
     match /products/{productId} {
       allow read: if true;
       allow write: if isStoreAdmin();
