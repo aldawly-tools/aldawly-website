@@ -475,6 +475,7 @@ main > #about{order:5!important}
 </header>
 <nav class="main-nav" aria-label="القائمة الرئيسية"><div class="container nav-row">
  <a class="nav-link active" href="index.html"><svg viewBox="0 0 24 24"><path d="m3 11 9-8 9 8M5 10v10h14V10M9 20v-6h6v6"/></svg>الرئيسية</a>
+ <a class="nav-link" href="#brands"><svg viewBox="0 0 24 24"><path d="M20 10 12 18 4 10V4h6z"/><circle cx="8" cy="8" r="1"/></svg>الماركات</a>
  <a class="nav-link" href="products.html"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>المنتجات</a>
  <a class="nav-link" href="#products"><span class="red-mark">٪</span>العروض</a>
  <a class="nav-link" href="#categories"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16M8 4l-4 2 4 2M16 10l4 2-4 2"/></svg>الأقسام</a>
@@ -482,6 +483,23 @@ main > #about{order:5!important}
  <a class="nav-link" href="#contact">تواصل معنا</a>
  <a class="nav-link" href="#about">عن الدولي</a>
 </div></nav>
+<script id="dawly-active-top-navigation">
+(function(){
+ var nav=document.querySelector('.main-nav');if(!nav)return;
+ var links=Array.from(nav.querySelectorAll('.nav-link'));
+ function activate(link){links.forEach(function(item){var on=item===link;item.classList.toggle('active',on);if(on)item.setAttribute('aria-current','page');else item.removeAttribute('aria-current');});}
+ function resolve(){var path=location.pathname.split('/').pop()||'index.html';var hash=location.hash;
+  var link=links.find(function(a){var href=a.getAttribute('href')||'';return hash&&href===hash;});
+  if(!link){link=links.find(function(a){return (a.getAttribute('href')||'').split('?')[0]===path;});}
+  if(!link&&path==='advisor.html')link=links.find(function(a){return (a.getAttribute('href')||'').indexOf('advisor.html')>=0;});
+  if(!link)link=links.find(function(a){return (a.getAttribute('href')||'').indexOf('index.html')>=0;});
+  if(link)activate(link);
+ }
+ links.forEach(function(link){link.addEventListener('click',function(){activate(link);});});
+ window.addEventListener('hashchange',resolve);window.addEventListener('pageshow',resolve);resolve();
+})();
+</script>
+
 <button class="mobile-menu-trigger" id="openMobileMenu" type="button" aria-label="فتح قائمة الأقسام" aria-controls="mobileMenuDrawer" aria-expanded="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg><span>الأقسام</span></button>
 <div class="mobile-menu-overlay" id="mobileMenuOverlay"></div>
 <aside class="mobile-menu-drawer" id="mobileMenuDrawer" aria-label="قائمة أقسام المتجر" aria-modal="true" role="dialog" aria-hidden="true">
