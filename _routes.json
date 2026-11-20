@@ -2,7 +2,9 @@
   "version": 1,
   "include": [
     "/sitemap.xml",
-    "/api/*"
+    "/api/*",
+    "/product",
+    "/fb-product-image"
   ],
   "exclude": []
 }
