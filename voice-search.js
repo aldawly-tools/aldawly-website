@@ -87,11 +87,8 @@
     };
     recognition.onend=function(){
       var hadText=!!input.value.trim();
-      state(false,hadText?"تم تحويل كلامك إلى نص.":"انتهى الاستماع. اضغط على الميكروفون للمحاولة مجددًا.");
-      if(hadText&&finalText.trim()){
-        if(typeof form.requestSubmit==="function")form.requestSubmit();
-        else form.dispatchEvent(new Event("submit",{bubbles:true,cancelable:true}));
-      }
+      state(false,hadText?"تم تحويل كلامك إلى نص. اختر اقتراحًا أو اضغط زر البحث.":"انتهى الاستماع. اضغط على الميكروفون للمحاولة مجددًا.");
+      // Do not auto-submit: keep the user at the search field so suggestions remain visible.
     };
     button.addEventListener("click",function(){
       if(listening){try{recognition.stop();}catch(e){}return;}
