@@ -7,40 +7,39 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <style>
-:root{color-scheme:dark;--bg:#101010;--panel:#171717;--muted:#b8b8b8;--green:#00a982;--red:#d71920}
-*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:#f5f5f5;font-family:Cairo,Tahoma,sans-serif}
-.top{position:sticky;top:0;z-index:5;background:#090909;border-bottom:1px solid #2c2c2c;padding:13px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px}
-.brand{font-size:22px;font-weight:900;line-height:1.2}.brand small{display:block;color:#aaa;font-size:10px;font-weight:700;letter-spacing:1px}
-.top a{color:#fff;text-decoration:none;border:1px solid #3a3a3a;border-radius:8px;padding:7px 12px;font-size:12px;font-weight:800}
-.wrap{width:min(780px,100%);margin:auto;padding:24px 18px 80px}
-.intro{padding:14px 0 26px}.tag{color:var(--green);font-size:12px;font-weight:900;letter-spacing:.5px}.intro h1{font-size:clamp(28px,6vw,43px);line-height:1.3;margin:8px 0 5px;font-weight:1000}.intro p{margin:0;color:#bdbdbd;font-size:14px;line-height:1.8}
-.state{padding:18px 0;color:#aaa;text-align:center;font-size:13px}
-.feed{display:grid;gap:42px}
-.item{min-width:0}
-.visual{display:block;position:relative;width:100%;aspect-ratio:1.48;background:#202020;overflow:hidden;text-decoration:none}
-.visual img{display:block;width:100%;height:100%;object-fit:cover;transition:transform .5s}
-.item:hover .visual img{transform:scale(1.025)}
-.noimg{height:100%;display:grid;place-items:center;font-size:72px;color:#555;background:radial-gradient(circle at 50% 40%,#333,#171717)}
-.num{position:absolute;top:13px;right:13px;background:#090909d9;color:#eee;border:1px solid #ffffff30;border-radius:5px;padding:4px 9px;font-size:10px;font-weight:800}
-.copy{padding:15px 0 0}
-.brandline{color:var(--green);font-size:11px;font-weight:900;margin-bottom:5px}
-.copy h2{font-size:clamp(21px,4vw,29px);line-height:1.45;margin:0 0 6px;font-weight:1000}
-.copy p{font-size:15px;line-height:1.8;color:#c5c5c5;margin:0 0 12px}
-.meta{display:flex;align-items:center;justify-content:space-between;gap:12px}
-.price{font-size:14px;color:#fff;font-weight:800}.price.ask{color:#aaa}
-.open{color:var(--green);text-decoration:none;font-size:14px;font-weight:900;display:inline-flex;align-items:center;gap:8px}
-.open b{font-size:22px;line-height:1}
-.rule{height:1px;background:#303030;margin-top:26px}
-.more{display:block;width:100%;margin-top:24px;padding:14px;border:1px solid #444;border-radius:9px;background:#191919;color:#fff;font:800 14px Cairo;cursor:pointer}
-.footnote{margin-top:25px;color:#888;font-size:11px;text-align:center}
-@media(max-width:600px){.wrap{padding:16px 16px 70px}.top{padding:11px 15px}.brand{font-size:19px}.feed{gap:34px}.visual{aspect-ratio:1.28}.copy{padding-top:12px}.copy h2{font-size:22px}.copy p{font-size:13px}}
+:root{color-scheme:dark;--bg:#090b0e;--panel:#151a20;--muted:#b8c0c8;--red:#d71920;--green:#13bd91}
+*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-snap-type:y proximity}body{margin:0;background:var(--bg);color:#f5f5f5;font-family:Cairo,Tahoma,sans-serif}
+.top{position:sticky;top:0;z-index:10;background:#090b0eeF;border-bottom:1px solid #ffffff18;padding:11px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px;backdrop-filter:blur(12px)}
+.brand{font-size:21px;font-weight:900;line-height:1.2}.brand small{display:block;color:#aaa;font-size:10px;font-weight:700;letter-spacing:1px}.top a{color:#fff;text-decoration:none;border:1px solid #444;border-radius:8px;padding:7px 12px;font-size:12px;font-weight:800}
+.wrap{width:min(100%,980px);margin:auto;padding:0 20px 70px}.intro{padding:25px 0 18px}.tag{color:var(--green);font-size:11px;font-weight:900;letter-spacing:.6px}.intro h1{font-size:clamp(27px,5vw,42px);line-height:1.3;margin:7px 0 4px;font-weight:1000}.intro p{margin:0;color:#bdbdbd;font-size:13px;line-height:1.8}.state{padding:24px 0;color:#aaa;text-align:center;font-size:13px}
+.feed{display:grid;gap:0}
+.item{position:relative;min-height:132vh;scroll-snap-align:start;--progress:0;--lift:0px}
+.stage{position:sticky;top:58px;height:calc(100vh - 58px);min-height:590px;display:grid;grid-template-columns:1.12fr .88fr;align-items:center;gap:clamp(18px,4vw,54px);padding:clamp(16px,4vw,44px) 0;overflow:hidden}
+.visual{position:relative;display:block;width:100%;height:min(69vh,660px);min-height:330px;background:radial-gradient(ellipse at center,#343b43 0%,#171c22 65%,#101317 100%);overflow:hidden;border:1px solid #ffffff1c;border-radius:4px 28px 4px 28px;box-shadow:0 28px 80px #0009;transform:translateY(calc((1 - var(--progress))*42px)) scale(calc(.88 + var(--progress)*.12));opacity:calc(.55 + var(--progress)*.45);transition:box-shadow .3s}
+.visual img{display:block;width:100%;height:100%;object-fit:contain;padding:24px;transform:scale(calc(.94 + var(--progress)*.08));transition:transform .12s linear}
+.noimg{height:100%;display:grid;place-items:center;font-size:100px;color:#555;background:radial-gradient(circle at 50% 40%,#333,#171717)}
+.num{position:absolute;top:14px;right:14px;background:#080a0dcc;color:#eee;border:1px solid #ffffff30;border-radius:4px;padding:5px 10px;font-size:10px;font-weight:800}
+.copy{padding:12px 0;transform:translateY(calc((1 - var(--progress))*42px));opacity:calc(.55 + var(--progress)*.45);transition:opacity .12s linear,transform .12s linear}
+.brandline{color:var(--green);font-size:12px;font-weight:900;margin-bottom:10px;letter-spacing:.4px}.copy h2{font-size:clamp(25px,4vw,43px);line-height:1.4;margin:0 0 12px;font-weight:1000}.copy p{font-size:15px;line-height:2;color:#c3c8ce;margin:0 0 22px}
+.meta{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}.price{font-size:16px;color:#fff;font-weight:900}.price.ask{color:#aaa}.open{color:#fff;text-decoration:none;font-size:14px;font-weight:900;display:inline-flex;align-items:center;gap:10px;background:var(--red);padding:12px 18px;border-radius:5px}.open b{font-size:20px;line-height:1}
+.scroll-hint{display:flex;align-items:center;gap:10px;color:#7f8993;font-size:11px;margin-top:22px}.scroll-hint i{height:1px;width:38px;background:var(--red)}
+.progress-line{position:fixed;left:0;top:0;z-index:20;height:3px;background:var(--red);width:0;pointer-events:none}
+.more{display:block;width:100%;margin:18px 0;padding:14px;border:1px solid #444;border-radius:8px;background:#171b20;color:#fff;font:800 14px Cairo;cursor:pointer}.footnote{margin-top:20px;color:#777;font-size:11px;text-align:center}
+@media(max-width:650px){
+ .top{padding:10px 13px}.brand{font-size:18px}.wrap{padding:0 14px 50px}.intro{padding:19px 0 12px}.intro p{font-size:12px}
+ .item{min-height:126vh}.stage{top:52px;height:calc(100vh - 52px);min-height:590px;display:flex;flex-direction:column;justify-content:center;gap:17px;padding:15px 0 22px}
+ .visual{height:49vh;min-height:280px;max-height:470px;border-radius:4px 22px 4px 22px;flex:none;transform:translateY(calc((1 - var(--progress))*30px)) scale(calc(.9 + var(--progress)*.1))}
+ .visual img{padding:14px}.copy{width:100%;padding:0 4px}.brandline{font-size:10px;margin-bottom:4px}.copy h2{font-size:23px;line-height:1.35;margin-bottom:6px}.copy p{font-size:12px;line-height:1.7;margin-bottom:10px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+ .price{font-size:13px}.open{padding:9px 13px;font-size:12px}.scroll-hint{margin-top:10px;font-size:10px}
+}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.visual,.copy,.visual img{transition:none}}
 </style>
 </head>
 <body>
 <header class="top"><div class="brand">الدولي <small>العدد الأصلية والمستوردة</small></div><a href="index.html">العودة للموقع ↗</a></header>
 <main class="wrap">
 <section class="intro"><span class="tag">DAWLY TOOLS · PRODUCT STORIES</span><h1>اكتشف أدواتك واحدة واحدة</h1><p>عرض تجريبي مستوحى من أسلوب Wera: صورة كبيرة لكل منتج، يليها الاسم والوصف ورابط التفاصيل. اسحب لأسفل لاكتشاف المزيد.</p></section>
-<div id="state" class="state">جاري تحميل منتجات المتجر…</div>
+<div class="progress-line" id="progressLine"></div><div id="state" class="state">جاري تحميل منتجات المتجر…</div>
 <section id="feed" class="feed" aria-live="polite"></section>
 <button id="more" class="more" hidden>عرض منتجات أكثر</button>
 <div class="footnote">هذه صفحة تجريبية فقط — لم يتم تغيير طريقة عرض المنتجات الأساسية في الموقع.</div>
@@ -59,11 +58,25 @@
   feed.insertAdjacentHTML('beforeend',batch.map((p,i)=>{
    const name=p.name||'منتج من الدولي',desc=p.desc||'اكتشف تفاصيل المنتج ومواصفاته من خلال صفحة المنتج.';
    const img=p.image?'<img src="'+esc(p.image)+'" alt="'+esc(name)+'" loading="lazy">':p.imageId?'<img data-cloud-image="'+esc(p.imageId)+'" alt="'+esc(name)+'" loading="lazy">':'<div class="noimg">🔧</div>';
-   return '<article class="item"><a class="visual" href="product.html?id='+encodeURIComponent(String(p.id))+'">'+img+'<span class="num">منتج '+(shown+i+1)+'</span></a><div class="copy"><div class="brandline">'+esc(brandOf(p))+'</div><h2>'+esc(name)+'</h2><p>'+esc(desc)+'</p><div class="meta"><span class="price '+(!p.price?'ask':'')+'">'+esc(priceOf(p))+'</span><a class="open" href="product.html?id='+encodeURIComponent(String(p.id))+'">اعرف المزيد <b>←</b></a></div></div><div class="rule"></div></article>';
+   const index=shown+i+1;
+   return '<article class="item"><div class="stage"><a class="visual" href="product.html?id='+encodeURIComponent(String(p.id))+'" aria-label="تفاصيل '+esc(name)+'">'+img+'<span class="num">0'+index+'</span></a><div class="copy"><div class="brandline">'+esc(brandOf(p))+' · DAWLY TOOLS</div><h2>'+esc(name)+'</h2><p>'+esc(desc)+'</p><div class="meta"><span class="price '+(!p.price?'ask':'')+'">'+esc(priceOf(p))+'</span><a class="open" href="product.html?id='+encodeURIComponent(String(p.id))+'">شاهد تفاصيل المنتج <b>←</b></a></div><div class="scroll-hint"><i></i> اسحب لأسفل ليتحرك المنتج ويظهر التالي</div></div></div></article>';
   }).join(''));
   shown+=batch.length;more.hidden=shown>=all.length;state.textContent='يتم عرض '+shown+' من '+all.length+' منتج';
-  loadCloudImages();
+  loadCloudImages();updateScrollMotion();
  }
+ function updateScrollMotion(){
+  const vh=window.innerHeight||700;
+  feed.querySelectorAll('.item').forEach(section=>{
+   const rect=section.getBoundingClientRect(),travel=Math.max(1,section.offsetHeight-vh*.72);
+   const progress=Math.max(0,Math.min(1,(vh*.25-rect.top)/travel));
+   section.style.setProperty('--progress',progress.toFixed(3));
+  });
+  const doc=document.documentElement,max=doc.scrollHeight-window.innerHeight;
+  document.getElementById('progressLine').style.width=(max>0?window.scrollY/max*100:0)+'%';
+ }
+ let motionQueued=false;
+ window.addEventListener('scroll',()=>{if(motionQueued)return;motionQueued=true;requestAnimationFrame(()=>{motionQueued=false;updateScrollMotion()})},{passive:true});
+ window.addEventListener('resize',updateScrollMotion);
  function loadCloudImages(){
   if(typeof window.DAWLY_LOAD_PRODUCT_IMAGE!=='function')return;
   feed.querySelectorAll('img[data-cloud-image]:not([data-loading])').forEach(img=>{
