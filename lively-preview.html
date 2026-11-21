@@ -21,13 +21,62 @@ footer{background:#171c23;color:#fff;margin-top:28px;padding:30px 0}footer .wrap
 .toast{position:fixed;bottom:20px;left:50%;transform:translate(-50%,20px);background:#171c23;color:#fff;padding:12px 18px;border-radius:12px;font-size:13px;font-weight:900;opacity:0;pointer-events:none;transition:.25s;z-index:50;box-shadow:0 10px 30px #0003}.toast.show{opacity:1;transform:translate(-50%,0)}
 @media(max-width:760px){.wrap{width:min(100% - 24px,600px)}.topline .wrap{font-size:10px}.head{gap:9px;padding:10px 0;flex-wrap:wrap}.logo{min-width:0;flex:1}.logo strong{font-size:17px}.mark{width:42px;height:42px}.search{order:3;flex-basis:100%}.cart{padding:10px 12px;font-size:11px}.nav .wrap{gap:20px;font-size:12px}.hero{padding:14px 0}.hero-box{grid-template-columns:1fr;min-height:0;border-radius:20px}.hero-copy{padding:27px 23px 5px}.hero h1{font-size:33px;margin:13px 0 7px}.hero p{font-size:13px;line-height:1.9;margin-bottom:15px}.hero-art{min-height:180px;height:190px}.hero-art img{max-height:210px;width:82%}.hero-stamp{bottom:13px;left:13px;font-size:10px;padding:8px 10px}.trust{grid-template-columns:repeat(2,1fr);gap:8px}.trust article{padding:10px;gap:8px}.trust i{width:35px;height:35px;flex-basis:35px;font-size:17px}.trust b{font-size:11px}.trust small{font-size:9px}.content{padding:25px 0!important}.section-head h2{font-size:21px}.categories{grid-template-columns:repeat(2,1fr);gap:9px}.cat{padding:11px;gap:9px}.cat-icon{width:43px;height:43px;font-size:20px}.cat b{font-size:12px}.cat small{font-size:9px}.promo{padding:15px;border-radius:14px}.promo b{font-size:15px}.promo span{font-size:10px}.promo a{font-size:10px;padding:9px}.brands{grid-template-columns:repeat(3,1fr);gap:8px}.brand{height:62px;font-size:19px}.products{grid-template-columns:repeat(2,1fr);gap:10px}.product-photo{height:140px}.product-info{padding:10px}.product-info b{font-size:11px;min-height:48px}.price{font-size:15px}footer .wrap{align-items:flex-start;flex-direction:column}}
 @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
+
+/* Direction 2: unmistakably commercial, high-energy industrial retail */
+:root{--red:#e21b2d;--ink:#111820;--muted:#626c78;--line:#e2e5e9;--paper:#f1f3f5;--gold:#ffd12e}
+body{background:#f1f3f5}
+.topline{background:#e21b2d;color:#fff}.topline b{color:#ffe16a}
+header{background:#111820;color:#fff;box-shadow:0 7px 24px #080d142c}
+.logo small{color:#c1c8d1}.mark{background:#ffd12e;color:#111820;border-radius:8px;box-shadow:none}
+.search{background:#fff;border:0}.search input{color:#111820}.search button{background:#e21b2d;border-radius:8px}
+.cart{background:#ffd12e;color:#111820;border-radius:8px}
+.nav{border-color:#303944}.nav .wrap{padding:13px 0}.nav a{color:#e9edf2}.nav a:first-child{color:#ffd12e}
+.hero{padding:24px 0 20px;background:#f1f3f5}
+.hero-box{border-radius:8px;min-height:420px;background:linear-gradient(112deg,#e21b2d 0%,#bd1222 48%,#111820 48%,#111820 100%);box-shadow:0 18px 40px #11182026}
+.hero-box:after{left:25%;top:-185px;width:520px;height:520px;border:2px solid #ffffff18;box-shadow:0 0 0 55px #ffffff08,0 0 0 110px #ffffff06}
+.hero-copy{padding:48px 54px}
+.eyebrow{background:#111820;color:#ffd12e;border:0;border-radius:5px;letter-spacing:.2px}
+.eyebrow i{background:#ffd12e;box-shadow:0 0 0 5px #ffd12e30}
+.hero h1{font-size:clamp(36px,4.8vw,60px);line-height:1.22;letter-spacing:-1.5px}
+.hero h1 span{color:#ffd12e}
+.hero p{font-size:15px;color:#fff;max-width:470px}
+.primary{background:#ffd12e;color:#111820;border-radius:6px;box-shadow:0 8px 18px #11182030}
+.secondary{border-radius:6px;border-color:#ffffff80}
+.hero-art{background:radial-gradient(circle at 55% 50%,#ffffff20,transparent 56%)}
+.hero-art img{mix-blend-mode:normal;filter:drop-shadow(0 24px 25px #0008)}
+.hero-stamp{background:#ffd12e;color:#111820;border-radius:5px;transform:rotate(-4deg)}
+.trust{gap:0;background:#fff;border:1px solid #e2e5e9;border-radius:8px;overflow:hidden}
+.trust article{border:0;border-radius:0;border-left:1px solid #e9ebee;padding:17px}
+.trust i{background:#111820;color:#ffd12e;border-radius:8px}
+section.content{padding:42px 0}
+.section-head h2{font-size:28px;letter-spacing:-.5px}
+.section-head h2:before{content:"";display:inline-block;width:7px;height:26px;background:#e21b2d;margin-left:11px;vertical-align:-4px}
+.categories{grid-template-columns:repeat(4,1fr);gap:10px}
+.cat{border-radius:8px;border:1px solid #dfe3e8;background:#fff;padding:18px}
+.cat:hover,.cat.active{border-color:#e21b2d;background:#111820;color:#fff;box-shadow:0 12px 22px #11182020}
+.cat.active small,.cat:hover small{color:#c8d0da}
+.cat-icon{background:#ffd12e;color:#111820;border-radius:8px}
+.promo{border-radius:8px;background:#111820;border-right:8px solid #ffd12e;padding:21px 25px}
+.promo b{font-size:22px}.promo span{color:#d4dae1}.promo a{border-radius:5px;background:#ffd12e;color:#111820}
+.brands{gap:10px}.brand{border-radius:8px;height:90px;border-bottom:4px solid #e21b2d;box-shadow:0 7px 18px #1118200c}
+.products{gap:12px}.product{border-radius:8px;border:1px solid #dfe3e8}.product-photo{height:205px;background:#eef0f3}.tag{background:#e21b2d;border-radius:4px}
+.product-info{padding:15px}.product-info small{color:#e21b2d}.add{border-radius:5px;background:#111820}.add:hover{background:#e21b2d}
+footer{background:#0c1117;border-top:5px solid #e21b2d}
+@media(max-width:760px){
+.hero{padding:12px 0}.hero-box{border-radius:8px;background:linear-gradient(155deg,#e21b2d 0%,#bd1222 53%,#111820 53%,#111820 100%);min-height:0}
+.hero-copy{padding:25px 20px 8px}.hero h1{font-size:35px}.hero-art{height:185px;min-height:185px}
+.trust{border-radius:8px}.trust article{padding:10px 8px;border-bottom:1px solid #e9ebee}
+section.content{padding:29px 0}.section-head h2{font-size:21px}.section-head h2:before{height:21px;width:5px;margin-left:8px}
+.cat{border-radius:7px;padding:10px}.cat-icon{border-radius:7px}.promo{border-radius:7px;padding:14px;border-right-width:5px}.promo b{font-size:16px}
+.brand{border-radius:7px;height:64px}.product{border-radius:7px}.product-photo{height:145px}
+}
 </style>
 </head>
 <body>
 <div class="topline"><div class="wrap"><span>أدوات أصلية للشغل الصح — <b>الدولي للعدد</b></span><span>الشحن لجميع محافظات مصر 🇪🇬</span></div></div>
 <header><div class="wrap head"><a class="logo" href="#"><span class="mark">د</span><span><strong>الدولي للعدد</strong><small>الأصلية والمستوردة</small></span></a><form class="search" id="searchForm"><input id="searchInput" placeholder="بتدور على أداة معينة؟ اكتب اسمها هنا..." aria-label="ابحث عن منتج"><button>ابحث</button></form><button class="cart" id="cartBtn">🛒 السلة <span id="cartCount">0</span></button></div><nav class="nav"><div class="wrap"><a href="#home">الرئيسية</a><a href="#categories">الأقسام</a><a href="#brands">الماركات</a><a href="#products">منتجات مختارة</a><a href="#why">ليه الدولي؟</a><a href="#contact">تواصل معنا</a></div></nav></header>
 <main id="home">
-<div class="hero"><div class="wrap"><div class="hero-box"><div class="hero-copy"><span class="eyebrow"><i></i> الاختيار الصح للمحترفين</span><h1>أدوات تخلّي شغلك<br><span>أقوى وأسرع</span></h1><p>من أول مفك لحد معدات الورش — اختار أدواتك الأصلية من ماركات عالمية، وخلي شغلك دايمًا على أعلى مستوى.</p><div class="actions"><a class="primary" href="#products">اكتشف المنتجات ←</a><a class="secondary" href="#brands">تصفح الماركات</a></div></div><div class="hero-art"><img src="https://aldawly-website.pages.dev/assets/store-hero.png" alt="أدوات ومعدات الدولي للعدد" onerror="this.style.display='none'"><div class="hero-stamp">QUALITY TOOLS · MADE FOR WORK</div></div></div>
+<div class="hero"><div class="wrap"><div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin:0 0 12px;font-size:12px;font-weight:1000;color:#111820"><span>⚡ معداتك الصح تبدأ من هنا</span><span style="color:#e21b2d">اختار الجودة — اختار الأصلي</span></div><div class="hero-box"><div class="hero-copy"><span class="eyebrow"><i></i> الاختيار الصح للمحترفين</span><h1>أدوات تخلّي شغلك<br><span>أقوى وأسرع</span></h1><p>من أول مفك لحد معدات الورش — اختار أدواتك الأصلية من ماركات عالمية، وخلي شغلك دايمًا على أعلى مستوى.</p><div class="actions"><a class="primary" href="#products">اكتشف المنتجات ←</a><a class="secondary" href="#brands">تصفح الماركات</a></div></div><div class="hero-art"><img src="https://aldawly-website.pages.dev/assets/store-hero.png" alt="أدوات ومعدات الدولي للعدد" onerror="this.style.display='none'"><div class="hero-stamp">QUALITY TOOLS · MADE FOR WORK</div></div></div>
 <div class="trust" id="why"><article><i>✓</i><span><b>منتجات أصلية</b><small>اختيارات من ماركات موثوقة</small></span></article><article><i>🚚</i><span><b>شحن لكل مصر</b><small>نوصل لحد عندك</small></span></article><article><i>☎</i><span><b>مساعدة قبل الشراء</b><small>اسألنا عن الأداة المناسبة</small></span></article><article><i>⚙</i><span><b>للورش والمحترفين</b><small>حلول للشغل اليومي</small></span></article></div></div></div>
 <section class="content" id="categories"><div class="wrap"><div class="section-head"><div><h2>هتلاقي اللي محتاجه لشغلك</h2><p>اختار القسم وابدأ التصفح</p></div><a href="#products">كل الأقسام ←</a></div><div class="categories"><button class="cat active" data-cat="all"><span class="cat-icon">▦</span><span><b>كل المنتجات</b><small>تصفح الكتالوج</small></span></button><button class="cat" data-cat="hand"><span class="cat-icon">🔧</span><span><b>عدد يدوية</b><small>مفكات ومفاتيح</small></span></button><button class="cat" data-cat="power"><span class="cat-icon">⚡</span><span><b>عدد كهربائية</b><small>معدات وأجهزة</small></span></button><button class="cat" data-cat="workshop"><span class="cat-icon">🧰</span><span><b>مستلزمات الورش</b><small>كل اللي يكمل شغلك</small></span></button></div><div class="promo"><div><b>شغلك يستاهل أداة أصلية</b><br><span>اكتشف اختياراتنا من أشهر الماركات العالمية</span></div><a href="#brands">شوف الماركات</a></div></div></section>
 <section class="content" id="brands" style="background:#f7f8fa"><div class="wrap"><div class="section-head"><div><h2>ماركات تثق فيها</h2><p>أسماء عالمية في عالم العدد والأدوات</p></div></div><div class="brands"><div class="brand">WÜRTH</div><div class="brand">wera</div><div class="brand">KNIPEX</div><div class="brand">BOSCH</div><div class="brand">ZEBRA</div></div></div></section>
