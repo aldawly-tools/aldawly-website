@@ -403,11 +403,14 @@
     function card(item) {
       const name = cleanProductName(item.name);
       const url = "product.html?id=" + encodeURIComponent(String(item.id));
+      const rissFallback = normalizeBrand(productBrand(item)) === "riss" ? "assets/brands/riss.webp" : "";
       const image = item.image
         ? '<img src="' + escapeHtml(item.image) + '"' + (item.imageId ? ' data-cloud-image="' + escapeHtml(item.imageId) + '"' : '') + ' alt="' + escapeHtml(name) + '" loading="lazy" decoding="async" draggable="false">'
         : item.imageId
           ? '<img data-cloud-image="' + escapeHtml(item.imageId) + '" alt="' + escapeHtml(name) + '" loading="lazy" decoding="async" draggable="false">'
-          : '<span class="product-placeholder" aria-hidden="true">' + escapeHtml(item.icon || "🔧") + '</span>';
+          : rissFallback
+            ? '<img src="' + rissFallback + '" alt="RISS German Technology" loading="lazy" decoding="async" draggable="false" class="brand-product-fallback">'
+            : '<span class="product-placeholder" aria-hidden="true">' + escapeHtml(item.icon || "🔧") + '</span>';
       const soldOut = item.availability === "unavailable" || (item.availability !== "available" && Number.isInteger(item.stock) && item.stock === 0);
       const alreadyInCart = isItemInCart(item);
       const availabilityLabel = item.availability === "ask" ? '<span class="stock-status">استفسر عن التوفر</span>' : soldOut ? '<span class="stock-status out">غير متوفر حاليًا</span>' : '<span class="stock-status">متوفر — يُرجى التأكيد عند الطلب</span>';
@@ -660,11 +663,14 @@
       const name = cleanProductName(item.name);
       const description = cleanProductCopy(item.desc || "");
       const descriptionMarkup = isHomePage ? "" : '<p class="product-description">' + escapeHtml(description) + '</p>';
+      const rissFallback = normalizeBrand(productBrand(item)) === "riss" ? "assets/brands/riss.webp" : "";
       const visual = item.image
         ? '<img src="' + escapeHtml(item.image) + '" alt="' + escapeHtml(name) + '" loading="lazy" decoding="async" draggable="false">'
         : item.imageId
           ? '<img data-cloud-image="' + escapeHtml(item.imageId) + '" alt="' + escapeHtml(name) + '" loading="lazy">'
-          : '<span class="product-placeholder" aria-hidden="true">' + escapeHtml(item.icon || "🔧") + '</span>';
+          : rissFallback
+            ? '<img src="' + rissFallback + '" alt="RISS German Technology" loading="lazy" decoding="async" draggable="false" class="brand-product-fallback">'
+            : '<span class="product-placeholder" aria-hidden="true">' + escapeHtml(item.icon || "🔧") + '</span>';
       const detailUrl = "product.html?id=" + encodeURIComponent(String(item.id));
       const pricing = productPricing(item);
       const legacyCompare = parsePrice(item.oldPrice ?? item.compareAtPrice ?? item.originalPrice);
