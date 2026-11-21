@@ -1,0 +1,144 @@
+/* Dawly Tools — Wera-inspired premium industrial design system
+   Visual-only layer. Keeps existing markup, catalog, Firebase and checkout logic intact. */
+:root{
+  --dawly-ink:#171a1d;--dawly-ink-2:#252a2e;--dawly-muted:#697177;
+  --dawly-red:#d71920;--dawly-red-dark:#ad1018;--dawly-red-soft:#fff0f0;
+  --dawly-line:#e5e8ea;--dawly-surface:#fff;--dawly-bg:#f5f6f6;
+  --dawly-radius:18px;--dawly-shadow:0 14px 36px rgba(20,25,28,.08);
+  --dawly-shadow-hover:0 22px 48px rgba(20,25,28,.14);
+}
+html{scroll-behavior:smooth;scroll-padding-top:110px}
+body{background:var(--dawly-bg);color:var(--dawly-ink);font-family:"Cairo",Tahoma,Arial,sans-serif}
+button,input,select,textarea{font-family:inherit}
+a{transition:color .2s ease,background-color .2s ease,border-color .2s ease,transform .2s ease}
+::selection{background:rgba(215,25,32,.16);color:var(--dawly-ink)}
+/* Global storefront frame */
+.container{max-width:1280px}
+.masthead{background:rgba(255,255,255,.96);border-bottom:1px solid var(--dawly-line);box-shadow:0 5px 22px rgba(18,22,25,.045);backdrop-filter:blur(16px)}
+.masthead-grid{min-height:82px;gap:20px}
+.brand{gap:11px}
+.brand-mark{border-radius:13px;background:var(--dawly-red);box-shadow:0 7px 18px rgba(215,25,32,.2)}
+.brand-name{font-weight:900;letter-spacing:-.5px}
+.brand-tag{color:#737b80;font-weight:700}
+.search-form{border:1px solid #dfe3e5;border-radius:14px;background:#f7f8f8;box-shadow:none;transition:.2s}
+.search-form:focus-within{background:#fff;border-color:var(--dawly-red);box-shadow:0 0 0 4px rgba(215,25,32,.08)}
+.search-form input{background:transparent}
+.head-action,.cart-button{border-radius:12px}
+.cart-button,.button-primary,.hero-cta,.whatsapp-catalog-cta{background:var(--dawly-red);border-color:var(--dawly-red);color:#fff;box-shadow:0 8px 18px rgba(215,25,32,.16)}
+.cart-button:hover,.button-primary:hover,.hero-cta:hover,.whatsapp-catalog-cta:hover{background:var(--dawly-red-dark);transform:translateY(-2px);box-shadow:0 12px 24px rgba(215,25,32,.22)}
+.main-nav{background:var(--dawly-ink);border:0;box-shadow:0 8px 22px rgba(18,22,25,.1)}
+.nav-row{gap:7px}
+.nav-link{color:#f6f7f7;border-radius:9px;font-weight:800;transition:.2s}
+.nav-link:hover,.nav-link.active{background:var(--dawly-red);color:#fff}
+.mobile-menu-trigger{border-radius:12px;background:var(--dawly-ink);color:#fff}
+.mobile-menu-drawer{border-radius:0 0 18px 18px;box-shadow:0 20px 45px rgba(0,0,0,.2)}
+/* Hero: bold industrial editorial treatment */
+.hero-shell{position:relative;overflow:hidden;border-radius:24px;background:linear-gradient(115deg,#171a1d 0%,#262c30 62%,#3a2022 100%);color:#fff;box-shadow:var(--dawly-shadow);isolation:isolate}
+.hero-shell:before{content:"";position:absolute;inset:0 auto 0 0;width:7px;background:var(--dawly-red);z-index:-1}
+.hero-shell:after{content:"";position:absolute;width:360px;height:360px;border:1px solid rgba(255,255,255,.08);border-radius:50%;inset:-170px -90px auto auto;box-shadow:0 0 0 42px rgba(255,255,255,.025),0 0 0 84px rgba(255,255,255,.018);pointer-events:none;z-index:-1}
+.hero-grid{gap:32px;padding:clamp(26px,5vw,64px)}
+.hero-copy h1,.hero-copy h2{color:#fff;font-weight:900;line-height:1.25;letter-spacing:-.7px}
+.hero-copy p{color:#d6dcdf;line-height:1.95}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;color:#fff;background:rgba(215,25,32,.22);border:1px solid rgba(255,255,255,.15);border-radius:999px;padding:7px 13px;font-weight:800}
+.hero-cta,.whatsapp-catalog-cta{border-radius:12px;padding:13px 22px;font-weight:900}
+.hero-services{gap:12px}
+.service-card{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);border-radius:14px;color:#fff;backdrop-filter:blur(8px)}
+.service-card p,.service-card small{color:#d8dddf}
+/* Section hierarchy */
+.section{padding-block:clamp(26px,4vw,48px)}
+.section-heading{margin-bottom:22px}
+.section-title{font-weight:900;letter-spacing:-.5px;color:var(--dawly-ink)}
+.section-title:after{content:"";display:block;width:44px;height:4px;background:var(--dawly-red);border-radius:5px;margin-top:10px}
+.section-subtitle{color:var(--dawly-muted);line-height:1.9}
+.text-link,.latest-view-all{color:var(--dawly-red);font-weight:900}
+.categories-grid{gap:16px}
+.categories-grid>*{border:1px solid var(--dawly-line);border-radius:17px;background:#fff;box-shadow:0 7px 22px rgba(20,25,28,.045);transition:transform .22s,box-shadow .22s,border-color .22s}
+.categories-grid>*:hover{transform:translateY(-5px);border-color:#efb2b5;box-shadow:var(--dawly-shadow)}
+/* Brand showcase */
+.brands-marquee-section{background:#fff;border-block:1px solid var(--dawly-line)}
+.brand-tile{background:#fff;border:1px solid var(--dawly-line);border-radius:15px;box-shadow:0 5px 18px rgba(20,25,28,.04);transition:.2s}
+.brand-tile:hover{border-color:#e7a3a6;transform:translateY(-3px);box-shadow:var(--dawly-shadow)}
+.brand-word{font-weight:900;color:var(--dawly-ink)}
+/* Catalog controls */
+.filter-bar,.catalog-filters,.brand-filter-panel,.product-toolbar{background:#fff;border:1px solid var(--dawly-line);border-radius:15px;box-shadow:0 5px 18px rgba(20,25,28,.035)}
+.filter-bar input,.filter-bar select,.brand-filter-search input,.product-sort-control select{border:1px solid #dfe3e5;border-radius:11px;background:#fafbfb}
+.filter-bar input:focus,.filter-bar select:focus,.brand-filter-search input:focus{outline:0;border-color:var(--dawly-red);box-shadow:0 0 0 3px rgba(215,25,32,.08)}
+/* Product cards */
+.product-grid{gap:18px}
+.product-card,.product-item,.product-tile,.home-product-card{background:#fff;border:1px solid var(--dawly-line);border-radius:17px;overflow:hidden;box-shadow:0 5px 20px rgba(20,25,28,.045);transition:transform .22s,box-shadow .22s,border-color .22s}
+.product-card:hover,.product-item:hover,.product-tile:hover,.home-product-card:hover{transform:translateY(-5px);border-color:#e8b1b3;box-shadow:var(--dawly-shadow-hover)}
+.product-card img,.product-item img,.product-tile img{transition:transform .35s ease}
+.product-card:hover img,.product-item:hover img,.product-tile:hover img{transform:scale(1.035)}
+.product-card button,.product-item button,.product-tile button{border-radius:10px;font-weight:900}
+.product-card .price,.product-item .price,.product-tile .price{color:var(--dawly-red);font-weight:900}
+.active-brand-banner{border-radius:18px;background:linear-gradient(115deg,#1a1d20,#343a3f);color:#fff;box-shadow:var(--dawly-shadow)}
+.active-brand-banner h1,.active-brand-banner h2,.active-brand-banner p{color:#fff}
+/* Product detail */
+.product-detail-shell{background:#fff;border:1px solid var(--dawly-line);border-radius:22px;box-shadow:var(--dawly-shadow);padding:clamp(16px,3vw,32px)}
+.product-detail-crumb{color:var(--dawly-muted)}
+.product-detail-header{border-bottom:1px solid var(--dawly-line)}
+.product-page .button-outline{border:1px solid #d9dfe2;border-radius:11px;background:#fff;color:var(--dawly-ink);font-weight:800}
+.product-page .button-outline:hover{border-color:var(--dawly-red);color:var(--dawly-red)}
+/* Content / about / profession cards */
+.dawly-about-card,.about-box,.profession-card,.card{border:1px solid var(--dawly-line);border-radius:18px;box-shadow:0 8px 26px rgba(20,25,28,.05)}
+.dawly-about-card{background:#fff}
+.dawly-about-mark{background:var(--dawly-red);border-radius:14px}
+.profession-card:hover{border-color:#e6a5a8;transform:translateY(-3px)}
+/* Footer */
+.footer{background:#171a1d;color:#f5f6f6;border-top:4px solid var(--dawly-red);margin-top:30px}
+.footer h2,.footer h3,.footer strong{color:#fff}
+.footer p,.footer a,.footer small{color:#c4cbce}
+.footer a:hover{color:#fff}
+.footer-links a{border-radius:8px}
+.footer-whatsapp-row{border:1px solid rgba(255,255,255,.15);border-radius:13px}
+/* Cart, quick bars and floating tools */
+.cart-overlay,.mobile-menu-overlay{backdrop-filter:blur(5px)}
+.cart-drawer{border-radius:20px 0 0 20px;box-shadow:-18px 0 50px rgba(0,0,0,.16)}
+.drawer-head{background:var(--dawly-ink);color:#fff}
+.drawer-head h2,.drawer-head h3{color:#fff}
+.checkout-step-button,.checkout-back-button{border-radius:11px;font-weight:900}
+.cart-total{color:var(--dawly-red);font-weight:900}
+.floating-contact-toggle,.floating-home-cart,.dawly-app-dock{box-shadow:0 9px 26px rgba(20,25,28,.2)}
+.floating-contact-toggle{background:var(--dawly-red)}
+/* Advisor and assistant full pages */
+.dawly-assistant-page{background:#f4f5f5;color:var(--dawly-ink)}
+.dawly-assistant-page .dawly-assistant-topbar{background:#171a1d;border-bottom:4px solid var(--dawly-red);box-shadow:0 8px 24px rgba(0,0,0,.12)}
+.dawly-assistant-page .dawly-assistant-brand{color:#fff}
+.dawly-assistant-page .dawly-assistant-intro{background:linear-gradient(115deg,#171a1d,#343a3f);border-radius:20px;color:#fff;box-shadow:var(--dawly-shadow)}
+.dawly-assistant-page .dawly-assistant-intro h1,.dawly-assistant-page .dawly-assistant-intro p{color:#fff}
+.dawly-assistant-page .dawly-assistant-products{background:var(--dawly-red);border-radius:10px}
+.dawly-assistant-page .dawly-assistant-back{border:1px solid rgba(255,255,255,.35);border-radius:10px}
+.dawly-assistant-page .dawly-assistant-footer{background:#171a1d;color:#c4cbce;border-top:4px solid var(--dawly-red)}
+.dawly-assistant-page .card{background:#fff;border-radius:18px;border-color:var(--dawly-line);box-shadow:var(--dawly-shadow)}
+.dawly-assistant-page .primary{background:var(--dawly-red);border-radius:11px}
+.dawly-assistant-page .secondary{border-radius:11px}
+/* Admin panel — scoped so customer-facing styles cannot alter its controls */
+.dawly-admin-page{background:#f3f5f5;color:var(--dawly-ink)}
+.dawly-admin-page header{background:#171a1d;border-bottom:4px solid var(--dawly-red);box-shadow:0 8px 24px rgba(0,0,0,.1)}
+.dawly-admin-page .card{border:1px solid var(--dawly-line);border-radius:17px;box-shadow:var(--dawly-shadow)}
+.dawly-admin-page button,.dawly-admin-page .link{border-radius:10px}
+.dawly-admin-page .red{background:var(--dawly-red)}
+.dawly-admin-page input:focus,.dawly-admin-page select:focus,.dawly-admin-page textarea:focus{outline:0;border-color:var(--dawly-red);box-shadow:0 0 0 3px rgba(215,25,32,.09)}
+/* Small details */
+.site-visitor-counter{border-radius:15px;border:1px solid var(--dawly-line);background:#fff}
+.disclaimer{color:var(--dawly-muted)}
+:focus-visible{outline:3px solid rgba(215,25,32,.42);outline-offset:3px}
+@media(max-width:760px){
+ .masthead-grid{min-height:68px;gap:10px}
+ .hero-shell{border-radius:17px}
+ .hero-grid{padding:24px 18px;gap:20px}
+ .hero-shell:after{width:220px;height:220px;inset:-100px -80px auto auto}
+ .section{padding-block:25px}
+ .section-heading{gap:10px}
+ .section-title{font-size:clamp(19px,5vw,24px)}
+ .categories-grid{gap:10px}
+ .product-grid{gap:11px}
+ .product-detail-shell{border-radius:16px;padding:13px}
+ .cart-drawer{border-radius:18px 18px 0 0}
+ .footer{margin-top:20px}
+ .dawly-assistant-page .dawly-assistant-topbar{padding:12px 14px}
+ .dawly-assistant-page .dawly-assistant-intro{border-radius:16px}
+}
+@media(prefers-reduced-motion:reduce){
+ *,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}
+}
