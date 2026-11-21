@@ -7100,3 +7100,49 @@ button.is-in-cart:disabled {
 .dawly-about-features{margin-top:0!important}
 .dawly-about-features>div{grid-template-rows:auto!important}
 .dawly-about-icon{grid-row:auto!important}
+
+
+/* Frameless product presentation: remove the full card frame on catalog and home shelves. */
+#productGrid .product-card,
+.home-products-shelf .home-shelf-card,
+.product-card,
+.home-shelf-card{
+  border:0!important;
+  outline:0!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+  background:transparent!important;
+}
+#productGrid .product-card:hover,
+.home-products-shelf .home-shelf-card:hover,
+.product-card:hover,
+.home-shelf-card:hover{
+  border:0!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+  transform:none!important;
+}
+#productGrid .product-card .product-visual,
+.home-products-shelf .home-shelf-card .product-visual,
+.product-card .product-visual,
+.home-shelf-card .product-visual{
+  border:0!important;
+  border-bottom:0!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+  background:transparent!important;
+}
+#productGrid .product-card .product-info,
+.home-products-shelf .home-shelf-card .product-info,
+.product-card .product-info,
+.home-shelf-card .product-info{
+  background:transparent!important;
+}
+#productGrid .product-card .product-meta,
+.product-card .product-meta{
+  border-top:0!important;
+}
+#productGrid .product-card .product-visual img,
+.home-products-shelf .home-shelf-card .product-visual img{
+  filter:none!important;
+}
