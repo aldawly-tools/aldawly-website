@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#101010">
+<title>تجربة عرض المنتجات بالسحب | الدولي للعدد</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{color-scheme:dark;--bg:#101010;--panel:#171717;--muted:#b8b8b8;--green:#00a982;--red:#d71920}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:#f5f5f5;font-family:Cairo,Tahoma,sans-serif}
+.top{position:sticky;top:0;z-index:5;background:#090909;border-bottom:1px solid #2c2c2c;padding:13px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.brand{font-size:22px;font-weight:900;line-height:1.2}.brand small{display:block;color:#aaa;font-size:10px;font-weight:700;letter-spacing:1px}
+.top a{color:#fff;text-decoration:none;border:1px solid #3a3a3a;border-radius:8px;padding:7px 12px;font-size:12px;font-weight:800}
+.wrap{width:min(780px,100%);margin:auto;padding:24px 18px 80px}
+.intro{padding:14px 0 26px}.tag{color:var(--green);font-size:12px;font-weight:900;letter-spacing:.5px}.intro h1{font-size:clamp(28px,6vw,43px);line-height:1.3;margin:8px 0 5px;font-weight:1000}.intro p{margin:0;color:#bdbdbd;font-size:14px;line-height:1.8}
+.state{padding:18px 0;color:#aaa;text-align:center;font-size:13px}
+.feed{display:grid;gap:42px}
+.item{min-width:0}
+.visual{display:block;position:relative;width:100%;aspect-ratio:1.48;background:#202020;overflow:hidden;text-decoration:none}
+.visual img{display:block;width:100%;height:100%;object-fit:cover;transition:transform .5s}
+.item:hover .visual img{transform:scale(1.025)}
+.noimg{height:100%;display:grid;place-items:center;font-size:72px;color:#555;background:radial-gradient(circle at 50% 40%,#333,#171717)}
+.num{position:absolute;top:13px;right:13px;background:#090909d9;color:#eee;border:1px solid #ffffff30;border-radius:5px;padding:4px 9px;font-size:10px;font-weight:800}
+.copy{padding:15px 0 0}
+.brandline{color:var(--green);font-size:11px;font-weight:900;margin-bottom:5px}
+.copy h2{font-size:clamp(21px,4vw,29px);line-height:1.45;margin:0 0 6px;font-weight:1000}
+.copy p{font-size:15px;line-height:1.8;color:#c5c5c5;margin:0 0 12px}
+.meta{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.price{font-size:14px;color:#fff;font-weight:800}.price.ask{color:#aaa}
+.open{color:var(--green);text-decoration:none;font-size:14px;font-weight:900;display:inline-flex;align-items:center;gap:8px}
+.open b{font-size:22px;line-height:1}
+.rule{height:1px;background:#303030;margin-top:26px}
+.more{display:block;width:100%;margin-top:24px;padding:14px;border:1px solid #444;border-radius:9px;background:#191919;color:#fff;font:800 14px Cairo;cursor:pointer}
+.footnote{margin-top:25px;color:#888;font-size:11px;text-align:center}
+@media(max-width:600px){.wrap{padding:16px 16px 70px}.top{padding:11px 15px}.brand{font-size:19px}.feed{gap:34px}.visual{aspect-ratio:1.28}.copy{padding-top:12px}.copy h2{font-size:22px}.copy p{font-size:13px}}
+</style>
+</head>
+<body>
+<header class="top"><div class="brand">الدولي <small>العدد الأصلية والمستوردة</small></div><a href="index.html">العودة للموقع ↗</a></header>
+<main class="wrap">
+<section class="intro"><span class="tag">DAWLY TOOLS · PRODUCT STORIES</span><h1>اكتشف أدواتك واحدة واحدة</h1><p>عرض تجريبي مستوحى من أسلوب Wera: صورة كبيرة لكل منتج، يليها الاسم والوصف ورابط التفاصيل. اسحب لأسفل لاكتشاف المزيد.</p></section>
+<div id="state" class="state">جاري تحميل منتجات المتجر…</div>
+<section id="feed" class="feed" aria-live="polite"></section>
+<button id="more" class="more" hidden>عرض منتجات أكثر</button>
+<div class="footnote">هذه صفحة تجريبية فقط — لم يتم تغيير طريقة عرض المنتجات الأساسية في الموقع.</div>
+</main>
+<script src="firebase-config.js"></script>
+<script type="module" src="product-cloud.js"></script>
+<script>
+(function(){
+ const feed=document.getElementById('feed'),state=document.getElementById('state'),more=document.getElementById('more');
+ let all=[],shown=0;const page=8;
+ const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+ const brandOf=p=>String(p.brand||p.name||'').match(/WÜRTH|Wurth|Wera|Knipex|Bosch|Beta|Makita|DeWalt|Milwaukee/i)?.[0]||p.cat||'العدد الأصلية';
+ const priceOf=p=>{const v=String(p.price??'').trim();return v?(/استفسار|حسب الطلب/i.test(v)?v:v+' ج.م'):'السعر عند الاستفسار'};
+ function render(){
+  const batch=all.slice(shown,shown+page);if(!batch.length)return;
+  feed.insertAdjacentHTML('beforeend',batch.map((p,i)=>{
+   const name=p.name||'منتج من الدولي',desc=p.desc||'اكتشف تفاصيل المنتج ومواصفاته من خلال صفحة المنتج.';
+   const img=p.image?'<img src="'+esc(p.image)+'" alt="'+esc(name)+'" loading="lazy">':p.imageId?'<img data-cloud-image="'+esc(p.imageId)+'" alt="'+esc(name)+'" loading="lazy">':'<div class="noimg">🔧</div>';
+   return '<article class="item"><a class="visual" href="product.html?id='+encodeURIComponent(String(p.id))+'">'+img+'<span class="num">منتج '+(shown+i+1)+'</span></a><div class="copy"><div class="brandline">'+esc(brandOf(p))+'</div><h2>'+esc(name)+'</h2><p>'+esc(desc)+'</p><div class="meta"><span class="price '+(!p.price?'ask':'')+'">'+esc(priceOf(p))+'</span><a class="open" href="product.html?id='+encodeURIComponent(String(p.id))+'">اعرف المزيد <b>←</b></a></div></div><div class="rule"></div></article>';
+  }).join(''));
+  shown+=batch.length;more.hidden=shown>=all.length;state.textContent='يتم عرض '+shown+' من '+all.length+' منتج';
+  loadCloudImages();
+ }
+ function loadCloudImages(){
+  if(typeof window.DAWLY_LOAD_PRODUCT_IMAGE!=='function')return;
+  feed.querySelectorAll('img[data-cloud-image]:not([data-loading])').forEach(img=>{
+   img.dataset.loading='1';window.DAWLY_LOAD_PRODUCT_IMAGE(img.dataset.cloudImage).then(url=>{if(url&&img.isConnected)img.src=url;else if(img.isConnected)img.replaceWith(Object.assign(document.createElement('div'),{className:'noimg',textContent:'🔧'}));}).catch(()=>{if(img.isConnected)img.replaceWith(Object.assign(document.createElement('div'),{className:'noimg',textContent:'🔧'}));});
+  });
+ }
+ function ready(){
+  all=(Array.isArray(window.DAWLY_PRODUCTS)?window.DAWLY_PRODUCTS:[]).filter(p=>p&&p.hiddenFromStore!==true);
+  all.sort((a,b)=>{const stamp=p=>{let v=p.createdAt;if(v&&v.seconds)return v.seconds;if(typeof v==='number')return v>1e12?v/1000:v;let n=Date.parse(v||'');return Number.isFinite(n)?n/1000:0};return stamp(b)-stamp(a)||Number(b.id||0)-Number(a.id||0)});
+  if(!all.length){state.textContent='لم نتمكن من تحميل المنتجات الآن. افتح صفحة المنتجات الأساسية للتأكد من الاتصال.';return}
+  state.textContent='';render();
+ }
+ more.addEventListener('click',render);
+ window.addEventListener('dawly-products-updated',ready);
+ window.addEventListener('dawly-catalog-ready',ready);
+ setTimeout(()=>{if(!all.length)ready()},2500);
+})();
+</script>
+</body></html>
