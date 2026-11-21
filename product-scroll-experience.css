@@ -86,3 +86,139 @@
 @media(prefers-reduced-motion:reduce){
   #productGrid .catalog-card .product-visual img,#productGrid .catalog-card .product-info{transform:none!important;opacity:1!important}
 }
+
+
+/* Catalog repair — compact product cards on the all-products page.
+   The previous scroll-story layout forced each item to nearly one viewport,
+   creating the large blank area seen on mobile. */
+#productGrid.product-grid{
+  display:grid!important;
+  grid-template-columns:repeat(auto-fill,minmax(245px,1fr))!important;
+  align-items:stretch!important;
+  gap:18px!important;
+  margin-top:18px!important;
+}
+#productGrid .catalog-card{
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:stretch!important;
+  justify-content:flex-start!important;
+  gap:0!important;
+  width:100%!important;
+  min-width:0!important;
+  min-height:0!important;
+  height:100%!important;
+  padding:0!important;
+  margin:0!important;
+  overflow:hidden!important;
+  border:1px solid #e2e6eb!important;
+  border-radius:17px!important;
+  background:#fff!important;
+  box-shadow:0 5px 18px rgba(18,27,38,.06)!important;
+}
+#productGrid .catalog-card .product-visual{
+  display:grid!important;
+  place-items:center!important;
+  flex:0 0 auto!important;
+  width:100%!important;
+  height:clamp(205px,24vw,270px)!important;
+  min-height:0!important;
+  max-height:none!important;
+  padding:14px!important;
+  margin:0!important;
+  overflow:hidden!important;
+  border:0!important;
+  border-bottom:1px solid #edf0f3!important;
+  border-radius:0!important;
+  background:linear-gradient(145deg,#f7f8fa,#fff 72%,#fff7f7)!important;
+}
+#productGrid .catalog-card .product-visual img{
+  display:block!important;
+  position:static!important;
+  width:100%!important;
+  height:100%!important;
+  max-width:100%!important;
+  max-height:100%!important;
+  padding:0!important;
+  object-fit:contain!important;
+  object-position:center!important;
+  background:transparent!important;
+  border:0!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+  transform:none!important;
+  opacity:1!important;
+  filter:drop-shadow(0 7px 8px rgba(20,28,36,.09))!important;
+  transition:transform .25s ease!important;
+}
+#productGrid .catalog-card .product-info{
+  display:flex!important;
+  flex:1 1 auto!important;
+  flex-direction:column!important;
+  align-items:stretch!important;
+  gap:9px!important;
+  width:100%!important;
+  min-width:0!important;
+  padding:14px!important;
+  margin:0!important;
+  background:#fff!important;
+  transform:none!important;
+  opacity:1!important;
+}
+#productGrid .catalog-card .product-name{
+  display:-webkit-box!important;
+  -webkit-box-orient:vertical!important;
+  -webkit-line-clamp:3!important;
+  min-height:4.5em!important;
+  overflow:hidden!important;
+  margin:0!important;
+  font-size:16px!important;
+  line-height:1.5!important;
+}
+#productGrid .catalog-card .product-description{
+  display:-webkit-box!important;
+  -webkit-box-orient:vertical!important;
+  -webkit-line-clamp:2!important;
+  overflow:hidden!important;
+  font-size:12px!important;
+  line-height:1.7!important;
+}
+#productGrid .catalog-card .product-price{margin-top:auto!important}
+#productGrid .catalog-card .card-cart-actions{margin-top:5px!important}
+#productGrid .catalog-card .product-card-tools{display:flex!important;gap:8px!important}
+@media(max-width:760px){
+  #productGrid.product-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    gap:11px!important;
+    margin-top:14px!important;
+  }
+  #productGrid .catalog-card{border-radius:14px!important}
+  #productGrid .catalog-card .product-visual{
+    height:clamp(155px,48vw,205px)!important;
+    min-height:155px!important;
+    padding:9px!important;
+  }
+  #productGrid .catalog-card .product-info{
+    gap:7px!important;
+    padding:10px!important;
+  }
+  #productGrid .catalog-card .product-name{
+    min-height:4.35em!important;
+    font-size:13px!important;
+    line-height:1.45!important;
+  }
+  #productGrid .catalog-card .product-description{font-size:11px!important}
+  #productGrid .catalog-card .product-price{font-size:15px!important}
+  #productGrid .catalog-card .product-price strong{font-size:16px!important}
+  #productGrid .catalog-card .card-cart-actions .button-primary{
+    min-height:42px!important;
+    padding:8px 6px!important;
+    font-size:12px!important;
+  }
+}
+@media(max-width:360px){
+  #productGrid.product-grid{gap:8px!important}
+  #productGrid .catalog-card .product-visual{height:145px!important;min-height:145px!important}
+  #productGrid .catalog-card .product-info{padding:8px!important}
+  #productGrid .catalog-card .product-name{font-size:12px!important}
+}
