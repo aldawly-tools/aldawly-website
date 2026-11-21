@@ -659,6 +659,7 @@
     grid.innerHTML = shown.map(function (item) {
       const name = cleanProductName(item.name);
       const description = cleanProductCopy(item.desc || "");
+      const descriptionMarkup = isHomePage ? "" : '<p class="product-description">' + escapeHtml(description) + '</p>';
       const visual = item.image
         ? '<img src="' + escapeHtml(item.image) + '" alt="' + escapeHtml(name) + '" loading="lazy" decoding="async" draggable="false">'
         : item.imageId
@@ -681,7 +682,7 @@
         '<h3 class="product-name"><a class="product-name-link" href="' + detailUrl + '">' + escapeHtml(name) + '</a></h3>' +
         (item.model || item.sku || item.partNumber || item.code ? '<span class="product-sku">رقم الموديل: ' + escapeHtml(item.model || item.sku || item.partNumber || item.code) + '</span>' : '') +
         '<div class="product-card-status">' + stockLabel + '</div>' +
-        '<p class="product-description">' + escapeHtml(description) + '</p>' +
+        descriptionMarkup +
         '<span class="product-price' + (currentPrice === null ? ' price-on-request' : '') + '">' + (pricing.percent ? '<strong>'+escapeHtml(money(currentPrice))+'</strong><del>'+escapeHtml(money(compareAtPrice))+'</del><em class="product-discount">خصم '+discountPercent+'%</em>' : (discountPercent ? escapeHtml(money(currentPrice))+'<del>'+escapeHtml(money(compareAtPrice))+'</del><em class="product-discount">خصم '+discountPercent+'%</em>' : escapeHtml(formatPrice(item.price)))) + '<small>' + (currentPrice === null ? 'السعر عند التواصل' : '') + '</small></span>' +
         '<div class="card-cart-actions"><button class="button-primary home-shelf-add product-add-cart-prominent' + (alreadyInCart ? ' is-in-cart' : '') + '" type="button" data-add="' + escapeHtml(item.id) + '"' + (stockOut || alreadyInCart ? ' disabled aria-disabled="true"' : '') + '>' + (alreadyInCart ? '<span>مضافة بالفعل</span>' : '<span class="add-cart-icon" aria-hidden="true">🛒</span><span>أضف إلى السلة</span>') + '</button></div>' +
         '<div class="product-card-tools" aria-label="إجراءات المنتج"><button class="quick-view-trigger" type="button" data-quick-view="' + escapeHtml(item.id) + '" aria-label="معاينة سريعة" title="معاينة سريعة">◉</button><button class="share-product-button" type="button" data-share-product="' + escapeHtml(item.id) + '" aria-label="مشاركة المنتج" title="مشاركة المنتج">↗</button></div>' +
