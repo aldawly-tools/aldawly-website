@@ -7,10 +7,10 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <style>
-:root{color-scheme:dark;--bg:#090b0e;--panel:#151a20;--muted:#b8c0c8;--red:#d71920;--green:#13bd91}
+:root{color-scheme:dark;--bg:#090b0e;--panel:#151a20;--muted:#b8c0c8;--red:#d71920;--green:#c0c5cc}
 *{box-sizing:border-box}html{scroll-behavior:smooth;scroll-snap-type:y proximity;scroll-behavior:smooth}body{margin:0;background:var(--bg);color:#f5f5f5;font-family:Cairo,Tahoma,sans-serif}
-.top{position:sticky;top:0;z-index:10;background:#090b0eeF;border-bottom:1px solid #ffffff18;padding:11px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px;backdrop-filter:blur(12px)}
-.brand{font-size:21px;font-weight:900;line-height:1.2}.brand small{display:block;color:#aaa;font-size:10px;font-weight:700;letter-spacing:1px}.top a{color:#fff;text-decoration:none;border:1px solid #444;border-radius:8px;padding:7px 12px;font-size:12px;font-weight:800}
+.top{position:sticky;top:0;z-index:10;background:#090b0eeF;border-bottom:1px solid #c0c5cc35;padding:11px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px;backdrop-filter:blur(12px)}
+.brand{font-size:21px;font-weight:900;line-height:1.2}.brand small{display:block;color:#aaa;font-size:10px;font-weight:700;letter-spacing:1px}.top a{color:#fff;text-decoration:none;border:1px solid #8d959e;border-radius:8px;padding:7px 12px;font-size:12px;font-weight:800}
 .wrap{width:min(100%,980px);margin:auto;padding:0 20px 70px}.intro{padding:25px 0 18px}.tag{color:var(--green);font-size:11px;font-weight:900;letter-spacing:.6px}.intro h1{font-size:clamp(27px,5vw,42px);line-height:1.3;margin:7px 0 4px;font-weight:1000}.intro p{margin:0;color:#bdbdbd;font-size:13px;line-height:1.8}.state{padding:24px 0;color:#aaa;text-align:center;font-size:13px}
 .feed{display:grid;gap:0}
 .item{position:relative;min-height:122vh;scroll-snap-align:start;--progress:0;--lift:0px;contain:layout style}
@@ -18,13 +18,13 @@
 .visual{position:relative;display:block;width:100%;height:min(69vh,660px);min-height:330px;background:transparent;overflow:hidden;border:0;border-radius:0;box-shadow:none;transition:none;will-change:transform,opacity}
 .visual img{display:block;width:100%;height:100%;object-fit:contain;padding:0;background:transparent;transition:transform .22s cubic-bezier(.22,.61,.36,1);will-change:transform,opacity}
 .noimg{height:100%;display:grid;place-items:center;font-size:100px;color:#555;background:transparent}
-.num{position:absolute;top:14px;right:14px;background:#080a0dcc;color:#eee;border:1px solid #ffffff30;border-radius:4px;padding:5px 10px;font-size:10px;font-weight:800}
+.num{position:absolute;top:14px;right:14px;background:#080a0dcc;color:#eee;border:1px solid #c0c5cc70;border-radius:4px;padding:5px 10px;font-size:10px;font-weight:800}
 .copy{padding:12px 0;transition:opacity .22s ease,transform .22s cubic-bezier(.22,.61,.36,1);will-change:transform,opacity}
 .brandline{color:var(--green);font-size:12px;font-weight:900;margin-bottom:10px;letter-spacing:.4px}.copy h2{font-size:clamp(25px,4vw,43px);line-height:1.4;margin:0 0 12px;font-weight:1000}.copy p{font-size:15px;line-height:2;color:#c3c8ce;margin:0 0 22px}
 .meta{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}.price{font-size:16px;color:#fff;font-weight:900}.price.ask{color:#aaa}.open{color:#fff;text-decoration:none;font-size:14px;font-weight:900;display:inline-flex;align-items:center;gap:10px;background:var(--red);padding:12px 18px;border-radius:5px}.open b{font-size:20px;line-height:1}
 .scroll-hint{display:flex;align-items:center;gap:10px;color:#7f8993;font-size:11px;margin-top:22px}.scroll-hint i{height:1px;width:38px;background:var(--red)}
 .progress-line{position:fixed;left:0;top:0;z-index:20;height:3px;background:var(--red);width:0;pointer-events:none}
-.more{display:block;width:100%;margin:18px 0;padding:14px;border:1px solid #444;border-radius:8px;background:#171b20;color:#fff;font:800 14px Cairo;cursor:pointer}.footnote{margin-top:20px;color:#777;font-size:11px;text-align:center}
+.more{display:block;width:100%;margin:18px 0;padding:14px;border:1px solid #444;border-radius:8px;background:#20242a;color:#fff;font:800 14px Cairo;cursor:pointer}.footnote{margin-top:20px;color:#777;font-size:11px;text-align:center}
 @media(max-width:650px){
  .top{padding:10px 13px}.brand{font-size:18px}.wrap{padding:0 14px 50px}.intro{padding:19px 0 12px}.intro p{font-size:12px}
  .item{min-height:118vh}.stage{top:52px;height:calc(100vh - 52px);min-height:min(590px,calc(100svh - 52px));display:flex;flex-direction:column;justify-content:center;gap:17px;padding:15px 0 22px}
@@ -42,7 +42,7 @@
 <div class="progress-line" id="progressLine"></div><div id="state" class="state">جاري تحميل منتجات المتجر…</div>
 <section id="feed" class="feed" aria-live="polite"></section>
 <button id="more" class="more" hidden>عرض منتجات أكثر</button>
-<div class="footnote">هذه صفحة تجريبية فقط — لم يتم تغيير طريقة عرض المنتجات الأساسية في الموقع.</div>
+<div class="footnote">معاينة ألوان جديدة فقط — لم يتم تعميم الألوان على المتجر الأساسي بعد.</div>
 </main>
 <script src="firebase-config.js"></script>
 <script type="module" src="product-cloud.js"></script>
