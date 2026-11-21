@@ -1,0 +1,20 @@
+/* Let the product gallery follow each photo's natural aspect ratio without cropping. */
+body.product-page #productDetail .product-gallery-column .product-detail-image {
+  aspect-ratio: auto !important;
+  display: block !important;
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  padding: 0 !important;
+}
+
+body.product-page #productDetail .product-gallery-column .product-detail-image > img {
+  display: block !important;
+  width: 100% !important;
+  height: auto !important;
+  max-width: 100% !important;
+  max-height: 680px !important;
+  padding: 0 !important;
+  object-fit: contain !important;
+  object-position: center !important;
+}
