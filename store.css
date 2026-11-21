@@ -7179,3 +7179,65 @@ article.product-card.home-shelf-card{
   box-shadow:none!important;
   background:transparent!important;
 }
+
+
+/* DAWLY CATALOG BRAND FILTER — charcoal and red premium treatment */
+.brand-filter-panel{
+  background:linear-gradient(155deg,#202a34 0%,#111820 100%)!important;
+  color:#f7f8fa!important;
+  border:1px solid #394652!important;
+  border-radius:20px!important;
+  padding:18px!important;
+  box-shadow:0 14px 34px rgba(12,18,25,.18)!important;
+}
+.brand-filter-heading h3{color:#fff!important;font-weight:1000!important}
+.brand-filter-heading span{color:#b9c2cb!important}
+.brand-filter-reset,.brand-filter-panel .filter-reset{
+  background:#c8102e!important;color:#fff!important;border:1px solid #e34b60!important;
+  border-radius:11px!important;font-weight:900!important;
+}
+.brand-filter-search{
+  background:#fff!important;border:1px solid #dce1e6!important;
+  border-radius:12px!important;box-shadow:0 4px 14px rgba(0,0,0,.12)!important;
+}
+.brand-filter-search input{color:#17202a!important;font-weight:700!important}
+.brand-filter-search input::placeholder{color:#78828c!important}
+.brand-filter-search>span{color:#c8102e!important}
+.brand-filter-list{display:flex!important;flex-direction:column!important;gap:7px!important;padding:8px 2px 2px!important}
+.brand-filter-option{
+  display:flex!important;align-items:center!important;justify-content:space-between!important;
+  gap:10px!important;width:100%!important;min-height:52px!important;padding:8px 10px!important;
+  color:#eef2f5!important;background:rgba(255,255,255,.055)!important;
+  border:1px solid rgba(255,255,255,.10)!important;border-radius:12px!important;
+  transition:background .18s ease,border-color .18s ease,transform .18s ease!important;
+}
+.brand-filter-option:hover{
+  background:rgba(255,255,255,.12)!important;border-color:rgba(255,255,255,.3)!important;
+  transform:translateX(-2px)!important;
+}
+.brand-filter-option.active{
+  background:linear-gradient(100deg,#c8102e,#a90c25)!important;
+  border-color:#f05b70!important;color:#fff!important;
+  box-shadow:0 6px 16px rgba(200,16,46,.25)!important;
+}
+.brand-filter-option-name{display:flex!important;align-items:center!important;gap:10px!important;color:inherit!important;font-weight:900!important}
+.brand-filter-logo,.brand-filter-monogram{
+  width:48px!important;height:36px!important;flex:0 0 48px!important;
+  display:inline-flex!important;align-items:center!important;justify-content:center!important;
+  object-fit:contain!important;padding:4px!important;background:#fff!important;
+  border:1px solid #e3e6e9!important;border-radius:9px!important;
+}
+.brand-filter-monogram{color:#b20f25!important;font-size:13px!important;font-weight:1000!important}
+.brand-filter-count{
+  min-width:32px!important;height:32px!important;padding:0 9px!important;
+  display:inline-flex!important;align-items:center!important;justify-content:center!important;
+  border-radius:999px!important;background:#35414d!important;color:#f3f5f7!important;
+  font-weight:900!important;font-variant-numeric:tabular-nums!important;
+}
+.brand-filter-option.active .brand-filter-count{background:#fff!important;color:#bd1029!important}
+@media(max-width:820px){
+ .brand-filter-panel{padding:16px!important;border-radius:18px!important}
+ .brand-filter-list{max-height:245px!important;gap:6px!important}
+ .brand-filter-option{min-height:50px!important;padding:7px 9px!important}
+ .brand-filter-logo,.brand-filter-monogram{width:44px!important;height:34px!important;flex-basis:44px!important}
+}
