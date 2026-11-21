@@ -10,6 +10,35 @@
       return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[char];
     });
   }
+  function safePublicModelUrl(value) {
+    const raw = String(value == null ? "" : value).trim();
+    if (!raw) return "";
+    try {
+      const url = new URL(raw, window.location.href);
+      return url.protocol === "https:" ? url.href : "";
+    } catch (error) {
+      return "";
+    }
+  }
+  let modelViewerLoadPromise = null;
+  function loadModelViewerComponent() {
+    if (window.customElements && window.customElements.get("model-viewer")) return Promise.resolve();
+    if (modelViewerLoadPromise) return modelViewerLoadPromise;
+    modelViewerLoadPromise = new Promise(function (resolve, reject) {
+      const script = document.createElement("script");
+      script.type = "module";
+      script.src = "https://ajax.googleapis.com/ajax/libs/model-viewer/4.4.0/model-viewer.min.js";
+      script.onload = function () {
+        window.customElements.whenDefined("model-viewer").then(resolve, reject);
+      };
+      script.onerror = function () {
+        modelViewerLoadPromise = null;
+        reject(new Error("تعذر تحميل عارض 3D."));
+      };
+      document.head.appendChild(script);
+    });
+    return modelViewerLoadPromise;
+  }
   function cleanProductCopy(value) {
     return String(value == null ? "" : value).replace(/\uFFFD/g, "").replace(/[\u200B-\u200F\u2060\uFEFF]/g, " ").replace(/\r\n?/g, "\n").replace(/[ \t]{2,}/g, " ").trim();
   }
@@ -89,6 +118,8 @@
 
     if (typeof window.DAWLY_RECORD_VIEWED_PRODUCT === "function") window.DAWLY_RECORD_VIEWED_PRODUCT(item);
     const name = cleanProductName(item.name || "منتج من الدولي");
+    const model3dUrl = safePublicModelUrl(item.model3dUrl);
+    const modelUsdzUrl = safePublicModelUrl(item.modelUsdzUrl);
     const seoDescription = cleanProductCopy(item.desc || item.specs || "تفاصيل المنتج من متجر الدولي للعدد الأصلية والمستوردة.").replace(/\s+/g, " ").slice(0, 160);
     document.title = name + " | الدولي";
     updateMeta("name", "description", seoDescription);
@@ -130,6 +161,9 @@
       : '<span class="product-detail-placeholder" aria-hidden="true">' + escapeHtml(item.icon || "🔧") + '</span>';
     const galleryHtml = uniqueGallery.length > 1 ? '<div class="detail-image-thumbs" id="detailImageThumbs" aria-label="صور المنتج"></div><div class="detail-gallery-dots" id="detailGalleryDots" aria-label="التنقل بين صور المنتج">' + uniqueGallery.map(function(_,index){return '<button type="button" data-gallery-dot="' + index + '" class="' + (index===0?'active':'') + '" aria-label="الصورة ' + (index+1) + '" aria-current="' + (index===0?'true':'false') + '"></button>';}).join("") + '</div>' : '';
     const galleryControls = uniqueGallery.length > 1 ? '<button class="detail-gallery-nav prev" type="button" data-gallery-step="-1" hidden aria-label="الصورة السابقة">‹</button><button class="detail-gallery-nav next" type="button" data-gallery-step="1" hidden aria-label="الصورة التالية">›</button>' : '';
+    const modelPanelHtml = model3dUrl
+      ? '<section class="product-ar3d-panel"><button class="product-ar3d-launch" type="button" data-load-product-model data-model-src="' + escapeHtml(model3dUrl) + '" data-model-usdz="' + escapeHtml(modelUsdzUrl) + '" aria-expanded="false" aria-controls="productModelViewerWrap"><span class="product-ar3d-cube" aria-hidden="true">◇</span><span class="product-ar3d-copy"><strong>عرض المنتج بتقنية 3D</strong><small>دوّر المنتج أو جرّبه في مساحتك</small></span><span class="product-ar3d-badge" aria-hidden="true">3D</span></button><div class="product-model-viewer-wrap" id="productModelViewerWrap" aria-live="polite" hidden></div></section>'
+      : '';
     const brand = item.brand ? escapeHtml(displayBrand(item.brand)) + ' · ' : "";
     const basePrice = parsePrice(item.price);
     const discountPercent = Math.max(0,Math.min(90,Number(item.discountPercent)||0));
@@ -160,7 +194,7 @@
     document.title = name + " | الدولي";
     document.getElementById("detailBreadcrumb").textContent = name;
     root.innerHTML = '<article class="product-detail-layout" data-theme="' + productBannerTheme(item) + '">' +
-      '<div class="product-gallery-column"><div class="product-detail-image" id="detailImage" tabindex="0" role="button" aria-label="تكبير صورة ' + escapeHtml(name) + '" title="اضغط لتكبير الصورة">' + image + galleryControls + '</div>' + galleryHtml + '</div>' +
+      '<div class="product-gallery-column"><div class="product-detail-image" id="detailImage" tabindex="0" role="button" aria-label="تكبير صورة ' + escapeHtml(name) + '" title="اضغط لتكبير الصورة">' + image + galleryControls + '</div>' + modelPanelHtml + galleryHtml + '</div>' +
       '<div class="product-detail-info"><span class="product-detail-category">' + brand + escapeHtml(item.cat || "منتجات") + '</span>' +
       '<h1 class="product-detail-title">' + escapeHtml(name) + '</h1>' +
       '<div class="product-view-count" data-product-view-count="' + escapeHtml(item.id) + '" style="display:inline-flex;align-items:center;gap:7px;margin:5px 0 12px;padding:6px 11px;border:1px solid #e6e9ed;border-radius:20px;background:#f8fafc;color:#58616b;font-size:12px;font-weight:800"><span aria-hidden="true">👁</span><span>المشاهدات: </span><strong data-view-number>—</strong></div>' +
@@ -174,6 +208,59 @@
       '<a class="detail-back-link" href="products.html">← العودة إلى المنتجات</a></div>' + '<div class="product-trust-strip" aria-label="مميزات الخدمة"><div><b>🚚</b><span>شحن لجميع المحافظات</span></div><div><b>✓</b><span>تأكيد الطلب عبر واتساب</span></div><div><b>🛠</b><span>مساعدة في اختيار العدد</span></div></div>' + '</div>' + (specsHtml ? '<div class="product-specs-column">' + specsHtml + '</div>' : '<div class="product-specs-column product-specs-empty"></div>') + '</article>';
 
 
+    const modelLaunchButton = root.querySelector("[data-load-product-model]");
+    const modelViewerWrap = root.querySelector("#productModelViewerWrap");
+    if (modelLaunchButton && modelViewerWrap) {
+      modelLaunchButton.addEventListener("click", async function () {
+        const opening = modelViewerWrap.hidden;
+        modelViewerWrap.hidden = !opening;
+        modelLaunchButton.setAttribute("aria-expanded", String(opening));
+        if (!opening || modelViewerWrap.querySelector("model-viewer")) return;
+        modelLaunchButton.disabled = true;
+        const status = document.createElement("p");
+        status.className = "product-model-status";
+        status.setAttribute("role", "status");
+        status.textContent = "جارٍ تحميل العرض ثلاثي الأبعاد…";
+        modelViewerWrap.replaceChildren(status);
+        try {
+          await loadModelViewerComponent();
+          if (!modelViewerWrap.isConnected) return;
+          const viewer = document.createElement("model-viewer");
+          viewer.className = "product-model-viewer";
+          viewer.setAttribute("src", modelLaunchButton.dataset.modelSrc || "");
+          viewer.setAttribute("alt", "عرض ثلاثي الأبعاد لـ " + name);
+          viewer.setAttribute("camera-controls", "");
+          viewer.setAttribute("touch-action", "pan-y");
+          viewer.setAttribute("ar", "");
+          viewer.setAttribute("ar-modes", "webxr scene-viewer quick-look");
+          viewer.setAttribute("ar-scale", "auto");
+          viewer.setAttribute("shadow-intensity", "1");
+          viewer.setAttribute("loading", "eager");
+          const usdzUrl = safePublicModelUrl(modelLaunchButton.dataset.modelUsdz);
+          if (usdzUrl) viewer.setAttribute("ios-src", usdzUrl);
+          viewer.addEventListener("load", function () { status.hidden = true; });
+          viewer.addEventListener("error", function () {
+            status.hidden = false;
+            status.textContent = "تعذر تحميل النموذج. تأكد من رابط ملف GLB وإتاحته للزوار.";
+          });
+          const arButton = document.createElement("button");
+          arButton.slot = "ar-button";
+          arButton.type = "button";
+          arButton.className = "product-model-ar-button";
+          arButton.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 20 7.5v9L12 21l-8-4.5v-9L12 3Zm0 0v9m0 0 8-4.5M12 12l-8-4.5m8 4.5v9" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span>جرّبه في مساحتك</span>';
+          viewer.appendChild(arButton);
+          const note = document.createElement("p");
+          note.className = "product-model-note";
+          note.textContent = "تظهر تجربة الواقع المعزز على الهواتف والمتصفحات الداعمة.";
+          modelViewerWrap.replaceChildren(viewer, status, note);
+        } catch (error) {
+          status.textContent = "تعذر تحميل عارض 3D. تحقق من اتصال الإنترنت وحاول مرة أخرى.";
+          modelViewerWrap.replaceChildren(status);
+        } finally {
+          if (modelLaunchButton.isConnected) modelLaunchButton.disabled = false;
+        }
+      });
+    }
     const viewCountNode = root.querySelector("[data-product-view-count] [data-view-number]");
     if (viewCountNode) {
       (async function () {

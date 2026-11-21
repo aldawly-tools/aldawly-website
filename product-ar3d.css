@@ -1,0 +1,38 @@
+/* Product 3D and AR entry point */
+.product-ar3d-panel{margin:12px 0 0}
+.product-ar3d-launch{
+  display:flex;width:100%;align-items:center;gap:12px;padding:12px 14px;
+  border:1px solid #d7e9e4;border-radius:15px;background:linear-gradient(120deg,#f0fbf8,#fff);
+  color:#202b29;text-align:start;cursor:pointer;box-shadow:0 4px 14px rgba(18,93,75,.06);
+  transition:border-color .18s,box-shadow .18s,transform .18s;
+}
+.product-ar3d-launch:hover{border-color:#12ad8a;box-shadow:0 6px 18px rgba(18,93,75,.12);transform:translateY(-1px)}
+.product-ar3d-launch:focus-visible{outline:3px solid #16b795;outline-offset:3px}
+.product-ar3d-launch:disabled{opacity:.72;cursor:wait;transform:none}
+.product-ar3d-cube{
+  flex:0 0 46px;width:46px;height:46px;display:grid;place-items:center;border-radius:13px;
+  background:#dff7ef;color:#08a887;font-size:36px;line-height:1;font-weight:900;
+}
+.product-ar3d-copy{display:grid;gap:3px;flex:1;min-width:0}
+.product-ar3d-copy strong{font-size:14px;font-weight:900}
+.product-ar3d-copy small{font-size:12px;line-height:1.6;color:#68736f}
+.product-ar3d-badge{border-radius:8px;padding:5px 7px;background:#0da889;color:#fff;font-size:11px;font-weight:900;direction:ltr}
+.product-model-viewer-wrap{position:relative;margin-top:10px;overflow:hidden;border:1px solid #e2e8e6;border-radius:16px;background:#f7faf9}
+.product-model-viewer-wrap[hidden]{display:none!important}
+model-viewer.product-model-viewer{display:block;width:100%;height:clamp(330px,68vw,520px);background:#f7faf9;--poster-color:transparent}
+.product-model-ar-button{
+  display:flex;align-items:center;gap:8px;padding:10px 14px;border:0;border-radius:11px;
+  background:#c8101e;color:#fff;font:inherit;font-size:13px;font-weight:900;cursor:pointer;
+  box-shadow:0 4px 12px rgba(0,0,0,.18)
+}
+.product-model-ar-button svg{display:block;width:19px;height:19px;flex:none}
+.product-model-status{margin:0;padding:11px 14px;color:#56615e;font-size:13px;line-height:1.7;text-align:center}
+.product-model-note{margin:0;padding:0 12px 11px;color:#68736f;font-size:11px;line-height:1.6;text-align:center}
+@media(max-width:640px){
+  .product-ar3d-panel{margin-top:10px}
+  .product-ar3d-launch{padding:10px;gap:10px}
+  .product-ar3d-cube{flex-basis:42px;width:42px;height:42px}
+  .product-ar3d-copy strong{font-size:13px}
+  .product-ar3d-copy small{font-size:11px}
+  model-viewer.product-model-viewer{height: min(68vh,480px);min-height:300px}
+}
