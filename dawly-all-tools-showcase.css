@@ -15,3 +15,25 @@
 .dawly-showcase-cta:hover{transform:translateY(-3px);box-shadow:0 12px 28px #c8101e77}
 .dawly-showcase-note{display:block;margin-top:12px;color:#cbd1d8;font-size:11px;font-weight:700}
 @media(max-width:700px){.dawly-all-tools{padding:10px 0 18px!important}.dawly-all-tools .container{width:94%!important}.dawly-all-tools .dawly-showcase{min-height:0;display:flex;align-items:flex-end;border-radius:16px;background-position:58% center}.dawly-all-tools .dawly-showcase:before{background:linear-gradient(0deg,rgba(9,13,18,.98) 0%,rgba(9,13,18,.91) 48%,rgba(9,13,18,.10) 100%)}.dawly-showcase-content{width:min(78%,360px);margin-inline-start:auto;padding:150px 17px 19px;text-align:right}.dawly-showcase-kicker{font-size:10px;margin-bottom:7px}.dawly-showcase-content h2{font-size:27px;line-height:1.35;margin-bottom:7px}.dawly-showcase-content p{font-size:12px;line-height:1.75;margin-bottom:11px}.dawly-showcase-brands{gap:6px;margin-bottom:13px}.dawly-showcase-brands span{font-size:12px;padding:6px 10px}.dawly-showcase-cta{width:100%;min-height:47px;font-size:15px;border-radius:10px}.dawly-showcase-note{font-size:10px;margin-top:8px}}
+
+
+/* Compact image-only showcase banner */
+.dawly-all-tools .dawly-showcase{
+  aspect-ratio: 16 / 9 !important;
+  min-height: 0 !important;
+  height: auto !important;
+  background-image: url("assets/store-hero.png") !important;
+  background-position: center !important;
+  background-size: cover !important;
+}
+.dawly-all-tools .dawly-showcase:before{display:none !important}
+.dawly-all-tools .dawly-showcase-content{display:none !important}
+@media(max-width:700px){
+  .dawly-all-tools .dawly-showcase{
+    aspect-ratio: 16 / 9 !important;
+    min-height:0 !important;
+    height:auto !important;
+    background-position:center !important;
+    background-size:100% 100% !important;
+  }
+}
