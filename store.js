@@ -1046,9 +1046,10 @@
       window.history.replaceState({}, "", nextUrl.pathname + nextUrl.search + nextUrl.hash);
       visibleProductCount = pageSize;
       syncActiveBrandHeading();
+      if (brandFilterSummary) brandFilterSummary.textContent = activeBrand ? displayBrand(activeBrand) : "كل الماركات";
       drawBrandFilters();
       renderProducts();
-      // Keep the selected brand visible in the active brand banner above the catalog.\n      // After choosing any brand, move directly to the filtered product cards.
+      // Keep the selected brand visible beside the brand heading and in the active banner.\n      // After choosing any brand, move directly to the filtered product cards.
       requestAnimationFrame(function () {
         const productGrid = document.getElementById("productGrid");
         if (!productGrid) return;
