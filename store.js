@@ -1048,7 +1048,7 @@
       syncActiveBrandHeading();
       drawBrandFilters();
       renderProducts();
-      // After choosing any brand, move directly to the filtered product cards.
+      // Keep the selected brand visible in the active brand banner above the catalog.\n      // After choosing any brand, move directly to the filtered product cards.
       requestAnimationFrame(function () {
         const productGrid = document.getElementById("productGrid");
         if (!productGrid) return;
