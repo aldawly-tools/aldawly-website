@@ -82,3 +82,32 @@
  .dawly-showcase-cta{min-height:42px!important;padding:0 16px!important;font-size:13px!important}
  .dawly-showcase-note{font-size:9px!important;margin-top:8px!important}
 }
+
+
+/* Spread banner copy across the entire dark panel */
+.dawly-all-tools .dawly-showcase-content{
+  box-sizing:border-box!important;width:100%!important;max-width:none!important;
+  padding-inline:clamp(14px,3vw,38px)!important;
+}
+.dawly-showcase-content h2{
+  display:block!important;width:100%!important;max-width:none!important;
+  text-align:center!important;letter-spacing:0!important;
+}
+.dawly-showcase-content p{
+  display:block!important;width:100%!important;max-width:none!important;
+  text-align:justify!important;text-align-last:center!important;
+  line-height:1.9!important;
+}
+.dawly-showcase-brands{width:100%!important;justify-content:center!important}
+.dawly-showcase-cta{display:flex!important;width:max-content!important;max-width:100%!important}
+.dawly-showcase-note{width:100%!important;text-align:center!important}
+@media(max-width:700px){
+ .dawly-all-tools .dawly-showcase-content{
+   width:100%!important;padding:26px 14px!important;
+ }
+ .dawly-showcase-content h2{font-size:clamp(24px,7.2vw,34px)!important}
+ .dawly-showcase-content p{
+   font-size:clamp(13px,3.8vw,16px)!important;
+   text-align:justify!important;text-align-last:center!important;
+ }
+}
