@@ -7094,3 +7094,9 @@ button.is-in-cart:disabled {
     padding-bottom: max(14px, env(safe-area-inset-bottom, 0px)) !important;
   }
 }
+
+
+/* About section: compact layout after removing the intro copy. */
+.dawly-about-features{margin-top:0!important}
+.dawly-about-features>div{grid-template-rows:auto!important}
+.dawly-about-icon{grid-row:auto!important}
