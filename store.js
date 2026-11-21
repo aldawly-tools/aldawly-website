@@ -1,5 +1,6 @@
 (() => {
   let products = Array.isArray(window.DAWLY_PRODUCTS) ? window.DAWLY_PRODUCTS : [];
+  const isHomePage = document.querySelector('main[data-page="home"]') !== null;
   const grid = document.getElementById("productGrid");
   const tiles = document.getElementById("categoryTiles");
   const filterBar = document.getElementById("filterBar");
@@ -59,7 +60,7 @@
   let query = "";
   let scannedBarcode = "";
   const pageSize = 12;
-  let visibleProductCount = pageSize;
+  let visibleProductCount = isHomePage ? 6 : pageSize;
   // سلة جديدة مستقلة؛ لا تستورد أي بيانات قديمة أو تنتقل عبر روابط المنتجات.
   let cart = [];
   let cartStorageKey = "dawly_cart_v3_default";
@@ -446,8 +447,11 @@
       if (item.cat) categoryCounts.set(item.cat, (categoryCounts.get(item.cat) || 0) + 1);
     });
     const categories = Array.from(categoryCounts.keys());
+    const categoryCards = isHomePage
+      ? categories.slice().sort(function(a,b){ return (categoryCounts.get(b)||0) - (categoryCounts.get(a)||0); }).slice(0,4)
+      : categories;
     tiles.innerHTML = '<button class="category-tile category-row-card all" type="button" data-category="الكل"><span class="category-photo"><img src="' + categoryImage("ورش") + '" alt="" loading="lazy"><span class="category-photo-shade"></span><span class="category-icon">' + categoryIcon("ورش") + '</span></span><span class="category-copy"><strong>جميع الأقسام</strong><small class="category-availability">● متاح للتصفح</small><b>' + products.length + ' منتج</b><span class="category-browse">تصفح القسم ←</span></span></button>' +
-      categories.map(function (name) {
+      categoryCards.map(function (name) {
         const count = categoryCounts.get(name) || 0;
         const availability = count > 0 ? '● متاح للتصفح' : '● لا توجد منتجات';
         return '<button class="category-tile category-row-card" type="button" data-category="' + escapeHtml(name) + '"><span class="category-photo"><img src="' + categoryImage(name) + '" alt="" loading="lazy"><span class="category-photo-shade"></span><span class="category-icon">' + categoryIcon(name) + '</span></span><span class="category-copy"><strong>' + escapeHtml(name) + '</strong><small class="category-availability' + (count > 0 ? ' is-available' : ' is-empty') + '">' + availability + '</small><b>' + count + ' منتج</b><span class="category-browse">تصفح القسم ←</span></span></button>';
@@ -501,8 +505,16 @@
     const sectionTitle = document.querySelector("#products .section-title");
     const subtitle = document.querySelector("#products .section-subtitle");
     const label = activeBrand ? displayBrand(activeBrand) : "";
-    if (sectionTitle) sectionTitle.textContent = label ? "منتجات " + label : "كل المنتجات";
-    if (subtitle) subtitle.textContent = label ? "المنتجات المسجلة لماركة " + label : "اكتشف كتالوج الدولي للعدد الأصلية، وتعرّف على منتجاتنا واسألنا عن السعر والتوافر مباشرة.";
+    const defaultTitle = query ? "نتائج البحث" : activeCategory !== "الكل" ? "منتجات " + activeCategory : isHomePage ? "منتجات مختارة" : "كل المنتجات";
+    const defaultSubtitle = query
+      ? "نتائج البحث عن " + query
+      : activeCategory !== "الكل"
+        ? "تصفّح منتجات هذا القسم واسألنا عن السعر والتوافر."
+        : isHomePage
+          ? "مجموعة من منتجات الدولي. افتح الكتالوج الكامل لمشاهدة باقي المنتجات."
+          : "اكتشف كتالوج الدولي للعدد الأصلية، وتعرّف على منتجاتنا واسألنا عن السعر والتوافر مباشرة.";
+    if (sectionTitle) sectionTitle.textContent = label ? "منتجات " + label : defaultTitle;
+    if (subtitle) subtitle.textContent = label ? "المنتجات المسجلة لماركة " + label : defaultSubtitle;
     if (banner && title && logo) {
       banner.classList.toggle("is-visible", !!label);
       title.textContent = label ? "منتجات " + label : "";

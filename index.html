@@ -475,7 +475,7 @@ main > #about{order:5!important}
 </header>
 <nav class="main-nav" aria-label="القائمة الرئيسية"><div class="container nav-row">
  <a class="nav-link active" href="index.html"><svg viewBox="0 0 24 24"><path d="m3 11 9-8 9 8M5 10v10h14V10M9 20v-6h6v6"/></svg>الرئيسية</a>
- <a class="nav-link" href="#brands"><svg viewBox="0 0 24 24"><path d="M20 10 12 18 4 10V4h6z"/><circle cx="8" cy="8" r="1"/></svg>الماركات</a>
+ <a class="nav-link" href="products.html#brandFilterList"><svg viewBox="0 0 24 24"><path d="M20 10 12 18 4 10V4h6z"/><circle cx="8" cy="8" r="1"/></svg>الماركات</a>
  <a class="nav-link" href="products.html"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>المنتجات</a>
  <a class="nav-link" href="#products"><span class="red-mark">٪</span>العروض</a>
  <a class="nav-link" href="#categories"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16M8 4l-4 2 4 2M16 10l4 2-4 2"/></svg>الأقسام</a>
@@ -514,7 +514,7 @@ main > #about{order:5!important}
  </nav>
 </aside>
 
-<main>
+<main data-page="home">
 <section class="hero-shell"><div class="container hero-grid">
  <aside class="hero-services" aria-label="خدمات المتجر">
    <div class="hero-services-track">
@@ -539,52 +539,21 @@ main > #about{order:5!important}
 
 </div></section>
 <section class="section" id="categories"><div class="container">
- <div class="section-heading"><div><h2 class="section-title">تسوق حسب القسم</h2><p class="section-subtitle">تصفّح الأقسام بسرعة واعثر على الأدوات المناسبة لشغلك</p></div><a class="text-link" href="products.html">عرض كل المنتجات ‹</a></div>
+ <div class="section-heading"><div><h2 class="section-title">تسوق حسب القسم</h2><p class="section-subtitle">اختَر من الأقسام الأكثر طلبًا</p></div><a class="text-link" href="products.html#filterBar">كل الأقسام ‹</a></div>
  <div class="categories-grid" id="categoryTiles"></div>
 </div></section>
 
-<section class="section brands-marquee-section" id="brands" aria-label="تسوق حسب الماركة">
- <div class="container">
-  <div class="section-heading"><div><h2 class="section-title">ماركات يثق بها المحترفون</h2><p class="section-subtitle">اختار ماركتك المفضلة وتصفّح منتجاتها الأصلية من كتالوج الدولي</p></div><a class="text-link" href="products.html">كل المنتجات ←</a></div>
-  <div class="brands-marquee" aria-label="ماركات العدد والأدوات">
-   <div class="brands-marquee-track">
-    <div class="brands-marquee-group">
-     <a class="brand-word brand-tile" href="products.html?brand=W%C3%9CRTH#productGrid" data-brand-target="products.html?brand=W%C3%9CRTH#productGrid"><img class="brand-logo" src="https://upload.wikimedia.org/wikipedia/commons/c/c3/Wuerth_Logo_2024.svg" alt="WÜRTH logo" loading="lazy" decoding="async"><span class="brand-name-sr">WÜRTH</span></a>
-     <a class="brand-word brand-tile" href="products.html?brand=BOSCH#productGrid" data-brand-target="products.html?brand=BOSCH#productGrid"><img class="brand-logo" src="https://upload.wikimedia.org/wikipedia/commons/1/16/Bosch-logo.svg" alt="BOSCH logo" loading="lazy" decoding="async"><span class="brand-name-sr">BOSCH</span></a>
-     <a class="brand-word brand-tile" href="products.html?brand=WERA#productGrid" data-brand-target="products.html?brand=WERA#productGrid"><img class="brand-logo" src="https://upload.wikimedia.org/wikipedia/commons/e/ec/Wera_schwarz_Logo_ohne_Effekt_4C.svg" alt="WERA logo" loading="lazy" decoding="async"><span class="brand-name-sr">WERA</span></a>
-     <a class="brand-word brand-tile" href="products.html?brand=KNIPEX#productGrid" data-brand-target="products.html?brand=KNIPEX#productGrid"><img class="brand-logo" src="https://upload.wikimedia.org/wikipedia/commons/e/e3/Knipex_logo.svg" alt="KNIPEX logo" loading="lazy" decoding="async"><span class="brand-name-sr">KNIPEX</span></a>
-     <a class="brand-word brand-tile" href="products.html?brand=Beta#productGrid" data-brand-target="products.html?brand=Beta#productGrid"><img class="brand-logo" src="https://static.cdnlogo.com/logos/b/13/beta-tools.svg" alt="BETA logo" loading="lazy" decoding="async"><span class="brand-name-sr">BETA</span></a>
-     <a class="brand-word brand-tile" href="products.html?brand=DEWALT#productGrid" data-brand-target="products.html?brand=DEWALT#productGrid"><img class="brand-logo" src="https://upload.wikimedia.org/wikipedia/commons/8/89/DeWalt_Logo.svg" alt="DEWALT logo" loading="lazy" decoding="async"><span class="brand-name-sr">DEWALT</span></a>
-     <a class="brand-word brand-tile" href="products.html?brand=Milwaukee#productGrid" data-brand-target="products.html?brand=Milwaukee#productGrid"><img class="brand-logo" src="https://upload.wikimedia.org/wikipedia/commons/d/de/Milwaukee_Logo.svg" alt="MILWAUKEE logo" loading="lazy" decoding="async"><span class="brand-name-sr">MILWAUKEE</span></a>
-     <a class="brand-word brand-tile" href="products.html?brand=Makita#productGrid" data-brand-target="products.html?brand=Makita#productGrid"><img class="brand-logo" src="https://upload.wikimedia.org/wikipedia/commons/7/71/Makita_Logo.svg" alt="MAKITA logo" loading="lazy" decoding="async"><span class="brand-name-sr">MAKITA</span></a>
-     <a class="brand-word brand-tile brand-text-logo" href="products.html?brand=GESIPA#productGrid" data-brand-target="products.html?brand=GESIPA#productGrid" aria-label="منتجات GESIPA"><span class="brand-text-mark">GESIPA</span><span class="brand-name-sr">GESIPA</span></a>
-     <a class="brand-word brand-tile brand-text-logo" href="products.html?brand=BAHCO#productGrid" data-brand-target="products.html?brand=BAHCO#productGrid" aria-label="منتجات BAHCO"><span class="brand-text-mark">BAHCO</span><span class="brand-name-sr">BAHCO</span></a>
-     <a class="brand-word brand-tile brand-text-logo" href="products.html?brand=KOKEN#productGrid" data-brand-target="products.html?brand=KOKEN#productGrid" aria-label="منتجات KOKEN"><span class="brand-text-mark">KOKEN</span><span class="brand-name-sr">KOKEN</span></a>
-     <a class="brand-word brand-tile brand-text-logo" href="products.html?brand=MODECO#productGrid" data-brand-target="products.html?brand=MODECO#productGrid" aria-label="منتجات MODECO"><span class="brand-text-mark">MODECO</span><span class="brand-name-sr">MODECO</span></a>
-     <a class="brand-word brand-tile brand-text-logo" href="products.html?brand=NORMEX#productGrid" data-brand-target="products.html?brand=NORMEX#productGrid" aria-label="منتجات NORMEX"><span class="brand-text-mark">NORMEX</span><span class="brand-name-sr">NORMEX</span></a>
-      <a class="brand-word brand-tile" href="products.html?brand=LUX-TOOLS#productGrid" data-brand-target="products.html?brand=LUX-TOOLS#productGrid" aria-label="منتجات LUX-TOOLS"><img class="brand-logo" src="assets/brands/lux-tools.webp?v=lux-logo-20261116" alt="LUX-TOOLS logo" loading="lazy" decoding="async"><span class="brand-name-sr">LUX-TOOLS</span></a>
-     <a class="brand-word brand-tile brand-text-logo" href="products.html?brand=RISS#productGrid" data-brand-target="products.html?brand=RISS#productGrid" aria-label="منتجات RISS"><span class="brand-text-mark">RISS</span><span class="brand-name-sr">RISS</span></a>
-     <a class="brand-word brand-tile brand-text-logo" href="products.html?brand=HILTI#productGrid" data-brand-target="products.html?brand=HILTI#productGrid" aria-label="منتجات HILTI"><span class="brand-text-mark">HILTI</span><span class="brand-name-sr">HILTI</span></a>
-    </div>   </div>
-  </div>
- </div>
-</section>
+
 <section class="section" id="products"><div class="container">
  <div class="section-heading"><div><h2 class="section-title">تصفح كل المنتجات</h2><p class="section-subtitle">ابحث بين جميع الأدوات والمعدات المتاحة في المتجر</p></div><a class="text-link" href="products.html">عرض كافة المنتجات ‹</a></div>
- <section class="home-products-shelf" aria-label="أحدث المنتجات">
-  <div class="home-shelf-heading"><div><h2 class="section-title">أحدث المنتجات</h2><p class="section-subtitle">اكتشف أحدث الأدوات المضافة للمتجر</p></div><div class="home-shelf-actions"><a class="latest-view-all" href="products.html">عرض كل المنتجات <span aria-hidden="true">←</span></a><div class="home-shelf-arrows"><button type="button" class="shelf-arrow" data-shelf-dir="prev" aria-label="السابق">‹</button><button type="button" class="shelf-arrow" data-shelf-dir="next" aria-label="التالي">›</button></div></div></div>
-  <div class="home-products-viewport"><div class="home-products-track" id="newArrivalsGrid" aria-live="polite"></div></div><div class="home-shelf-progress" aria-hidden="true"><span></span></div>
- </section>
+ 
  <div class="filter-bar" id="filterBar" aria-label="فلترة المنتجات"></div>
 <div class="product-grid" id="productGrid" aria-live="polite"></div>
  <section class="recently-viewed-section" id="recentlyViewedSection" hidden aria-label="المنتجات التي شاهدتها"><div class="section-heading"><div><h2 class="section-title">المنتجات التي شاهدتها</h2><p class="section-subtitle">ارجع بسهولة للمنتجات اللي فتحتها قبل كده</p></div><button class="recent-view-clear" id="clearRecentlyViewed" type="button">مسح السجل</button></div><div class="recently-viewed-grid" id="recentlyViewedProducts"></div></section>
  <div class="disclaimer">تنبيه: المنتجات والأسعار والتوفر يتم تأكيدها من المتجر عند التواصل. المعلومات الظاهرة تعتمد على بيانات المنتجات الحالية.</div>
 </div></section>
 
-<section class="section product-discovery" id="discover-products"><div class="container">
- <div class="section-heading"><div><h2 class="section-title">اختيارات الدولي</h2><p class="section-subtitle">منتجات مميزة من الكتالوج الفعلي، مع تفاصيلها وتوفرها عند التواصل</p></div><a class="text-link" href="products.html">كل المنتجات ←</a></div>
- <div class="product-grid" id="featuredProductsGrid"><div class="catalog-empty-note">أضف المنتجات المميزة من لوحة الإدارة لتظهر هنا.</div></div>
-</div></section>
+
 <section class="section dawly-about-section" id="about"><div class="container">
  <div class="section-heading"><div><h2 class="section-title">عن الدولي</h2></div></div>
  <div class="dawly-about-card">
