@@ -70,7 +70,11 @@ service cloud.firestore {
     }
 
     match /storeMeta/{metaId} {
-      allow read, write: if isStoreAdmin();
+      // The storefront only needs this non-sensitive document to refresh its catalog cache.
+      // Keep other metadata, including bulk-price history, admin-only.
+      allow get: if metaId == "catalog" || isStoreAdmin();
+      allow list: if isStoreAdmin();
+      allow write: if isStoreAdmin();
     }
 
     match /productImages/{imageId} {
