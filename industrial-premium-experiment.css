@@ -1,0 +1,80 @@
+/* Dawly Tools — Industrial Premium experimental theme
+   Preserves the existing red/charcoal/white palette and all storefront behavior. */
+:root{
+  --dawly-red:#c8101e;
+  --dawly-ink:#202832;
+  --dawly-muted:#68717c;
+  --dawly-line:#e2e6ea;
+  --dawly-soft:#f4f5f7;
+}
+@media (min-width:701px){
+  header,.site-header,.main-header,.navbar{
+    box-shadow:0 5px 22px rgba(20,29,39,.08)!important;
+    border-bottom:1px solid var(--dawly-line)!important;
+  }
+}
+.hero-shell{
+  position:relative!important;
+  isolation:isolate!important;
+}
+.hero-shell:after{
+  content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
+  background:linear-gradient(115deg,rgba(32,40,50,.035),transparent 58%,rgba(200,16,30,.045));
+}
+.hero-shell .hero-content,.hero-shell .hero-copy{
+  text-shadow:none!important;
+}
+.hero-shell h1,.hero-shell .hero-title{
+  color:var(--dawly-ink)!important;
+  font-weight:1000!important;
+  letter-spacing:-.45px;
+}
+.hero-shell p,.hero-shell .hero-description{
+  color:#4f5964!important;
+  font-weight:700!important;
+}
+.hero-shell .button-primary,.hero-shell a.button-primary{
+  border-radius:12px!important;
+  box-shadow:0 7px 18px rgba(200,16,30,.19)!important;
+  font-weight:1000!important;
+}
+section .section-title{
+  color:var(--dawly-ink)!important;
+  font-weight:1000!important;
+}
+section .section-title:before{
+  border-radius:5px!important;
+}
+.product-card,.product-item,.product-box,.home-product-card{
+  border:1px solid var(--dawly-line)!important;
+  border-radius:16px!important;
+  background:#fff!important;
+  box-shadow:0 5px 17px rgba(24,34,45,.065)!important;
+  transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease!important;
+  overflow:hidden;
+}
+.product-card:hover,.product-item:hover,.product-box:hover,.home-product-card:hover{
+  transform:translateY(-4px)!important;
+  border-color:rgba(200,16,30,.45)!important;
+  box-shadow:0 13px 28px rgba(24,34,45,.12)!important;
+}
+.product-card img,.product-item img,.product-box img,.home-product-card img{
+  object-fit:contain!important;
+}
+button,.button,.btn{
+  font-weight:900;
+}
+button:focus-visible,a:focus-visible{
+  outline:3px solid rgba(200,16,30,.35)!important;
+  outline-offset:3px!important;
+}
+@media(max-width:700px){
+  .hero-shell{border-radius:0 0 18px 18px!important;overflow:hidden}
+  .product-card,.product-item,.product-box,.home-product-card{
+    border-radius:13px!important;
+    box-shadow:0 3px 12px rgba(24,34,45,.07)!important;
+  }
+}
+@media(prefers-reduced-motion:reduce){
+  .product-card,.product-item,.product-box,.home-product-card{transition:none!important}
+}
