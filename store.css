@@ -7079,3 +7079,18 @@ button.is-in-cart:disabled {
   .product-detail-shell .product-detail-image{aspect-ratio:1 / 1!important;max-height:430px!important}
   .product-detail-shell .product-detail-image img{max-height:100%!important;padding:12px!important}
 }
+
+
+/* Checkout visibility: hide the fixed app dock while the cart/checkout drawer is open
+   so it cannot cover the order total or WhatsApp confirmation button. */
+@media (max-width: 700px) {
+  body:has(#cartDrawer.open) .dawly-app-dock {
+    display: none !important;
+  }
+  html body aside#cartDrawer.cart-drawer.open {
+    padding-bottom: max(16px, env(safe-area-inset-bottom, 0px)) !important;
+  }
+  html body #cartDrawer .cart-sticky-footer {
+    padding-bottom: max(14px, env(safe-area-inset-bottom, 0px)) !important;
+  }
+}
