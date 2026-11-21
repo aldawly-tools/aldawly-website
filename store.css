@@ -7146,3 +7146,36 @@ button.is-in-cart:disabled {
 .home-products-shelf .home-shelf-card .product-visual img{
   filter:none!important;
 }
+
+
+/* Final frameless override for every rendered catalog/shelf card variant. */
+#productGrid article.product-card,
+#productGrid article.product-card.catalog-card,
+#featuredProductsGrid article.product-card,
+#newArrivalsGrid article.product-card,
+.home-products-shelf article.home-shelf-card,
+article.product-card.home-shelf-card{
+  border:0!important;
+  border-color:transparent!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+  background:transparent!important;
+  outline:0!important;
+}
+#productGrid article.product-card::before,
+#productGrid article.product-card::after,
+.home-products-shelf article.home-shelf-card::before,
+.home-products-shelf article.home-shelf-card::after{
+  display:none!important;
+  content:none!important;
+}
+#productGrid article.product-card .product-visual,
+#featuredProductsGrid article.product-card .product-visual,
+#newArrivalsGrid article.product-card .product-visual,
+.home-products-shelf article.home-shelf-card .product-visual{
+  border:0!important;
+  border-bottom:0!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+  background:transparent!important;
+}
