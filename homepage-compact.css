@@ -1,0 +1,16 @@
+/* Compact the home product preview; full product details stay on product pages. */
+main[data-page="home"] #productGrid .product-description {
+  display: none !important;
+}
+
+main[data-page="home"] #productGrid .product-visual {
+  height: 180px !important;
+  min-height: 180px !important;
+}
+
+@media (max-width: 820px) {
+  main[data-page="home"] #productGrid .product-visual {
+    height: clamp(138px, 36vw, 170px) !important;
+    min-height: 0 !important;
+  }
+}
