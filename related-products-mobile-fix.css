@@ -111,3 +111,37 @@
   #productDetail .related-info{padding:8px!important}
   #productDetail .related-info strong{font-size:12px!important}
 }
+
+/* Final mobile correction: two equal-width cards, never a clipped carousel edge. */
+@media(max-width:760px){
+  #productDetail .related-grid{
+    display:flex!important;
+    flex-flow:row wrap!important;
+    align-items:stretch!important;
+    justify-content:flex-start!important;
+    direction:rtl!important;
+    width:100%!important;
+    max-width:100%!important;
+    min-width:0!important;
+    box-sizing:border-box!important;
+    gap:10px!important;
+    overflow:visible!important;
+    padding:4px 0 0!important;
+    margin:0!important;
+    transform:none!important;
+  }
+  #productDetail .related-grid>.related-card{
+    display:flex!important;
+    flex:0 0 calc((100% - 10px)/2)!important;
+    width:calc((100% - 10px)/2)!important;
+    min-width:0!important;
+    max-width:calc((100% - 10px)/2)!important;
+    box-sizing:border-box!important;
+    margin:0!important;
+  }
+  #productDetail .related-card .related-visual,
+  #productDetail .related-card .related-info{
+    min-width:0!important;
+    max-width:100%!important;
+  }
+}
