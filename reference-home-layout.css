@@ -1,0 +1,37 @@
+/* Reference-matched mobile storefront preview.
+   Presentation only: preserve the existing catalog, cart, search and Firebase scripts. */
+@media(max-width:700px){
+  body{background:#f0f1f3!important}
+  .masthead{background:#fff!important;border-bottom:4px solid #c8101e!important;box-shadow:none!important}
+  .masthead-grid{display:grid!important;grid-template-columns:1fr!important;gap:12px!important;padding:18px 12px 16px!important}
+  .brand{justify-content:flex-start!important;min-height:58px!important}
+  .brand-mark,.brand-mark svg{width:58px!important;height:58px!important;flex-basis:58px!important}
+  .brand-name{font-size:27px!important;font-weight:1000!important;color:#111820!important}
+  .brand-tag{font-size:17px!important;color:#b10e1a!important;font-weight:900!important}
+  .search-form{height:66px!important;border:1px solid #d9dde2!important;border-radius:20px!important;background:#f7f8fa!important;box-shadow:0 3px 12px rgba(16,24,40,.07)!important}
+  .search-form input{font-size:16px!important;font-weight:800!important}
+  .search-form button{width:60px!important;flex-basis:60px!important;border-radius:50%!important;background:#fff!important;color:#bd1020!important}
+  .hero-shell{padding:14px 0 0!important;background:#f0f1f3!important}
+  .hero-shell .container{width:100%!important}
+  .hero-shell .hero-grid{display:flex!important;flex-direction:column!important;gap:0!important;margin:0!important;min-height:0!important;height:auto!important;overflow:hidden!important;border:1px solid #c8101e!important;border-radius:28px!important;background:linear-gradient(145deg,#1b2530 0%,#111820 70%,#0d131a 100%)!important;box-shadow:0 8px 22px rgba(12,18,25,.12)!important}
+  .hero-shell .hero-photo{display:none!important}
+  .hero-shell .hero-copy{display:flex!important;flex-direction:column!important;align-items:stretch!important;justify-content:center!important;min-height:0!important;width:100%!important;max-width:none!important;padding:28px 20px 25px!important;background:transparent!important;color:#fff!important;text-align:right!important;border:0!important}
+  .hero-shell .hero-copy .eyebrow{align-self:flex-start!important;margin:0 0 34px!important;padding:8px 14px!important;border:1px solid rgba(215,25,32,.45)!important;border-radius:999px!important;background:rgba(200,16,30,.12)!important;color:#ff8b92!important;font-size:13px!important;font-weight:1000!important;line-height:1.5!important}
+  .hero-shell .hero-copy h1{margin:0!important;color:#fff!important;font-size:clamp(44px,12vw,62px)!important;font-weight:1000!important;line-height:1.12!important}
+  .hero-shell .hero-copy h2{margin:4px 0 14px!important;color:#fff!important;font-size:clamp(23px,6.2vw,32px)!important;font-weight:1000!important;line-height:1.4!important}
+  .hero-shell .hero-copy p{margin:0 0 18px!important;color:#cbd1d8!important;font-size:15px!important;font-weight:800!important;line-height:2!important}
+  .hero-shell .hero-copy .hero-cta,.hero-shell .hero-copy .whatsapp-catalog-cta{display:flex!important;align-items:center!important;justify-content:center!important;align-self:stretch!important;width:100%!important;max-width:none!important;min-height:58px!important;margin:8px 0 0!important;padding:13px 16px!important;border:0!important;border-radius:14px!important;background:linear-gradient(110deg,#e31b2b,#b90e1a)!important;color:#fff!important;font-size:17px!important;font-weight:1000!important;box-shadow:0 8px 17px rgba(190,10,25,.22)!important}
+  .hero-shell .hero-copy .whatsapp-catalog-cta{display:flex!important}
+  .hero-shell .hero-services{display:block!important;width:100%!important;height:96px!important;min-height:96px!important;overflow:hidden!important;padding:12px 0!important;border-top:1px solid rgba(255,255,255,.1)!important;background:rgba(9,14,20,.38)!important}
+  .hero-shell .hero-services-track{display:flex!important;flex-wrap:nowrap!important;align-items:stretch!important;gap:10px!important;width:max-content!important;min-width:max-content!important;height:100%!important;padding:0 10px!important;animation:none!important;transform:none!important}
+  .hero-shell .hero-services .service-card{display:flex!important;flex:0 0 185px!important;flex-direction:row!important;align-items:center!important;justify-content:center!important;gap:9px!important;min-width:185px!important;min-height:70px!important;height:70px!important;padding:9px 12px!important;border:1px solid #46515d!important;border-radius:17px!important;background:#18222c!important;color:#fff!important;font-size:14px!important;font-weight:1000!important;white-space:nowrap!important}
+  .hero-shell .hero-services .service-icon,.hero-shell .hero-services .service-icon svg{width:31px!important;height:31px!important;flex:0 0 31px!important;color:#ff6270!important}
+  #categories{padding-top:24px!important;background:#f0f1f3!important}
+  #categories .section-heading{margin:0 12px 14px!important;align-items:center!important}
+  #categories .section-title{font-size:25px!important;font-weight:1000!important;color:#111820!important}
+  #categories .section-title:before{width:7px!important;height:30px!important;background:#c8101e!important}
+  #categories .text-link{color:#a90f1b!important;font-size:14px!important;font-weight:1000!important}
+  #categories .categories-grid{gap:10px!important;padding:0 12px 12px!important}
+  #categories .category-tile{border:1px solid #dfe3e8!important;border-radius:16px!important;box-shadow:0 4px 12px rgba(15,25,35,.07)!important}
+  .dawly-app-dock{min-height:76px!important;background:rgba(255,255,255,.98)!important;border-top:1px solid #e5e8eb!important}
+}
