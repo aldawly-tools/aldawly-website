@@ -318,6 +318,8 @@ button:disabled{opacity:.6;cursor:wait}
         </div>
         <div class="field"><label for="imageUrl">رابط الصورة (اختياري)</label><input id="imageUrl" type="text" placeholder="اتركه فارغًا إذا سترفع صورة من جهازك"></div>
         <div class="field"><label for="imageFile">أو اختر صورًا متعددة من الجهاز (حتى 8 صور)</label><input id="imageFile" type="file" multiple accept=".jpg,.jpeg,.png,.webp,.gif,.bmp,.avif,image/jpeg,image/png,image/webp,image/gif,image/bmp,image/avif"><img id="imagePreview" class="image-preview hidden" alt="معاينة صورة المنتج"><div id="imageGalleryPreview" class="image-gallery-preview" aria-live="polite"></div><button class="light" id="removeImageBtn" type="button">مسح الصورة المختارة</button><small class="muted">الصيغ المدعومة: JPG وJPEG وPNG وWEBP وGIF وBMP وAVIF. سيتم تحويل الصورة تلقائيًا إلى WebP مضغوط لتوفير مساحة التخزين قبل الحفظ.</small></div>
+        <div class="field"><label for="model3dUrl">رابط ملف المنتج ثلاثي الأبعاد (GLB)</label><input id="model3dUrl" type="url" inputmode="url" placeholder="https://example.com/product.glb"><small class="muted">اختياري. أضف رابط HTTPS عامًا ومباشرًا لملف GLB. عند إضافته يظهر عارض 3D وزر للتجربة في المساحة على الأجهزة الداعمة.</small></div>
+        <div class="field"><label for="modelUsdzUrl">رابط USDZ لأجهزة iPhone (اختياري)</label><input id="modelUsdzUrl" type="url" inputmode="url" placeholder="https://example.com/product.usdz"><small class="muted">ملف اختياري لتحسين العرض على iPhone. إذا تركته فارغًا يحاول العارض تجهيز نسخة متوافقة تلقائيًا.</small></div>
         <div class="field"><button class="light" id="analyzeImageBtn" type="button">✨ تحليل صورة المنتج بالذكاء الاصطناعي</button><small class="muted">حلّل أول صورة مختارة لإنشاء اقتراحات للاسم والماركة والقسم والوصف والمواصفات. راجع النتائج قبل الحفظ.</small></div>
         <div class="field"><label style="display:flex;align-items:center;gap:9px"><input id="featured" type="checkbox" style="width:auto"> إظهار المنتج ضمن اختيارات الدولي</label><small class="muted">اختياري: يظهر المنتج في قسم المنتجات المميزة بالصفحة الرئيسية.</small></div>
         <div class="field"><label for="availability">حالة التوفر للعميل</label><select id="availability"><option value="available">متوفر</option><option value="unavailable">غير متوفر حاليًا</option><option value="ask">استفسر عن التوفر</option></select></div>
@@ -651,7 +653,7 @@ function renderProducts() {
   if ($("dashProducts")) $("dashProducts").textContent = String(products.length);
   $("listSummary").textContent = term ? "نتائج البحث: " + filtered.length + " من " + products.length : "إجمالي المنتجات: " + products.length;
   $("productList").innerHTML = filtered.map(function (product) {
-    return '<div class="product"><div><strong>' + escapeHtml(product.name) + '</strong><small>' + escapeHtml(product.brand || "بدون ماركة") + ' · ' + escapeHtml(product.cat || "") + ' · ' + escapeHtml(product.price || "السعر عند الاستفسار") + ' · رقم: ' + escapeHtml(product.id) + '</small>' + (product.imageId ? '<span class="pill">صورة محفوظة</span>' : "") + '</div><div class="actions"><button class="light" type="button" data-edit="' + escapeHtml(product.id) + '">تعديل</button><button class="danger" type="button" data-delete="' + escapeHtml(product.id) + '">حذف</button></div></div>';
+    return '<div class="product"><div><strong>' + escapeHtml(product.name) + '</strong><small>' + escapeHtml(product.brand || "بدون ماركة") + ' · ' + escapeHtml(product.cat || "") + ' · ' + escapeHtml(product.price || "السعر عند الاستفسار") + ' · رقم: ' + escapeHtml(product.id) + '</small>' + (product.imageId ? '<span class="pill">صورة محفوظة</span>' : "") + (product.model3dUrl ? '<span class="pill">عرض 3D جاهز</span>' : "") + '</div><div class="actions"><button class="light" type="button" data-edit="' + escapeHtml(product.id) + '">تعديل</button><button class="danger" type="button" data-delete="' + escapeHtml(product.id) + '">حذف</button></div></div>';
   }).join("") || '<p class="muted">' + (term ? "لا توجد نتائج مطابقة للبحث." : "لا توجد منتجات حاليًا.") + '</p>';
 }
 function analyticsFormat(value){return Number(value||0).toLocaleString("ar-EG");}
@@ -1517,6 +1519,8 @@ async function importProducts(file) {
       price:String(item.price || "السعر عند الاستفسار"),
       image:image,
       imageId:image ? null : (item.imageId || previous.imageId || null),
+      model3dUrl:String(Object.prototype.hasOwnProperty.call(item || {}, "model3dUrl") ? (item.model3dUrl || "") : (previous.model3dUrl || "")),
+      modelUsdzUrl:String(Object.prototype.hasOwnProperty.call(item || {}, "modelUsdzUrl") ? (item.modelUsdzUrl || "") : (previous.modelUsdzUrl || "")),
       stock:Number.isInteger(Number(item.stock)) && item.stock !== "" && Number(item.stock) >= 0 ? Number(item.stock) : (Number.isInteger(previous.stock) ? previous.stock : null),
       tasks:Array.isArray(item.tasks) ? item.tasks.map(String) : []
     };
@@ -1606,6 +1610,8 @@ async function editProduct(id) {
   imageRemoved = false;
   existingImageIds = Array.isArray(product.imageIds) ? product.imageIds.map(String) : (product.imageId ? [String(product.imageId)] : []);
   $("imageUrl").value = product.image || "";
+  $("model3dUrl").value = product.model3dUrl || "";
+  $("modelUsdzUrl").value = product.modelUsdzUrl || "";
   $("imageFile").value = "";
   selectedImageFiles = [];
   $("desc").value = product.desc || "";
@@ -1826,9 +1832,29 @@ $("productList").addEventListener("click", function (event) {
 });
 $("productForm").addEventListener("submit", async function (event) {
   event.preventDefault();
+  const model3dUrl = normalizePublicModelUrl($("model3dUrl").value);
+  const modelUsdzUrl = normalizePublicModelUrl($("modelUsdzUrl").value);
+  if (model3dUrl === null || modelUsdzUrl === null) {
+    message(saveStatus, "روابط ملفات 3D يجب أن تبدأ بـ https:// وأن تكون روابط مباشرة متاحة للزوار.");
+    return;
+  }
+  if (modelUsdzUrl && !model3dUrl) {
+    message(saveStatus, "أضف رابط ملف GLB أيضًا لتشغيل عارض 3D.");
+    return;
+  }
   const previous = $("pid").value ? products.find(function (item) { return String(item.id) === String($("pid").value); }) : null;
   // منع إضافة منتج مكرر بالاسم والماركة مع تجاهل اختلاف المسافات وحالة الأحرف.
-  function normalizeProductDuplicateValue(value) {
+  function normalizePublicModelUrl(value) {
+  const raw = String(value == null ? "" : value).trim();
+  if (!raw) return "";
+  try {
+    const url = new URL(raw);
+    return url.protocol === "https:" ? url.href : null;
+  } catch (error) {
+    return null;
+  }
+}
+function normalizeProductDuplicateValue(value) {
     return String(value || "").trim().toLocaleLowerCase("ar")
       .replace(/[أإآ]/g, "ا").replace(/ى/g, "ي").replace(/ة/g, "ه")
       .replace(/[ـ\u064B-\u065F\u0670]/g, "").replace(/\s+/g, " ");
@@ -1908,6 +1934,8 @@ $("productForm").addEventListener("submit", async function (event) {
       image:image,
       imageId:imageId,
       imageIds:imageIds,
+      model3dUrl:model3dUrl,
+      modelUsdzUrl:modelUsdzUrl,
       tasks:Array.from($("tasks").selectedOptions).map(function (option) { return option.value; }),
       updatedAt:serverTimestamp()
     };
