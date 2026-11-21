@@ -118,6 +118,8 @@
         else if (entry.id || entry.imageId) gallerySources.push({id:String(entry.id || entry.imageId)});
       }
     });
+    const brandKey = String(item.brand || item.brandName || item.manufacturer || "").normalize("NFD").replace(/[\\u0300-\\u036f]/g, "").replace(/[\\s._-]/g, "").toLowerCase();
+    if (!gallerySources.length && brandKey === "riss") gallerySources.push({url:"assets/brands/riss.webp"});
     const uniqueGallery = gallerySources.filter(function (source, index, all) {
       const key = source.url || "cloud:" + source.id;
       return all.findIndex(function (candidate) { return (candidate.url || "cloud:" + candidate.id) === key; }) === index;
