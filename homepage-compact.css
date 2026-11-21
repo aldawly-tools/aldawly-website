@@ -1,8 +1,4 @@
 /* Compact the home product preview; full product details stay on product pages. */
-main[data-page="home"] #productGrid .product-description {
-  display: none !important;
-}
-
 main[data-page="home"] #productGrid .product-visual {
   height: 180px !important;
   min-height: 180px !important;
