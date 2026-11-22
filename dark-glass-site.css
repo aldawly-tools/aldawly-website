@@ -1,149 +1,115 @@
-/* DAWLY DARK GLASS — site-wide charcoal glass theme */
+/* DAWLY DARK GLASS — restrained site background, original readable product cards */
 :root{
- --dg-bg:#0b1017;
- --dg-panel:rgba(22,29,39,.76);
- --dg-panel-strong:rgba(16,22,30,.90);
- --dg-border:rgba(205,218,235,.20);
+ --dg-red:#c8102e;
  --dg-text:#f2f4f7;
- --dg-muted:#b9c2cd;
- --dg-red:#d7192d;
+ --dg-muted:#bac3ce;
+ --dg-line:rgba(218,228,240,.20);
 }
 html{background:#0b1017!important;color-scheme:dark}
 body{
  color:var(--dg-text)!important;
  background:
-  radial-gradient(ellipse at 8% 8%,rgba(176,15,34,.17),transparent 34%),
-  radial-gradient(ellipse at 92% 28%,rgba(110,132,158,.10),transparent 35%),
-  linear-gradient(145deg,#0a0f16 0%,#121923 48%,#090e14 100%)!important;
+  radial-gradient(ellipse at 8% 8%,rgba(176,15,34,.14),transparent 34%),
+  radial-gradient(ellipse at 92% 28%,rgba(110,132,158,.09),transparent 35%),
+  linear-gradient(145deg,#0a0f16 0%,#141b25 48%,#090e14 100%)!important;
  background-attachment:fixed!important;
 }
-body,main,.main-content{color:var(--dg-text)}
-/* Shared navigation and site chrome */
+/* Keep shared chrome glassy, but restrained and dark */
 header,.site-header,.header,.top-header,.main-nav,.navbar,.mobile-header,.mobile-menu,
 #mobileMenu,.mobile-menu-panel,.dawly-app-dock{
- background:rgba(12,18,26,.84)!important;
+ background:rgba(12,18,26,.88)!important;
  color:#f5f7fa!important;
- border-color:var(--dg-border)!important;
- -webkit-backdrop-filter:blur(18px) saturate(135%)!important;
- backdrop-filter:blur(18px) saturate(135%)!important;
+ border-color:var(--dg-line)!important;
+ -webkit-backdrop-filter:blur(14px) saturate(125%)!important;
+ backdrop-filter:blur(14px) saturate(125%)!important;
 }
 header,.site-header,.header,.top-header,.main-nav,.navbar{
- box-shadow:0 8px 28px rgba(0,0,0,.20),inset 0 1px 0 rgba(255,255,255,.06)!important;
+ box-shadow:0 8px 24px rgba(0,0,0,.18),inset 0 1px 0 rgba(255,255,255,.045)!important;
 }
-/* Main page sections become deep charcoal rather than bright white slabs */
+/* General section surfaces stay transparent to reveal the charcoal background */
 section:not(.dawly-all-tools),.section,.content-section,.catalog-section,
 .home-products-shelf,.brands-marquee-section,.dawly-about-section,
 .benefits-section,.business-section,.faq-section{
  background-color:transparent!important;
- color:var(--dg-text)!important;
 }
-.section-title,.section-heading,.home-shelf-title,h1,h2,h3,h4,
-.product-title,.product-name,.product-info,.product-meta{
- color:var(--dg-text)!important;
+/* Restore product cards to their familiar light original appearance */
+#productGrid article.product-card,
+#featuredProductsGrid article.product-card,
+#newArrivalsGrid article.product-card,
+.home-products-shelf article.home-shelf-card,
+article.product-card.home-shelf-card,
+.product-card,.home-shelf-card{
+ background:#fff!important;
+ color:#202832!important;
+ border:1px solid #dfe3e8!important;
+ border-radius:16px!important;
+ box-shadow:0 5px 17px rgba(18,27,38,.10)!important;
+ overflow:hidden!important;
 }
-.section-subtitle,.section-description,.product-description,
-.product-meta,.muted,.text-muted{color:var(--dg-muted)!important}
-/* Glass surfaces: panels, filters, drawers, dialogs, search and checkout */
-.card,.panel,.filter-panel,.catalog-toolbar,.sort-bar,.search-panel,
-.product-detail-shell,.product-detail-info,.product-gallery-column,
-.cart-drawer,.modal-content,.dialog,.assistant-widget,.assistant-panel,
-.visitor-counter,.dawly-about-card,.benefit-card,.faq-item,
-.home-shelf-heading,.home-shelf-actions{
- background:linear-gradient(145deg,rgba(34,43,55,.80),rgba(13,19,27,.88))!important;
- color:var(--dg-text)!important;
- border:1px solid var(--dg-border)!important;
- box-shadow:0 14px 34px rgba(0,0,0,.24),inset 0 1px 0 rgba(255,255,255,.055)!important;
- -webkit-backdrop-filter:blur(16px) saturate(130%)!important;
- backdrop-filter:blur(16px) saturate(130%)!important;
+#productGrid article.product-card:hover,
+.home-products-shelf article.home-shelf-card:hover,
+.product-card:hover,.home-shelf-card:hover{
+ box-shadow:0 10px 25px rgba(18,27,38,.15)!important;
 }
-/* Product imagery sits on a subtle dark glass stage; keep image colors untouched */
-.product-visual,.product-gallery,.product-detail-image,.home-shelf-card .product-visual,
-#productGrid .product-card .product-visual{
- background:linear-gradient(145deg,rgba(255,255,255,.075),rgba(255,255,255,.025))!important;
- border:1px solid rgba(205,218,235,.13)!important;
- border-radius:14px!important;
+#productGrid article.product-card .product-visual,
+#featuredProductsGrid article.product-card .product-visual,
+#newArrivalsGrid article.product-card .product-visual,
+.home-products-shelf article.home-shelf-card .product-visual,
+.product-card .product-visual,.home-shelf-card .product-visual{
+ background:linear-gradient(145deg,#f7f8fa,#fff 72%,#fff6f6)!important;
+ border:0!important;
+ border-radius:0!important;
+ box-shadow:none!important;
 }
-.product-card,.home-shelf-card,#productGrid article.product-card,
-.home-products-shelf article.home-shelf-card{
- color:var(--dg-text)!important;
+#productGrid article.product-card .product-info,
+#featuredProductsGrid article.product-card .product-info,
+#newArrivalsGrid article.product-card .product-info,
+.home-products-shelf article.home-shelf-card .product-info,
+.product-card .product-info,.home-shelf-card .product-info{
+ background:#fff!important;
+ color:#202832!important;
 }
-.product-info,.product-card .product-info,.home-shelf-card .product-info{
- color:var(--dg-text)!important;
+.product-card .product-name,.home-shelf-card .product-name,
+.product-card .product-title,.product-card h3,.product-card h4{
+ color:#202832!important;
+ opacity:1!important;
 }
-.product-price,.price,.current-price{color:#fff!important}
+.product-card .product-description,.product-card .product-sku,
+.product-card .product-meta,.home-shelf-card .product-description{
+ color:#68727d!important;
+ opacity:1!important;
+}
+.product-card .product-category{color:#b90f19!important}
+.product-card .product-price,.product-card .product-price strong,
+.product-card .price,.product-card .current-price{
+ color:#bd101b!important;opacity:1!important;
+}
+/* Images remain original and undimmed */
+.product-card img,.home-shelf-card img{filter:none!important;opacity:1!important}
+/* Subtle glass treatment only for utility panels, not product cards */
+.brand-filter-panel,.catalog-toolbar,.sort-bar,.search-panel,
+.cart-drawer,.modal-content,.dialog,.assistant-widget,.assistant-panel{
+ background:linear-gradient(145deg,rgba(31,40,52,.94),rgba(12,18,26,.96))!important;
+ color:#f2f4f7!important;
+ border:1px solid var(--dg-line)!important;
+ box-shadow:0 14px 34px rgba(0,0,0,.24),inset 0 1px 0 rgba(255,255,255,.05)!important;
+ -webkit-backdrop-filter:blur(14px) saturate(125%)!important;
+ backdrop-filter:blur(14px) saturate(125%)!important;
+}
+.brand-filter-heading h3,.brand-filter-option{color:#f4f6f8!important}
 input:not([type=checkbox]):not([type=radio]),select,textarea,
 .search-input,.form-control{
- background:rgba(7,12,18,.72)!important;
- color:#f4f6f8!important;
+ background:rgba(7,12,18,.78)!important;color:#f4f6f8!important;
  border-color:rgba(205,218,235,.25)!important;
 }
 input::placeholder,textarea::placeholder{color:#aeb8c4!important;opacity:1!important}
-button:not(.dawly-showcase-cta),.button,.btn{
- border-color:rgba(205,218,235,.18);
-}
-a{color:#ff7782}
-a:hover{color:#ff9aa2}
 footer.footer,.footer{
  background:linear-gradient(145deg,rgba(22,29,39,.96),rgba(8,13,19,.98))!important;
- color:#f3f5f7!important;
- border-top:1px solid var(--dg-border)!important;
+ color:#f3f5f7!important;border-top:1px solid var(--dg-line)!important;
 }
 footer.footer p,footer.footer a,footer.footer h3{color:#eef2f6!important}
-/* Brand tiles and brand logos remain light so the original logos stay accurate */
-.brands-marquee-section .brand-word.brand-tile,
-.brand-filter-logo,.brand-filter-monogram,
-.dawly-showcase-brands span{background:#fff!important}
-.brand-filter-panel{
- background:linear-gradient(145deg,rgba(30,39,51,.92),rgba(12,18,26,.96))!important;
- border-color:var(--dg-border)!important;
-}
-/* The selected category and primary actions retain Dawly red */
-button.active,.filter-chip.active,.category-chip.active,
-.product-add-cart-prominent,.button-primary,.btn-primary{
- background-color:#c8102e!important;color:#fff!important;
-}
+a{color:#ff7782} a:hover{color:#ff9aa2}
 @media(max-width:700px){
  body{background-attachment:scroll!important}
- .cart-drawer,.modal-content,.dialog{
-  background:rgba(13,19,27,.97)!important;
- }
-}
-
-
-/* READABILITY FIX — product titles and descriptions on charcoal background */
-#productGrid .product-card,
-#featuredProductsGrid .product-card,
-#newArrivalsGrid .product-card,
-.home-products-shelf .home-shelf-card,
-.product-card.home-shelf-card{
- color:#f3f5f8!important;
-}
-#productGrid .product-card :is(h1,h2,h3,h4,p),
-#featuredProductsGrid .product-card :is(h1,h2,h3,h4,p),
-#newArrivalsGrid .product-card :is(h1,h2,h3,h4,p),
-.home-products-shelf .home-shelf-card :is(h1,h2,h3,h4,p),
-.product-card .product-info :is(h1,h2,h3,h4,p),
-.product-card .product-info :is(.title,.name,.description,.product-desc,.product-meta,.product-title,.product-name),
-.home-shelf-card .product-info :is(.title,.name,.description,.product-desc,.product-meta,.product-title,.product-name){
- color:#edf1f6!important;
- opacity:1!important;
- text-shadow:0 1px 2px rgba(0,0,0,.35)!important;
-}
-#productGrid .product-card .product-info,
-#featuredProductsGrid .product-card .product-info,
-#newArrivalsGrid .product-card .product-info,
-.home-products-shelf .home-shelf-card .product-info{
- color:#edf1f6!important;
-}
-#productGrid .product-card .product-info p,
-.home-products-shelf .home-shelf-card .product-info p{
- color:#c5ced8!important;
-}
-#productGrid .product-card .product-price,
-#featuredProductsGrid .product-card .product-price,
-#newArrivalsGrid .product-card .product-price,
-.home-products-shelf .home-shelf-card .product-price,
-.product-card .price,.product-card .current-price{
- color:#ff5362!important;
- opacity:1!important;
+ .cart-drawer,.modal-content,.dialog{background:rgba(13,19,27,.98)!important}
 }
