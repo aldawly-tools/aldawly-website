@@ -348,6 +348,9 @@ body{background:#f4f5f7;color:#252a31}
           <div class="field"><label for="cat">القسم</label><select id="cat"><option>عدد يدوية</option><option>عدد كهربائية</option><option>مستلزمات الورش</option><option>قياس</option></select></div>
           <div class="field"><label for="price">السعر</label><input id="price" placeholder="السعر عند الاستفسار"></div>
         <div class="field" style="grid-column:1/-1;padding:14px;border:1px solid #f0c9cd;border-radius:12px;background:#fff8f8">
+          <label for="discountPercent" style="display:block;margin-bottom:8px">نسبة الخصم لهذا المنتج (%)</label>
+          <input id="discountPercent" type="number" min="0" max="90" step="1" value="0" inputmode="numeric" placeholder="مثال: 15" style="width:100%;margin-bottom:14px">
+          <small class="muted" style="display:block;margin:-5px 0 12px">اكتب نسبة من 0 إلى 90. السعر بعد الخصم يُحسب تلقائيًا في المتجر.</small>
           <label style="display:flex;align-items:center;gap:9px"><input id="offerTimerEnabled" type="checkbox" style="width:auto"> تفعيل عدّاد عرض لهذا المنتج</label>
           <label for="offerEndsAt" style="margin-top:10px">موعد انتهاء العرض</label>
           <input id="offerEndsAt" type="datetime-local">
@@ -704,6 +707,7 @@ function resetForm() {
   $("brandLogoEmpty").classList.remove("hidden");
   $("brandLogoStatus").textContent = "يتم حفظ اللوجو باسم البرند وإعادة استخدامه تلقائيًا مع باقي منتجات نفس الشركة.";
   $("pid").value = "";
+  $("discountPercent").value = "0";
   $("offerTimerEnabled").checked = false;
   $("offerEndsAt").value = "";
   $("icon").value = "🔧";
@@ -1682,6 +1686,7 @@ async function editProduct(id) {
   if(product.brandLogoImageId){getDoc(doc(db,"productImages",String(product.brandLogoImageId))).then(function(snapshot){if(snapshot.exists()&&snapshot.data().data){const logoData=snapshot.data();selectedBrandLogoScale=Math.max(16,Math.min(100,Number(logoData.scale)||34));$("brandLogoScale").value=String(selectedBrandLogoScale);$("brandLogoScaleValue").textContent=String(selectedBrandLogoScale);$("brandLogoPreview").style.maxHeight=selectedBrandLogoScale+"px";$("brandLogoPreview").src=logoData.data;$("brandLogoPreview").classList.remove("hidden");$("brandLogoEmpty").classList.add("hidden");$("brandLogoStatus").textContent="اللوجو الحالي محفوظ لهذا البرند. يمكنك تغيير حجمه أو استبداله.";}}).catch(function(){ });}
   $("cat").value = product.cat || "عدد يدوية";
   $("price").value = product.price || "";
+  $("discountPercent").value = String(Math.max(0,Math.min(90,Number(product.discountPercent)||0)));
   $("offerTimerEnabled").checked = product.offerTimerEnabled === true;
   $("offerEndsAt").value = product.offerEndsAt && Number.isFinite(Date.parse(product.offerEndsAt)) ? new Date(new Date(product.offerEndsAt).getTime()-new Date(product.offerEndsAt).getTimezoneOffset()*60000).toISOString().slice(0,16) : "";
   $("icon").value = product.icon || "🔧";
@@ -2020,7 +2025,7 @@ $("productForm").addEventListener("submit", async function (event) {
       desc:$("desc").value.trim(),
       specs:collectSpecsText(),
       price:$("price").value.trim() || "السعر عند الاستفسار",
-      discountPercent:previous ? Math.max(0,Math.min(90,Number(previous.discountPercent)||0)) : 0,
+      discountPercent:Math.max(0,Math.min(90,Number($("discountPercent").value)||0)),
       offerTimerEnabled:$("offerTimerEnabled").checked && !!$("offerEndsAt").value,
       offerEndsAt:$("offerTimerEnabled").checked && $("offerEndsAt").value ? new Date($("offerEndsAt").value).toISOString() : "",
       icon:$("icon").value.trim() || "🔧",
