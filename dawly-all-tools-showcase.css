@@ -111,3 +111,72 @@
    text-align:justify!important;text-align-last:center!important;
  }
 }
+
+
+/* DAWLY GLASS HERO — approved transparent frosted-glass treatment */
+.dawly-all-tools{
+  position:relative!important;
+  isolation:isolate!important;
+  overflow:hidden!important;
+  background:
+    radial-gradient(ellipse at 8% 12%,rgba(190,12,32,.28),transparent 38%),
+    radial-gradient(ellipse at 92% 88%,rgba(190,12,32,.24),transparent 34%),
+    linear-gradient(135deg,#090e15 0%,#171d29 48%,#080d13 100%)!important;
+}
+.dawly-all-tools .dawly-showcase{
+  position:relative!important;
+  isolation:isolate!important;
+  overflow:hidden!important;
+  background:
+    linear-gradient(135deg,rgba(255,255,255,.16) 0%,rgba(255,255,255,.055) 38%,rgba(255,255,255,.10) 100%)!important;
+  border:1px solid rgba(225,238,255,.62)!important;
+  border-radius:30px!important;
+  box-shadow:
+    0 24px 60px rgba(0,0,0,.38),
+    inset 0 1px 0 rgba(255,255,255,.72),
+    inset 0 -1px 0 rgba(255,255,255,.18),
+    0 0 24px rgba(180,205,235,.12)!important;
+  -webkit-backdrop-filter:blur(22px) saturate(155%)!important;
+  backdrop-filter:blur(22px) saturate(155%)!important;
+}
+.dawly-all-tools .dawly-showcase:before{
+  content:""!important;
+  position:absolute!important;inset:0!important;z-index:0!important;
+  pointer-events:none!important;
+  background:
+    radial-gradient(ellipse at 8% 10%,rgba(255,92,112,.25),transparent 34%),
+    radial-gradient(ellipse at 96% 16%,rgba(190,218,255,.22),transparent 30%),
+    radial-gradient(ellipse at 88% 92%,rgba(255,78,102,.20),transparent 32%),
+    linear-gradient(125deg,rgba(255,255,255,.14),transparent 34%,rgba(255,255,255,.035) 70%,rgba(255,255,255,.12))!important;
+}
+.dawly-all-tools .dawly-showcase:after{
+  content:""!important;
+  position:absolute!important;inset:1px!important;z-index:0!important;
+  border:1px solid rgba(255,255,255,.22)!important;
+  border-radius:29px!important;
+  pointer-events:none!important;
+  box-shadow:inset 0 0 28px rgba(255,255,255,.075)!important;
+  background:linear-gradient(115deg,rgba(255,255,255,.11),transparent 22%,transparent 76%,rgba(255,255,255,.08))!important;
+}
+.dawly-all-tools .dawly-showcase-content{position:relative!important;z-index:1!important}
+.dawly-showcase-kicker{ text-shadow:0 1px 12px rgba(255,60,80,.22)!important }
+.dawly-showcase-brands span{
+  box-shadow:0 5px 16px rgba(0,0,0,.16),inset 0 1px 0 rgba(255,255,255,.9)!important;
+}
+.dawly-showcase-cta{
+  box-shadow:0 10px 26px rgba(200,16,30,.34),inset 0 1px 0 rgba(255,255,255,.28)!important;
+}
+@media(max-width:700px){
+ .dawly-all-tools .dawly-showcase{
+  border-radius:21px!important;
+  -webkit-backdrop-filter:blur(16px) saturate(150%)!important;
+  backdrop-filter:blur(16px) saturate(150%)!important;
+ }
+ .dawly-all-tools .dawly-showcase:after{border-radius:20px!important}
+}
+@media(prefers-reduced-transparency:reduce){
+ .dawly-all-tools .dawly-showcase{
+  background:linear-gradient(135deg,#222b37,#111821)!important;
+  -webkit-backdrop-filter:none!important;backdrop-filter:none!important;
+ }
+}
