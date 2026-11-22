@@ -868,13 +868,34 @@ main > #about{order:5!important}
    ro.observe(track);
   }else window.addEventListener('resize',measure,{passive:true});
   measure();
+  var animationFrame=0;
+  var reduceMotion=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   function frame(now){
+   animationFrame=0;
+   if(document.hidden||reduceMotion)return;
    if(!last)last=now;
    var dt=Math.min((now-last)/1000,.05);last=now;
-   if(!document.hidden&&!dragging&&distance>0){offset=(offset+34*dt)%distance;paint();}
-   requestAnimationFrame(frame);
+   if(!dragging&&distance>0){offset=(offset+34*dt)%distance;paint();}
+   animationFrame=requestAnimationFrame(frame);
   }
-  requestAnimationFrame(frame);
+  function startTicker(){
+   if(!animationFrame&&!document.hidden&&!reduceMotion)animationFrame=requestAnimationFrame(frame);
+  }
+  document.addEventListener('visibilitychange',function(){
+   if(document.hidden){if(animationFrame)cancelAnimationFrame(animationFrame);animationFrame=0;last=0;}
+   else startTicker();
+  });
+  if(window.matchMedia){
+   var motionQuery=window.matchMedia('(prefers-reduced-motion: reduce)');
+   var onMotionChange=function(event){
+    reduceMotion=event.matches;
+    if(reduceMotion){if(animationFrame)cancelAnimationFrame(animationFrame);animationFrame=0;last=0;}
+    else startTicker();
+   };
+   if(motionQuery.addEventListener)motionQuery.addEventListener('change',onMotionChange);
+   else if(motionQuery.addListener)motionQuery.addListener(onMotionChange);
+  }
+  startTicker();
  }
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
 })();
