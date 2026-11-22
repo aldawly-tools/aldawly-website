@@ -29,13 +29,13 @@
     var brands=new Map();
     products.forEach(function(product){
       var raw=String(product&&product.brand||"").trim(),key=normalize(raw);
-      if(raw&&key&&!brands.has(key))brands.set(key,canonical[key]||raw);
+      if(raw&&key&&!brands.has(key))brands.set(key,{name:canonical[key]||raw,imageId:String(product.brandLogoImageId||"").trim()});
     });
-    var list=Array.from(brands.entries()).sort(function(a,b){return a[1].localeCompare(b[1],"ar");});
+    var list=Array.from(brands.entries()).sort(function(a,b){return a[1].name.localeCompare(b[1].name,"ar");});
     if(!list.length)return;
     host.replaceChildren();
     list.forEach(function(entry){
-      var key=entry[0],name=entry[1],link=document.createElement("a");
+      var key=entry[0],name=entry[1].name,link=document.createElement("a");
       link.className="dawly-brand-pill";link.href="products.html?brand="+encodeURIComponent(name)+"#productGrid";
       link.dataset.brandKey=key;link.setAttribute("aria-label","تصفح منتجات "+name);
       var src=logos[key];
@@ -53,7 +53,24 @@
       clone.querySelectorAll("img").forEach(function(img){img.alt="";});host.appendChild(clone);
     });
     host.dataset.brandCount=String(list.length);
+    loadSavedBrandLogos(list);
   }
+  function loadSavedBrandLogos(list){
+    var imageLoader=window.DAWLY_LOAD_PRODUCT_IMAGE;
+    if(typeof imageLoader!=="function")return;
+    list.forEach(function(entry){
+      var key=entry[0],imageId=entry[1].imageId;if(!imageId)return;
+      Promise.resolve(imageLoader(imageId)).then(function(src){
+        if(!src)return;
+        host.querySelectorAll('[data-brand-key="'+key+'"]').forEach(function(link){
+          var img=link.querySelector("img");
+          if(!img){img=document.createElement("img");img.alt=link.getAttribute("aria-hidden")==="true"?"":entry[1].name+" logo";img.loading="lazy";img.decoding="async";link.replaceChildren(img);}
+          img.src=src;link.classList.remove("has-text-fallback");
+        });
+      }).catch(function(error){console.warn("Saved brand logo could not be loaded:",key,error);});
+    });
+  }
+  window.addEventListener("dawly-product-image-loader-ready",function(){if(Array.isArray(window.DAWLY_PRODUCTS))render(window.DAWLY_PRODUCTS);});
   window.addEventListener("dawly-products-updated",function(event){render(event.detail);});
   window.addEventListener("dawly-catalog-ready",function(){render(window.DAWLY_PRODUCTS);});
   if(Array.isArray(window.DAWLY_PRODUCTS))render(window.DAWLY_PRODUCTS);
