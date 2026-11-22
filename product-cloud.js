@@ -89,6 +89,12 @@ if (!config.apiKey || !config.projectId) {
       imageCache.set(key, pending);
       return pending;
     };
+    window.DAWLY_LOAD_BRAND_LOGO_META = async function(id) {
+      const snapshot = await getDoc(doc(db, "productImages", String(id)));
+      if (!snapshot.exists()) return null;
+      const data = snapshot.data() || {};
+      return {url:String(data.data || ""),scale:Math.max(16,Math.min(52,Number(data.scale) || 34))};
+    };
     // Notify product pages that the asynchronous image loader is now available.
     window.dispatchEvent(new Event("dawly-product-image-loader-ready"));
 
