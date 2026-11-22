@@ -1,0 +1,39 @@
+/* Product catalog: remove the dark navy card panels; keep layout and controls unchanged. */
+html body #productGrid .product-card,
+html body .product-grid .product-card,
+html body .product-card,
+html body article.product-card{
+  background:#fff!important;
+  color:#202832!important;
+  border:1px solid #dfe3e8!important;
+  box-shadow:0 5px 18px rgba(20,30,45,.10)!important;
+}
+html body .product-card .product-info,
+html body .product-card .product-content,
+html body .product-card .product-details,
+html body .product-card .card-body{
+  background:#fff!important;
+  color:#202832!important;
+}
+html body .product-card .product-name,
+html body .product-card .product-title,
+html body .product-card h3,
+html body .product-card h4{
+  color:#202832!important;
+  opacity:1!important;
+}
+html body .product-card .product-description,
+html body .product-card .product-meta,
+html body .product-card .product-sku{
+  color:#68727d!important;
+  opacity:1!important;
+}
+html body .product-card .product-price,
+html body .product-card .price,
+html body .product-card .current-price{
+  color:#c8102e!important;
+  opacity:1!important;
+}
+html body .product-card .product-visual{
+  background:linear-gradient(145deg,#f7f8fa,#fff 72%,#fff6f6)!important;
+}
