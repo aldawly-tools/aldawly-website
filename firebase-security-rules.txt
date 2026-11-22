@@ -10,9 +10,10 @@ service cloud.firestore {
         );
     }
 
-    // Public visitor counter: one anonymous record per browser per day.
+    // Visitor records contain pseudonymous per-browser activity; never expose raw rows.
+    // Public counters are returned separately by the trusted HTTPS function.
     match /siteVisits/{visitId} {
-      allow read: if true;
+      allow read: if isStoreAdmin();
       allow create: if request.resource.data.keys().hasOnly(["visitorId", "day", "createdAt"])
         && request.resource.data.visitorId is string
         && request.resource.data.visitorId.size() >= 16
