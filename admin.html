@@ -1828,10 +1828,14 @@ $("brand").addEventListener("change",async function(){
   try{
     const snapshot=await getDoc(doc(db,"productImages",brandLogoDocumentId(brand)));
     if(this.value.trim()!==brand)return;
-    const data=snapshot.exists()?String(snapshot.data().data||""):"";
+    const logoData=snapshot.exists()?snapshot.data():{};
+    const data=String(logoData.data||"");
+    selectedBrandLogoScale=Math.max(16,Math.min(52,Number(logoData.scale)||34));
+    $("brandLogoScale").value=String(selectedBrandLogoScale);$("brandLogoScaleValue").textContent=String(selectedBrandLogoScale);
+    $("brandLogoPreview").style.maxHeight=selectedBrandLogoScale+"px";
     if(data.startsWith("data:image/")){
       $("brandLogoPreview").src=data;$("brandLogoPreview").classList.remove("hidden");$("brandLogoEmpty").classList.add("hidden");
-      $("brandLogoStatus").textContent="يوجد لوجو محفوظ لهذه الشركة؛ سيُستخدم تلقائيًا عند حفظ المنتج.";
+      $("brandLogoStatus").textContent="يوجد لوجو محفوظ لهذه الشركة؛ يمكنك تعديل حجمه من المؤشر.";
     }else $("brandLogoStatus").textContent="لا يوجد لوجو محفوظ بعد. يمكنك رفع لوجو الشركة الآن.";
   }catch(error){console.warn("Could not preview saved brand logo:",error);}
 });
