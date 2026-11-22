@@ -946,3 +946,109 @@
  .hero-shell .hero-brand-card{min-height:84px!important}
  .hero-shell .hero-brand-card img{height:29px!important}
 }
+
+
+/* 2026-11-22: unify mobile product image frames and remove dead space inside cards */
+@media(max-width:820px){
+  #productGrid.product-grid,
+  #featuredProductsGrid.product-grid,
+  #newArrivalsGrid.product-grid,
+  .recently-viewed-grid{
+    align-items:start!important;
+    grid-auto-rows:max-content!important;
+    row-gap:14px!important;
+  }
+  #productGrid .product-card,
+  #featuredProductsGrid .product-card,
+  #newArrivalsGrid .product-card,
+  .recently-viewed-grid .product-card{
+    display:flex!important;
+    flex-direction:column!important;
+    align-self:start!important;
+    align-items:stretch!important;
+    height:auto!important;
+    min-height:0!important;
+    max-height:none!important;
+  }
+  #productGrid .product-visual,
+  #featuredProductsGrid .product-visual,
+  #newArrivalsGrid .product-visual,
+  .recently-viewed-grid .product-visual{
+    display:grid!important;
+    place-items:center!important;
+    flex:0 0 auto!important;
+    width:100%!important;
+    height:clamp(170px,44vw,205px)!important;
+    min-height:170px!important;
+    max-height:205px!important;
+    padding:8px!important;
+    overflow:hidden!important;
+    background:linear-gradient(180deg,#fafbfc,#f1f3f5)!important;
+  }
+  #productGrid .product-visual img,
+  #featuredProductsGrid .product-visual img,
+  #newArrivalsGrid .product-visual img,
+  .recently-viewed-grid .product-visual img{
+    display:block!important;
+    width:100%!important;
+    height:100%!important;
+    max-width:100%!important;
+    max-height:100%!important;
+    object-fit:contain!important;
+    object-position:center!important;
+    padding:5px!important;
+    margin:0!important;
+    transform:none!important;
+  }
+  #productGrid .product-card .product-info,
+  #featuredProductsGrid .product-card .product-info,
+  #newArrivalsGrid .product-card .product-info,
+  .recently-viewed-grid .product-card .product-info{
+    display:flex!important;
+    flex:0 0 auto!important;
+    flex-direction:column!important;
+    height:auto!important;
+    min-height:0!important;
+    padding:9px!important;
+    gap:7px!important;
+  }
+  #productGrid .product-card .product-name,
+  #featuredProductsGrid .product-card .product-name,
+  #newArrivalsGrid .product-card .product-name,
+  .recently-viewed-grid .product-card .product-name{
+    min-height:0!important;
+    margin:0!important;
+    line-height:1.55!important;
+  }
+  #productGrid .product-card .product-price,
+  #featuredProductsGrid .product-card .product-price,
+  #newArrivalsGrid .product-card .product-price,
+  .recently-viewed-grid .product-card .product-price{
+    flex:0 0 auto!important;
+    min-height:0!important;
+    margin:0!important;
+    padding:0!important;
+  }
+  #productGrid .product-card .card-cart-actions,
+  #featuredProductsGrid .product-card .card-cart-actions,
+  #newArrivalsGrid .product-card .card-cart-actions,
+  .recently-viewed-grid .product-card .card-cart-actions{
+    flex:0 0 auto!important;
+    margin:5px 0 0!important;
+    padding:0!important;
+  }
+  #productGrid .product-card .card-cart-actions .button-primary,
+  #featuredProductsGrid .product-card .card-cart-actions .button-primary,
+  #newArrivalsGrid .product-card .card-cart-actions .button-primary,
+  .recently-viewed-grid .product-card .card-cart-actions .button-primary{
+    width:100%!important;
+    min-height:42px!important;
+  }
+  #productGrid .product-card .product-card-tools,
+  #featuredProductsGrid .product-card .product-card-tools,
+  #newArrivalsGrid .product-card .product-card-tools,
+  .recently-viewed-grid .product-card .product-card-tools{
+    flex:0 0 auto!important;
+    margin:5px 0 0!important;
+  }
+}
