@@ -219,8 +219,12 @@
     return amount === null ? cleanProductCopy(value || "السعر عند الاستفسار") : money(amount);
   }
   function productPricing(item) {
-    const base=parsePrice(item && item.price),percent=Math.max(0,Math.min(90,Number(item && item.discountPercent)||0));
-    return {base:base,current:base===null?null:(percent?Math.round(base*(1-percent/100)*100)/100:base),percent:percent};
+    const base=parsePrice(item && item.price);
+    const timerEnabled=item && item.offerTimerEnabled===true;
+    const endsAt=timerEnabled?Date.parse(item.offerEndsAt||""):NaN;
+    const expired=timerEnabled && (!Number.isFinite(endsAt) || endsAt<=Date.now());
+    const percent=expired?0:Math.max(0,Math.min(90,Number(item && item.discountPercent)||0));
+    return {base:base,current:base===null?null:(percent?Math.round(base*(1-percent/100)*100)/100:base),percent:percent,endsAt:Number.isFinite(endsAt)&&!expired?endsAt:0};
   }
   function productCurrentPrice(item){return productPricing(item).current;}
   function isItemInCart(item) {
@@ -416,7 +420,8 @@
       const availabilityLabel = item.availability === "ask" ? '<span class="stock-status">استفسر عن التوفر</span>' : soldOut ? '<span class="stock-status out">غير متوفر حاليًا</span>' : '<span class="stock-status">متوفر — يُرجى التأكيد عند الطلب</span>';
       const pricing=productPricing(item);
       const shelfPrice=pricing.current===null?escapeHtml(formatPrice(item.price)):(pricing.percent?'<strong>'+escapeHtml(money(pricing.current))+'</strong><del>'+escapeHtml(money(pricing.base))+'</del><em class="product-discount">خصم '+pricing.percent+'%</em>':escapeHtml(formatPrice(item.price)));
-      return '<article class="product-card home-shelf-card"><a class="product-visual product-open-link" href="' + url + '">' + image + '</a><div class="product-info"><span class="product-category">' + escapeHtml(displayBrand(productBrand(item)) || item.cat || "منتجات") + '</span><h3 class="product-name"><a href="' + url + '">' + escapeHtml(name) + '</a></h3><div class="product-card-status">' + availabilityLabel + '</div><span class="product-price' + ((item.price === null || item.price === undefined || item.price === "") ? ' price-on-request' : '') + '">' + shelfPrice + '<small>' + (item.price === null || item.price === undefined || item.price === "" ? 'السعر عند التواصل' : '') + '</small></span><button class="button-primary home-shelf-add product-add-cart-prominent' + (alreadyInCart ? ' is-in-cart' : '') + '" type="button" data-add="' + escapeHtml(item.id) + '"' + (soldOut || alreadyInCart ? ' disabled aria-disabled="true"' : '') + '>' + (soldOut ? 'غير متاح حاليًا' : alreadyInCart ? '<span>مضافة بالفعل</span>' : '<span class="add-cart-icon" aria-hidden="true">🛒</span><span>أضف إلى السلة</span>') + '</button><button class="quick-view-trigger" type="button" data-quick-view="' + escapeHtml(item.id) + '">معاينة سريعة</button></div></article>';
+      const offerTimer=pricing.endsAt?'<div class="product-offer-countdown" data-offer-end="'+pricing.endsAt+'" aria-label="الوقت المتبقي للعرض">⏳ ينتهي العرض خلال <strong>--:--:--</strong></div>':"";
+      return '<article class="product-card home-shelf-card"><a class="product-visual product-open-link" href="' + url + '">' + image + '</a><div class="product-info"><span class="product-category">' + escapeHtml(displayBrand(productBrand(item)) || item.cat || "منتجات") + '</span><h3 class="product-name"><a href="' + url + '">' + escapeHtml(name) + '</a></h3><div class="product-card-status">' + availabilityLabel + '</div>'+offerTimer+'<span class="product-price' + ((item.price === null || item.price === undefined || item.price === "") ? ' price-on-request' : '') + '">' + shelfPrice + '<small>' + (item.price === null || item.price === undefined || item.price === "" ? 'السعر عند التواصل' : '') + '</small></span><button class="button-primary home-shelf-add product-add-cart-prominent' + (alreadyInCart ? ' is-in-cart' : '') + '" type="button" data-add="' + escapeHtml(item.id) + '"' + (soldOut || alreadyInCart ? ' disabled aria-disabled="true"' : '') + '>' + (soldOut ? 'غير متاح حاليًا' : alreadyInCart ? '<span>مضافة بالفعل</span>' : '<span class="add-cart-icon" aria-hidden="true">🛒</span><span>أضف إلى السلة</span>') + '</button><button class="quick-view-trigger" type="button" data-quick-view="' + escapeHtml(item.id) + '">معاينة سريعة</button></div></article>';
     }
     const featuredGrid = document.getElementById("featuredProductsGrid");
     if (featuredGrid) {
@@ -434,7 +439,19 @@
     }
     // Load Firebase-hosted images in the featured and latest-product shelves too.
     observeCloudImages();
+    updateOfferCountdowns();
   }
+
+  function updateOfferCountdowns(){
+    document.querySelectorAll("[data-offer-end]").forEach(function(node){
+      const remaining=Number(node.dataset.offerEnd)-Date.now();
+      if(remaining<=0){node.textContent="انتهى العرض";return;}
+      const total=Math.floor(remaining/1000),days=Math.floor(total/86400),hours=Math.floor(total%86400/3600),minutes=Math.floor(total%3600/60),seconds=total%60;
+      const clock=(days?days+" يوم ":"")+String(hours).padStart(2,"0")+":"+String(minutes).padStart(2,"0")+":"+String(seconds).padStart(2,"0");
+      const strong=node.querySelector("strong");if(strong)strong.textContent=clock;
+    });
+  }
+  if(!window.__dawlyOfferCountdownTimer){window.__dawlyOfferCountdownTimer=setInterval(updateOfferCountdowns,1000);}
 
   function syncCategorySelection() {
     document.querySelectorAll("#filterBar .filter-chip, #categoryTiles .category-tile").forEach(function (button) {
