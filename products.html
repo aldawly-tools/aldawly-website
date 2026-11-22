@@ -666,4 +666,47 @@ html body .recently-viewed-grid article.product-card .product-card-tools button{
 }
 </style>
 
+
+<style id="dawly-force-white-cards-last">
+/* Highest-priority final override: product cards and every internal panel are white */
+html body #productGrid article.product-card.catalog-card,
+html body #productGrid article.product-card.catalog-card *{
+  background-color:transparent!important;
+}
+html body #productGrid article.product-card.catalog-card{
+  background:#fff!important;background-image:none!important;color:#202833!important;
+  border:1px solid #dce2e9!important;box-shadow:0 5px 18px rgba(22,35,52,.08)!important;
+  outline:0!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;
+}
+html body #productGrid article.product-card.catalog-card::before,
+html body #productGrid article.product-card.catalog-card::after{
+  content:none!important;display:none!important;background:none!important;
+}
+html body #productGrid article.product-card.catalog-card .product-visual,
+html body #productGrid article.product-card.catalog-card .product-info,
+html body #productGrid article.product-card.catalog-card .card-cart-actions,
+html body #productGrid article.product-card.catalog-card .product-card-tools{
+  background:#fff!important;background-image:none!important;
+}
+html body #productGrid article.product-card.catalog-card .product-name,
+html body #productGrid article.product-card.catalog-card .product-name a,
+html body #productGrid article.product-card.catalog-card h3,
+html body #productGrid article.product-card.catalog-card .product-sku{
+  color:#202833!important;text-shadow:none!important;
+}
+html body #productGrid article.product-card.catalog-card .product-description{
+  color:#626d79!important;text-shadow:none!important;
+}
+html body #productGrid article.product-card.catalog-card .product-category{color:#a9121c!important}
+html body #productGrid article.product-card.catalog-card .product-price{color:#d71920!important;text-shadow:none!important}
+html body #productGrid article.product-card.catalog-card .product-price small{color:#68717b!important}
+html body #productGrid article.product-card.catalog-card .product-card-status{background:#fff!important}
+html body #productGrid article.product-card.catalog-card .card-cart-actions .button-primary{
+  background:#c81020!important;color:#fff!important;
+}
+html body #productGrid article.product-card.catalog-card .product-card-tools button{
+  background:#fff!important;color:#a80e19!important;border:1px solid #e8d5d7!important;
+}
+</style>
+
 </body></html>
