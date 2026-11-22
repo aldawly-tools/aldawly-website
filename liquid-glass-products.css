@@ -1,0 +1,70 @@
+/* Dawly Tools — visible liquid-glass product cards, loaded after all theme CSS */
+html body .product-grid > .product-card,
+html body .recently-viewed-grid > .product-card,
+html body .home-products-shelf .home-shelf-card,
+html body .product-card{
+  position:relative!important;
+  isolation:isolate!important;
+  overflow:hidden!important;
+  background:
+    linear-gradient(138deg,rgba(255,255,255,.88) 0%,rgba(226,232,239,.58) 35%,rgba(255,255,255,.72) 68%,rgba(210,219,229,.52) 100%)!important;
+  border:1.5px solid rgba(255,255,255,.98)!important;
+  border-radius:22px!important;
+  box-shadow:
+    0 12px 28px rgba(28,39,54,.13),
+    0 2px 7px rgba(28,39,54,.08),
+    inset 0 2px 3px rgba(255,255,255,1),
+    inset 0 -2px 5px rgba(145,160,178,.22)!important;
+  -webkit-backdrop-filter:blur(24px) saturate(165%)!important;
+  backdrop-filter:blur(24px) saturate(165%)!important;
+}
+html body .product-grid > .product-card::before,
+html body .recently-viewed-grid > .product-card::before,
+html body .home-products-shelf .home-shelf-card::before,
+html body .product-card::before{
+  content:""!important;
+  position:absolute!important;
+  inset:0!important;
+  z-index:0!important;
+  pointer-events:none!important;
+  border-radius:inherit!important;
+  background:
+    linear-gradient(132deg,rgba(255,255,255,.64),transparent 24%,transparent 70%,rgba(255,255,255,.34)),
+    radial-gradient(ellipse at 8% 2%,rgba(255,255,255,.72),transparent 36%),
+    radial-gradient(ellipse at 100% 100%,rgba(255,255,255,.38),transparent 34%)!important;
+}
+html body .product-grid > .product-card > *,
+html body .recently-viewed-grid > .product-card > *,
+html body .home-products-shelf .home-shelf-card > *,
+html body .product-card > *{
+  position:relative;
+  z-index:1;
+}
+html body .product-grid > .product-card .product-visual,
+html body .recently-viewed-grid > .product-card .product-visual,
+html body .home-products-shelf .home-shelf-card .product-visual,
+html body .product-card .product-visual{
+  background:linear-gradient(145deg,rgba(255,255,255,.62),rgba(218,226,235,.40) 55%,rgba(255,255,255,.70))!important;
+  border-bottom:1px solid rgba(255,255,255,.82)!important;
+}
+html body .product-grid > .product-card .product-info,
+html body .recently-viewed-grid > .product-card .product-info,
+html body .home-products-shelf .home-shelf-card .product-info,
+html body .product-card .product-info{
+  background:transparent!important;
+}
+html body .product-grid > .product-card .product-visual img,
+html body .recently-viewed-grid > .product-card .product-visual img,
+html body .home-products-shelf .home-shelf-card .product-visual img,
+html body .product-card .product-visual img{
+  object-fit:contain!important;
+}
+@media(max-width:700px){
+ html body .product-grid > .product-card,
+ html body .recently-viewed-grid > .product-card,
+ html body .home-products-shelf .home-shelf-card,
+ html body .product-card{
+  border-radius:18px!important;
+  box-shadow:0 9px 20px rgba(28,39,54,.12),inset 0 2px 3px rgba(255,255,255,1),inset 0 -2px 4px rgba(145,160,178,.20)!important;
+ }
+}
