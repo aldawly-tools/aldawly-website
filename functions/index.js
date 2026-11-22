@@ -3,6 +3,7 @@ const { FieldValue, getFirestore } = require("firebase-admin/firestore");
 const { logger } = require("firebase-functions");
 const { onDocumentCreated, onDocumentUpdated } = require("firebase-functions/v2/firestore");
 const { defineSecret } = require("firebase-functions/params");
+const { onRequest } = require("firebase-functions/v2/https");
 
 initializeApp();
 
@@ -274,5 +275,35 @@ exports.aggregateProductViews = onDocumentCreated(
         updatedAt: FieldValue.serverTimestamp()
       }, { merge: true });
     });
+  }
+);
+
+// Public visitor totals only. Raw siteVisits documents remain admin-only.
+exports.getPublicVisitCounts = onRequest(
+  { region: "me-central1", cors: ["https://aldawly-website.pages.dev"] },
+  async (req, res) => {
+    if (req.method !== "GET") {
+      res.set("Allow", "GET").status(405).json({ error: "Method not allowed" });
+      return;
+    }
+    const day = String(req.query.day || "");
+    if (!/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/.test(day)) {
+      res.status(400).json({ error: "Invalid date" });
+      return;
+    }
+    try {
+      const db = getFirestore();
+      const [totalSnapshot, todaySnapshot] = await Promise.all([
+        db.collection("siteVisits").count().get(),
+        db.collection("siteVisits").where("day", "==", day).count().get()
+      ]);
+      res.set("Cache-Control", "no-store").status(200).json({
+        total: totalSnapshot.data().count || 0,
+        today: todaySnapshot.data().count || 0
+      });
+    } catch (error) {
+      logger.error("Public visitor aggregation failed.", { error: error && error.message });
+      res.status(503).json({ error: "Visitor totals are temporarily unavailable." });
+    }
   }
 );
