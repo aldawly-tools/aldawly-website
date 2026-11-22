@@ -1666,7 +1666,7 @@ async function editProduct(id) {
   $("brandLogoPreview").classList.add("hidden");
   $("brandLogoPreview").removeAttribute("src");
   $("brandLogoEmpty").classList.remove("hidden");
-  if(product.brandLogoImageId){getDoc(doc(db,"productImages",String(product.brandLogoImageId))).then(function(snapshot){if(snapshot.exists()&&snapshot.data().data){$("brandLogoPreview").src=snapshot.data().data;$("brandLogoPreview").classList.remove("hidden");$("brandLogoEmpty").classList.add("hidden");$("brandLogoStatus").textContent="اللوجو الحالي محفوظ لهذا البرند. يمكنك استبداله برفع صورة جديدة.";}}).catch(function(){ });}
+  if(product.brandLogoImageId){getDoc(doc(db,"productImages",String(product.brandLogoImageId))).then(function(snapshot){if(snapshot.exists()&&snapshot.data().data){const logoData=snapshot.data();selectedBrandLogoScale=Math.max(16,Math.min(52,Number(logoData.scale)||34));$("brandLogoScale").value=String(selectedBrandLogoScale);$("brandLogoScaleValue").textContent=String(selectedBrandLogoScale);$("brandLogoPreview").style.maxHeight=selectedBrandLogoScale+"px";$("brandLogoPreview").src=logoData.data;$("brandLogoPreview").classList.remove("hidden");$("brandLogoEmpty").classList.add("hidden");$("brandLogoStatus").textContent="اللوجو الحالي محفوظ لهذا البرند. يمكنك تغيير حجمه أو استبداله.";}}).catch(function(){ });}
   $("cat").value = product.cat || "عدد يدوية";
   $("price").value = product.price || "";
   $("icon").value = product.icon || "🔧";
