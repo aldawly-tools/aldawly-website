@@ -2,6 +2,8 @@
   let products = Array.isArray(window.DAWLY_PRODUCTS) ? window.DAWLY_PRODUCTS : [];
   const isHomePage = document.querySelector('main[data-page="home"]') !== null;
   const grid = document.getElementById("productGrid");
+  const offersSection = document.getElementById("homeOffers");
+  const offersGrid = document.getElementById("homeOffersGrid");
   const tiles = document.getElementById("categoryTiles");
   const filterBar = document.getElementById("filterBar");
   const brandFilterList = document.getElementById("brandFilterList");
@@ -712,6 +714,28 @@
         '</div></article>';
     }).join("") || '<p class="empty-cart">' + emptyMessage + '</p>';
     observeCloudImages();
+    if (offersSection && offersGrid) {
+      const activeOffers = products.filter(function(item) {
+        if (!item || item.hiddenFromStore === true || item.availability === "unavailable") return false;
+        return productPricing(item).percent > 0;
+      }).sort(function(a,b) {
+        return productPricing(b).percent - productPricing(a).percent;
+      }).slice(0,4);
+      offersSection.hidden = activeOffers.length === 0;
+      offersGrid.innerHTML = activeOffers.map(function(item) {
+        const name = cleanProductName(item.name);
+        const pricing = productPricing(item);
+        const detailUrl = "product.html?id=" + encodeURIComponent(String(item.id));
+        const visual = item.image
+          ? '<img src="' + escapeHtml(item.image) + '" alt="' + escapeHtml(name) + '" loading="lazy" decoding="async">'
+          : item.imageId
+            ? '<img data-cloud-image="' + escapeHtml(item.imageId) + '" alt="' + escapeHtml(name) + '" loading="lazy">'
+            : '<span class="product-placeholder" aria-hidden="true">' + escapeHtml(item.icon || "🔧") + '</span>';
+        const timer = pricing.endsAt ? '<div class="product-offer-countdown home-offer-countdown" data-offer-end="' + pricing.endsAt + '"><div class="offer-countdown-heading"><span>⏳ ينتهي العرض خلال</span><b>عرض محدود</b></div><div class="offer-countdown-units"><span><strong data-time-unit="days">00</strong><small>يوم</small></span><span><strong data-time-unit="hours">00</strong><small>ساعة</small></span><span><strong data-time-unit="minutes">00</strong><small>دقيقة</small></span><span><strong data-time-unit="seconds">00</strong><small>ثانية</small></span></div></div>' : '';
+        return '<article class="product-card home-offer-card"><a class="product-visual product-open-link" href="' + detailUrl + '">' + visual + '<em class="product-discount">خصم ' + pricing.percent + '%</em></a><div class="product-info"><span class="product-category">' + escapeHtml(displayBrand(productBrand(item)) || item.cat || "منتجات") + '</span><h3 class="product-name"><a class="product-name-link" href="' + detailUrl + '">' + escapeHtml(name) + '</a></h3><span class="product-price"><strong>' + escapeHtml(money(pricing.current)) + '</strong><del>' + escapeHtml(money(pricing.base)) + '</del></span>' + timer + '<a class="button-primary home-offer-cta" href="' + detailUrl + '">اكتشف العرض الآن ←</a></div></article>';
+      }).join("");
+      observeCloudImages();
+    }
     resultsCount.textContent = filtered.length ? "عرض " + shown.length + " من " + filtered.length + " منتج" : "";
     loadMoreButton.hidden = shown.length >= filtered.length;
     loadMoreButton.textContent = "عرض " + Math.min(pageSize, filtered.length - shown.length) + " منتج إضافي";
