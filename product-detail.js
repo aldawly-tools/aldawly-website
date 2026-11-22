@@ -140,7 +140,7 @@
     const discountPercent = offerExpired?0:Math.max(0,Math.min(90,Number(item.discountPercent)||0));
     const finalPrice = basePrice===null?null:(discountPercent?Math.round(basePrice*(1-discountPercent/100)*100)/100:basePrice);
     const price = finalPrice===null?escapeHtml(formatPrice(item.price)):(discountPercent?'<strong>'+escapeHtml(money(finalPrice))+'</strong><del>'+escapeHtml(money(basePrice))+'</del><em class="product-discount">خصم '+discountPercent+'%</em>':escapeHtml(money(finalPrice)));
-    const offerTimerHtml=Number.isFinite(offerEndsAt)&&!offerExpired?'<div id="detailOfferCountdown" data-offer-end="'+offerEndsAt+'" style="margin:12px 0;padding:11px 14px;border-radius:10px;background:#fff1f1;color:#b71920;font-weight:800">⏳ العرض ينتهي خلال <strong style="direction:ltr;display:inline-block;font-variant-numeric:tabular-nums">--:--:--</strong></div>':"";
+    const offerTimerHtml=Number.isFinite(offerEndsAt)&&!offerExpired?'<div id="detailOfferCountdown" class="product-offer-countdown detail-offer-countdown" data-offer-end="'+offerEndsAt+'"><div class="offer-countdown-heading"><span>⏳ ينتهي العرض خلال</span><b>عرض محدود</b></div><div class="offer-countdown-units"><span><strong data-time-unit="days">00</strong><small>يوم</small></span><span><strong data-time-unit="hours">00</strong><small>ساعة</small></span><span><strong data-time-unit="minutes">00</strong><small>دقيقة</small></span><span><strong data-time-unit="seconds">00</strong><small>ثانية</small></span></div></div>':"";
     const stockKnown = Number.isInteger(item.stock) && item.stock >= 0;
     const stockHtml = stockKnown
       ? (item.stock === 0
@@ -507,8 +507,8 @@
     const remaining=Number(node.dataset.offerEnd)-Date.now();
     if(remaining<=0){node.textContent="انتهى العرض";return;}
     const total=Math.floor(remaining/1000),days=Math.floor(total/86400),hours=Math.floor(total%86400/3600),minutes=Math.floor(total%3600/60),seconds=total%60;
-    const clock=(days?days+" يوم ":"")+String(hours).padStart(2,"0")+":"+String(minutes).padStart(2,"0")+":"+String(seconds).padStart(2,"0");
-    const strong=node.querySelector("strong");if(strong)strong.textContent=clock;
+    const values={days:days,hours:hours,minutes:minutes,seconds:seconds};
+    Object.keys(values).forEach(function(unit){const part=node.querySelector('[data-time-unit="'+unit+'"]');if(part)part.textContent=String(values[unit]).padStart(2,"0");});
   }
   window.setInterval(updateDetailOfferCountdown,1000);
 
