@@ -7276,17 +7276,3 @@ article.product-card.home-shelf-card{
 
 /* User-requested: remove brand search field from catalog filter */
 .brand-filter-search{display:none!important}
-
-
-/* Site-wide silver geometric background supplied by the site owner */
-html, body {
-  background-color: #d4d4d4 !important;
-  background-image: url("/assets/site-background.jpg") !important;
-  background-repeat: repeat-y !important;
-  background-position: center top !important;
-  background-size: 100% auto !important;
-  background-attachment: scroll !important;
-}
-body {
-  background-color: transparent !important;
-}
