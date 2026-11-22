@@ -1819,6 +1819,19 @@ $("brandLogoFile").addEventListener("change",function(){
   const url=URL.createObjectURL(file);$("brandLogoPreview").src=url;$("brandLogoPreview").classList.remove("hidden");$("brandLogoEmpty").classList.add("hidden");
   $("brandLogoStatus").textContent="تم اختيار اللوجو. اضغط حفظ المنتج لحفظه مع البرند.";
 });
+$("brand").addEventListener("change",async function(){
+  const brand=this.value.trim();if(!brand||selectedBrandLogoFile)return;
+  $("brandLogoPreview").classList.add("hidden");$("brandLogoPreview").removeAttribute("src");$("brandLogoEmpty").classList.remove("hidden");
+  try{
+    const snapshot=await getDoc(doc(db,"productImages",brandLogoDocumentId(brand)));
+    if(this.value.trim()!==brand)return;
+    const data=snapshot.exists()?String(snapshot.data().data||""):"";
+    if(data.startsWith("data:image/")){
+      $("brandLogoPreview").src=data;$("brandLogoPreview").classList.remove("hidden");$("brandLogoEmpty").classList.add("hidden");
+      $("brandLogoStatus").textContent="يوجد لوجو محفوظ لهذه الشركة؛ سيُستخدم تلقائيًا عند حفظ المنتج.";
+    }else $("brandLogoStatus").textContent="لا يوجد لوجو محفوظ بعد. يمكنك رفع لوجو الشركة الآن.";
+  }catch(error){console.warn("Could not preview saved brand logo:",error);}
+});
 $("clearBrandLogoBtn").addEventListener("click",function(){
   selectedBrandLogoFile=null;$("brandLogoFile").value="";$("brandLogoPreview").classList.add("hidden");$("brandLogoPreview").removeAttribute("src");$("brandLogoEmpty").classList.remove("hidden");
   $("brandLogoStatus").textContent="سيتم الاحتفاظ باللوجو المحفوظ حاليًا إن وجد.";
