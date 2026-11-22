@@ -236,6 +236,7 @@ body{background:#f4f5f7;color:#252a31}
  .quick-action{min-height:112px}
 }
 
+.brand-logo-admin-field{padding:14px;border:1px solid #e5e7eb;border-radius:14px;background:#fafbfc}.brand-logo-admin-preview{min-height:104px;margin:10px 0;padding:12px;display:flex;align-items:center;justify-content:center;border:1px dashed #cbd0d8;border-radius:12px;background:#fff}.brand-logo-admin-preview img{max-width:100%;width:auto;height:auto;max-height:82px;object-fit:contain}.brand-logo-admin-preview span{color:#8a9099;font-size:13px;text-align:center}.brand-logo-admin-preview img.hidden{display:none}
 </style>
 
 <link rel="manifest" href="manifest.webmanifest?v=png-real-20261113">
@@ -342,11 +343,12 @@ body{background:#f4f5f7;color:#252a31}
         <input type="hidden" id="pid">
         <div class="field"><label for="name">اسم المنتج</label><input id="name" required placeholder="مثال: شنطة عدة Würth"></div>
         <div class="grid">
-          <div class="field"><label for="brand">الماركة</label><input id="brand" placeholder="Würth / Bosch / Wera"><small class="muted" id="brandLogoStatus">عند حفظ المنتج سيبحث النظام عن صورة شعار الماركة ويحفظها تلقائيًا إذا وُجدت.</small></div>
+          <div class="field"><label for="brand">الماركة</label><input id="brand" placeholder="Würth / Bosch / Wera"><small class="muted">اكتب اسم الشركة، ثم ارفع لوجوها الرسمي مرة واحدة ليُستخدم مع كل منتجاتها.</small></div>
           <div class="field"><label for="cat">القسم</label><select id="cat"><option>عدد يدوية</option><option>عدد كهربائية</option><option>مستلزمات الورش</option><option>قياس</option></select></div>
           <div class="field"><label for="price">السعر</label><input id="price" placeholder="السعر عند الاستفسار"></div>
           <div class="field"><label for="icon">رمز بديل</label><input id="icon" value="🔧"></div>
         </div>
+        <div class="field brand-logo-admin-field"><label for="brandLogoFile">لوجو الشركة / البرند</label><input id="brandLogoFile" type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml"><div class="brand-logo-admin-preview"><img id="brandLogoPreview" class="hidden" alt="معاينة لوجو الشركة"><span id="brandLogoEmpty">ارفع لوجو واضح بخلفية شفافة إن أمكن</span></div><small class="muted" id="brandLogoStatus">يتم حفظ اللوجو باسم البرند وإعادة استخدامه تلقائيًا مع باقي منتجات نفس الشركة.</small><button class="light" id="clearBrandLogoBtn" type="button">إلغاء اللوجو المختار</button></div>
         <div class="field"><label for="imageUrl">رابط الصورة (اختياري)</label><input id="imageUrl" type="text" placeholder="اتركه فارغًا إذا سترفع صورة من جهازك"></div>
         <div class="field"><label for="imageFile">أو اختر صورًا متعددة من الجهاز (حتى 8 صور)</label><input id="imageFile" type="file" multiple accept=".jpg,.jpeg,.png,.webp,.gif,.bmp,.avif,image/jpeg,image/png,image/webp,image/gif,image/bmp,image/avif"><img id="imagePreview" class="image-preview hidden" alt="معاينة صورة المنتج"><div id="imageGalleryPreview" class="image-gallery-preview" aria-live="polite"></div><button class="light" id="removeImageBtn" type="button">مسح الصورة المختارة</button><small class="muted">الصيغ المدعومة: JPG وJPEG وPNG وWEBP وGIF وBMP وAVIF. سيتم تحويل الصورة تلقائيًا إلى WebP مضغوط لتوفير مساحة التخزين قبل الحفظ.</small></div>
         <div class="field"><button class="light" id="analyzeImageBtn" type="button">✨ تحليل صورة المنتج بالذكاء الاصطناعي</button><small class="muted">حلّل أول صورة مختارة لإنشاء اقتراحات للاسم والماركة والقسم والوصف والمواصفات. راجع النتائج قبل الحفظ.</small></div>
@@ -455,6 +457,7 @@ let previewObjectUrl = "";
 let imageRemoved = false;
 let existingImageIds = [];
 let selectedImageFiles = [];
+let selectedBrandLogoFile = null;
 
 function showAdminTab(panelId) {
 
@@ -602,6 +605,29 @@ $("addExtraSpecBtn").addEventListener("click",()=>{
 });
 renderCategorySpecs({},[]);
 
+function brandLogoDocumentId(brandName){
+  const normalized=String(brandName||"").trim().toLocaleLowerCase("en")
+    .normalize("NFD").replace(/[\\u0300-\\u036f]/g,"").replace(/[^a-z0-9]/g,"");
+  return "brand_logo_"+(normalized||"unknown").slice(0,110);
+}
+async function compressBrandLogo(file){
+  if(!file||!/^image\\/(png|jpeg|webp|svg\\+xml)$/i.test(file.type))throw new Error("اختر لوجو بصيغة PNG أو JPG أو WEBP أو SVG.");
+  if(file.size>8*1024*1024)throw new Error("حجم اللوجو كبير. الحد الأقصى 8 ميجابايت.");
+  if(file.type==="image/svg+xml"){
+    const raw=await readFileAsDataUrl(file);
+    if(raw.length>900000)throw new Error("ملف SVG كبير جدًا.");
+    return raw;
+  }
+  const source=await readFileAsDataUrl(file);
+  const picture=await new Promise(function(resolve,reject){const image=new Image();image.onload=function(){resolve(image);};image.onerror=function(){reject(new Error("تعذر قراءة ملف اللوجو."));};image.src=source;});
+  const scale=Math.min(1,1000/Math.max(picture.naturalWidth,picture.naturalHeight));
+  const canvas=document.createElement("canvas");canvas.width=Math.max(1,Math.round(picture.naturalWidth*scale));canvas.height=Math.max(1,Math.round(picture.naturalHeight*scale));
+  const context=canvas.getContext("2d",{alpha:true});if(!context)throw new Error("تعذر تجهيز اللوجو.");
+  context.clearRect(0,0,canvas.width,canvas.height);context.drawImage(picture,0,0,canvas.width,canvas.height);
+  const blob=await new Promise(function(resolve){canvas.toBlob(resolve,"image/webp",0.94);});
+  if(!blob||blob.size>650000)throw new Error("اللوجو كبير بعد الضغط؛ اختر صورة أصغر.");
+  return await new Promise(function(resolve,reject){const reader=new FileReader();reader.onload=function(){resolve(String(reader.result||""));};reader.onerror=reject;reader.readAsDataURL(blob);});
+}
 async function findAndSaveOfficialBrandLogo(brandName) {
   const brand=String(brandName||"").trim(); if(!brand)return null;
   const slug=encodeURIComponent(brand.toLocaleLowerCase("en")).replace(/%/g,"_").slice(0,110);
@@ -658,6 +684,12 @@ function resetForm() {
   imageRemoved = false;
   existingImageIds = [];
   selectedImageFiles = [];
+  selectedBrandLogoFile = null;
+  $("brandLogoFile").value = "";
+  $("brandLogoPreview").classList.add("hidden");
+  $("brandLogoPreview").removeAttribute("src");
+  $("brandLogoEmpty").classList.remove("hidden");
+  $("brandLogoStatus").textContent = "يتم حفظ اللوجو باسم البرند وإعادة استخدامه تلقائيًا مع باقي منتجات نفس الشركة.";
   $("pid").value = "";
   $("icon").value = "🔧";
   $("saveBtn").textContent = "حفظ المنتج";
@@ -1627,6 +1659,12 @@ async function editProduct(id) {
   $("pid").value = product.id;
   $("name").value = product.name || "";
   $("brand").value = product.brand || "";
+  selectedBrandLogoFile = null;
+  $("brandLogoFile").value = "";
+  $("brandLogoPreview").classList.add("hidden");
+  $("brandLogoPreview").removeAttribute("src");
+  $("brandLogoEmpty").classList.remove("hidden");
+  if(product.brandLogoImageId){getDoc(doc(db,"productImages",String(product.brandLogoImageId))).then(function(snapshot){if(snapshot.exists()&&snapshot.data().data){$("brandLogoPreview").src=snapshot.data().data;$("brandLogoPreview").classList.remove("hidden");$("brandLogoEmpty").classList.add("hidden");$("brandLogoStatus").textContent="اللوجو الحالي محفوظ لهذا البرند. يمكنك استبداله برفع صورة جديدة.";}}).catch(function(){ });}
   $("cat").value = product.cat || "عدد يدوية";
   $("price").value = product.price || "";
   $("icon").value = product.icon || "🔧";
@@ -1775,6 +1813,16 @@ $("importFile").addEventListener("change", async function (event) {
   catch (error) { message(saveStatus, error && error.message ? error.message : "تعذر استيراد الملف. تحقق من الصلاحيات والاتصال."); }
   finally { event.target.value = ""; }
 });
+$("brandLogoFile").addEventListener("change",function(){
+  const file=this.files&&this.files[0];if(!file)return;
+  selectedBrandLogoFile=file;
+  const url=URL.createObjectURL(file);$("brandLogoPreview").src=url;$("brandLogoPreview").classList.remove("hidden");$("brandLogoEmpty").classList.add("hidden");
+  $("brandLogoStatus").textContent="تم اختيار اللوجو. اضغط حفظ المنتج لحفظه مع البرند.";
+});
+$("clearBrandLogoBtn").addEventListener("click",function(){
+  selectedBrandLogoFile=null;$("brandLogoFile").value="";$("brandLogoPreview").classList.add("hidden");$("brandLogoPreview").removeAttribute("src");$("brandLogoEmpty").classList.remove("hidden");
+  $("brandLogoStatus").textContent="سيتم الاحتفاظ باللوجو المحفوظ حاليًا إن وجد.";
+});
 $("imageFile").addEventListener("change", function () {
   const chosen = Array.from($("imageFile").files || []);
   if (!chosen.length) return;
@@ -1912,7 +1960,12 @@ $("productForm").addEventListener("submit", async function (event) {
     imageId = imageIds[0] || null;
     const productBrand=$("brand").value.trim();
     let brandLogoImageId=previous&&previous.brandLogoImageId?previous.brandLogoImageId:null;
-    if(productBrand){
+    if(productBrand&&selectedBrandLogoFile){
+      const logoId=brandLogoDocumentId(productBrand),logoData=await compressBrandLogo(selectedBrandLogoFile);
+      await setDoc(doc(db,"productImages",logoId),{data:logoData,kind:"brandLogo",brand:productBrand,source:"admin-upload",updatedAt:serverTimestamp()},{merge:true});
+      brandLogoImageId=logoId;
+      $("brandLogoStatus").textContent="تم حفظ لوجو "+productBrand+" بنجاح، وسيُستخدم مع كل منتجات الشركة.";
+    }else if(productBrand){
       const oldBrand=previous?String(previous.brand||"").trim().toLocaleLowerCase("ar"):"";
       const newBrand=productBrand.toLocaleLowerCase("ar");
       if(!brandLogoImageId||oldBrand!==newBrand){
