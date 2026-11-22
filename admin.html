@@ -606,9 +606,10 @@ $("addExtraSpecBtn").addEventListener("click",()=>{
 renderCategorySpecs({},[]);
 
 function brandLogoDocumentId(brandName){
-  const normalized=String(brandName||"").trim().toLocaleLowerCase("en")
-    .normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]/g,"");
-  return "brand_logo_"+(normalized||"unknown").slice(0,110);
+  const raw=String(brandName||"").trim().toLocaleLowerCase("en");
+  const normalized=raw.normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]/g,"");
+  const slug=normalized||encodeURIComponent(raw).replace(/%/g,"_").slice(0,110);
+  return "brand_logo_"+(slug||"unknown").slice(0,110);
 }
 async function compressBrandLogo(file){
   if(!file||!/^image\/(png|jpeg|webp|svg\+xml)$/i.test(file.type))throw new Error("اختر لوجو بصيغة PNG أو JPG أو WEBP أو SVG.");
@@ -1913,6 +1914,7 @@ $("productForm").addEventListener("submit", async function (event) {
   }
   const newProductName = normalizeProductDuplicateValue($("name").value);
   const newProductBrand = normalizeProductDuplicateValue($("brand").value);
+  if(selectedBrandLogoFile&&!newProductBrand){message(saveStatus,"اكتب اسم الماركة أولًا قبل رفع لوجو الشركة.");$("brand").focus();return;}
   if (!newProductName) {
     message(saveStatus, "اكتب اسم المنتج أولًا.");
     $("name").focus();
