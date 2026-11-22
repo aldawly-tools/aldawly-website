@@ -1815,6 +1815,7 @@ $("importFile").addEventListener("change", async function (event) {
   catch (error) { message(saveStatus, error && error.message ? error.message : "تعذر استيراد الملف. تحقق من الصلاحيات والاتصال."); }
   finally { event.target.value = ""; }
 });
+$("brandLogoScale").addEventListener("input",function(){selectedBrandLogoScale=Math.max(16,Math.min(52,Number(this.value)||34));$("brandLogoScaleValue").textContent=String(selectedBrandLogoScale);$("brandLogoPreview").style.maxHeight=selectedBrandLogoScale+"px";});
 $("brandLogoFile").addEventListener("change",function(){
   const file=this.files&&this.files[0];if(!file)return;
   selectedBrandLogoFile=file;
@@ -1978,7 +1979,7 @@ $("productForm").addEventListener("submit", async function (event) {
     let brandLogoImageId=previous&&previous.brandLogoImageId?previous.brandLogoImageId:null;
     if(productBrand&&selectedBrandLogoFile){
       const logoId=brandLogoDocumentId(productBrand),logoData=await compressBrandLogo(selectedBrandLogoFile);
-      await setDoc(doc(db,"productImages",logoId),{data:logoData,kind:"brandLogo",brand:productBrand,source:"admin-upload",updatedAt:serverTimestamp()},{merge:true});
+      await setDoc(doc(db,"productImages",logoId),{data:logoData,kind:"brandLogo",brand:productBrand,scale:selectedBrandLogoScale,source:"admin-upload",updatedAt:serverTimestamp()},{merge:true});
       brandLogoImageId=logoId;
       $("brandLogoStatus").textContent="تم حفظ لوجو "+productBrand+" بنجاح، وسيُستخدم مع كل منتجات الشركة.";
     }else if(productBrand){
@@ -1990,6 +1991,7 @@ $("productForm").addEventListener("submit", async function (event) {
         catch(logoError){console.warn("Official brand logo search failed; product save continues:",logoError);const node=$("brandLogoStatus");if(node)node.textContent="لم يتم العثور على شعار مطابق بوضوح؛ تم حفظ المنتج دون استبدال أي شعار آخر."}
       }
     }
+    if(productBrand&&brandLogoImageId&&!selectedBrandLogoFile){try{const logoRef=doc(db,"productImages",String(brandLogoImageId));const logoSnapshot=await getDoc(logoRef);if(logoSnapshot.exists()&&String(logoSnapshot.data().data||"").startsWith("data:image/"))await setDoc(logoRef,{scale:selectedBrandLogoScale,updatedAt:serverTimestamp()},{merge:true});}catch(scaleError){console.warn("Could not save brand logo size:",scaleError);}}
     const product = {
       id:id,
       name:$("name").value.trim(),
