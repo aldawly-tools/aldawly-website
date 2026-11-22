@@ -7355,3 +7355,27 @@ article.product-card.home-shelf-card .product-info,
 .offer-countdown-units strong{color:#bd1722!important;-webkit-text-fill-color:#bd1722!important;font-size:clamp(19px,5vw,25px);font-weight:1000;line-height:1.2;font-variant-numeric:tabular-nums}
 .offer-countdown-units small{color:#80585b!important;-webkit-text-fill-color:#80585b!important;font-size:10px;font-weight:750}
 .detail-offer-countdown{margin:12px 0 16px}
+
+/* Homepage live offers showcase */
+.home-live-offers{padding-top:22px;padding-bottom:24px}
+.home-live-offers[hidden]{display:none!important}
+.home-offers-hero{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-bottom:22px;padding:22px 24px;border-radius:20px;background:linear-gradient(115deg,#202a35 0%,#303b48 62%,#202a35 100%);color:#fff;overflow:hidden}
+.home-offers-kicker{color:#ff5964;font-size:11px;font-weight:900;letter-spacing:1.4px}
+.home-offers-hero h2{margin:5px 0;font-size:clamp(24px,4vw,34px);font-weight:950}
+.home-offers-hero p{margin:0;color:#e0e5eb;font-size:14px}
+.home-offers-mark{display:grid;place-items:center;flex:0 0 64px;width:64px;height:64px;border:2px solid #e21b2b;border-radius:18px;color:#ff3343;font-size:40px;font-weight:950;transform:rotate(-8deg)}
+.home-offers-grid{grid-template-columns:repeat(4,minmax(0,1fr))}
+.home-offer-card{border:1px solid #f0d8da;box-shadow:0 8px 24px rgba(32,42,53,.07)}
+.home-offer-card .product-visual{position:relative}
+.home-offer-card .product-visual>.product-discount{position:absolute;top:10px;right:10px;z-index:2;padding:6px 10px;border-radius:9px;background:#c8101e;color:#fff;font-style:normal;font-weight:900}
+.home-offer-card .product-price{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.home-offer-card .product-price strong{color:#b20f19;font-size:20px}
+.home-offer-card .product-price del{color:#858b92;font-size:13px}
+.home-offer-countdown{padding:9px!important;margin:10px 0!important}
+.home-offer-countdown .offer-countdown-heading{font-size:11px}
+.home-offer-countdown .offer-countdown-units{gap:4px}
+.home-offer-countdown .offer-countdown-units>span{padding:6px 2px}
+.home-offer-countdown .offer-countdown-units strong{font-size:17px}
+.home-offer-countdown .offer-countdown-units small{font-size:9px}
+.home-offer-cta{display:block;text-align:center;text-decoration:none;margin-top:10px;padding:11px;border-radius:11px;background:#c8101e;color:#fff;font-weight:900}
+@media(max-width:820px){.home-live-offers{padding-top:12px}.home-offers-hero{padding:17px;border-radius:16px}.home-offers-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:10px}.home-offer-card .product-info{padding:9px}.home-offer-card .product-name{font-size:13px}.home-offer-card .product-price strong{font-size:17px}}
