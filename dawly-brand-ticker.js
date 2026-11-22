@@ -56,16 +56,17 @@
     loadSavedBrandLogos(list);
   }
   function loadSavedBrandLogos(list){
+    var metaLoader=window.DAWLY_LOAD_BRAND_LOGO_META;
     var imageLoader=window.DAWLY_LOAD_PRODUCT_IMAGE;
-    if(typeof imageLoader!=="function")return;
+    if(typeof metaLoader!=="function"&&typeof imageLoader!=="function")return;
     list.forEach(function(entry){
       var key=entry[0],imageId=entry[1].imageId;if(!imageId)return;
-      Promise.resolve(imageLoader(imageId)).then(function(src){
-        if(!src)return;
+      (typeof metaLoader==="function"?Promise.resolve(metaLoader(imageId)):Promise.resolve(imageLoader(imageId)).then(function(url){return {url:url,scale:34};})).then(function(meta){
+        if(!meta||!meta.url)return;
         host.querySelectorAll('[data-brand-key="'+key+'"]').forEach(function(link){
           var img=link.querySelector("img");
           if(!img){img=document.createElement("img");img.alt=link.getAttribute("aria-hidden")==="true"?"":entry[1].name+" logo";img.loading="lazy";img.decoding="async";link.replaceChildren(img);}
-          img.src=src;link.classList.remove("has-text-fallback");
+          img.src=meta.url;img.style.maxHeight=Math.max(16,Math.min(52,Number(meta.scale)||34))+"px";img.style.maxWidth="85%";link.classList.remove("has-text-fallback");
         });
       }).catch(function(error){console.warn("Saved brand logo could not be loaded:",key,error);});
     });
