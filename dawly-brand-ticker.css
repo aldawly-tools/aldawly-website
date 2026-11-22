@@ -17,3 +17,9 @@
 @keyframes dawlyBrandFlow{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 @media(max-width:600px){.dawly-brand-marquee{margin:17px 0 14px}.dawly-showcase-brands{gap:10px;animation-duration:27s}.dawly-brand-pill{min-width:122px;height:60px;padding:0 19px;border-radius:23px;font-size:21px}}
 @media(prefers-reduced-motion:reduce){.dawly-showcase-brands{animation:none;overflow-x:auto}.dawly-brand-marquee{mask-image:none}}
+
+/* Brand logo presentation inside the hero ticker */
+.dawly-brand-pill{overflow:hidden}
+.dawly-brand-pill img{display:block;width:auto;max-width:100%;height:auto;max-height:48px;object-fit:contain}
+.dawly-brand-pill.has-text-fallback{font-weight:900}
+@media(max-width:600px){.dawly-brand-pill img{max-width:100%;max-height:42px}}
