@@ -1,4 +1,4 @@
-/* Dawly offers: one full-width product card on mobile when only one offer is active. */
+/* Dawly offers: full-width mobile card and visible product photography. */
 @media (max-width:700px){
   html body #homeOffers .home-offers-grid{
     display:grid!important;
@@ -13,10 +13,51 @@
     grid-column:1 / -1!important;
     justify-self:stretch!important;
   }
-  html body #homeOffers .home-offers-grid > .product-card .product-visual{
-    height:clamp(220px,58vw,300px)!important;
+  html body #homeOffers .home-offer-card .product-visual{
+    display:grid!important;
+    place-items:center!important;
+    height:clamp(250px,68vw,340px)!important;
+    min-height:250px!important;
+    padding:12px!important;
+    background:linear-gradient(145deg,#f7f9fb 0%,#e9edf2 100%)!important;
+    overflow:hidden!important;
   }
-  html body #homeOffers .home-offers-grid > .product-card .product-info{
-    padding:15px!important;
+  html body #homeOffers .home-offer-card .product-visual img{
+    display:block!important;
+    width:100%!important;
+    height:100%!important;
+    max-width:100%!important;
+    max-height:100%!important;
+    object-fit:contain!important;
+    object-position:center!important;
+    padding:8px!important;
+    position:relative!important;
+    z-index:1!important;
+  }
+  html body #homeOffers .home-offer-card .product-info{
+    padding:16px!important;
+    gap:9px!important;
+  }
+  html body #homeOffers .home-offer-card .product-name{
+    font-size:17px!important;
+    line-height:1.55!important;
+  }
+  html body #homeOffers .home-offer-card .product-price{
+    align-items:baseline!important;
+    gap:10px!important;
+  }
+  html body #homeOffers .home-offer-card .product-price strong{
+    font-size:21px!important;
+  }
+  html body #homeOffers .home-offer-card .home-offer-countdown{
+    margin:10px 0!important;
+    padding:10px!important;
+  }
+  html body #homeOffers .home-offer-card .home-offer-cta{
+    min-height:54px!important;
+    display:flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+    font-size:16px!important;
   }
 }
