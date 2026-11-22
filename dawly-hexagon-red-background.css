@@ -1,10 +1,10 @@
-/* Concrete / fine cement texture for Dawly products catalog */
+/* User-provided gray rough concrete texture — shared storefront background */
 html, body {
-  background-color:#a7a7a7!important;
+  background-color:#929292!important;
   background-image:
-    radial-gradient(ellipse at 50% 35%,rgba(255,255,255,.18),rgba(45,45,45,.10)),
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 420 420'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.82' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.34'/%3E%3C/svg%3E");
-  background-size:cover,420px 420px!important;
+    linear-gradient(135deg,rgba(255,255,255,.12),rgba(35,35,35,.10)),
+    url("data:image/webp;base64,UklGRjAEAABXRUJQVlA4ICQEAABQDwCdASqgAKAAPxmCtVWsqCSjJ3WcIZAjCWlo06FvOw/xvut/mcyOI4fA6FLn6sIChnU3YCKqctV43DWRlyHiuLU4NupPYxZ9n/FgdquARKQ6J6aNMx5AXlql9AI+SQ0B2lt8dmCRERW3sCBvQ1XYxwMo75ocM9upqHfZ/RUOWEQIAAD+uXRdKsE2r0eeMqNrDOSjOnPFU5TV2q4KhMW4OQVG3mN0sCKa22ODxSZwcYvgLqK30mZhRLZzH7sL8KK4upm8uoJHbEcCa1mm+PxXIariiwxikiYo1sVrydyJZRUq1ZgY5ryFSFirnRwSTkg9vrsp6tlLKSHbYAigUsrMG0jaaybvPm+5rPPjh+xz4nIxR2QdafHnl8jpETJeoq6z0ELBB/ETHmv87mKepEm/ejSBbd7NHnCSTaYmWBYmVLdTbUvPlIh5VA+AD3hHQ+/JygA01H8FXGZLF+Uu+FNUv2E+b9zFGWb0Btx4H++37IuhoRsPFPwnxOVjyxrb4+dmIL8jycy2ZRc7nyR8yJd67KKS2K+yjETdKHYOn8fBn2boH10tGcvy52CSAKZWYsyU4xNj/kN/CzB6hqQLEO5CnACKjj5U/YOZDu5UryW7uzFtM39IvWwNswgrxyVeBHgWhkihBLEi7DvNNzva+QoVq9vTU563R+wJ5AruvFzD8PtbQDe77ZhY83sWXmCrruaRFo5xErjwbLfYz+KBDHdQJVGQbNsAYkPjALAod7CRxq+Ks6MigzF/NFcTxgERgNgBlqfHFNSmuLkMqeEYxDUnrpQDS+mlrhXN6KgZq/9InayVnANjeLpHPuncp59OeoGAYrWor5NdbSJ4hnJaxJngooyzjAq8MKy/Vfd+F532tNtdUvIwD5K3cCptSAN1VUp7MS0ytHcR3J4wnqsEa9wD3mUzo0DMEaRLb4d+EW8EmR9n03oQ0AFGxuU79Pv6p73ey8SoPohk/soy6JhUx0MIGtiLgdr+ZtPfg3EpU5ld28jwZEHLrCCyFrpLfdUltLbnCK+sQd8q66MEIRPXMJeAmxi//QaTSlAbedweQtgK1FQO2ioD8QEF69UuGggUaPDkOn4I0aVxEDr/FlQnPEM+wgwFQ+jD+6YTAquIEgRlgnOpi4fxMEPkRqpT9jlCUoXAKNBZGq2yegpOp3Huk3b0W1owfWgftd67u2wIUtesFWrkV3abrkRV1wii3FpmxLvqiJ1lG/YIl+DsrXafEFXxFIDZWVBH76mv3RF/8NBIzfIsu7Ft/MposcjV3GN5sug0u3PbPRIyCL0F28jJrYw+qQb+2BjAao0jUbOwqMZs5ezxnx0gQz9uk8cvzJccd2s/zuAvc2RTwPU0Mq5P1NvOZg4Tx6mTcgrsNSgE2i5A+kZ/WyLqMoSuF1pARvtROqzhdAAA");
+  background-size:cover,160px 160px!important;
   background-position:center top!important;
   background-repeat:repeat!important;
   background-attachment:fixed!important;
@@ -15,9 +15,9 @@ body::before {
   inset:0;
   z-index:-1;
   pointer-events:none;
-  background:linear-gradient(135deg,rgba(255,255,255,.10),rgba(30,30,30,.08));
+  background:linear-gradient(135deg,rgba(255,255,255,.08),rgba(30,30,30,.06));
 }
-/* Product cards stay clean white above the textured concrete */
+/* Product cards remain crisp white above the textured background */
 html body #productGrid .product-card,
 html body .product-grid .product-card,
 html body article.product-card,
