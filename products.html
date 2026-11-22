@@ -524,4 +524,59 @@ html body .product-grid .product-card .product-card-status .stock-status{
 }
 </style>
 
+
+<style id="dawly-catalog-glass-override-v2">
+/* Override legacy frameless rules for the actual rendered catalog article cards */
+html body #productGrid article.product-card.catalog-card,
+html body #productGrid article.product-card,
+html body .product-grid article.product-card{
+ position:relative!important;
+ isolation:isolate!important;
+ overflow:hidden!important;
+ background:
+  radial-gradient(ellipse at 8% 0%,rgba(255,255,255,.17),transparent 42%),
+  linear-gradient(140deg,rgba(73,86,103,.94),rgba(26,38,53,.97) 55%,rgba(48,61,78,.94))!important;
+ border:1.5px solid rgba(235,244,255,.78)!important;
+ border-radius:20px!important;
+ outline:1px solid rgba(255,255,255,.14)!important;
+ box-shadow:0 12px 28px rgba(8,15,24,.20),inset 0 1px 0 rgba(255,255,255,.82),inset 0 -1px 0 rgba(255,255,255,.20)!important;
+ -webkit-backdrop-filter:blur(24px) saturate(160%)!important;
+ backdrop-filter:blur(24px) saturate(160%)!important;
+}
+html body #productGrid article.product-card.catalog-card::before,
+html body #productGrid article.product-card::before,
+html body .product-grid article.product-card::before{
+ content:""!important;display:block!important;position:absolute!important;inset:0!important;
+ z-index:0!important;pointer-events:none!important;border-radius:inherit!important;
+ background:linear-gradient(125deg,rgba(255,255,255,.22),transparent 30%,transparent 70%,rgba(255,255,255,.10)),radial-gradient(ellipse at 8% 0%,rgba(255,255,255,.16),transparent 38%)!important;
+}
+html body #productGrid article.product-card.catalog-card::after,
+html body #productGrid article.product-card::after{display:none!important;content:none!important}
+html body #productGrid article.product-card.catalog-card > *,
+html body #productGrid article.product-card > *,
+html body .product-grid article.product-card > *{position:relative!important;z-index:1!important}
+html body #productGrid article.product-card.catalog-card .product-visual,
+html body #productGrid article.product-card .product-visual,
+html body .product-grid article.product-card .product-visual{
+ background:linear-gradient(145deg,#fff 0%,#f7f8fa 62%,#e9edf2 100%)!important;
+ border:0!important;border-bottom:1px solid rgba(255,255,255,.82)!important;
+ border-radius:0!important;box-shadow:none!important;
+}
+html body #productGrid article.product-card.catalog-card .product-info,
+html body #productGrid article.product-card .product-info,
+html body .product-grid article.product-card .product-info{
+ background:transparent!important;color:#f7f9fc!important;
+}
+html body #productGrid article.product-card.catalog-card .product-name,
+html body #productGrid article.product-card.catalog-card h3,
+html body #productGrid article.product-card .product-name,
+html body #productGrid article.product-card h3{color:#fff!important}
+html body #productGrid article.product-card.catalog-card .product-price,
+html body #productGrid article.product-card .product-price{color:#ff6878!important}
+@media(max-width:700px){
+ html body #productGrid article.product-card.catalog-card,
+ html body #productGrid article.product-card{border-radius:17px!important}
+}
+</style>
+
 </body></html>
