@@ -144,7 +144,11 @@
 }
 </style>
 <link rel="stylesheet" href="catalog-white-cards.css?v=white-cards-20261122-2">
-</head>
+<style>
+/* Ensure the offers destination is directly reachable from the mobile drawer */
+.mobile-menu-main-links .mobile-offers-link{color:#c8101e!important;font-weight:900}
+.mobile-menu-main-links .mobile-offers-link .red-mark{color:#c8101e!important;margin-left:7px}
+</style>\n</head>
 <body>
 <header class="masthead">
  <div class="container masthead-grid">
@@ -200,6 +204,11 @@
 <aside class="mobile-menu-drawer" id="mobileMenuDrawer" aria-label="قائمة أقسام المتجر" aria-modal="true" role="dialog" aria-hidden="true">
  <button class="mobile-menu-close" id="closeMobileMenu" type="button" aria-label="إغلاق القائمة">×</button>
  <div class="mobile-menu-home-label">القائمة الرئيسية</div>
+ <nav class="mobile-menu-main-links" aria-label="روابط المتجر">
+  <a href="index.html">الرئيسية</a>
+  <a href="#products" class="mobile-offers-link"><span class="red-mark">٪</span> العروض</a>
+  <a href="favorites.html">المفضلة</a>
+ </nav>
  <div class="mobile-menu-browse-label">تصفح التصنيفات</div>
  <a class="mobile-menu-brand-row" href="#brands">الماركات</a>
  <div class="mobile-menu-categories" id="mobileMenuCategories"></div>
