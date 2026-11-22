@@ -127,7 +127,7 @@
   }, true);
 
   function observeCloudImages() {
-    const images = document.querySelectorAll("#productGrid img[data-cloud-image], #featuredProductsGrid img[data-cloud-image], #newArrivalsGrid img[data-cloud-image], #quickViewModal img[data-cloud-image]");
+    const images = document.querySelectorAll("#productGrid img[data-cloud-image], #homeOffersGrid img[data-cloud-image], #featuredProductsGrid img[data-cloud-image], #newArrivalsGrid img[data-cloud-image], #quickViewModal img[data-cloud-image]");
     if (!images.length || typeof window.DAWLY_LOAD_PRODUCT_IMAGE !== "function") return;
     function loadImage(image) {
       // The storage loader may finish initializing after the catalog markup.
