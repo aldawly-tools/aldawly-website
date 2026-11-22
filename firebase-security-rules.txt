@@ -65,6 +65,19 @@ service cloud.firestore {
       allow write: if false;
     }
 
+
+    // Product likes: public aggregate count, one anonymous voter document per browser/product.
+    match /productLikes/{productId}/voters/{visitorId} {
+      allow read: if true;
+      allow create: if request.resource.data.keys().hasOnly(["visitorId", "productId", "createdAt"])
+        && request.resource.data.visitorId == visitorId
+        && visitorId.size() >= 20 && visitorId.size() <= 100
+        && request.resource.data.productId == productId
+        && request.resource.data.createdAt == request.time;
+      allow delete: if resource.data.visitorId == visitorId;
+      allow update: if false;
+    }
+
     match /products/{productId} {
       allow read: if true;
       allow write: if isStoreAdmin();
