@@ -17,7 +17,7 @@ import { getFirestore, collection, doc, getDoc, setDoc, deleteDoc, getCountFromS
   const pending=new Set();
   function safeId(v){return String(v||"").trim().replace(/[^a-zA-Z0-9_-]/g,"_").slice(0,100);}
   async function mount(host,id,detail){
-    id=safeId(id);if(!id||host.querySelector(".dawly-like"))return;
+    id=safeId(id);const card=host.closest(".product-card");if(!id||host.querySelector(".dawly-like")||(card&&card.querySelector(".dawly-like")))return;
     const wrap=document.createElement("div");wrap.className="dawly-like-wrap"+(detail?" dawly-detail-like":"");
     const btn=document.createElement("button");btn.type="button";btn.className="dawly-like";btn.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1.1L12 21l7.8-7.5 1.1-1.1a5.5 5.5 0 0 0-.1-7.8Z"/></svg><span class="like-count">…</span>';
     btn.setAttribute("aria-label","إعجاب بالمنتج");wrap.appendChild(btn);host.appendChild(wrap);
