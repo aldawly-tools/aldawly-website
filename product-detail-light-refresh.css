@@ -817,3 +817,16 @@ body.product-page{
   color:#fff!important;
   -webkit-text-fill-color:#fff!important;
 }
+\n
+/* Segmented premium offer countdown */
+.product-offer-countdown{display:flex;flex-direction:column;gap:10px;margin:12px 0;padding:12px;border:1px solid #f1d5d7;border-radius:16px;background:#fff7f7;color:#a71923;font-weight:800}
+.offer-countdown-heading{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:14px}
+.offer-countdown-heading b{padding:4px 8px;border-radius:999px;background:#c8101e;color:#fff;font-size:10px;white-space:nowrap}
+.offer-countdown-units{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;direction:rtl}
+.offer-countdown-units>span{display:flex;min-width:0;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:8px 3px;border-radius:11px;background:#ffeded}
+.offer-countdown-units strong{color:#bd1722!important;-webkit-text-fill-color:#bd1722!important;font-size:clamp(19px,5vw,25px);font-weight:1000;line-height:1.2;font-variant-numeric:tabular-nums}
+.offer-countdown-units small{color:#80585b!important;-webkit-text-fill-color:#80585b!important;font-size:10px;font-weight:750}
+.detail-offer-countdown{margin:12px 0 16px}
+
+.product-detail-layout .detail-offer-countdown{width:100%;box-sizing:border-box}
+.product-detail-layout .detail-offer-countdown .offer-countdown-heading{color:#a71923!important;-webkit-text-fill-color:#a71923!important}
