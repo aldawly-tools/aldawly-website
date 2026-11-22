@@ -426,6 +426,7 @@ body{background:#f4f5f7;color:#252a31}
 </main>
 <script src="products.js?v=empty-placeholder-catalog-20261114"></script>
 <script src="firebase-config.js?v=product-admin-2"></script>
+<script type="module" src="product-likes.js?v=20261122-admin-1"></script>
 <script src="onesignal-init.js?v=6"></script>
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-app.js";
@@ -720,7 +721,7 @@ function renderProducts() {
   if ($("dashProducts")) $("dashProducts").textContent = String(products.length);
   $("listSummary").textContent = term ? "نتائج البحث: " + filtered.length + " من " + products.length : "إجمالي المنتجات: " + products.length;
   $("productList").innerHTML = filtered.map(function (product) {
-    return '<div class="product"><div><strong>' + escapeHtml(product.name) + '</strong><small>' + escapeHtml(product.brand || "بدون ماركة") + ' · ' + escapeHtml(product.cat || "") + ' · ' + escapeHtml(product.price || "السعر عند الاستفسار") + ' · رقم: ' + escapeHtml(product.id) + '</small>' + (product.imageId ? '<span class="pill">صورة محفوظة</span>' : "") + '</div><div class="actions"><button class="light" type="button" data-edit="' + escapeHtml(product.id) + '">تعديل</button><button class="danger" type="button" data-delete="' + escapeHtml(product.id) + '">حذف</button></div></div>';
+    return '<div class="product admin-product-card" data-like-product-id="' + escapeHtml(product.id) + '"><div><strong>' + escapeHtml(product.name) + '</strong><small>' + escapeHtml(product.brand || "بدون ماركة") + ' · ' + escapeHtml(product.cat || "") + ' · ' + escapeHtml(product.price || "السعر عند الاستفسار") + ' · رقم: ' + escapeHtml(product.id) + '</small>' + (product.imageId ? '<span class="pill">صورة محفوظة</span>' : "") + '</div><div class="actions"><button class="light" type="button" data-edit="' + escapeHtml(product.id) + '">تعديل</button><button class="danger" type="button" data-delete="' + escapeHtml(product.id) + '">حذف</button></div></div>';
   }).join("") || '<p class="muted">' + (term ? "لا توجد نتائج مطابقة للبحث." : "لا توجد منتجات حاليًا.") + '</p>';
 }
 function analyticsFormat(value){return Number(value||0).toLocaleString("ar-EG");}
