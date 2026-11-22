@@ -349,7 +349,7 @@ body{background:#f4f5f7;color:#252a31}
           <div class="field"><label for="price">السعر</label><input id="price" placeholder="السعر عند الاستفسار"></div>
           <div class="field"><label for="icon">رمز بديل</label><input id="icon" value="🔧"></div>
         </div>
-        <div class="field brand-logo-admin-field"><label for="brandLogoFile">لوجو الشركة / البرند</label><input id="brandLogoFile" type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml"><div class="brand-logo-admin-preview"><img id="brandLogoPreview" class="hidden" alt="معاينة لوجو الشركة"><span id="brandLogoEmpty">ارفع لوجو واضح بخلفية شفافة إن أمكن</span></div><div class="brand-logo-size-control"><label for="brandLogoScale">حجم اللوجو في الشريط: <strong id="brandLogoScaleValue">34</strong> px</label><input id="brandLogoScale" type="range" min="16" max="52" step="1" value="34"><small class="muted">حرّك المؤشر لتصغير أو تكبير اللوجو، وسيُحفظ الحجم مع البرند.</small></div><small class="muted" id="brandLogoStatus">يتم حفظ اللوجو باسم البرند وإعادة استخدامه تلقائيًا مع باقي منتجات نفس الشركة.</small><button class="light" id="clearBrandLogoBtn" type="button">إلغاء اللوجو المختار</button></div>
+        <div class="field brand-logo-admin-field"><label for="brandLogoFile">لوجو الشركة / البرند</label><input id="brandLogoFile" type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml"><div class="brand-logo-admin-preview"><img id="brandLogoPreview" class="hidden" alt="معاينة لوجو الشركة"><span id="brandLogoEmpty">ارفع لوجو واضح بخلفية شفافة إن أمكن</span></div><div class="brand-logo-size-control"><label for="brandLogoScale">حجم اللوجو في الشريط (حتى 100 px): <strong id="brandLogoScaleValue">34</strong> px</label><input id="brandLogoScale" type="range" min="16" max="100" step="1" value="34"><small class="muted">حرّك المؤشر لتصغير أو تكبير اللوجو، وسيُحفظ الحجم مع البرند.</small></div><small class="muted" id="brandLogoStatus">يتم حفظ اللوجو باسم البرند وإعادة استخدامه تلقائيًا مع باقي منتجات نفس الشركة.</small><button class="light" id="clearBrandLogoBtn" type="button">إلغاء اللوجو المختار</button></div>
         <div class="field"><label for="imageUrl">رابط الصورة (اختياري)</label><input id="imageUrl" type="text" placeholder="اتركه فارغًا إذا سترفع صورة من جهازك"></div>
         <div class="field"><label for="imageFile">أو اختر صورًا متعددة من الجهاز (حتى 8 صور)</label><input id="imageFile" type="file" multiple accept=".jpg,.jpeg,.png,.webp,.gif,.bmp,.avif,image/jpeg,image/png,image/webp,image/gif,image/bmp,image/avif"><img id="imagePreview" class="image-preview hidden" alt="معاينة صورة المنتج"><div id="imageGalleryPreview" class="image-gallery-preview" aria-live="polite"></div><button class="light" id="removeImageBtn" type="button">مسح الصورة المختارة</button><small class="muted">الصيغ المدعومة: JPG وJPEG وPNG وWEBP وGIF وBMP وAVIF. سيتم تحويل الصورة تلقائيًا إلى WebP مضغوط لتوفير مساحة التخزين قبل الحفظ.</small></div>
         <div class="field"><button class="light" id="analyzeImageBtn" type="button">✨ تحليل صورة المنتج بالذكاء الاصطناعي</button><small class="muted">حلّل أول صورة مختارة لإنشاء اقتراحات للاسم والماركة والقسم والوصف والمواصفات. راجع النتائج قبل الحفظ.</small></div>
@@ -1670,7 +1670,7 @@ async function editProduct(id) {
   $("brandLogoPreview").classList.add("hidden");
   $("brandLogoPreview").removeAttribute("src");
   $("brandLogoEmpty").classList.remove("hidden");
-  if(product.brandLogoImageId){getDoc(doc(db,"productImages",String(product.brandLogoImageId))).then(function(snapshot){if(snapshot.exists()&&snapshot.data().data){const logoData=snapshot.data();selectedBrandLogoScale=Math.max(16,Math.min(52,Number(logoData.scale)||34));$("brandLogoScale").value=String(selectedBrandLogoScale);$("brandLogoScaleValue").textContent=String(selectedBrandLogoScale);$("brandLogoPreview").style.maxHeight=selectedBrandLogoScale+"px";$("brandLogoPreview").src=logoData.data;$("brandLogoPreview").classList.remove("hidden");$("brandLogoEmpty").classList.add("hidden");$("brandLogoStatus").textContent="اللوجو الحالي محفوظ لهذا البرند. يمكنك تغيير حجمه أو استبداله.";}}).catch(function(){ });}
+  if(product.brandLogoImageId){getDoc(doc(db,"productImages",String(product.brandLogoImageId))).then(function(snapshot){if(snapshot.exists()&&snapshot.data().data){const logoData=snapshot.data();selectedBrandLogoScale=Math.max(16,Math.min(100,Number(logoData.scale)||34));$("brandLogoScale").value=String(selectedBrandLogoScale);$("brandLogoScaleValue").textContent=String(selectedBrandLogoScale);$("brandLogoPreview").style.maxHeight=selectedBrandLogoScale+"px";$("brandLogoPreview").src=logoData.data;$("brandLogoPreview").classList.remove("hidden");$("brandLogoEmpty").classList.add("hidden");$("brandLogoStatus").textContent="اللوجو الحالي محفوظ لهذا البرند. يمكنك تغيير حجمه أو استبداله.";}}).catch(function(){ });}
   $("cat").value = product.cat || "عدد يدوية";
   $("price").value = product.price || "";
   $("icon").value = product.icon || "🔧";
@@ -1819,7 +1819,7 @@ $("importFile").addEventListener("change", async function (event) {
   catch (error) { message(saveStatus, error && error.message ? error.message : "تعذر استيراد الملف. تحقق من الصلاحيات والاتصال."); }
   finally { event.target.value = ""; }
 });
-$("brandLogoScale").addEventListener("input",function(){selectedBrandLogoScale=Math.max(16,Math.min(52,Number(this.value)||34));$("brandLogoScaleValue").textContent=String(selectedBrandLogoScale);$("brandLogoPreview").style.maxHeight=selectedBrandLogoScale+"px";});
+$("brandLogoScale").addEventListener("input",function(){selectedBrandLogoScale=Math.max(16,Math.min(100,Number(this.value)||34));$("brandLogoScaleValue").textContent=String(selectedBrandLogoScale);$("brandLogoPreview").style.maxHeight=selectedBrandLogoScale+"px";});
 $("brandLogoFile").addEventListener("change",function(){
   const file=this.files&&this.files[0];if(!file)return;
   selectedBrandLogoFile=file;
@@ -1834,7 +1834,7 @@ $("brand").addEventListener("change",async function(){
     if(this.value.trim()!==brand)return;
     const logoData=snapshot.exists()?snapshot.data():{};
     const data=String(logoData.data||"");
-    selectedBrandLogoScale=Math.max(16,Math.min(52,Number(logoData.scale)||34));
+    selectedBrandLogoScale=Math.max(16,Math.min(100,Number(logoData.scale)||34));
     $("brandLogoScale").value=String(selectedBrandLogoScale);$("brandLogoScaleValue").textContent=String(selectedBrandLogoScale);
     $("brandLogoPreview").style.maxHeight=selectedBrandLogoScale+"px";
     if(data.startsWith("data:image/")){
