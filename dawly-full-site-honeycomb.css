@@ -1,25 +1,25 @@
-/* Dawly full-site dark honeycomb identity */
+/* Replace the previous red honeycomb override with the supplied gray concrete texture */
 :root { color-scheme: light; }
 html, body {
-  background-color: #151619 !important;
-}
-body {
+  background-color:#929292!important;
   background-image:
-    linear-gradient(rgba(13,14,16,.16),rgba(13,14,16,.16)),
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='360' height='312' viewBox='0 0 360 312'%3E%3Cdefs%3E%3ClinearGradient id='f' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop stop-color='%23282b2f'/%3E%3Cstop offset='1' stop-color='%2317191c'/%3E%3C/linearGradient%3E%3Cfilter id='g' x='-30%25' y='-30%25' width='160%25' height='160%25'%3E%3CfeGaussianBlur stdDeviation='3'/%3E%3C/filter%3E%3C/defs%3E%3Crect width='360' height='312' fill='%23141619'/%3E%3Cg fill='url(%23f)' stroke='%23090a0c' stroke-width='8'%3E%3Cpath d='M90 2 178 53 178 155 90 206 2 155 2 53Z'/%3E%3Cpath d='M270 2 358 53 358 155 270 206 182 155 182 53Z'/%3E%3Cpath d='M180 106 268 157 268 259 180 310 92 259 92 157Z'/%3E%3C/g%3E%3Cg fill='none' stroke='%23d71920' stroke-width='5' opacity='.88'%3E%3Cpath d='M90 2 178 53 178 155 90 206 2 155 2 53Z'/%3E%3Cpath d='M270 2 358 53 358 155 270 206 182 155 182 53Z'/%3E%3Cpath d='M180 106 268 157 268 259 180 310 92 259 92 157Z'/%3E%3C/g%3E%3C/svg%3E") !important;
-  background-position: center top !important;
-  background-size: 260px 225px !important;
-  background-repeat: repeat !important;
-  background-attachment: fixed !important;
+    linear-gradient(135deg,rgba(255,255,255,.12),rgba(35,35,35,.10)),
+    url("data:image/webp;base64,UklGRjAEAABXRUJQVlA4ICQEAABQDwCdASqgAKAAPxmCtVWsqCSjJ3WcIZAjCWlo06FvOw/xvut/mcyOI4fA6FLn6sIChnU3YCKqctV43DWRlyHiuLU4NupPYxZ9n/FgdquARKQ6J6aNMx5AXlql9AI+SQ0B2lt8dmCRERW3sCBvQ1XYxwMo75ocM9upqHfZ/RUOWEQIAAD+uXRdKsE2r0eeMqNrDOSjOnPFU5TV2q4KhMW4OQVG3mN0sCKa22ODxSZwcYvgLqK30mZhRLZzH7sL8KK4upm8uoJHbEcCa1mm+PxXIariiwxikiYo1sVrydyJZRUq1ZgY5ryFSFirnRwSTkg9vrsp6tlLKSHbYAigUsrMG0jaaybvPm+5rPPjh+xz4nIxR2QdafHnl8jpETJeoq6z0ELBB/ETHmv87mKepEm/ejSBbd7NHnCSTaYmWBYmVLdTbUvPlIh5VA+AD3hHQ+/JygA01H8FXGZLF+Uu+FNUv2E+b9zFGWb0Btx4H++37IuhoRsPFPwnxOVjyxrb4+dmIL8jycy2ZRc7nyR8yJd67KKS2K+yjETdKHYOn8fBn2boH10tGcvy52CSAKZWYsyU4xNj/kN/CzB6hqQLEO5CnACKjj5U/YOZDu5UryW7uzFtM39IvWwNswgrxyVeBHgWhkihBLEi7DvNNzva+QoVq9vTU563R+wJ5AruvFzD8PtbQDe77ZhY83sWXmCrruaRFo5xErjwbLfYz+KBDHdQJVGQbNsAYkPjALAod7CRxq+Ks6MigzF/NFcTxgERgNgBlqfHFNSmuLkMqeEYxDUnrpQDS+mlrhXN6KgZq/9InayVnANjeLpHPuncp59OeoGAYrWor5NdbSJ4hnJaxJngooyzjAq8MKy/Vfd+F532tNtdUvIwD5K3cCptSAN1VUp7MS0ytHcR3J4wnqsEa9wD3mUzo0DMEaRLb4d+EW8EmR9n03oQ0AFGxuU79Pv6p73ey8SoPohk/soy6JhUx0MIGtiLgdr+ZtPfg3EpU5ld28jwZEHLrCCyFrpLfdUltLbnCK+sQd8q66MEIRPXMJeAmxi//QaTSlAbedweQtgK1FQO2ioD8QEF69UuGggUaPDkOn4I0aVxEDr/FlQnPEM+wgwFQ+jD+6YTAquIEgRlgnOpi4fxMEPkRqpT9jlCUoXAKNBZGq2yegpOp3Huk3b0W1owfWgftd67u2wIUtesFWrkV3abrkRV1wii3FpmxLvqiJ1lG/YIl+DsrXafEFXxFIDZWVBH76mv3RF/8NBIzfIsu7Ft/MposcjV3GN5sug0u3PbPRIyCL0F28jJrYw+qQb+2BjAao0jUbOwqMZs5ezxnx0gQz9uk8cvzJccd2s/zuAvc2RTwPU0Mq5P1NvOZg4Tx6mTcgrsNSgE2i5A+kZ/WyLqMoSuF1pARvtROqzhdAAA")!important;
+  background-size:cover,160px 160px!important;
+  background-position:center top!important;
+  background-repeat:repeat!important;
+  background-attachment:fixed!important;
 }
-/* Let the honeycomb show through page sections while keeping controls and cards readable. */
+body::before {
+  content:"";
+  position:fixed;
+  inset:0;
+  z-index:-1;
+  pointer-events:none;
+  background:linear-gradient(135deg,rgba(255,255,255,.08),rgba(30,30,30,.06));
+}
+/* Keep main sections transparent so the concrete texture is visible throughout. */
 main, main > section, .section, .home-live-offers, .product-listing-section,
 .category-section, .brands-marquee-section, .recently-viewed-section {
-  background-color: transparent !important;
-}
-/* Keep content panels and product cards opaque enough for clear contrast. */
-.product-card, .home-shelf-card, .home-offer-card, .category-tile,
-.profession-card, .search-panel, .filter-panel, .cart-drawer,
-.modal, .dialog, .quick-view-modal {
-  backdrop-filter: none;
+  background-color:transparent!important;
 }
