@@ -86,3 +86,16 @@
  .hero-shell{background:transparent!important;padding:10px 0 12px!important}
  .hero-shell .hero-grid{border-radius:24px!important}
 }
+
+
+/* Remove the visible outer glass frame completely; keep the banner layout */
+.hero-shell,
+.hero-shell .hero-grid{
+  border:0!important;
+  outline:0!important;
+  box-shadow:none!important;
+}
+@media(max-width:700px){
+ .hero-shell{margin:0!important;padding:0!important;border-radius:0!important}
+ .hero-shell .hero-grid{border-radius:0!important}
+}
