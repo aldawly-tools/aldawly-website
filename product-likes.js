@@ -38,6 +38,10 @@ import { getFirestore, collection, doc, getDoc, setDoc, deleteDoc, getCountFromS
     refresh();
   }
   function scan(){
+    document.querySelectorAll("[data-like-product-id]").forEach(card=>{
+      const id=card.getAttribute("data-like-product-id");
+      if(id)mount(card.querySelector(".actions")||card,id,false);
+    });
     document.querySelectorAll(".product-card").forEach(card=>{
       const link=card.querySelector('a[href*="product.html?id="],a[href*="/product/"]');
       if(!link)return;let id="";
