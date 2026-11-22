@@ -687,6 +687,10 @@ function resetForm() {
   existingImageIds = [];
   selectedImageFiles = [];
   selectedBrandLogoFile = null;
+  selectedBrandLogoScale = 34;
+  $("brandLogoScale").value = "34";
+  $("brandLogoScaleValue").textContent = "34";
+  $("brandLogoPreview").style.maxHeight = "34px";
   $("brandLogoFile").value = "";
   $("brandLogoPreview").classList.add("hidden");
   $("brandLogoPreview").removeAttribute("src");
