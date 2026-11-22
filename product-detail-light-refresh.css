@@ -798,3 +798,22 @@ body.product-page{
  .product-page #productDetail .related-heading{align-items:flex-start!important}
  .product-page #productDetail .related-heading>a{font-size:12px!important;white-space:nowrap!important}
 }
+
+
+/* High-contrast sale prices on the light product detail card */
+.product-detail-layout .product-detail-price .detail-price-value,
+.product-detail-layout .product-detail-price .detail-price-value strong{
+  color:#b20f19!important;
+  -webkit-text-fill-color:#b20f19!important;
+  opacity:1!important;
+  text-shadow:none!important;
+}
+.product-detail-layout .product-detail-price .detail-price-value del{
+  color:#737b84!important;
+  -webkit-text-fill-color:#737b84!important;
+  opacity:1!important;
+}
+.product-detail-layout .product-detail-price .detail-price-value .product-discount{
+  color:#fff!important;
+  -webkit-text-fill-color:#fff!important;
+}
