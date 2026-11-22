@@ -349,11 +349,9 @@ body{background:#f4f5f7;color:#252a31}
           <div class="field"><label for="price">السعر</label><input id="price" placeholder="السعر عند الاستفسار"></div>
         <div class="field" style="grid-column:1/-1;padding:14px;border:1px solid #f0c9cd;border-radius:12px;background:#fff8f8">
           <label style="display:flex;align-items:center;gap:9px"><input id="offerTimerEnabled" type="checkbox" style="width:auto"> تفعيل عدّاد عرض لهذا المنتج</label>
-          <div class="offer-date-time-fields" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px">
-            <div><label for="offerEndDate">تاريخ انتهاء العرض</label><input id="offerEndDate" type="date" style="width:100%;min-width:0"></div>
-            <div><label for="offerEndTime">ساعة انتهاء العرض</label><input id="offerEndTime" type="time" style="width:100%;min-width:0"></div>
-          </div>
-          <small class="muted">اختر المنتج، فعّل العدّاد، ثم حدد اليوم والساعة. بعد الموعد ينتهي الخصم تلقائيًا.</small>
+          <label for="offerEndsAt" style="margin-top:10px">موعد انتهاء العرض</label>
+          <input id="offerEndsAt" type="datetime-local">
+          <small class="muted">اختر المنتج ثم فعّل العدّاد وحدد تاريخ ووقت الانتهاء. اتركه غير مفعّل إذا لا تريد عرض مؤقت.</small>
         </div>
           <div class="field"><label for="icon">رمز بديل</label><input id="icon" value="🔧"></div>
         </div>
@@ -707,7 +705,7 @@ function resetForm() {
   $("brandLogoStatus").textContent = "يتم حفظ اللوجو باسم البرند وإعادة استخدامه تلقائيًا مع باقي منتجات نفس الشركة.";
   $("pid").value = "";
   $("offerTimerEnabled").checked = false;
-  $("offerEndDate").value = "";\n  $("offerEndTime").value = "";
+  $("offerEndsAt").value = "";
   $("icon").value = "🔧";
   $("saveBtn").textContent = "حفظ المنتج";
   $("imagePreview").classList.add("hidden");
@@ -1685,9 +1683,7 @@ async function editProduct(id) {
   $("cat").value = product.cat || "عدد يدوية";
   $("price").value = product.price || "";
   $("offerTimerEnabled").checked = product.offerTimerEnabled === true;
-  const savedOfferDate = product.offerEndsAt && Number.isFinite(Date.parse(product.offerEndsAt)) ? new Date(product.offerEndsAt) : null;
-  $("offerEndDate").value = savedOfferDate ? new Date(savedOfferDate.getTime()-savedOfferDate.getTimezoneOffset()*60000).toISOString().slice(0,10) : "";
-  $("offerEndTime").value = savedOfferDate ? new Date(savedOfferDate.getTime()-savedOfferDate.getTimezoneOffset()*60000).toISOString().slice(11,16) : "";
+  $("offerEndsAt").value = product.offerEndsAt && Number.isFinite(Date.parse(product.offerEndsAt)) ? new Date(new Date(product.offerEndsAt).getTime()-new Date(product.offerEndsAt).getTimezoneOffset()*60000).toISOString().slice(0,16) : "";
   $("icon").value = product.icon || "🔧";
   $("featured").checked = product.featured === true;
   $("availability").value = ["available","unavailable","ask"].includes(product.availability) ? product.availability : (Number.isInteger(product.stock)&&product.stock===0 ? "unavailable" : "available");
@@ -2025,8 +2021,8 @@ $("productForm").addEventListener("submit", async function (event) {
       specs:collectSpecsText(),
       price:$("price").value.trim() || "السعر عند الاستفسار",
       discountPercent:previous ? Math.max(0,Math.min(90,Number(previous.discountPercent)||0)) : 0,
-      offerTimerEnabled:$("offerTimerEnabled").checked && !!$("offerEndDate").value && !!$("offerEndTime").value,
-      offerEndsAt:$("offerTimerEnabled").checked && $("offerEndDate").value && $("offerEndTime").value ? new Date($("offerEndDate").value+"T"+$("offerEndTime").value).toISOString() : "",
+      offerTimerEnabled:$("offerTimerEnabled").checked && !!$("offerEndsAt").value,
+      offerEndsAt:$("offerTimerEnabled").checked && $("offerEndsAt").value ? new Date($("offerEndsAt").value).toISOString() : "",
       icon:$("icon").value.trim() || "🔧",
       featured:$("featured").checked,
       availability:$("availability").value,
