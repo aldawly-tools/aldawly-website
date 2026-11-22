@@ -20,6 +20,6 @@
 
 /* Brand logo presentation inside the hero ticker */
 .dawly-brand-pill{overflow:hidden}
-.dawly-brand-pill img{display:block;width:auto;max-width:100%;height:auto;max-height:48px;object-fit:contain}
+.dawly-brand-pill img{display:block;width:auto;max-width:100%;height:auto;max-height:34px;max-width:85%;object-fit:contain}
 .dawly-brand-pill.has-text-fallback{font-weight:900}
-@media(max-width:600px){.dawly-brand-pill img{max-width:100%;max-height:42px}}
+@media(max-width:600px){.dawly-brand-pill img{max-width:100%;max-height:32px}}
