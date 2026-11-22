@@ -1,0 +1,9 @@
+/* Product likes */
+.dawly-like{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:34px;padding:6px 11px;border:1px solid #e4e7eb;border-radius:999px;background:#fff;color:#59616b;font:800 12px Cairo,Arial,sans-serif;cursor:pointer;transition:.18s}
+.dawly-like svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.dawly-like.is-liked{color:#d71920;border-color:#f1c5c8;background:#fff7f7}
+.dawly-like.is-liked svg{fill:#d71920;stroke:#d71920}
+.dawly-like:disabled{opacity:.6;cursor:wait}
+.dawly-like-wrap{display:flex;justify-content:flex-start;margin:8px 0 2px}
+.product-card .dawly-like-wrap{margin:7px 0}
+.dawly-detail-like{margin:12px 0 4px}
