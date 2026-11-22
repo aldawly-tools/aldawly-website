@@ -1,45 +1,35 @@
-/* Dawly dark graphite + red illuminated honeycomb background */
+/* Concrete / fine cement texture for Dawly products catalog */
 html, body {
-  background-color:#101113!important;
+  background-color:#a7a7a7!important;
   background-image:
-    radial-gradient(ellipse at 50% 45%,rgba(215,25,32,.13),transparent 62%),
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='260' viewBox='0 0 300 260'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop stop-color='%23232629'/%3E%3Cstop offset='.55' stop-color='%2317191b'/%3E%3Cstop offset='1' stop-color='%230d0e10'/%3E%3C/linearGradient%3E%3Cfilter id='glow' x='-80%25' y='-80%25' width='260%25' height='260%25'%3E%3CfeGaussianBlur stdDeviation='3' result='b'/%3E%3CfeMerge%3E%3CfeMergeNode in='b'/%3E%3CfeMergeNode in='SourceGraphic'/%3E%3C/feMerge%3E%3C/filter%3E%3Cpattern id='h' width='150' height='130' patternUnits='userSpaceOnUse'%3E%3Cpath d='M37.5 2 L112.5 2 L148 65 L112.5 128 L37.5 128 L2 65 Z' fill='url(%23g)' stroke='%23070809' stroke-width='5'/%3E%3Cpath d='M37.5 2 L112.5 2 L148 65' fill='none' stroke='%23ff171f' stroke-width='3' opacity='.92' filter='url(%23glow)'/%3E%3Cpath d='M2 65 L37.5 2' fill='none' stroke='%23530b0e' stroke-width='3'/%3E%3C/pattern%3E%3C/defs%3E%3Crect width='300' height='260' fill='%230b0c0e'/%3E%3Crect width='300' height='260' fill='url(%23h)'/%3E%3C/svg%3E");
-  background-size:auto,300px 260px!important;
-  background-position:center center!important;
+    radial-gradient(ellipse at 50% 35%,rgba(255,255,255,.18),rgba(45,45,45,.10)),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 420 420'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.82' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.34'/%3E%3C/svg%3E");
+  background-size:cover,420px 420px!important;
+  background-position:center top!important;
   background-repeat:repeat!important;
   background-attachment:fixed!important;
 }
-body::before{content:none!important;display:none!important}
-/* Keep catalog cards clean white and readable over the dark background */
+body::before {
+  content:"";
+  position:fixed;
+  inset:0;
+  z-index:-1;
+  pointer-events:none;
+  background:linear-gradient(135deg,rgba(255,255,255,.10),rgba(30,30,30,.08));
+}
+/* Product cards stay clean white above the textured concrete */
 html body #productGrid .product-card,
 html body .product-grid .product-card,
 html body article.product-card,
-html body .recently-viewed-grid .product-card{
+html body .recently-viewed-grid .product-card {
   background:#fff!important;
   color:#20252b!important;
-  border:1px solid #e4e7eb!important;
-  box-shadow:0 8px 24px rgba(0,0,0,.22)!important;
+  border:1px solid rgba(255,255,255,.9)!important;
+  box-shadow:0 5px 22px rgba(0,0,0,.18)!important;
 }
 html body #productGrid .product-card .product-info,
 html body .product-grid .product-card .product-info,
-html body article.product-card .product-info{
+html body article.product-card .product-info {
   background:#fff!important;
   color:#20252b!important;
-}
-html body #productGrid .product-card .product-name,
-html body #productGrid .product-card h3,
-html body .product-grid .product-card .product-name,
-html body article.product-card .product-name,
-html body article.product-card h3{
-  color:#20252b!important;
-}
-html body #productGrid .product-card .product-price,
-html body .product-grid .product-card .product-price,
-html body article.product-card .product-price{
-  color:#c8101e!important;
-}
-html body #productGrid .product-card .product-visual,
-html body .product-grid .product-card .product-visual,
-html body article.product-card .product-visual{
-  background:#fff!important;
 }
