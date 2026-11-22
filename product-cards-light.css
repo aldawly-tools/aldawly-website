@@ -37,3 +37,37 @@ html body .product-card .current-price{
 html body .product-card .product-visual{
   background:linear-gradient(145deg,#f7f8fa,#fff 72%,#fff6f6)!important;
 }
+
+
+/* Final override for catalog-specific dark panel rules (#productGrid .catalog-card). */
+html body #productGrid .catalog-card .product-info,
+html body #productGrid .catalog-card .product-info *:not(.stock-status):not(.button-primary):not(.product-category){
+  background-color:#fff!important;
+}
+html body #productGrid .catalog-card .product-info{
+  background:#fff!important;
+  color:#202832!important;
+  background-image:none!important;
+}
+html body #productGrid .catalog-card .product-name,
+html body #productGrid .catalog-card .product-name a,
+html body #productGrid .catalog-card .product-sku,
+html body #productGrid .catalog-card .product-description{
+  color:#202832!important;
+  -webkit-text-fill-color:#202832!important;
+  text-shadow:none!important;
+}
+html body #productGrid .catalog-card .product-price,
+html body #productGrid .catalog-card .product-price strong{
+  color:#c8102e!important;
+  -webkit-text-fill-color:#c8102e!important;
+  text-shadow:none!important;
+}
+html body #productGrid .catalog-card .product-card-status,
+html body #productGrid .catalog-card .product-category{
+  background:transparent!important;
+}
+html body #productGrid .catalog-card .product-card-status .stock-status{
+  background:#eaf7ef!important;
+  color:#187344!important;
+}
