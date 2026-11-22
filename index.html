@@ -381,7 +381,11 @@ main > #about{order:5!important}
   <link rel="stylesheet" href="homepage-compact.css?v=20261121-1">
 <link rel="stylesheet" href="dawly-all-tools-showcase.css?v=smoky-silver-glass-20261122-4">
 <link rel="stylesheet" href="liquid-glass-products.css?v=visible-glass-20261122-2">
-</head>
+<style>
+/* Ensure the offers destination is directly reachable from the mobile drawer */
+.mobile-menu-main-links .mobile-offers-link{color:#c8101e!important;font-weight:900}
+.mobile-menu-main-links .mobile-offers-link .red-mark{color:#c8101e!important;margin-left:7px}
+</style>\n</head>
 
 <body>
 <script id="remove-top-gap">
@@ -514,6 +518,7 @@ main > #about{order:5!important}
  <nav class="mobile-menu-main-links" aria-label="روابط الموقع">
   <a href="index.html">الرئيسية</a>
   <a href="products.html">كل المنتجات</a>
+  <a href="#products" class="mobile-offers-link"><span class="red-mark">٪</span> العروض</a>
   <a href="advisor.html">الدعم الفني</a>
   <a href="#contact">تواصل معنا</a>
   <a href="#about">عن الدولي</a>
