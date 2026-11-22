@@ -191,7 +191,7 @@ exports.notifyOrderOnTelegram = onDocumentCreated(
 
 
 // Secure product-photo analysis. Gemini key and admin allowlist stay server-side.
-const { onRequest } = require("firebase-functions/v2/https");
+
 const { getAuth } = require("firebase-admin/auth");
 const geminiApiKey = defineSecret("GEMINI_API_KEY");
 const storeAdminEmails = ["elgoharemahmoud@gmail.com", "ahmedelgohare90@gmail.com"];
