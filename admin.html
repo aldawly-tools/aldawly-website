@@ -607,11 +607,11 @@ renderCategorySpecs({},[]);
 
 function brandLogoDocumentId(brandName){
   const normalized=String(brandName||"").trim().toLocaleLowerCase("en")
-    .normalize("NFD").replace(/[\\u0300-\\u036f]/g,"").replace(/[^a-z0-9]/g,"");
+    .normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]/g,"");
   return "brand_logo_"+(normalized||"unknown").slice(0,110);
 }
 async function compressBrandLogo(file){
-  if(!file||!/^image\\/(png|jpeg|webp|svg\\+xml)$/i.test(file.type))throw new Error("اختر لوجو بصيغة PNG أو JPG أو WEBP أو SVG.");
+  if(!file||!/^image\/(png|jpeg|webp|svg\+xml)$/i.test(file.type))throw new Error("اختر لوجو بصيغة PNG أو JPG أو WEBP أو SVG.");
   if(file.size>8*1024*1024)throw new Error("حجم اللوجو كبير. الحد الأقصى 8 ميجابايت.");
   if(file.type==="image/svg+xml"){
     const raw=await readFileAsDataUrl(file);
@@ -630,8 +630,7 @@ async function compressBrandLogo(file){
 }
 async function findAndSaveOfficialBrandLogo(brandName) {
   const brand=String(brandName||"").trim(); if(!brand)return null;
-  const slug=encodeURIComponent(brand.toLocaleLowerCase("en")).replace(/%/g,"_").slice(0,110);
-  const logoId="brand_logo_"+slug, logoRef=doc(db,"productImages",logoId);
+  const logoId=brandLogoDocumentId(brand), logoRef=doc(db,"productImages",logoId);
   const existing=await getDoc(logoRef);
   if(existing.exists()&&String(existing.data().data||"").startsWith("data:image/"))return logoId;
   const statusNode=$("brandLogoStatus");
