@@ -66,7 +66,7 @@
         host.querySelectorAll('[data-brand-key="'+key+'"]').forEach(function(link){
           var img=link.querySelector("img");
           if(!img){img=document.createElement("img");img.alt=link.getAttribute("aria-hidden")==="true"?"":entry[1].name+" logo";img.loading="lazy";img.decoding="async";link.replaceChildren(img);}
-          img.src=meta.url;img.style.maxHeight=Math.max(16,Math.min(52,Number(meta.scale)||34))+"px";img.style.maxWidth="85%";link.classList.remove("has-text-fallback");
+          img.src=meta.url;img.style.width="120px";img.style.height="34px";img.style.maxWidth="78%";img.style.maxHeight="34px";img.style.objectFit="contain";img.style.objectPosition="center";link.classList.remove("has-text-fallback");
         });
       }).catch(function(error){console.warn("Saved brand logo could not be loaded:",key,error);});
     });
