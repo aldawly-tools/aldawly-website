@@ -456,4 +456,72 @@ html body .home-products-shelf .home-products-track > .home-shelf-card > .produc
   background:transparent!important;
 }
 </style>
+
+<style id="dawly-catalog-smoky-silver-final">
+/* Catalog only: dark smoky glass cards with a clean photo stage */
+html body #productGrid > .product-card,
+html body .product-grid > .product-card,
+html body .recently-viewed-grid > .product-card{
+  background:
+    radial-gradient(ellipse at 8% 0%,rgba(255,255,255,.16),transparent 42%),
+    linear-gradient(140deg,rgba(62,75,91,.84),rgba(24,35,49,.91) 55%,rgba(42,54,70,.86))!important;
+  border:1.5px solid rgba(236,244,255,.72)!important;
+  border-radius:20px!important;
+  box-shadow:
+    0 12px 28px rgba(9,16,26,.20),
+    inset 0 1px 0 rgba(255,255,255,.72),
+    inset 0 -1px 0 rgba(255,255,255,.16)!important;
+  -webkit-backdrop-filter:blur(22px) saturate(155%)!important;
+  backdrop-filter:blur(22px) saturate(155%)!important;
+}
+html body #productGrid > .product-card::before,
+html body .product-grid > .product-card::before,
+html body .recently-viewed-grid > .product-card::before{
+  background:
+    linear-gradient(125deg,rgba(255,255,255,.22),transparent 28%,transparent 72%,rgba(255,255,255,.10)),
+    radial-gradient(ellipse at 8% 0%,rgba(255,255,255,.15),transparent 38%)!important;
+}
+html body #productGrid .product-card .product-visual,
+html body .product-grid .product-card .product-visual,
+html body .recently-viewed-grid .product-card .product-visual{
+  background:linear-gradient(145deg,#fff 0%,#f5f7fa 58%,#e9edf2 100%)!important;
+  border-bottom:1px solid rgba(239,245,252,.76)!important;
+}
+html body #productGrid .product-card .product-visual img,
+html body .product-grid .product-card .product-visual img,
+html body .recently-viewed-grid .product-card .product-visual img{
+  object-fit:contain!important;
+  filter:none!important;
+  opacity:1!important;
+}
+html body #productGrid .product-card .product-info,
+html body .product-grid .product-card .product-info,
+html body .recently-viewed-grid .product-card .product-info{
+  background:transparent!important;
+  color:#f6f8fb!important;
+}
+html body #productGrid .product-card .product-name,
+html body #productGrid .product-card h3,
+html body .product-grid .product-card .product-name,
+html body .recently-viewed-grid .product-card .product-name{
+  color:#fff!important;
+}
+html body #productGrid .product-card .product-price,
+html body .product-grid .product-card .product-price,
+html body .recently-viewed-grid .product-card .product-price{
+  color:#ff6574!important;
+}
+html body #productGrid .product-card .product-card-status .stock-status,
+html body .product-grid .product-card .product-card-status .stock-status{
+  box-shadow:0 0 12px rgba(41,181,112,.18)!important;
+}
+@media(max-width:700px){
+ html body #productGrid > .product-card,
+ html body .product-grid > .product-card,
+ html body .recently-viewed-grid > .product-card{
+  border-radius:17px!important;
+ }
+}
+</style>
+
 </body></html>
