@@ -45,3 +45,44 @@
  .hero-shell .hero-copy{border-radius:18px!important;padding:20px 16px!important}
  .hero-shell .hero-photo{border-radius:16px!important}
 }
+
+
+/* Mobile hero correction: apply the glass to the actual grid shell */
+.hero-shell .hero-grid{
+  position:relative!important;
+  isolation:isolate!important;
+  background:
+    radial-gradient(ellipse at 10% 8%,rgba(255,255,255,.20),transparent 42%),
+    radial-gradient(ellipse at 95% 92%,rgba(214,20,42,.15),transparent 38%),
+    linear-gradient(135deg,rgba(41,53,69,.88),rgba(15,24,37,.86))!important;
+  border:1px solid rgba(240,247,255,.68)!important;
+  border-radius:28px!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.82),inset 0 -1px 0 rgba(255,255,255,.28)!important;
+  -webkit-backdrop-filter:blur(24px) saturate(165%)!important;
+  backdrop-filter:blur(24px) saturate(165%)!important;
+}
+.hero-shell .hero-copy{
+  background:linear-gradient(145deg,rgba(255,255,255,.14),rgba(255,255,255,.045) 58%,rgba(255,255,255,.10))!important;
+  border:0!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+}
+.hero-shell .hero-services{
+  background:transparent!important;
+}
+.hero-shell .hero-services .service-card{
+  background:linear-gradient(145deg,rgba(255,255,255,.13),rgba(255,255,255,.055))!important;
+  border:1px solid rgba(241,247,255,.45)!important;
+  border-radius:17px!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.42)!important;
+  -webkit-backdrop-filter:blur(18px) saturate(150%)!important;
+  backdrop-filter:blur(18px) saturate(150%)!important;
+}
+.hero-shell .hero-photo{
+  border:0!important;
+  border-radius:0!important;
+}
+@media(max-width:700px){
+ .hero-shell{background:transparent!important;padding:10px 0 12px!important}
+ .hero-shell .hero-grid{border-radius:24px!important}
+}
