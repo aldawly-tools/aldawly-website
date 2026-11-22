@@ -420,7 +420,7 @@
       const availabilityLabel = item.availability === "ask" ? '<span class="stock-status">استفسر عن التوفر</span>' : soldOut ? '<span class="stock-status out">غير متوفر حاليًا</span>' : '<span class="stock-status">متوفر — يُرجى التأكيد عند الطلب</span>';
       const pricing=productPricing(item);
       const shelfPrice=pricing.current===null?escapeHtml(formatPrice(item.price)):(pricing.percent?'<strong>'+escapeHtml(money(pricing.current))+'</strong><del>'+escapeHtml(money(pricing.base))+'</del><em class="product-discount">خصم '+pricing.percent+'%</em>':escapeHtml(formatPrice(item.price)));
-      const offerTimer=pricing.endsAt?'<div class="product-offer-countdown" data-offer-end="'+pricing.endsAt+'" aria-label="الوقت المتبقي للعرض">⏳ ينتهي العرض خلال <strong>--:--:--</strong></div>':"";
+      const offerTimer=pricing.endsAt?'<div  class="product-offer-countdown" data-offer-end="'+pricing.endsAt+'"><div class="offer-countdown-heading"><span>⏳ ينتهي العرض خلال</span><b>عرض محدود</b></div><div class="offer-countdown-units"><span><strong data-time-unit="days">00</strong><small>يوم</small></span><span><strong data-time-unit="hours">00</strong><small>ساعة</small></span><span><strong data-time-unit="minutes">00</strong><small>دقيقة</small></span><span><strong data-time-unit="seconds">00</strong><small>ثانية</small></span></div></div>':"";
       return '<article class="product-card home-shelf-card"><a class="product-visual product-open-link" href="' + url + '">' + image + '</a><div class="product-info"><span class="product-category">' + escapeHtml(displayBrand(productBrand(item)) || item.cat || "منتجات") + '</span><h3 class="product-name"><a href="' + url + '">' + escapeHtml(name) + '</a></h3><div class="product-card-status">' + availabilityLabel + '</div>'+offerTimer+'<span class="product-price' + ((item.price === null || item.price === undefined || item.price === "") ? ' price-on-request' : '') + '">' + shelfPrice + '<small>' + (item.price === null || item.price === undefined || item.price === "" ? 'السعر عند التواصل' : '') + '</small></span><button class="button-primary home-shelf-add product-add-cart-prominent' + (alreadyInCart ? ' is-in-cart' : '') + '" type="button" data-add="' + escapeHtml(item.id) + '"' + (soldOut || alreadyInCart ? ' disabled aria-disabled="true"' : '') + '>' + (soldOut ? 'غير متاح حاليًا' : alreadyInCart ? '<span>مضافة بالفعل</span>' : '<span class="add-cart-icon" aria-hidden="true">🛒</span><span>أضف إلى السلة</span>') + '</button><button class="quick-view-trigger" type="button" data-quick-view="' + escapeHtml(item.id) + '">معاينة سريعة</button></div></article>';
     }
     const featuredGrid = document.getElementById("featuredProductsGrid");
@@ -447,8 +447,8 @@
       const remaining=Number(node.dataset.offerEnd)-Date.now();
       if(remaining<=0){node.textContent="انتهى العرض";return;}
       const total=Math.floor(remaining/1000),days=Math.floor(total/86400),hours=Math.floor(total%86400/3600),minutes=Math.floor(total%3600/60),seconds=total%60;
-      const clock=(days?days+" يوم ":"")+String(hours).padStart(2,"0")+":"+String(minutes).padStart(2,"0")+":"+String(seconds).padStart(2,"0");
-      const strong=node.querySelector("strong");if(strong)strong.textContent=clock;
+      const values={days:days,hours:hours,minutes:minutes,seconds:seconds};
+      Object.keys(values).forEach(function(unit){const part=node.querySelector('[data-time-unit="'+unit+'"]');if(part)part.textContent=String(values[unit]).padStart(2,"0");});
     });
   }
   if(!window.__dawlyOfferCountdownTimer){window.__dawlyOfferCountdownTimer=setInterval(updateOfferCountdowns,1000);}
