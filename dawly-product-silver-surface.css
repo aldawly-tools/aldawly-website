@@ -1,0 +1,25 @@
+/* Dawly unified silver product-card surface */
+.product-grid .product-card,
+#featuredProductsGrid .product-card,
+#newArrivalsGrid .product-card,
+.home-products-shelf .product-card,
+.recently-viewed-grid .product-card {
+  background: linear-gradient(145deg,#f7f9fb 0%,#edf1f5 52%,#e4e9ef 100%) !important;
+  border: 1px solid #d9e0e7 !important;
+  box-shadow: 0 8px 22px rgba(35,48,62,.09), inset 0 1px 0 rgba(255,255,255,.9) !important;
+}
+.product-grid .product-card .product-visual,
+#featuredProductsGrid .product-card .product-visual,
+#newArrivalsGrid .product-card .product-visual,
+.home-products-shelf .product-card .product-visual,
+.recently-viewed-grid .product-card .product-visual {
+  background: linear-gradient(145deg,#fbfcfd 0%,#eef2f6 100%) !important;
+  border-bottom: 1px solid rgba(205,214,223,.8) !important;
+}
+.product-grid .product-card .product-info,
+#featuredProductsGrid .product-card .product-info,
+#newArrivalsGrid .product-card .product-info,
+.home-products-shelf .product-card .product-info,
+.recently-viewed-grid .product-card .product-info {
+  background: linear-gradient(145deg,rgba(247,249,251,.94),rgba(228,234,240,.96)) !important;
+}
