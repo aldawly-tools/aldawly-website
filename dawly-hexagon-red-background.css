@@ -1,18 +1,11 @@
-/* Dawly white hexagon background — robust page canvas override */
-html {
-  background-color: #ffffff !important;
-}
-html body {
-  background-color: #ffffff !important;
+/* White 3D polygon-panel background inspired by the supplied reference */
+html, body {
+  background-color:#f7f7f7!important;
   background-image:
-    radial-gradient(ellipse at 50% 8%, rgba(215,25,32,.035), transparent 58%),
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='104' height='90' viewBox='0 0 104 90'%3E%3Cpath d='M26 1 L51 15.5 L51 44.5 L26 59 L1 44.5 L1 15.5 Z M78 1 L103 15.5 L103 44.5 L78 59 L53 44.5 L53 15.5 Z M52 46 L77 60.5 L77 89.5 L52 104 L27 89.5 L27 60.5 Z' fill='%23f8f9fb' fill-opacity='.72' stroke='%23dfe3e8' stroke-opacity='.68' stroke-width='1.1'/%3E%3C/svg%3E") !important;
-  background-size: auto, 104px 90px !important;
-  background-position: center top, center center !important;
-  background-repeat: no-repeat, repeat !important;
-  background-attachment: fixed, fixed !important;
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 768 1536'%3E%3Cdefs%3E%3ClinearGradient id='a' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop stop-color='%23fff'/%3E%3Cstop offset='1' stop-color='%23e7e7e7'/%3E%3C/linearGradient%3E%3ClinearGradient id='b' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop stop-color='%23f4f4f4'/%3E%3Cstop offset='.55' stop-color='%23fff'/%3E%3Cstop offset='1' stop-color='%23dcdcdc'/%3E%3C/linearGradient%3E%3Cfilter id='s'%3E%3CfeGaussianBlur stdDeviation='2'/%3E%3C/filter%3E%3C/defs%3E%3Crect width='768' height='1536' fill='%23f4f4f4'/%3E%3Cg stroke='%23d0d0d0' stroke-width='2' stroke-linejoin='round'%3E%3Cpath fill='url(%23a)' d='M0 0H180L250 180 120 320 0 270Z'/%3E%3Cpath fill='url(%23b)' d='M180 0H470L460 145 250 180Z'/%3E%3Cpath fill='url(%23a)' d='M470 0H768V210L590 250 460 145Z'/%3E%3Cpath fill='url(%23b)' d='M0 270L120 320 150 570 0 650Z'/%3E%3Cpath fill='url(%23a)' d='M120 320L250 180 460 145 590 250 470 510 150 570Z'/%3E%3Cpath fill='url(%23b)' d='M590 250L768 210V570L620 620 470 510Z'/%3E%3Cpath fill='url(%23a)' d='M0 650L150 570 330 720 210 920 0 850Z'/%3E%3Cpath fill='url(%23b)' d='M150 570L470 510 620 620 520 870 330 720Z'/%3E%3Cpath fill='url(%23a)' d='M620 620L768 570V900L600 970 520 870Z'/%3E%3Cpath fill='url(%23b)' d='M0 850L210 920 330 1120 120 1250 0 1180Z'/%3E%3Cpath fill='url(%23a)' d='M210 920L330 720 520 870 600 970 470 1210 330 1120Z'/%3E%3Cpath fill='url(%23b)' d='M600 970L768 900V1210L650 1320 470 1210Z'/%3E%3Cpath fill='url(%23a)' d='M0 1180L120 1250 180 1536H0Z'/%3E%3Cpath fill='url(%23b)' d='M120 1250L330 1120 470 1210 520 1536H180Z'/%3E%3Cpath fill='url(%23a)' d='M470 1210L650 1320 768 1210V1536H520Z'/%3E%3C/g%3E%3Cg fill='none' stroke='%23fff' stroke-width='5' opacity='.8'%3E%3Cpath d='M5 3L180 3 250 180 460 145 470 4M122 321L250 183 460 148 590 253 768 212M151 572L470 512 620 622 768 572M211 923L330 723 520 873 600 973 768 902M121 1253L330 1123 470 1213 650 1323'/%3E%3C/g%3E%3C/svg%3E");
+  background-size:cover!important;
+  background-position:center top!important;
+  background-repeat:repeat-y!important;
+  background-attachment:fixed!important;
 }
-html body::before {
-  content: none !important;
-  display: none !important;
-}
+body::before{content:none!important;display:none!important}
