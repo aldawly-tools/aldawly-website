@@ -190,3 +190,98 @@
 .dawly-showcase-content h2 span{border-radius:16px!important;box-shadow:0 10px 28px rgba(207,12,35,.30),inset 0 1px 0 rgba(255,255,255,.25)!important;transform:none!important}
 .dawly-showcase-cta{border-radius:22px!important;min-height:clamp(54px,7vw,82px)!important;box-shadow:0 10px 30px rgba(218,15,39,.42),inset 0 2px 0 rgba(255,255,255,.36)!important}
 @media(max-width:700px){.dawly-all-tools{padding:12px 0 20px!important}.dawly-all-tools .dawly-showcase{aspect-ratio:.82/1!important;border-radius:25px!important}.dawly-all-tools .dawly-showcase:after{border-radius:21px!important}.dawly-all-tools .dawly-showcase-content{padding:25px 14px!important}.dawly-showcase-content h2{font-size:clamp(27px,8vw,39px)!important}.dawly-showcase-content p{font-size:clamp(13px,3.9vw,17px)!important}.dawly-showcase-cta{border-radius:17px!important;min-height:54px!important}}
+
+
+/* FINAL HERO LAYOUT CORRECTION: centered composition matching supplied reference */
+.dawly-all-tools{
+  background:
+    radial-gradient(ellipse at 0% 42%,rgba(210,12,35,.48),transparent 33%),
+    radial-gradient(ellipse at 100% 55%,rgba(205,12,35,.38),transparent 30%),
+    linear-gradient(135deg,#080d14 0%,#182333 52%,#090e15 100%)!important;
+  padding:28px 0 34px!important;
+}
+.dawly-all-tools .container{width:min(96%,1240px)!important}
+.dawly-all-tools .dawly-showcase{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  width:100%!important;
+  max-width:1240px!important;
+  min-height:0!important;
+  height:auto!important;
+  aspect-ratio:1.11/1!important;
+  margin:0 auto!important;
+  padding:0!important;
+  overflow:hidden!important;
+  border:2px solid rgba(235,244,255,.88)!important;
+  border-radius:clamp(24px,4vw,48px)!important;
+  background:
+    radial-gradient(ellipse at 5% 8%,rgba(255,112,135,.42),transparent 31%),
+    radial-gradient(ellipse at 98% 12%,rgba(194,222,255,.30),transparent 28%),
+    radial-gradient(ellipse at 95% 96%,rgba(255,82,112,.36),transparent 30%),
+    radial-gradient(ellipse at 4% 100%,rgba(185,213,246,.24),transparent 26%),
+    linear-gradient(135deg,rgba(80,86,105,.84),rgba(28,38,54,.91) 50%,rgba(59,69,87,.84))!important;
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,.45),
+    0 22px 64px rgba(0,0,0,.48),
+    0 0 34px rgba(220,235,255,.28),
+    0 0 50px rgba(210,14,42,.24),
+    inset 0 2px 4px rgba(255,255,255,.9),
+    inset 0 -3px 10px rgba(255,255,255,.22)!important;
+  -webkit-backdrop-filter:blur(28px) saturate(150%)!important;
+  backdrop-filter:blur(28px) saturate(150%)!important;
+}
+.dawly-all-tools .dawly-showcase:before{
+  content:""!important;display:block!important;position:absolute!important;
+  inset:0!important;z-index:0!important;pointer-events:none!important;
+  background:
+    linear-gradient(125deg,rgba(255,255,255,.24),transparent 25%,transparent 70%,rgba(255,255,255,.14)),
+    radial-gradient(ellipse at 0% 0%,rgba(255,255,255,.16),transparent 24%),
+    radial-gradient(ellipse at 100% 100%,rgba(255,255,255,.12),transparent 24%)!important;
+}
+.dawly-all-tools .dawly-showcase:after{
+  content:""!important;display:block!important;position:absolute!important;
+  inset:4px!important;z-index:0!important;pointer-events:none!important;
+  border:1px solid rgba(255,255,255,.52)!important;
+  border-radius:calc(clamp(24px,4vw,48px) - 5px)!important;
+  box-shadow:inset 0 0 24px rgba(255,255,255,.16),0 0 15px rgba(218,235,255,.28)!important;
+  background:linear-gradient(115deg,rgba(255,255,255,.10),transparent 20%,transparent 78%,rgba(255,255,255,.10))!important;
+}
+.dawly-all-tools .dawly-showcase-content{
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  justify-content:center!important;
+  position:relative!important;
+  z-index:1!important;
+  width:100%!important;
+  max-width:1100px!important;
+  margin:0 auto!important;
+  padding:clamp(24px,4vw,58px)!important;
+  text-align:center!important;
+  color:#fff!important;
+}
+.dawly-showcase-kicker{justify-content:center!important;font-size:clamp(12px,1.6vw,22px)!important;margin-bottom:16px!important}
+.dawly-showcase-kicker:before{width:38px!important;height:7px!important}
+.dawly-showcase-content h2{font-size:clamp(34px,6.3vw,82px)!important;line-height:1.25!important;margin:0 0 18px!important;text-align:center!important}
+.dawly-showcase-content h2 span{padding:2px 22px 8px!important;border-radius:14px!important}
+.dawly-showcase-content p{max-width:1050px!important;font-size:clamp(17px,3vw,36px)!important;line-height:1.8!important;margin:0 auto 26px!important;text-align:center!important}
+.dawly-showcase-brands{justify-content:center!important;gap:18px!important;margin:0 auto 24px!important}
+.dawly-showcase-brands span{font-size:clamp(17px,2.7vw,32px)!important;padding:10px 22px!important;border-radius:17px!important}
+.dawly-showcase-cta{min-height:clamp(60px,8vw,104px)!important;padding:0 clamp(24px,5vw,64px)!important;font-size:clamp(20px,3.5vw,42px)!important;border-radius:24px!important}
+.dawly-showcase-note{font-size:clamp(14px,2.5vw,30px)!important;margin-top:22px!important;text-align:center!important}
+@media(max-width:700px){
+ .dawly-all-tools{padding:14px 0 20px!important}
+ .dawly-all-tools .container{width:94%!important}
+ .dawly-all-tools .dawly-showcase{aspect-ratio:.88/1!important;border-radius:25px!important}
+ .dawly-all-tools .dawly-showcase:after{border-radius:20px!important}
+ .dawly-all-tools .dawly-showcase-content{padding:24px 14px!important}
+ .dawly-showcase-kicker{font-size:11px!important;margin-bottom:12px!important}
+ .dawly-showcase-content h2{font-size:clamp(29px,8.3vw,44px)!important;line-height:1.35!important;margin-bottom:14px!important}
+ .dawly-showcase-content h2 span{padding:1px 13px 5px!important;border-radius:10px!important}
+ .dawly-showcase-content p{font-size:clamp(14px,4vw,19px)!important;line-height:1.8!important;margin-bottom:18px!important}
+ .dawly-showcase-brands{gap:8px!important;margin-bottom:18px!important}
+ .dawly-showcase-brands span{font-size:clamp(14px,4vw,19px)!important;padding:7px 12px!important;border-radius:12px!important}
+ .dawly-showcase-cta{font-size:clamp(17px,4.7vw,22px)!important;min-height:58px!important;padding:0 20px!important;border-radius:17px!important}
+ .dawly-showcase-note{font-size:clamp(12px,3.3vw,16px)!important;margin-top:15px!important}
+}
