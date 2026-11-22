@@ -108,3 +108,42 @@ button.active,.filter-chip.active,.category-chip.active,
   background:rgba(13,19,27,.97)!important;
  }
 }
+
+
+/* READABILITY FIX — product titles and descriptions on charcoal background */
+#productGrid .product-card,
+#featuredProductsGrid .product-card,
+#newArrivalsGrid .product-card,
+.home-products-shelf .home-shelf-card,
+.product-card.home-shelf-card{
+ color:#f3f5f8!important;
+}
+#productGrid .product-card :is(h1,h2,h3,h4,p),
+#featuredProductsGrid .product-card :is(h1,h2,h3,h4,p),
+#newArrivalsGrid .product-card :is(h1,h2,h3,h4,p),
+.home-products-shelf .home-shelf-card :is(h1,h2,h3,h4,p),
+.product-card .product-info :is(h1,h2,h3,h4,p),
+.product-card .product-info :is(.title,.name,.description,.product-desc,.product-meta,.product-title,.product-name),
+.home-shelf-card .product-info :is(.title,.name,.description,.product-desc,.product-meta,.product-title,.product-name){
+ color:#edf1f6!important;
+ opacity:1!important;
+ text-shadow:0 1px 2px rgba(0,0,0,.35)!important;
+}
+#productGrid .product-card .product-info,
+#featuredProductsGrid .product-card .product-info,
+#newArrivalsGrid .product-card .product-info,
+.home-products-shelf .home-shelf-card .product-info{
+ color:#edf1f6!important;
+}
+#productGrid .product-card .product-info p,
+.home-products-shelf .home-shelf-card .product-info p{
+ color:#c5ced8!important;
+}
+#productGrid .product-card .product-price,
+#featuredProductsGrid .product-card .product-price,
+#newArrivalsGrid .product-card .product-price,
+.home-products-shelf .home-shelf-card .product-price,
+.product-card .price,.product-card .current-price{
+ color:#ff5362!important;
+ opacity:1!important;
+}
