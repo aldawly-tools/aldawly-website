@@ -7276,3 +7276,72 @@ article.product-card.home-shelf-card{
 
 /* User-requested: remove brand search field from catalog filter */
 .brand-filter-search{display:none!important}
+
+
+/* DAWLY: remove the dark navy product-card body completely */
+#productGrid article.product-card,
+#featuredProductsGrid article.product-card,
+#newArrivalsGrid article.product-card,
+.recently-viewed-grid article.product-card,
+.home-products-shelf article.home-shelf-card,
+article.product-card.home-shelf-card,
+.product-card,
+.home-shelf-card{
+  background:#fff!important;
+  background-image:none!important;
+  color:#202832!important;
+}
+#productGrid article.product-card .product-info,
+#featuredProductsGrid article.product-card .product-info,
+#newArrivalsGrid article.product-card .product-info,
+.recently-viewed-grid article.product-card .product-info,
+.home-products-shelf article.home-shelf-card .product-info,
+article.product-card.home-shelf-card .product-info,
+.product-card .product-info,
+.home-shelf-card .product-info{
+  background:#fff!important;
+  background-image:none!important;
+  color:#202832!important;
+}
+#productGrid article.product-card .product-name,
+#featuredProductsGrid article.product-card .product-name,
+#newArrivalsGrid article.product-card .product-name,
+.recently-viewed-grid article.product-card .product-name,
+.home-products-shelf article.home-shelf-card .product-name,
+.product-card .product-name{
+  color:#202832!important;
+}
+#productGrid article.product-card .product-description,
+#featuredProductsGrid article.product-card .product-description,
+#newArrivalsGrid article.product-card .product-description,
+.recently-viewed-grid article.product-card .product-description,
+.home-products-shelf article.home-shelf-card .product-description,
+.product-card .product-description{
+  color:#59636e!important;
+}
+#productGrid article.product-card .product-category,
+#featuredProductsGrid article.product-card .product-category,
+#newArrivalsGrid article.product-card .product-category,
+.recently-viewed-grid article.product-card .product-category,
+.home-products-shelf article.home-shelf-card .product-category,
+.product-card .product-category{
+  color:#a90f25!important;
+}
+#productGrid article.product-card .product-meta,
+#featuredProductsGrid article.product-card .product-meta,
+#newArrivalsGrid article.product-card .product-meta,
+.recently-viewed-grid article.product-card .product-meta,
+.home-products-shelf article.home-shelf-card .product-meta,
+.product-card .product-meta{
+  background:#fff!important;
+  border-color:#e6e9ed!important;
+  color:#202832!important;
+}
+#productGrid article.product-card .product-price,
+#featuredProductsGrid article.product-card .product-price,
+#newArrivalsGrid article.product-card .product-price,
+.recently-viewed-grid article.product-card .product-price,
+.home-products-shelf article.home-shelf-card .product-price,
+.product-card .product-price{
+  color:#c8102e!important;
+}
