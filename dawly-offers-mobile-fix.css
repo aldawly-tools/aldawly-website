@@ -1,0 +1,22 @@
+/* Dawly offers: one full-width product card on mobile when only one offer is active. */
+@media (max-width:700px){
+  html body #homeOffers .home-offers-grid{
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr)!important;
+    gap:14px!important;
+    width:100%!important;
+  }
+  html body #homeOffers .home-offers-grid > .product-card{
+    width:100%!important;
+    min-width:0!important;
+    max-width:none!important;
+    grid-column:1 / -1!important;
+    justify-self:stretch!important;
+  }
+  html body #homeOffers .home-offers-grid > .product-card .product-visual{
+    height:clamp(220px,58vw,300px)!important;
+  }
+  html body #homeOffers .home-offers-grid > .product-card .product-info{
+    padding:15px!important;
+  }
+}
