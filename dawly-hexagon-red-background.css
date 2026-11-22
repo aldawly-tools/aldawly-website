@@ -1,11 +1,45 @@
-/* White 3D polygon-panel background inspired by the supplied reference */
+/* Dawly dark graphite + red illuminated honeycomb background */
 html, body {
-  background-color:#f7f7f7!important;
+  background-color:#101113!important;
   background-image:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 768 1536'%3E%3Cdefs%3E%3ClinearGradient id='a' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop stop-color='%23fff'/%3E%3Cstop offset='1' stop-color='%23e7e7e7'/%3E%3C/linearGradient%3E%3ClinearGradient id='b' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop stop-color='%23f4f4f4'/%3E%3Cstop offset='.55' stop-color='%23fff'/%3E%3Cstop offset='1' stop-color='%23dcdcdc'/%3E%3C/linearGradient%3E%3Cfilter id='s'%3E%3CfeGaussianBlur stdDeviation='2'/%3E%3C/filter%3E%3C/defs%3E%3Crect width='768' height='1536' fill='%23f4f4f4'/%3E%3Cg stroke='%23d0d0d0' stroke-width='2' stroke-linejoin='round'%3E%3Cpath fill='url(%23a)' d='M0 0H180L250 180 120 320 0 270Z'/%3E%3Cpath fill='url(%23b)' d='M180 0H470L460 145 250 180Z'/%3E%3Cpath fill='url(%23a)' d='M470 0H768V210L590 250 460 145Z'/%3E%3Cpath fill='url(%23b)' d='M0 270L120 320 150 570 0 650Z'/%3E%3Cpath fill='url(%23a)' d='M120 320L250 180 460 145 590 250 470 510 150 570Z'/%3E%3Cpath fill='url(%23b)' d='M590 250L768 210V570L620 620 470 510Z'/%3E%3Cpath fill='url(%23a)' d='M0 650L150 570 330 720 210 920 0 850Z'/%3E%3Cpath fill='url(%23b)' d='M150 570L470 510 620 620 520 870 330 720Z'/%3E%3Cpath fill='url(%23a)' d='M620 620L768 570V900L600 970 520 870Z'/%3E%3Cpath fill='url(%23b)' d='M0 850L210 920 330 1120 120 1250 0 1180Z'/%3E%3Cpath fill='url(%23a)' d='M210 920L330 720 520 870 600 970 470 1210 330 1120Z'/%3E%3Cpath fill='url(%23b)' d='M600 970L768 900V1210L650 1320 470 1210Z'/%3E%3Cpath fill='url(%23a)' d='M0 1180L120 1250 180 1536H0Z'/%3E%3Cpath fill='url(%23b)' d='M120 1250L330 1120 470 1210 520 1536H180Z'/%3E%3Cpath fill='url(%23a)' d='M470 1210L650 1320 768 1210V1536H520Z'/%3E%3C/g%3E%3Cg fill='none' stroke='%23fff' stroke-width='5' opacity='.8'%3E%3Cpath d='M5 3L180 3 250 180 460 145 470 4M122 321L250 183 460 148 590 253 768 212M151 572L470 512 620 622 768 572M211 923L330 723 520 873 600 973 768 902M121 1253L330 1123 470 1213 650 1323'/%3E%3C/g%3E%3C/svg%3E");
-  background-size:cover!important;
-  background-position:center top!important;
-  background-repeat:repeat-y!important;
+    radial-gradient(ellipse at 50% 45%,rgba(215,25,32,.13),transparent 62%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='260' viewBox='0 0 300 260'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop stop-color='%23232629'/%3E%3Cstop offset='.55' stop-color='%2317191b'/%3E%3Cstop offset='1' stop-color='%230d0e10'/%3E%3C/linearGradient%3E%3Cfilter id='glow' x='-80%25' y='-80%25' width='260%25' height='260%25'%3E%3CfeGaussianBlur stdDeviation='3' result='b'/%3E%3CfeMerge%3E%3CfeMergeNode in='b'/%3E%3CfeMergeNode in='SourceGraphic'/%3E%3C/feMerge%3E%3C/filter%3E%3Cpattern id='h' width='150' height='130' patternUnits='userSpaceOnUse'%3E%3Cpath d='M37.5 2 L112.5 2 L148 65 L112.5 128 L37.5 128 L2 65 Z' fill='url(%23g)' stroke='%23070809' stroke-width='5'/%3E%3Cpath d='M37.5 2 L112.5 2 L148 65' fill='none' stroke='%23ff171f' stroke-width='3' opacity='.92' filter='url(%23glow)'/%3E%3Cpath d='M2 65 L37.5 2' fill='none' stroke='%23530b0e' stroke-width='3'/%3E%3C/pattern%3E%3C/defs%3E%3Crect width='300' height='260' fill='%230b0c0e'/%3E%3Crect width='300' height='260' fill='url(%23h)'/%3E%3C/svg%3E");
+  background-size:auto,300px 260px!important;
+  background-position:center center!important;
+  background-repeat:repeat!important;
   background-attachment:fixed!important;
 }
 body::before{content:none!important;display:none!important}
+/* Keep catalog cards clean white and readable over the dark background */
+html body #productGrid .product-card,
+html body .product-grid .product-card,
+html body article.product-card,
+html body .recently-viewed-grid .product-card{
+  background:#fff!important;
+  color:#20252b!important;
+  border:1px solid #e4e7eb!important;
+  box-shadow:0 8px 24px rgba(0,0,0,.22)!important;
+}
+html body #productGrid .product-card .product-info,
+html body .product-grid .product-card .product-info,
+html body article.product-card .product-info{
+  background:#fff!important;
+  color:#20252b!important;
+}
+html body #productGrid .product-card .product-name,
+html body #productGrid .product-card h3,
+html body .product-grid .product-card .product-name,
+html body article.product-card .product-name,
+html body article.product-card h3{
+  color:#20252b!important;
+}
+html body #productGrid .product-card .product-price,
+html body .product-grid .product-card .product-price,
+html body article.product-card .product-price{
+  color:#c8101e!important;
+}
+html body #productGrid .product-card .product-visual,
+html body .product-grid .product-card .product-visual,
+html body article.product-card .product-visual{
+  background:#fff!important;
+}
