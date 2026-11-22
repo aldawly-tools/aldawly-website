@@ -134,9 +134,13 @@
     const galleryControls = uniqueGallery.length > 1 ? '<button class="detail-gallery-nav prev" type="button" data-gallery-step="-1" hidden aria-label="الصورة السابقة">‹</button><button class="detail-gallery-nav next" type="button" data-gallery-step="1" hidden aria-label="الصورة التالية">›</button>' : '';
     const brand = item.brand ? escapeHtml(displayBrand(item.brand)) + ' · ' : "";
     const basePrice = parsePrice(item.price);
-    const discountPercent = Math.max(0,Math.min(90,Number(item.discountPercent)||0));
+    const timerEnabled=item.offerTimerEnabled===true;
+    const offerEndsAt=timerEnabled?Date.parse(item.offerEndsAt||""):NaN;
+    const offerExpired=timerEnabled&&(!Number.isFinite(offerEndsAt)||offerEndsAt<=Date.now());
+    const discountPercent = offerExpired?0:Math.max(0,Math.min(90,Number(item.discountPercent)||0));
     const finalPrice = basePrice===null?null:(discountPercent?Math.round(basePrice*(1-discountPercent/100)*100)/100:basePrice);
     const price = finalPrice===null?escapeHtml(formatPrice(item.price)):(discountPercent?'<strong>'+escapeHtml(money(finalPrice))+'</strong><del>'+escapeHtml(money(basePrice))+'</del><em class="product-discount">خصم '+discountPercent+'%</em>':escapeHtml(money(finalPrice)));
+    const offerTimerHtml=Number.isFinite(offerEndsAt)&&!offerExpired?'<div id="detailOfferCountdown" data-offer-end="'+offerEndsAt+'" style="margin:12px 0;padding:11px 14px;border-radius:10px;background:#fff1f1;color:#b71920;font-weight:800">⏳ العرض ينتهي خلال <strong style="direction:ltr;display:inline-block;font-variant-numeric:tabular-nums">--:--:--</strong></div>':"";
     const stockKnown = Number.isInteger(item.stock) && item.stock >= 0;
     const stockHtml = stockKnown
       ? (item.stock === 0
@@ -167,7 +171,7 @@
       '<h1 class="product-detail-title">' + escapeHtml(name) + '</h1>' +
       '<div class="product-view-count" data-product-view-count="' + escapeHtml(item.id) + '" style="display:inline-flex;align-items:center;gap:7px;margin:5px 0 12px;padding:6px 11px;border:1px solid #e6e9ed;border-radius:20px;background:#f8fafc;color:#58616b;font-size:12px;font-weight:800"><span aria-hidden="true">👁</span><span>المشاهدات: </span><strong data-view-number>—</strong></div>' +
       '<p class="product-detail-description">' + escapeHtml(cleanProductCopy(item.desc || "للاستفسار عن مواصفات المنتج وتفاصيله، تواصل معنا مباشرة.")) + '</p>' +
-      '<div class="product-detail-price"><span class="detail-price-value">' + price + '</span><small>' + (formatPrice(item.price).startsWith("EGP ") ? 'السعر بالجنيه المصري' : 'يُرجى تأكيد السعر عند التواصل') + '</small></div>' + stockHtml +
+      offerTimerHtml + '<div class="product-detail-price"><span class="detail-price-value">' + price + '</span><small>' + (formatPrice(item.price).startsWith("EGP ") ? 'السعر بالجنيه المصري' : 'يُرجى تأكيد السعر عند التواصل') + '</small></div>' + stockHtml +
       '<div class="product-detail-actions product-detail-actions-compact">' +
       '<button class="button-primary detail-order-now" type="button" data-detail-order-now="' + escapeHtml(item.id) + '"' + (stockKnown && item.stock === 0 ? ' disabled aria-disabled="true"' : '') + '><span class="detail-action-icon" aria-hidden="true">🛒</span><span>' + (stockKnown && item.stock === 0 ? 'غير متاح حاليًا' : 'أكمل طلبك الآن') + '</span></button>' +
 
@@ -497,6 +501,16 @@
       alert(copied ? "تم نسخ تفاصيل المنتج والرابط. يمكنك لصقها في واتساب أو فيسبوك." : "تعذر النسخ تلقائيًا. انسخ رابط المنتج من شريط العنوان.");
     });
   });
+
+  function updateDetailOfferCountdown(){
+    const node=document.getElementById("detailOfferCountdown");if(!node)return;
+    const remaining=Number(node.dataset.offerEnd)-Date.now();
+    if(remaining<=0){node.textContent="انتهى العرض";return;}
+    const total=Math.floor(remaining/1000),days=Math.floor(total/86400),hours=Math.floor(total%86400/3600),minutes=Math.floor(total%3600/60),seconds=total%60;
+    const clock=(days?days+" يوم ":"")+String(hours).padStart(2,"0")+":"+String(minutes).padStart(2,"0")+":"+String(seconds).padStart(2,"0");
+    const strong=node.querySelector("strong");if(strong)strong.textContent=clock;
+  }
+  window.setInterval(updateDetailOfferCountdown,1000);
 
   window.addEventListener("dawly-products-updated", function (event) {
     if (!Array.isArray(event.detail)) return;
