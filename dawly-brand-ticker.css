@@ -1,0 +1,19 @@
+/* Dynamic, selectable brand ticker in the homepage showcase */
+.dawly-brand-marquee{width:100%;max-width:100%;overflow:hidden;margin:22px 0 18px;direction:ltr;position:relative;mask-image:linear-gradient(90deg,transparent,#000 5%,#000 95%,transparent)}
+.dawly-showcase-brands{display:flex;align-items:center;gap:14px;width:max-content;min-width:max-content;direction:ltr;animation:dawlyBrandFlow 34s linear infinite;will-change:transform;padding:4px 2px}
+.dawly-brand-marquee:hover .dawly-showcase-brands,.dawly-brand-marquee:focus-within .dawly-showcase-brands{animation-play-state:paused}
+.dawly-brand-pill{display:inline-flex;align-items:center;justify-content:center;min-width:150px;height:72px;padding:0 26px;border-radius:28px;background:#fff;color:#20252b;text-decoration:none;font-family:Arial,sans-serif;font-size:clamp(21px,2.2vw,29px);font-weight:900;letter-spacing:-.4px;white-space:nowrap;box-shadow:0 8px 22px rgba(0,0,0,.13);border:1px solid rgba(255,255,255,.9);transition:transform .2s ease,box-shadow .2s ease,color .2s ease}
+.dawly-brand-pill:hover,.dawly-brand-pill:focus-visible{transform:translateY(-3px);box-shadow:0 12px 26px rgba(0,0,0,.2);color:#c8101e;outline:2px solid #c8101e;outline-offset:2px}
+.dawly-brand-pill[data-brand-key="wurth"]{color:#171d25}
+.dawly-brand-pill[data-brand-key="wera"]{color:#008e65}
+.dawly-brand-pill[data-brand-key="knipex"]{color:#d71920}
+.dawly-brand-pill[data-brand-key="bosch"]{color:#e31e24}
+.dawly-brand-pill[data-brand-key="beta"]{color:#d71920}
+.dawly-brand-pill[data-brand-key="makita"]{color:#087b43}
+.dawly-brand-pill[data-brand-key="dewalt"]{color:#171717}
+.dawly-brand-pill[data-brand-key="milwaukee"]{color:#d71920}
+.dawly-brand-pill[data-brand-key="hilti"]{color:#d71920}
+.dawly-brand-pill[data-brand-key="bahco"]{color:#e94b16}
+@keyframes dawlyBrandFlow{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@media(max-width:600px){.dawly-brand-marquee{margin:17px 0 14px}.dawly-showcase-brands{gap:10px;animation-duration:27s}.dawly-brand-pill{min-width:122px;height:60px;padding:0 19px;border-radius:23px;font-size:21px}}
+@media(prefers-reduced-motion:reduce){.dawly-showcase-brands{animation:none;overflow-x:auto}.dawly-brand-marquee{mask-image:none}}
