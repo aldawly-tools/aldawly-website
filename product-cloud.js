@@ -80,7 +80,8 @@ if (!config.apiKey || !config.projectId) {
         if (saved) return saved;
         const snapshot = await getDoc(doc(db, "productImages", key));
         const url = snapshot.exists() ? String(snapshot.data().data || "") : "";
-        if (url) await saveImage(key, url);
+        if (url) saveImage(key, url).catch(function() {});
+        // Show the downloaded image immediately; persist it in IndexedDB in the background.
         return url;
       })().catch(function(error) {
         imageCache.delete(key);
