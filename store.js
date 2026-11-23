@@ -157,6 +157,12 @@
         }, {rootMargin:"240px"});
       }
       images.forEach(function (image) {
+        if (image.dataset.cloudRequested === "1") return;
+        if (image.loading === "eager" || image.fetchPriority === "high") {
+          image.dataset.cloudRequested = "1";
+          loadImage(image);
+          return;
+        }
         if (image.dataset.cloudObserved === "1") return;
         image.dataset.cloudObserved = "1";
         cloudImageObserver.observe(image);
@@ -679,17 +685,21 @@
       ? 'لا توجد منتجات مسجلة لماركة ' + escapeHtml(activeBrand) + ' حاليًا.'
       : "لا توجد منتجات مطابقة.";
     const shown = filtered.slice(0, visibleProductCount);
-    grid.innerHTML = shown.map(function (item) {
+    grid.innerHTML = shown.map(function (item, index) {
+      // The first visible product is the likely LCP candidate on the home page.
+      const imagePriority = isHomePage && index === 0
+        ? 'loading="eager" fetchpriority="high"'
+        : (isHomePage && index === 1 ? 'loading="eager"' : 'loading="lazy"');
       const name = cleanProductName(item.name);
       const description = cleanProductCopy(item.desc || "");
       const descriptionMarkup = isHomePage ? "" : '<p class="product-description">' + escapeHtml(description) + '</p>';
       const rissFallback = normalizeBrand(productBrand(item)) === "riss" ? "assets/brands/riss.webp" : "";
       const visual = item.image
-        ? '<img src="' + escapeHtml(item.image) + '" alt="' + escapeHtml(name) + '" width="300" height="300" loading="lazy" decoding="async" draggable="false">'
+        ? '<img src="' + escapeHtml(item.image) + '" alt="' + escapeHtml(name) + '" width="300" height="300" '+imagePriority+' decoding="async" draggable="false">'
         : item.imageId
-          ? '<img data-cloud-image="' + escapeHtml(item.imageId) + '" alt="' + escapeHtml(name) + '" width="300" height="300" loading="lazy">'
+          ? '<img data-cloud-image="' + escapeHtml(item.imageId) + '" alt="' + escapeHtml(name) + '" width="300" height="300" '+imagePriority+' decoding="async">'
           : rissFallback
-            ? '<img src="' + rissFallback + '" alt="RISS German Technology" width="300" height="300" loading="lazy" decoding="async" draggable="false" class="brand-product-fallback">'
+            ? '<img src="' + rissFallback + '" alt="RISS German Technology" width="300" height="300" '+imagePriority+' decoding="async" draggable="false" class="brand-product-fallback">'
             : '<span class="product-placeholder" aria-hidden="true">' + escapeHtml(item.icon || "🔧") + '</span>';
       const detailUrl = "product.html?id=" + encodeURIComponent(String(item.id));
       const pricing = productPricing(item);
