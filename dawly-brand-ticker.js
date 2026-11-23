@@ -40,7 +40,7 @@
       link.dataset.brandKey=key;link.setAttribute("aria-label","تصفح منتجات "+name);
       var src=logos[key];
       if(src){
-        var img=document.createElement("img");img.src=src;img.alt=name+" logo";img.loading="lazy";img.decoding="async";
+        var img=document.createElement("img");img.src=src;img.alt=name+" logo";img.width=180;img.height=72;img.loading="lazy";img.decoding="async";
         img.onerror=function(){img.remove();link.classList.add("has-text-fallback");link.appendChild(document.createTextNode(name));};
         link.appendChild(img);
       }else{
@@ -65,7 +65,7 @@
         if(!meta||!meta.url)return;
         host.querySelectorAll('[data-brand-key="'+key+'"]').forEach(function(link){
           var img=link.querySelector("img");
-          if(!img){img=document.createElement("img");img.alt=link.getAttribute("aria-hidden")==="true"?"":entry[1].name+" logo";img.loading="lazy";img.decoding="async";link.replaceChildren(img);}
+          if(!img){img=document.createElement("img");img.alt=link.getAttribute("aria-hidden")==="true"?"":entry[1].name+" logo";img.width=180;img.height=72;img.loading="lazy";img.decoding="async";link.replaceChildren(img);}
           var logoHeight=Math.max(16,Math.min(100,Number(meta.scale)||34));img.src=meta.url;img.style.width="180px";img.style.height=logoHeight+"px";img.style.maxWidth="78%";img.style.maxHeight=logoHeight+"px";img.style.objectFit="contain";img.style.objectPosition="center";link.classList.remove("has-text-fallback");
         });
       }).catch(function(error){console.warn("Saved brand logo could not be loaded:",key,error);});
