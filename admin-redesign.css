@@ -126,3 +126,45 @@ main.wrap{width:min(100% - 32px,1440px)!important;max-width:1440px!important;mar
   #manager>.dashboard-nav .dashboard-tab{font-size:12px!important;padding:8px 6px!important}
   .quick-action{min-height:124px!important;padding:11px!important}
 }
+
+
+/* Functional workspace layer */
+.admin-nav-search{
+  display:flex;align-items:center;gap:8px;min-height:42px;padding:0 10px;
+  margin:2px 0 8px;border:1px solid #e5e7eb;border-radius:10px;
+  background:#fafbfc;color:#8a9099
+}
+.admin-nav-search>span{font-size:21px;line-height:1}
+.admin-nav-search input{
+  width:100%;min-width:0;min-height:38px;padding:7px 0;border:0!important;
+  outline:0!important;background:transparent!important;box-shadow:none!important;
+  color:#252a31;font-size:13px!important
+}
+.admin-nav-search:focus-within{border-color:#d71920;background:#fff}
+.admin-nav-search input::placeholder{color:#9299a2}
+.admin-context-bar{
+  grid-column:2;grid-row:2;display:flex;align-items:center;justify-content:space-between;
+  gap:12px;min-width:0;padding:16px 20px;margin:0 0 14px;
+  border:1px solid var(--admin-line);border-radius:13px;background:#fff
+}
+.admin-context-kicker{display:block;margin-bottom:4px;color:var(--admin-red);font-size:11px;font-weight:800}
+.admin-context-bar h2{margin:0;color:var(--admin-ink);font-size:19px;line-height:1.5}
+.admin-context-bar p{margin:3px 0 0;color:var(--admin-muted);font-size:12px;line-height:1.6}
+.admin-context-date{flex:0 0 auto;padding:7px 10px;border:1px solid var(--admin-line);border-radius:9px;background:#fafbfc;color:#626a73;font-size:11px}
+#manager>.admin-panel{grid-row:3}
+#manager>.admin-home{grid-row:3}
+#manager>.dashboard-stats{grid-row:1}
+#manager>.dashboard-nav{grid-row:1 / span 30}
+#manager>.dashboard-nav .dashboard-tab[hidden]{display:none!important}
+#manager .admin-panel:focus{outline:none}
+@media(max-width:760px){
+ .admin-nav-search{grid-column:1/-1;margin:0 0 4px;min-height:40px}
+ .admin-context-bar{grid-column:auto;grid-row:auto;width:100%;padding:13px 14px;margin:0}
+ .admin-context-bar h2{font-size:17px}
+ .admin-context-date{font-size:10px;padding:6px 8px}
+ #manager>.admin-panel,#manager>.admin-home{grid-row:auto}
+}
+@media(max-width:380px){
+ .admin-context-bar{align-items:flex-start;flex-direction:column;gap:7px}
+ .admin-context-date{align-self:flex-start}
+}
