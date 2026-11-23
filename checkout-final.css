@@ -1,0 +1,33 @@
+/* Final checkout polish: keep the WhatsApp action readable on every page. */
+#cartDrawer .checkout-whatsapp-step .payment-proof,
+#cartDrawer #orderWhatsappLink.payment-proof {
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  min-height:56px!important;
+  padding:13px 16px!important;
+  border:1px solid #168447!important;
+  border-radius:12px!important;
+  background:#168447!important;
+  color:#fff!important;
+  -webkit-text-fill-color:#fff!important;
+  font-size:15px!important;
+  font-weight:900!important;
+  line-height:1.65!important;
+  text-align:center!important;
+  text-decoration:none!important;
+  text-shadow:none!important;
+  box-shadow:none!important;
+  overflow-wrap:anywhere!important;
+}
+#cartDrawer .checkout-whatsapp-step #checkoutWhatsappSummary {
+  color:#303840!important;
+  line-height:1.9!important;
+  overflow-wrap:anywhere!important;
+  word-break:normal!important;
+  unicode-bidi:plaintext;
+}
+#cartDrawer .checkout-whatsapp-step .payment-proof:focus-visible {
+  outline:3px solid #16844755!important;
+  outline-offset:3px!important;
+}
