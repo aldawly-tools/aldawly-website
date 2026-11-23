@@ -540,8 +540,8 @@ main > #about{order:5!important}
  </nav>
 </aside>
 
-<main data-page="home">
-<section class="hero-shell"><div class="container hero-grid">
+<main data-page="home" id="mainContent" aria-label="المحتوى الرئيسي">
+<section class="hero-shell" aria-labelledby="homeHeroTitle"><div class="container hero-grid">
  <aside class="hero-services" aria-label="خدمات المتجر">
    <div class="hero-services-track">
     <div class="service-card"><span class="service-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m8 12 2.5 2.5L16 9"/></svg></span><span>منتجات أصلية 100%</span></div>
@@ -556,7 +556,7 @@ main > #about{order:5!important}
   </aside>
  <div class="hero-copy">
   <span class="eyebrow">أدوات احترافية • جودة عالية • أداء يدوم</span>
-  <h1>الدولي</h1>
+  <h1 id="homeHeroTitle">الدولي</h1>
   <h2>العدد الأصلية والمستوردة</h2>
   <p>اكتشف مجموعة مختارة من العدد اليدوية والكهربائية ومستلزمات الورش. اختَر الأداة المناسبة لشغلك، وتواصل معنا لتأكيد السعر والتوفر.</p>
   <a class="hero-cta" href="#products"><svg viewBox="0 0 24 24"><path d="M3 4h2l2.2 11.2a2 2 0 0 0 2 1.6h8.6a2 2 0 0 0 2-1.6L21 8H6M10 21a1 1 0 1 0 0-2 1 1 0 0 0 0 2ZM18 21a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z"/></svg>تسوق الآن</a>
@@ -564,22 +564,22 @@ main > #about{order:5!important}
  </div>
 
 </div></section>
-<section class="section home-live-offers" id="homeOffers" hidden aria-label="العروض المتاحة الآن">
+<section class="section home-live-offers" id="homeOffers" hidden aria-labelledby="homeOffersTitle">
  <div class="container">
   <div class="home-offers-hero"><div><span class="home-offers-kicker">DAWLY SPECIAL OFFERS</span><h2>وفّر في اختيارك!</h2><p>عروض حصرية على منتجات مختارة من أشهر الماركات</p></div><span class="home-offers-mark">٪</span></div>
-  <div class="section-heading"><div><h2 class="section-title">العروض المتاحة الآن</h2><p class="section-subtitle">الحق العرض قبل انتهائه</p></div><a class="text-link" href="products.html#products">كل المنتجات ‹</a></div>
+  <div class="section-heading"><div><h2 class="section-title" id="homeOffersTitle">العروض المتاحة الآن</h2><p class="section-subtitle">الحق العرض قبل انتهائه</p></div><a class="text-link" href="products.html#products">كل المنتجات ‹</a></div>
   <div class="product-grid home-offers-grid" id="homeOffersGrid" aria-live="polite"></div>
  </div>
 </section>
-<section class="section dawly-all-tools" aria-label="اكتشف جميع منتجات الدولي"><div class="container"><div class="dawly-showcase"><div class="dawly-showcase-content"><span class="dawly-showcase-kicker">DAWLY TOOLS • ORIGINAL &amp; IMPORTED</span><h2>كل أدواتك الأصلية <span>في مكان واحد</span></h2><p>اكتشف تشكيلة العدد والأدوات الاحترافية من أشهر الماركات العالمية، واختر الأداة المناسبة لشغلك.</p><div class="dawly-brand-marquee" aria-label="اختار الماركة"><div class="dawly-showcase-brands" id="dawlyShowcaseBrands" aria-label="جميع الماركات المتاحة"></div></div><a class="dawly-showcase-cta" href="products.html">تصفح جميع المنتجات <span aria-hidden="true">←</span></a><small class="dawly-showcase-note">منتجات أصلية • شحن لجميع المحافظات • دعم فني</small></div></div></div></section>
-<section class="section" id="categories"><div class="container">
- <div class="section-heading"><div><h2 class="section-title">تسوق حسب القسم</h2><p class="section-subtitle">اختَر من الأقسام الأكثر طلبًا</p></div><a class="text-link" href="products.html#filterBar">كل الأقسام ‹</a></div>
+<section class="section dawly-all-tools" aria-labelledby="allToolsTitle"><div class="container"><div class="dawly-showcase"><div class="dawly-showcase-content"><span class="dawly-showcase-kicker">DAWLY TOOLS • ORIGINAL &amp; IMPORTED</span><h2 id="allToolsTitle">كل أدواتك الأصلية <span>في مكان واحد</span></h2><p>اكتشف تشكيلة العدد والأدوات الاحترافية من أشهر الماركات العالمية، واختر الأداة المناسبة لشغلك.</p><div class="dawly-brand-marquee" aria-label="اختار الماركة"><div class="dawly-showcase-brands" id="dawlyShowcaseBrands" aria-label="جميع الماركات المتاحة"></div></div><a class="dawly-showcase-cta" href="products.html">تصفح جميع المنتجات <span aria-hidden="true">←</span></a><small class="dawly-showcase-note">منتجات أصلية • شحن لجميع المحافظات • دعم فني</small></div></div></div></section>
+<section class="section" id="categories" aria-labelledby="categoriesTitle"><div class="container">
+ <div class="section-heading"><div><h2 class="section-title" id="categoriesTitle">تسوق حسب القسم</h2><p class="section-subtitle">اختَر من الأقسام الأكثر طلبًا</p></div><a class="text-link" href="products.html#filterBar">كل الأقسام ‹</a></div>
  <div class="categories-grid" id="categoryTiles"></div>
 </div></section>
 
 
-<section class="section" id="products"><div class="container">
- <div class="section-heading"><div><h2 class="section-title">تصفح كل المنتجات</h2><p class="section-subtitle">ابحث بين جميع الأدوات والمعدات المتاحة في المتجر</p></div><a class="text-link" href="products.html">عرض كافة المنتجات ‹</a></div>
+<section class="section" id="products" aria-labelledby="productsTitle"><div class="container">
+ <div class="section-heading"><div><h2 class="section-title" id="productsTitle">تصفح كل المنتجات</h2><p class="section-subtitle">ابحث بين جميع الأدوات والمعدات المتاحة في المتجر</p></div><a class="text-link" href="products.html">عرض كافة المنتجات ‹</a></div>
  
  <div class="filter-bar" id="filterBar" aria-label="فلترة المنتجات"></div>
 <div class="product-grid" id="productGrid" aria-live="polite"></div>
@@ -588,8 +588,8 @@ main > #about{order:5!important}
 </div></section>
 
 
-<section class="section dawly-about-section" id="about"><div class="container">
- <div class="section-heading"><div><h2 class="section-title">عن الدولي</h2></div></div>
+<section class="section dawly-about-section" id="about" aria-labelledby="aboutTitle"><div class="container">
+ <div class="section-heading"><div><h2 class="section-title" id="aboutTitle">عن الدولي</h2></div></div>
  <div class="dawly-about-card">
   <div class="dawly-about-topline"><span class="dawly-about-mark">D</span><span>DAWLY TOOLS <i></i> ORIGINAL &amp; IMPORTED</span></div>
   <div class="dawly-about-content">
