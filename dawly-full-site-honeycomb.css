@@ -1,20 +1,58 @@
-/* New light gray-white textured background supplied by the user */
+/* Plain white storefront background: lightweight, no texture or decorative shadows. */
 :root { color-scheme: light; }
-html, body {
- background-color:#f4f4f4!important;
- background-image:linear-gradient(rgba(255,255,255,.04),rgba(255,255,255,.04)),url("data:image/webp;base64,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")!important;
- background-size:cover,100% auto!important;
- background-position:center top!important;
- background-repeat:no-repeat,repeat-y!important;
- background-attachment:fixed!important;
+
+html,
+body {
+  background: #fff !important;
+  background-color: #fff !important;
+  background-image: none !important;
+  box-shadow: none !important;
 }
-body::before,body::after,main::before,main::after,
-body .honeycomb-bg,body .hexagon-background,body .hexagon-pattern,body .site-background-pattern {
- content:none!important;display:none!important;background-image:none!important;
+
+body::before,
+body::after,
+main::before,
+main::after,
+body .honeycomb-bg,
+body .hexagon-background,
+body .hexagon-pattern,
+body .site-background-pattern {
+  content: none !important;
+  display: none !important;
+  background: none !important;
+  box-shadow: none !important;
 }
-main,main>section,.section,.home-live-offers,.product-listing-section,.category-section,.brands-marquee-section,.recently-viewed-section {
- background-color:transparent!important;background-image:none!important;
+
+main,
+main > section,
+.section,
+.home-live-offers,
+.product-listing-section,
+.category-section,
+.brands-marquee-section,
+.recently-viewed-section {
+  background-color: #fff !important;
+  background-image: none !important;
+  box-shadow: none !important;
 }
-html body #productGrid .product-card,html body .product-grid .product-card,html body article.product-card,html body .recently-viewed-grid .product-card {
- background:#fff!important;color:#20252b!important;border:1px solid rgba(255,255,255,.95)!important;box-shadow:0 5px 22px rgba(0,0,0,.12)!important;
+
+/* Product cards remain white with a subtle border only. */
+html body #productGrid .product-card,
+html body .product-grid .product-card,
+html body article.product-card,
+html body .recently-viewed-grid .product-card {
+  background: #fff !important;
+  background-image: none !important;
+  color: #20252b !important;
+  border: 1px solid #e5e7eb !important;
+  box-shadow: none !important;
+}
+
+html body #productGrid .product-card .product-info,
+html body .product-grid .product-card .product-info,
+html body article.product-card .product-info {
+  background: #fff !important;
+  background-image: none !important;
+  color: #20252b !important;
+  box-shadow: none !important;
 }
