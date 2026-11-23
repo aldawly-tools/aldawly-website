@@ -413,9 +413,9 @@
       const image = item.image
         ? '<img src="' + escapeHtml(item.image) + '"' + (item.imageId ? ' data-cloud-image="' + escapeHtml(item.imageId) + '"' : '') + ' alt="' + escapeHtml(name) + '" width="300" height="300" loading="lazy" decoding="async" draggable="false">'
         : item.imageId
-          ? '<img data-cloud-image="' + escapeHtml(item.imageId) + '" alt="' + escapeHtml(name) + '" loading="lazy" decoding="async" draggable="false">'
+          ? '<img data-cloud-image="' + escapeHtml(item.imageId) + '" alt="' + escapeHtml(name) + '" width="300" height="300" loading="lazy" decoding="async" draggable="false">'
           : rissFallback
-            ? '<img src="' + rissFallback + '" alt="RISS German Technology" loading="lazy" decoding="async" draggable="false" class="brand-product-fallback">'
+            ? '<img src="' + rissFallback + '" alt="RISS German Technology" width="300" height="300" loading="lazy" decoding="async" draggable="false" class="brand-product-fallback">'
             : '<span class="product-placeholder" aria-hidden="true">' + escapeHtml(item.icon || "🔧") + '</span>';
       const soldOut = item.availability === "unavailable" || (item.availability !== "available" && Number.isInteger(item.stock) && item.stock === 0);
       const alreadyInCart = isItemInCart(item);
@@ -684,11 +684,11 @@
       const descriptionMarkup = isHomePage ? "" : '<p class="product-description">' + escapeHtml(description) + '</p>';
       const rissFallback = normalizeBrand(productBrand(item)) === "riss" ? "assets/brands/riss.webp" : "";
       const visual = item.image
-        ? '<img src="' + escapeHtml(item.image) + '" alt="' + escapeHtml(name) + '" loading="lazy" decoding="async" draggable="false">'
+        ? '<img src="' + escapeHtml(item.image) + '" alt="' + escapeHtml(name) + '" width="300" height="300" loading="lazy" decoding="async" draggable="false">'
         : item.imageId
-          ? '<img data-cloud-image="' + escapeHtml(item.imageId) + '" alt="' + escapeHtml(name) + '" loading="lazy">'
+          ? '<img data-cloud-image="' + escapeHtml(item.imageId) + '" alt="' + escapeHtml(name) + '" width="300" height="300" loading="lazy">'
           : rissFallback
-            ? '<img src="' + rissFallback + '" alt="RISS German Technology" loading="lazy" decoding="async" draggable="false" class="brand-product-fallback">'
+            ? '<img src="' + rissFallback + '" alt="RISS German Technology" width="300" height="300" loading="lazy" decoding="async" draggable="false" class="brand-product-fallback">'
             : '<span class="product-placeholder" aria-hidden="true">' + escapeHtml(item.icon || "🔧") + '</span>';
       const detailUrl = "product.html?id=" + encodeURIComponent(String(item.id));
       const pricing = productPricing(item);
@@ -727,9 +727,9 @@
         const pricing = productPricing(item);
         const detailUrl = "product.html?id=" + encodeURIComponent(String(item.id));
         const visual = item.image
-          ? '<img src="' + escapeHtml(item.image) + '" alt="' + escapeHtml(name) + '" loading="lazy" decoding="async">'
+          ? '<img src="' + escapeHtml(item.image) + '" alt="' + escapeHtml(name) + '" width="300" height="300" loading="lazy" decoding="async">'
           : item.imageId
-            ? '<img data-cloud-image="' + escapeHtml(item.imageId) + '" alt="' + escapeHtml(name) + '" loading="lazy">'
+            ? '<img data-cloud-image="' + escapeHtml(item.imageId) + '" alt="' + escapeHtml(name) + '" width="300" height="300" loading="lazy">'
             : '<span class="product-placeholder" aria-hidden="true">' + escapeHtml(item.icon || "🔧") + '</span>';
         const timer = pricing.endsAt ? '<div class="product-offer-countdown home-offer-countdown" data-offer-end="' + pricing.endsAt + '"><div class="offer-countdown-heading"><span>⏳ ينتهي العرض خلال</span><b>عرض محدود</b></div><div class="offer-countdown-units"><span><strong data-time-unit="days">00</strong><small>يوم</small></span><span><strong data-time-unit="hours">00</strong><small>ساعة</small></span><span><strong data-time-unit="minutes">00</strong><small>دقيقة</small></span><span><strong data-time-unit="seconds">00</strong><small>ثانية</small></span></div></div>' : '';
         return '<article class="product-card home-offer-card"><a class="product-visual product-open-link" href="' + detailUrl + '">' + visual + '<em class="product-discount">خصم ' + pricing.percent + '%</em></a><div class="product-info"><span class="product-category">' + escapeHtml(displayBrand(productBrand(item)) || item.cat || "منتجات") + '</span><h3 class="product-name"><a class="product-name-link" href="' + detailUrl + '">' + escapeHtml(name) + '</a></h3><span class="product-price"><strong>' + escapeHtml(money(pricing.current)) + '</strong><del>' + escapeHtml(money(pricing.base)) + '</del></span>' + timer + '<a class="button-primary home-offer-cta" href="' + detailUrl + '">اكتشف العرض الآن ←</a></div></article>';
@@ -979,9 +979,9 @@
       const name = cleanProductName(item.name);
       const description = cleanProductCopy(item.desc || item.specs || "للاستفسار عن المواصفات والتوفر تواصل معنا.");
       const image = item.image
-        ? '<img src="' + escapeHtml(item.image) + '" alt="' + escapeHtml(name) + '">'
+        ? '<img src="' + escapeHtml(item.image) + '" alt="' + escapeHtml(name) + '" width="300" height="300">'
         : item.imageId
-          ? '<img data-cloud-image="' + escapeHtml(item.imageId) + '" alt="' + escapeHtml(name) + '">'
+          ? '<img data-cloud-image="' + escapeHtml(item.imageId) + '" alt="' + escapeHtml(name) + '" width="300" height="300">'
           : '<div class="quick-view-placeholder">🔧</div>';
       const brand = displayBrand(productBrand(item) || item.brand || "");
       const specs = cleanProductCopy(item.specs || "");
