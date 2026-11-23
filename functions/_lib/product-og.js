@@ -17,7 +17,7 @@ function decodeFields(fields) {
   Object.keys(fields || {}).forEach(key => { out[key] = decodeValue(fields[key]); });
   return out;
 }
-async function listProducts() {
+export async function listProducts() {
   const endpoint = "https://firestore.googleapis.com/v1/projects/" + PROJECT +
     "/databases/(default)/documents/products?pageSize=1000&key=" + API_KEY;
   const response = await fetch(endpoint, { headers: { accept: "application/json" } });
