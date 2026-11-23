@@ -52,3 +52,14 @@ main[data-page="home"] #searchForm,
   overflow:hidden;
   text-overflow:ellipsis;
 }
+
+
+/* Reserve the full three-row mobile category grid before catalog data arrives.
+   Five home tiles render in two columns (three rows); the former 366px reserve
+   was shorter than the loaded cards and caused the 0.300 CLS shift. */
+@media (max-width: 700px) {
+  main[data-page="home"] #categoryTiles {
+    min-height: clamp(640px, calc(75vw + 360px), 760px);
+    align-content: start;
+  }
+}
