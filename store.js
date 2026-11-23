@@ -414,7 +414,7 @@
       const image = item.image
         ? '<img src="' + escapeHtml(item.image) + '"' + (item.imageId ? ' data-cloud-image="' + escapeHtml(item.imageId) + '"' : '') + ' alt="' + escapeHtml(name) + '" width="300" height="300" '+imagePriority+' decoding="async" draggable="false">'
         : item.imageId
-          ? '<img data-cloud-image="' + escapeHtml(item.imageId) + '" alt="' + escapeHtml(name) + '" width="300" height="300" loading="lazy" decoding="async" draggable="false">'
+          ? '<img data-cloud-image="' + escapeHtml(item.imageId) + '" alt="' + escapeHtml(name) + '" width="300" height="300" '+imagePriority+' decoding="async" draggable="false">'
           : rissFallback
             ? '<img src="' + rissFallback + '" alt="RISS German Technology" width="300" height="300" '+imagePriority+' decoding="async" draggable="false" class="brand-product-fallback">'
             : '<span class="product-placeholder" aria-hidden="true">' + escapeHtml(item.icon || "🔧") + '</span>';
