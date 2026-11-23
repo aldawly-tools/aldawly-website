@@ -33,3 +33,22 @@ main[data-page="home"] .dawly-brand-pill img {
     min-height: 1160px;
   }
 }
+
+/* Stable search field geometry: placeholder/font rendering must not affect header layout. */
+main[data-page="home"] #searchForm,
+#searchForm.search-form {
+  box-sizing:border-box;
+  flex:0 0 auto;
+}
+#searchForm.search-form input {
+  box-sizing:border-box;
+  height:100%;
+  min-height:0;
+  min-width:0;
+  line-height:1.5;
+}
+#searchForm.search-form input::placeholder {
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
