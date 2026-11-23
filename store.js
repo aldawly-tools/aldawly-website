@@ -253,7 +253,10 @@
       pricedCount += 1;
     });
     return {total:total, pricedCount:pricedCount, itemCount:cart.filter(function (line) {
-      return products.some(function (item) { return String(item.id) === String(line.id); });
+      return products.some(function (item) {
+        return String(item.id) === String(line.id) ||
+          (item._docId !== undefined && String(item._docId) === String(line.id));
+      });
     }).length};
   }
   function categoryIcon(name) {
@@ -1449,7 +1452,7 @@
   }
 
 
-  // Create an A5 packing slip with product names and quantities only (no prices).
+  // Create an A4 packing slip with product names and quantities only (no prices).
   async function createPackingSlipPdf(order) {
     const canvas = document.createElement("canvas");
     canvas.width = 1240; canvas.height = 1754;
@@ -1490,8 +1493,8 @@
     write("نسعد بخدمتكم دائمًا", w - 90, y + 120, 23, "#555");
     write("aldawly-website.pages.dev", w - 90, h - 95, 20, "#777");
     const JsPDF = await loadJsPdfLibrary();
-    const pdf = new JsPDF({orientation:"portrait", unit:"mm", format:"a5", compress:true});
-    pdf.addImage(canvas.toDataURL("image/jpeg", 0.94), "JPEG", 0, 0, 148, 210, undefined, "FAST");
+    const pdf = new JsPDF({orientation:"portrait", unit:"mm", format:"a4", compress:true});
+    pdf.addImage(canvas.toDataURL("image/jpeg", 0.94), "JPEG", 0, 0, 210, 297, undefined, "FAST");
     pdf.setProperties({title:"ورقة تجهيز الطلب " + order.number, author:"الدولي للعدد الأصلية والمستوردة"});
     return pdf;
   }
@@ -1558,7 +1561,7 @@
         : rawImageUrl
           ? new URL(String(rawImageUrl), window.location.href).toString()
           : productUrl;
-      const price = parsePrice(item.price);
+      const price = productCurrentPrice(item);
       const priceLines = price === null
         ? "السعر: عند الاستفسار"
         : "سعر الوحدة: " + money(price) + " | إجمالي المنتج: " + money(price * line.qty);
@@ -1665,7 +1668,7 @@
     const whatsappWindow = window.open(order.url, "_blank");
     if (whatsappWindow) { try { whatsappWindow.opener = null; } catch (error) {} }
     else if (link) link.focus();
-    // Download the A5 packing slip separately; it contains no prices.
+    // Download the A4 packing slip separately; it contains no prices.
     downloadPackingSlip(order).catch(function(error) {
       console.error("Packing slip generation failed:", error);
       alert("تم فتح واتساب، لكن تعذر تنزيل ورقة تجهيز الطلب. حاول تحديث الصفحة وإعادة الطلب.");
