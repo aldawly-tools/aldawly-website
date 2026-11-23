@@ -89,11 +89,14 @@
 
     if (typeof window.DAWLY_RECORD_VIEWED_PRODUCT === "function") window.DAWLY_RECORD_VIEWED_PRODUCT(item);
     const name = cleanProductName(item.name || "منتج من الدولي");
-    const seoDescription = cleanProductCopy(item.desc || item.specs || "تفاصيل المنتج من متجر الدولي للعدد الأصلية والمستوردة.").replace(/\s+/g, " ").slice(0, 160);
-    document.title = name + " | الدولي";
+    const seoBrand = displayBrand(item.brand || item.brandName || item.manufacturer || "");
+    const seoBase = cleanProductCopy(item.desc || item.specs || "عدد وأدوات أصلية ومستوردة للاستخدام المهني.").replace(/\s+/g, " ");
+    const seoDescription = (seoBase + (seoBrand ? " — " + seoBrand : "") + " | الدولي للعدد الأصلية والمستوردة في مصر.").slice(0, 160);
+    const seoTitle = name + (seoBrand ? " | " + seoBrand : "") + " | الدولي للعدد الأصلية";
+    document.title = seoTitle;
     updateMeta("name", "description", seoDescription);
     updateMeta("property", "og:type", "product");
-    updateMeta("property", "og:title", name + " | الدولي");
+    updateMeta("property", "og:title", seoTitle);
     updateMeta("property", "og:description", seoDescription);
     if (/^https:\/\//i.test(String(item.image || ""))) updateMeta("property", "og:image", String(item.image));
     const canonicalUrl = new URL(window.location.pathname, window.location.origin);
@@ -163,7 +166,7 @@
     const productUrl = new URL("product?id=" + encodeURIComponent(item.id), window.location.href).toString();
     const message = "السلام عليكم، أريد الاستفسار عن الإعلان: " + name + "\nرابط الإعلان والصورة للتوضيح: " + productUrl;
 
-    document.title = name + " | الدولي";
+    document.title = seoTitle;
     document.getElementById("detailBreadcrumb").textContent = name;
     root.innerHTML = '<article class="product-detail-layout" data-theme="' + productBannerTheme(item) + '">' +
       '<div class="product-gallery-column"><div class="product-detail-image" id="detailImage" tabindex="0" role="button" aria-label="تكبير صورة ' + escapeHtml(name) + '" title="اضغط لتكبير الصورة">' + image + galleryControls + '</div>' + galleryHtml + '</div>' +
