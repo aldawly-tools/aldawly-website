@@ -28,8 +28,10 @@ export async function onRequest(context) {
 
     const name = String(product.name || "منتج من الدولي").slice(0, 120);
     const brand = String(product.brand || product.brandName || "");
-    const description = String(product.desc || product.specs ||
-      "تفاصيل المنتج من الدولي للعدد الأصلية والمستوردة").replace(/\s+/g, " ").slice(0, 220);
+    const rawDescription = String(product.desc || product.specs ||
+      "عدد وأدوات أصلية ومستوردة للاستخدام المهني").replace(/\s+/g, " ").trim();
+    const description = (rawDescription + (brand ? " — " + brand : "") +
+      " | متوفر لدى الدولي للعدد الأصلية والمستوردة في مصر.").slice(0, 220);
     const imageUrl = product.image && /^https?:\/\//i.test(String(product.image))
       ? String(product.image)
       : new URL("/fb-product-image?id=" + encodeURIComponent(id), requestUrl.origin).toString();
@@ -42,7 +44,13 @@ export async function onRequest(context) {
       .replace(/[۰-۹]/g, digit => String("۰۱۲۳۴۵۶۷۸۹".indexOf(digit)))
       .replace(/[,،٬\s]/g, "")
       .replace(/(?:جنيه(?:مصري)?|ج\.?م\.?|EGP|LE)/gi, "");
-    const numericPrice = /^\d+(?:\.\d+)?$/.test(priceText) ? Number(priceText) : NaN;
+    const basePrice = /^\d+(?:\.\d+)?$/.test(priceText) ? Number(priceText) : NaN;
+    const offerEnd = product.offerTimerEnabled === true ? Date.parse(product.offerEndsAt || "") : NaN;
+    const offerActive = product.offerTimerEnabled === true && Number.isFinite(offerEnd) && offerEnd > Date.now();
+    const discountPercent = offerActive ? Math.max(0, Math.min(90, Number(product.discountPercent) || 0)) : 0;
+    const numericPrice = Number.isFinite(basePrice) && basePrice > 0
+      ? Math.round(basePrice * (1 - discountPercent / 100) * 100) / 100 : NaN;
+    const stockKnown = Number.isInteger(product.stock) && product.stock >= 0;
 
     const structuredProduct = {
       "@context": "https://schema.org",
@@ -54,14 +62,19 @@ export async function onRequest(context) {
     };
     if (brand) structuredProduct.brand = { "@type": "Brand", "name": brand };
     if (product.cat) structuredProduct.category = String(product.cat).slice(0, 100);
+    const sku = product.sku || product.code || product.partNumber || product.model;
+    if (sku) structuredProduct.sku = String(sku).slice(0, 100);
     if (Number.isFinite(numericPrice) && numericPrice > 0) {
-      structuredProduct.offers = {
+      const offer = {
         "@type": "Offer",
         "url": canonical,
         "priceCurrency": "EGP",
         "price": numericPrice,
         "seller": { "@type": "Organization", "name": "الدولي للعدد الأصلية والمستوردة" }
       };
+      if (stockKnown) offer.availability = "https://schema.org/" + (product.stock > 0 ? "InStock" : "OutOfStock");
+      if (offerActive) offer.priceValidUntil = new Date(offerEnd).toISOString().slice(0, 10);
+      structuredProduct.offers = offer;
     }
     const jsonLd = JSON.stringify(structuredProduct)
       .replace(/</g, "\\u003c")
