@@ -411,7 +411,7 @@
       const url = "product.html?id=" + encodeURIComponent(String(item.id));
       const rissFallback = normalizeBrand(productBrand(item)) === "riss" ? "assets/brands/riss.webp" : "";
       const image = item.image
-        ? '<img src="' + escapeHtml(item.image) + '"' + (item.imageId ? ' data-cloud-image="' + escapeHtml(item.imageId) + '"' : '') + ' alt="' + escapeHtml(name) + '" loading="lazy" decoding="async" draggable="false">'
+        ? '<img src="' + escapeHtml(item.image) + '"' + (item.imageId ? ' data-cloud-image="' + escapeHtml(item.imageId) + '"' : '') + ' alt="' + escapeHtml(name) + '" width="300" height="300" loading="lazy" decoding="async" draggable="false">'
         : item.imageId
           ? '<img data-cloud-image="' + escapeHtml(item.imageId) + '" alt="' + escapeHtml(name) + '" loading="lazy" decoding="async" draggable="false">'
           : rissFallback
