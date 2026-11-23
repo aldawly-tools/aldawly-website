@@ -1,4 +1,4 @@
-const CACHE_NAME = "aldawly-tools-v28-cart-added-label";
+const CACHE_NAME = "aldawly-tools-v29-http-cache";
 const APP_SHELL = [
   "/",
   "/index.html",
@@ -22,7 +22,9 @@ self.addEventListener("fetch", event => {
   if (request.method !== "GET" || requestUrl.origin !== self.location.origin) return;
   // API responses are dynamic and must never enter the offline asset cache.
   if (requestUrl.pathname.startsWith("/api/")) return;
-  event.respondWith(fetch(request, {cache:"no-store"}).then(response => {
+  // Respect the site's Cache-Control headers so versioned JS/CSS and images
+  // can use the browser HTTP cache on repeat visits.
+  event.respondWith(fetch(request).then(response => {
     if (response && response.ok) {
       const copy = response.clone();
       caches.open(CACHE_NAME).then(cache => cache.put(request, copy));
