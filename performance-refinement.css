@@ -1,0 +1,80 @@
+/* Performance refinements: preserve the storefront design while stabilizing image geometry. */
+.product-grid .product-visual,
+#productGrid .product-visual,
+#homeOffersGrid .product-visual,
+#featuredProductsGrid .product-visual,
+#newArrivalsGrid .product-visual,
+.home-products-shelf .product-visual {
+  position:relative;
+  overflow:hidden;
+  contain:layout paint;
+}
+.product-grid .product-visual img,
+#productGrid .product-visual img,
+#homeOffersGrid .product-visual img,
+#featuredProductsGrid .product-visual img,
+#newArrivalsGrid .product-visual img,
+.home-products-shelf .product-visual img {
+  display:block;
+  width:100%;
+  height:100%;
+  max-width:100%;
+  object-fit:contain;
+  aspect-ratio:1 / 1;
+}
+#categoryTiles img,
+.categories-grid img,
+.brand-logo,
+.brand-filter-logo {
+  display:block;
+  object-fit:contain;
+}
+.recent-view-image {
+  display:grid;
+  place-items:center;
+  aspect-ratio:1 / 1;
+  overflow:hidden;
+}
+.recent-view-image img {
+  display:block;
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  aspect-ratio:1 / 1;
+}
+.dawly-bot-product-img {
+  display:grid;
+  place-items:center;
+  overflow:hidden;
+}
+.dawly-bot-product-img img {
+  display:block;
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  aspect-ratio:1 / 1;
+}
+/* Avoid expensive backdrop filtering across many product cards on small devices. */
+@media (max-width:700px) {
+  .product-grid .product-card,
+  #productGrid .product-card,
+  .recently-viewed-grid .product-card,
+  .home-products-shelf .home-shelf-card {
+    -webkit-backdrop-filter:none !important;
+    backdrop-filter:none !important;
+  }
+}
+/* Keep non-essential continuous motion from competing with first paint on mobile. */
+@media (max-width:700px) {
+  .dawly-brand-marquee .dawly-showcase-brands {
+    animation-duration:48s;
+  }
+}
+@media (prefers-reduced-motion:reduce) {
+  *,*::before,*::after {
+    scroll-behavior:auto !important;
+    animation-duration:.01ms !important;
+    animation-iteration-count:1 !important;
+    transition-duration:.01ms !important;
+  }
+}
