@@ -399,7 +399,56 @@ main > #about{order:5!important}
 <link rel="stylesheet" href="dawly-product-silver-surface.css?v=20261122-1">
 <link rel="stylesheet" href="dawly-full-site-honeycomb.css?v=light-texture-20261123-2">
 <link rel="stylesheet" href="performance-refinement.css?v=20261123-1">
-<link rel="stylesheet" href="layout-stability.css?v=20261123-mobile-categories-cls-1">
+<link rel="stylesheet" href="layout-stability.css?v=20261123-brand-ticker-reserve-2">
+<!-- Critical brand ticker geometry: reserve its final footprint before the async stylesheet loads. -->
+<style id="dawly-brand-ticker-critical">
+  main[data-page="home"] .dawly-brand-marquee {
+    display:block;
+    box-sizing:border-box;
+    width:100%;
+    height:120px;
+    min-height:120px;
+    margin:22px 0 18px;
+    overflow:hidden;
+    position:relative;
+    direction:ltr;
+  }
+  main[data-page="home"] #dawlyShowcaseBrands {
+    display:flex;
+    box-sizing:border-box;
+    align-items:center;
+    flex-wrap:nowrap;
+    gap:14px;
+    width:max-content;
+    min-width:max-content;
+    height:80px;
+    min-height:72px;
+    padding:4px 2px;
+    direction:ltr;
+  }
+  main[data-page="home"] #dawlyShowcaseBrands .dawly-brand-pill {
+    display:inline-flex;
+    box-sizing:border-box;
+    flex:0 0 auto;
+    align-items:center;
+    justify-content:center;
+    min-width:150px;
+    height:72px;
+    white-space:nowrap;
+  }
+  @media(max-width:600px) {
+    main[data-page="home"] .dawly-brand-marquee {
+      height:102px;
+      min-height:102px;
+      margin:17px 0 14px;
+    }
+    main[data-page="home"] #dawlyShowcaseBrands { gap:10px; }
+    main[data-page="home"] #dawlyShowcaseBrands .dawly-brand-pill {
+      min-width:122px;
+      height:60px;
+    }
+  }
+</style>
 </head>
 
 <body>
