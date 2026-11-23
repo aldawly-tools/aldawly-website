@@ -1,12 +1,32 @@
-/* Clean solid-white storefront background — removes the heavy textured image */
+/* Solid white page canvas — remove remaining ambient edge shading */
 html,
-body {
-  background: #fff !important;
+body,
+body > main,
+main,
+#app,
+#appRoot,
+.page-shell {
+  background-color: #fff !important;
   background-image: none !important;
-  background-attachment: scroll !important;
+  box-shadow: none !important;
+  filter: none !important;
 }
 
-/* Product cards remain crisp white */
+html::before,
+html::after,
+body::before,
+body::after,
+body > main::before,
+body > main::after,
+main::before,
+main::after {
+  content: none !important;
+  display: none !important;
+  background: none !important;
+  box-shadow: none !important;
+}
+
+/* Keep product cards white; retain their clean border without a cast shadow */
 html body #productGrid .product-card,
 html body .product-grid .product-card,
 html body article.product-card,
@@ -14,7 +34,7 @@ html body .recently-viewed-grid .product-card {
   background: #fff !important;
   color: #20252b !important;
   border: 1px solid #e5e7eb !important;
-  box-shadow: 0 5px 18px rgba(0,0,0,.07) !important;
+  box-shadow: none !important;
 }
 
 html body #productGrid .product-card .product-info,
