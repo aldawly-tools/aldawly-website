@@ -1512,7 +1512,7 @@
     } else {
       for (let i = 0; i < bytes.length; i++) bytes[i] = Math.floor(Math.random() * 256);
     }
-    const token = Array.from(bytes).map(function(value) {
+    const token = Array.from(bytes.slice(0, 4)).map(function(value) {
       return value.toString(16).padStart(2, "0");
     }).join("").toUpperCase();
     return "DW-" + Date.now().toString(36).toUpperCase() + "-" + token;
