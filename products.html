@@ -335,19 +335,13 @@
 <div class="checkout-action-note"><span>✓</span> لن يتم تحصيل أي مبلغ من خلال هذه الخطوة</div>
    <button class="button-primary checkout" type="button" id="checkout">تجهيز الطلب وفتحه على واتساب</button>
  </section>
- <section class="payment-followup" id="paymentFollowup" hidden aria-labelledby="paymentFollowupTitle">
-  <h3 id="paymentFollowupTitle">خطوة تأكيد الحجز</h3>
-  <p class="payment-followup-status" id="paymentFollowupStatus" aria-live="polite"></p>
-  <a class="payment-proof" id="orderWhatsappLink" href="#" target="_blank" rel="noopener noreferrer" hidden>إرسال الطلب إلى المسؤول الأول · 01002878301</a>
-  <h4 class="payment-methods-title">اختار طريقة الدفع المناسبة</h4>
-  <div class="payment-methods" aria-label="طرق الدفع">
-   <a class="payment-method" href="http://vf.eg/vfcash?id=mt&amp;qrId=Jv7yf5" target="_blank" rel="noopener noreferrer">
-    <span class="payment-method-icon payment-vodafone">VF</span><span><strong>فودافون كاش</strong><small>افتح رابط الدفع</small></span>
-   </a>
-   <a class="payment-method" href="https://ipn.eg/S/ycnae3087/instapay/3ZGhaU" target="_blank" rel="noopener noreferrer">
-    <span class="payment-method-icon payment-instapay">IP</span><span><strong>إنستا باي</strong><small>افتح رابط الدفع</small></span>
-   </a>
-  </div>
+ <section id="checkoutWhatsappStep" class="checkout-step checkout-whatsapp-step" hidden>
+  <div class="whatsapp-ready-icon" aria-hidden="true">✓</div>
+  <h3>طلبك جاهز للإرسال</h3>
+  <p id="checkoutWhatsappSummary">تم تجهيز تفاصيل الطلب. افتح واتساب واضغط إرسال لتأكيد الطلب مع المتجر.</p>
+  <a class="payment-proof" id="orderWhatsappLink" href="#" target="_blank" rel="noopener noreferrer">فتح رسالة الطلب على واتساب</a>
+  <p class="checkout-hint">الطلب لا يُعتبر مرسلاً إلا بعد الضغط على زر إرسال داخل واتساب.</p>
+  <button class="checkout-back-button" id="backToCartReview" type="button">العودة إلى المنتجات</button>
  </section>
 </div>
 </aside>
