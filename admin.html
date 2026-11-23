@@ -1945,8 +1945,8 @@ $("productList").addEventListener("click", function (event) {
 });
 $("productForm").addEventListener("submit", async function (event) {
   event.preventDefault();
-  const previous = $("pid").value ? products.find(function (item) { return String(item.id) === String($("pid").value); }) : null;
-  // منع إضافة منتج مكرر بالاسم والماركة مع تجاهل اختلاف المسافات وحالة الأحرف.
+  const editingId = String($("pid").value || "").trim();
+  // فحص الاسم والماركة على أحدث نسخة من Firestore، وليس على القائمة القديمة في المتصفح فقط.
   function normalizeProductDuplicateValue(value) {
     return String(value || "").trim().toLocaleLowerCase("ar")
       .replace(/[أإآ]/g, "ا").replace(/ى/g, "ي").replace(/ة/g, "ه")
@@ -1960,17 +1960,41 @@ $("productForm").addEventListener("submit", async function (event) {
     $("name").focus();
     return;
   }
-  const duplicateProduct = products.find(function (item) {
+  $("saveBtn").disabled = true;
+  message(saveStatus, "جارٍ مراجعة المنتجات لمنع التكرار…");
+  let latestProducts;
+  try {
+    const latestSnapshot = await getDocs(collection(db, "products"));
+    latestProducts = latestSnapshot.docs.map(function (snapshot) {
+      const data = snapshot.data();
+      return Object.assign({}, data, {id: data.id != null ? data.id : snapshot.id});
+    });
+  } catch (checkError) {
+    $("saveBtn").disabled = false;
+    message(saveStatus, "تعذر مراجعة قائمة المنتجات الآن؛ لم يتم الحفظ لتجنب إضافة منتج مكرر. تحقق من الاتصال وحاول مرة أخرى.");
+    console.error("Duplicate product check failed:", checkError);
+    return;
+  }
+  const previous = editingId
+    ? latestProducts.find(function (item) { return String(item.id) === editingId; })
+    : null;
+  if (editingId && !previous) {
+    $("saveBtn").disabled = false;
+    message(saveStatus, "المنتج الذي تحاول تعديله لم يعد موجودًا في قاعدة البيانات. حدّث قائمة المنتجات ثم حاول مرة أخرى.");
+    return;
+  }
+  const duplicateProduct = latestProducts.find(function (item) {
     if (previous && String(item.id) === String(previous.id)) return false;
     return normalizeProductDuplicateValue(item.name) === newProductName &&
       normalizeProductDuplicateValue(item.brand) === newProductBrand;
   });
   if (duplicateProduct) {
-    message(saveStatus, "تم رفض الحفظ: المنتج موجود بالفعل في قائمة المنتجات" + (duplicateProduct.brand ? " — " + duplicateProduct.brand : "") + ". افتح المنتج الموجود وعدّله بدل إضافته مرة أخرى.");
+    $("saveBtn").disabled = false;
+    message(saveStatus, "تم رفض الحفظ: يوجد منتج بنفس الاسم والماركة بالفعل" + (duplicateProduct.brand ? " — " + duplicateProduct.brand : "") + ". افتح المنتج الموجود وعدّله بدل إضافته مرة أخرى.");
     $("name").focus();
     return;
   }
-  const id = previous ? Number(previous.id) : Math.max(0, ...products.map(function (item) { return Number(item.id) || 0; })) + 1;
+  const id = previous ? Number(previous.id) : Math.max(0, ...latestProducts.map(function (item) { return Number(item.id) || 0; })) + 1;
   const files = selectedImageFiles.slice();
   if (files.length + (imageRemoved ? 0 : existingImageIds.length) > 8) { message(saveStatus, "الحد الأقصى 8 صور للمنتج. امسح الصور القديمة أولًا إذا أردت استبدالها."); return; }
   let image = $("imageUrl").value.trim();
