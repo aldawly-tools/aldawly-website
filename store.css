@@ -7379,3 +7379,24 @@ article.product-card.home-shelf-card .product-info,
 .home-offer-countdown .offer-countdown-units small{font-size:9px}
 .home-offer-cta{display:block;text-align:center;text-decoration:none;margin-top:10px;padding:11px;border-radius:11px;background:#c8101e;color:#fff;font-weight:900}
 @media(max-width:820px){.home-live-offers{padding-top:12px}.home-offers-hero{padding:17px;border-radius:16px}.home-offers-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:10px}.home-offer-card .product-info{padding:9px}.home-offer-card .product-name{font-size:13px}.home-offer-card .product-price strong{font-size:17px}}
+
+
+/* Checkout WhatsApp confirmation: high-contrast action and readable short order reference. */
+#cartDrawer .checkout-whatsapp-step .payment-proof,
+#cartDrawer .payment-followup .payment-proof {
+  background:#168447!important;
+  border:1px solid #168447!important;
+  color:#fff!important;
+  -webkit-text-fill-color:#fff!important;
+  text-shadow:none!important;
+}
+#cartDrawer .checkout-whatsapp-step p,
+#cartDrawer #checkoutWhatsappSummary {
+  overflow-wrap:anywhere!important;
+  word-break:normal!important;
+  unicode-bidi:plaintext;
+}
+#cartDrawer .checkout-whatsapp-step .payment-proof:focus-visible {
+  outline:3px solid #16844755!important;
+  outline-offset:3px!important;
+}
