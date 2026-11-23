@@ -572,7 +572,7 @@
         const key = entry[0], label = entry[1].label, count = entry[1].count, selected = normalizeBrand(activeBrand) === key;
         const logo = brandLogoForFilter(label);
         const logoMarkup = logo
-          ? '<img class="brand-filter-logo" src="' + escapeHtml(logo) + '" alt="" loading="lazy" decoding="async" onerror="this.replaceWith(Object.assign(document.createElement(\'span\'),{className:\'brand-filter-monogram\',textContent:\'' + escapeHtml(brandMonogram(label)) + '\'}))">'
+          ? '<img class="brand-filter-logo" src="' + escapeHtml(logo) + '" alt="" width="180" height="72" loading="lazy" decoding="async" onerror="this.replaceWith(Object.assign(document.createElement(\'span\'),{className:\'brand-filter-monogram\',textContent:\'' + escapeHtml(brandMonogram(label)) + '\'}))">'
           : '<span class="brand-filter-monogram" aria-hidden="true">' + escapeHtml(brandMonogram(label)) + '</span>';
         return '<button class="brand-filter-option' + (selected ? ' active' : '') + '" type="button" data-brand-filter="' + escapeHtml(label) + '" aria-pressed="' + selected + '"><span class="brand-filter-option-name">' + logoMarkup + '<span>' + escapeHtml(label) + '</span></span><span class="brand-filter-count">' + count + '</span></button>';
       }).join("") || '<p class="brand-filter-empty">لا توجد ماركات بهذا الاسم.</p>';
@@ -779,9 +779,9 @@
       const cartDescription = cleanProductCopy(item.desc || item.description || item.details || item.specs || item.title || "");
       const cartDetails = cartDescription ? '<button class="cart-details-toggle" type="button" data-cart-details aria-expanded="false">عرض التفاصيل الفنية <span aria-hidden="true">＋</span></button><small class="cart-product-description" hidden><b>التفاصيل: </b>' + escapeHtml(cartDescription.length > 260 ? cartDescription.slice(0,257) + "…" : cartDescription) + '</small>' : '';
       const cartImage = item.image
-        ? '<img src="' + escapeHtml(item.image) + '" alt="" loading="lazy">'
+        ? '<img src="' + escapeHtml(item.image) + '" alt="" width="80" height="80" loading="lazy" decoding="async">'
         : item.imageId
-          ? '<img data-cart-image="' + escapeHtml(item.imageId) + '" alt="" loading="lazy">'
+          ? '<img data-cart-image="' + escapeHtml(item.imageId) + '" alt="" width="80" height="80" loading="lazy" decoding="async">'
           : '<span aria-hidden="true">🔧</span>';
       return '<div class="cart-row"><div class="cart-product-main"><div class="cart-product-thumb">' + cartImage + '</div><div class="cart-product-copy"><strong>' + escapeHtml(cleanProductName(item.name)) + '</strong>' + cartDetails + '<small>' + escapeHtml(formatPrice(item.price)) + '</small>' + lineTotal +
         '<div class="quantity"><button type="button" data-qty="' + escapeHtml(item.id) + '" data-delta="-1" aria-label="تقليل الكمية">−</button><span>' + line.qty + '</span><button type="button" data-qty="' + escapeHtml(item.id) + '" data-delta="1" aria-label="زيادة الكمية">+</button></div></div></div>' +
