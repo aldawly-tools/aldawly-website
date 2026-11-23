@@ -713,6 +713,17 @@ main > #about{order:5!important}
 <script type="module" src="conversion-analytics.js?v=admin-exclusion-20261118-1"></script>
 <script src="onesignal-init.js?v=deferred-load-20261118-1"></script>
 <script src="share-product.js?v=share-image-20261119-1"></script>
+<script id="dawly-catalog-cache-bootstrap">
+/* Publish the last known catalog before store.js renders, avoiding a blank first pass on repeat visits. */
+(function(){
+  try {
+    var cached = JSON.parse(localStorage.getItem("aldawly_catalog_cache_v1") || "null");
+    if (cached && Array.isArray(cached.products) && cached.products.length) {
+      window.DAWLY_PRODUCTS = cached.products;
+    }
+  } catch (_) {}
+})();
+</script>
 <script src="store.js?v=offers-cloud-image-20261122-1"></script>
 <script src="smart-search.js?v=exact-name-search-20261120-1"></script>
 <script src="voice-search.js?v=voice-no-autoscroll-20261120-4" defer></script>
