@@ -252,6 +252,34 @@ main > #about{order:5!important}
 @media(prefers-reduced-motion:reduce){main{scroll-behavior:auto!important}}
 </style>
 
+<style id="dawly-mobile-homepage-gap-fix-20261123">
+@media (max-width:700px){
+  /* Use normal document flow on phones so empty flex space cannot stretch between sections. */
+  html body main#mainContent{
+    display:block!important;
+    height:auto!important;
+    min-height:0!important;
+  }
+  html body main#mainContent > section{
+    flex:none!important;
+    height:auto!important;
+    min-height:0!important;
+  }
+  html body main#mainContent > #categories{
+    margin:6px 0 0!important;
+    padding:14px 0 10px!important;
+  }
+  html body main#mainContent > #products{
+    margin:0!important;
+    padding:10px 0 16px!important;
+  }
+  html body main#mainContent .home-products-shelf{
+    margin:8px 0 14px!important;
+    padding:10px 0 4px!important;
+  }
+}
+</style>
+
 
 <style id="dawly-mobile-menu-spacing-fix-20261118">
 @media(max-width:700px){
