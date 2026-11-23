@@ -262,6 +262,7 @@ body{background:#f4f5f7;color:#252a31}
   <section class="hidden" id="manager">
     <nav class="dashboard-nav" aria-label="أقسام لوحة الإدارة" role="tablist">
       <div class="admin-brand"><span class="admin-brand-mark">د</span><div><strong>الدولي للعدد</strong><small>إدارة المتجر</small></div></div>
+      <label class="admin-nav-search" for="adminNavSearch"><span aria-hidden="true">⌕</span><input id="adminNavSearch" type="search" placeholder="ابحث عن قسم…" autocomplete="off"></label>
       <button type="button" class="dashboard-tab active" data-tab="dashboardPanel" role="tab" aria-selected="true"><span>⌂</span> الرئيسية</button>
       <button type="button" class="dashboard-tab" data-tab="productPanel" role="tab" aria-selected="false"><span>＋</span> إضافة منتج</button>
       <button type="button" class="dashboard-tab" data-tab="catalogPanel" role="tab" aria-selected="false"><span>▦</span> إدارة المنتجات</button>
@@ -276,6 +277,7 @@ body{background:#f4f5f7;color:#252a31}
       <button type="button" class="dashboard-stat dashboard-stat-action" id="dashProductsCard" aria-label="فتح المنتجات لعرضها وتعديلها"><span>إجمالي المنتجات</span><strong id="dashProducts">0</strong><small>اضغط لعرض المنتجات وتعديلها</small></button>
       <button type="button" class="dashboard-stat dashboard-stat-action" id="dashOrdersCard" aria-label="فتح الطلبات لعرضها وتعديلها"><span>إجمالي الطلبات</span><strong id="dashOrders">0</strong><small>اضغط لعرض الطلبات وتعديلها</small></button>
     </div>
+    <section class="admin-context-bar" aria-live="polite"><div><span class="admin-context-kicker">مساحة العمل</span><h2 id="adminContextTitle">الرئيسية</h2><p id="adminContextHint">نظرة عامة على نشاط المتجر وأدوات الإدارة</p></div><span class="admin-context-date" id="adminContextDate"></span></section>
     <section class="admin-home admin-panel" id="dashboardPanel" role="tabpanel">
       <div class="admin-welcome"><div><span class="admin-eyebrow">لوحة التحكم</span><h2>أهلاً بك في إدارة المتجر 👋</h2><p>تابع منتجاتك وطلبات العملاء وكل نشاط المتجر من مكان واحد.</p></div><a class="link light" href="index.html">فتح المتجر ↗</a></div>
       <div class="home-section-title"><h3>الوصول السريع</h3><span>اختر المهمة التي تريد تنفيذها</span></div>
@@ -473,16 +475,22 @@ let selectedBrandLogoFile = null;
 let selectedBrandLogoScale = 34;
 
 function showAdminTab(panelId) {
-
   ids.forEach(function(id) {
     const panel = $(id);
     if (panel) panel.classList.toggle("hidden", id !== panelId);
   });
-document.querySelectorAll(".dashboard-tab").forEach(function(button) {
+  document.querySelectorAll(".dashboard-tab").forEach(function(button) {
     const active = button.dataset.tab === panelId;
-    button.classList.toggle("active", active);
+    button.classList.toggle("active", active && (!button.dataset.filter || button.dataset.filter === ($("orderFilter") ? $("orderFilter").value : "all")));
     button.setAttribute("aria-selected", active ? "true" : "false");
   });
+  const activeButton = Array.from(document.querySelectorAll(".dashboard-tab")).find(function(button) {
+    return button.dataset.tab === panelId && (!button.dataset.filter || button.dataset.filter === ($("orderFilter") ? $("orderFilter").value : "all"));
+  }) || Array.from(document.querySelectorAll(".dashboard-tab")).find(function(button){return button.dataset.tab===panelId;});
+  const title = $("adminContextTitle");
+  const hint = $("adminContextHint");
+  if (title) title.textContent = activeButton ? activeButton.textContent.replace(/^[^\p{L}\p{N}]*/u,"").trim() : "لوحة التحكم";
+  if (hint) hint.textContent = panelId === "dashboardPanel" ? "نظرة عامة على نشاط المتجر وأدوات الإدارة" : "إدارة المتجر · " + (title ? title.textContent : "");
 }
 const dashProductsCard = $("dashProductsCard");
 if(dashProductsCard){
@@ -511,6 +519,25 @@ document.querySelectorAll(".quick-action").forEach(function(button) {
     window.scrollTo({top:0,behavior:"smooth"});
   });
 });
+const adminNavSearch = $("adminNavSearch");
+if (adminNavSearch) {
+  adminNavSearch.addEventListener("input", function() {
+    const term = adminNavSearch.value.trim().toLocaleLowerCase("ar");
+    document.querySelectorAll(".dashboard-tab").forEach(function(button) {
+      const matches = !term || button.textContent.toLocaleLowerCase("ar").includes(term);
+      button.hidden = !matches;
+    });
+  });
+  adminNavSearch.addEventListener("keydown", function(event) {
+    if (event.key === "Escape") { adminNavSearch.value = ""; adminNavSearch.dispatchEvent(new Event("input")); }
+    if (event.key === "Enter") {
+      const first = Array.from(document.querySelectorAll(".dashboard-tab")).find(function(button){return !button.hidden;});
+      if (first) first.click();
+    }
+  });
+}
+const adminContextDate = $("adminContextDate");
+if (adminContextDate) adminContextDate.textContent = new Intl.DateTimeFormat("ar-EG",{weekday:"long",day:"numeric",month:"long"}).format(new Date());
 document.querySelectorAll(".dashboard-tab").forEach(function(button) {
   button.addEventListener("click", function() {
     showAdminTab(button.dataset.tab);
