@@ -1,0 +1,33 @@
+/* Reserve space for homepage content populated after the product catalog arrives. */
+main[data-page="home"] #categoryTiles:empty {
+  min-height: 246px;
+}
+main[data-page="home"] #productGrid:empty {
+  min-height: 760px;
+}
+main[data-page="home"] #dawlyShowcaseBrands:empty {
+  min-height: 72px;
+}
+main[data-page="home"] #categoryTiles .category-photo img {
+  width: 104px;
+  height: 94px;
+  object-fit: cover;
+}
+.dawly-brand-pill {
+  min-height: 72px;
+}
+.dawly-brand-pill img {
+  display: block;
+  width: 180px;
+  height: 72px;
+  max-width: 78%;
+  object-fit: contain;
+}
+@media (max-width: 820px) {
+  main[data-page="home"] #categoryTiles:empty {
+    min-height: 366px;
+  }
+  main[data-page="home"] #productGrid:empty {
+    min-height: 1160px;
+  }
+}
