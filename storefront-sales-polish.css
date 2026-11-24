@@ -309,3 +309,15 @@ main > #about{order:7!important}
  .hero-shell .hero-copy .hero-cta,.hero-shell .hero-copy .whatsapp-catalog-cta{min-width:0!important}
  .hero-shell .hero-services .service-card{font-size:9.5px!important}
 }
+
+
+/* Improve contrast of the showcase headline accent */
+.dawly-showcase-content h2 span,
+.dawly-showcase-content h2 span *{
+ color:#a90018!important;
+ opacity:1!important;
+ -webkit-text-fill-color:#a90018!important;
+ font-weight:1000!important;
+ text-shadow:none!important;
+ background:transparent!important;
+}
