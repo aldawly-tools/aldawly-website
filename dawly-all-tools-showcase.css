@@ -457,3 +457,15 @@
  .dawly-showcase-cta{min-height:32px!important;padding:0 11px!important;font-size:11px!important}
  .dawly-showcase-note{font-size:8px!important;margin-top:4px!important}
 }
+
+
+/* 2026-11-24: make the full hero headline and description white */
+.dawly-showcase-content h2,
+.dawly-showcase-content h2 span,
+.dawly-showcase-content p{
+  color:#fff!important;
+}
+.dawly-showcase-content h2 span{
+  background:transparent!important;
+  box-shadow:none!important;
+}
