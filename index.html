@@ -1322,4 +1322,68 @@ html body #brands.brands-marquee-section{
 }
 </style>
 
+
+<style id="dawly-home-offer-card-mobile-compact-20261125">
+/* Compact only the live-offer cards shown on the homepage. */
+html body #homeOffersGrid .home-offer-card{
+  display:flex!important;flex-direction:column!important;
+  height:auto!important;min-height:0!important;
+  overflow:hidden!important;border:1px solid #e8eaee!important;
+  border-radius:18px!important;background:#fff!important;
+  box-shadow:0 3px 12px rgba(20,30,45,.06)!important;
+}
+html body #homeOffersGrid .home-offer-card>.product-visual{
+  display:flex!important;align-items:center!important;justify-content:center!important;
+  flex:0 0 auto!important;width:100%!important;height:250px!important;min-height:250px!important;
+  padding:10px!important;box-sizing:border-box!important;background:#f8f9fa!important;
+}
+html body #homeOffersGrid .home-offer-card>.product-visual img{
+  display:block!important;width:100%!important;height:100%!important;
+  max-height:100%!important;object-fit:contain!important;padding:0!important;
+}
+html body #homeOffersGrid .home-offer-card>.product-info{
+  display:flex!important;flex-direction:column!important;align-items:stretch!important;
+  justify-content:flex-start!important;gap:10px!important;
+  height:auto!important;min-height:0!important;padding:14px!important;
+  box-sizing:border-box!important;background:#fff!important;
+}
+html body #homeOffersGrid .home-offer-card .product-category,
+html body #homeOffersGrid .home-offer-card .product-name,
+html body #homeOffersGrid .home-offer-card .product-price{
+  margin:0!important;min-height:0!important;
+}
+html body #homeOffersGrid .home-offer-card .product-name{
+  line-height:1.55!important;overflow-wrap:anywhere!important;
+}
+html body #homeOffersGrid .home-offer-card .product-price{
+  display:flex!important;align-items:baseline!important;flex-wrap:wrap!important;gap:7px!important;
+}
+html body #homeOffersGrid .home-offer-card .home-offer-countdown{
+  margin:2px 0!important;padding:9px!important;
+}
+html body #homeOffersGrid .home-offer-card .home-offer-cta{
+  margin:2px 0 0!important;min-height:52px!important;
+}
+@media(max-width:700px){
+  html body #homeOffersGrid .home-offer-card>.product-visual{
+    height:220px!important;min-height:220px!important;
+  }
+  html body #homeOffersGrid .home-offer-card>.product-info{
+    gap:9px!important;padding:12px!important;
+  }
+  html body #homeOffersGrid .home-offer-card .product-name{
+    font-size:15px!important;line-height:1.5!important;
+  }
+  html body #homeOffersGrid .home-offer-card .product-price strong{
+    font-size:19px!important;
+  }
+  html body #homeOffersGrid .home-offer-card .home-offer-countdown{
+    margin:1px 0!important;
+  }
+  html body #homeOffersGrid .home-offer-card .home-offer-cta{
+    min-height:48px!important;padding:10px!important;
+  }
+}
+</style>
+
 </body></html>
