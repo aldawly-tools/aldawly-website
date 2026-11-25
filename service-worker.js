@@ -1,4 +1,4 @@
-const CACHE_NAME = "aldawly-tools-v29-http-cache";
+const CACHE_NAME = "aldawly-tools-v30-unified-redesign";
 const APP_SHELL = [
   "/",
   "/index.html",
