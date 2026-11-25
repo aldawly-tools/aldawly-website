@@ -18,15 +18,36 @@ function decodeFields(fields) {
   return out;
 }
 export async function listProducts() {
-  const endpoint = "https://firestore.googleapis.com/v1/projects/" + PROJECT +
-    "/databases/(default)/documents/products?pageSize=1000&key=" + API_KEY;
-  const response = await fetch(endpoint, { headers: { accept: "application/json" } });
-  if (!response.ok) throw new Error("Firestore products read failed: " + response.status);
-  const body = await response.json();
-  return (body.documents || []).map(doc => {
-    const id = doc.name.split("/").pop();
-    return Object.assign({ id }, decodeFields(doc.fields || {}));
-  });
+  const products = [];
+  let pageToken = "";
+  let pageCount = 0;
+
+  do {
+    const endpoint = new URL(
+      "https://firestore.googleapis.com/v1/projects/" + PROJECT +
+      "/databases/(default)/documents/products"
+    );
+    endpoint.searchParams.set("pageSize", "1000");
+    endpoint.searchParams.set("key", API_KEY);
+    if (pageToken) endpoint.searchParams.set("pageToken", pageToken);
+
+    const response = await fetch(endpoint.toString(), { headers: { accept: "application/json" } });
+    if (!response.ok) throw new Error("Firestore products read failed: " + response.status);
+    const body = await response.json();
+
+    for (const doc of (body.documents || [])) {
+      const id = doc.name.split("/").pop();
+      products.push(Object.assign({ id }, decodeFields(doc.fields || {})));
+    }
+
+    pageToken = body.nextPageToken || "";
+    pageCount += 1;
+    if (pageCount >= 100 && pageToken) {
+      throw new Error("Firestore product listing exceeded the 100-page safety limit.");
+    }
+  } while (pageToken);
+
+  return products;
 }
 export async function getProductById(id) {
   const products = await listProducts();

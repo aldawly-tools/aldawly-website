@@ -7,6 +7,14 @@ function json(data, status = 200) {
   return new Response(JSON.stringify(data), { status, headers: JSON_HEADERS });
 }
 
+function cairoDay() {
+  const parts = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Africa/Cairo", year: "numeric", month: "2-digit", day: "2-digit"
+  }).formatToParts(new Date());
+  const value = type => parts.find(part => part.type === type).value;
+  return value("year") + "-" + value("month") + "-" + value("day");
+}
+
 function validDay(day) {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(day)) return false;
   const date = new Date(day + "T00:00:00Z");
@@ -17,13 +25,23 @@ export async function onRequest({ request, env }) {
   if (!env.VISITS_DB) return json({ error: "Visit counter database is not configured." }, 503);
 
   if (request.method === "POST") {
+    const requestUrl = new URL(request.url);
+    const origin = request.headers.get("Origin");
+    if (origin) {
+      try {
+        if (new URL(origin).origin !== requestUrl.origin) return json({ error: "Forbidden." }, 403);
+      } catch {
+        return json({ error: "Invalid Origin." }, 403);
+      }
+    }
+
     let body;
     try { body = await request.json(); } catch { return json({ error: "Invalid JSON." }, 400); }
     const visitorId = String(body.visitorId || "");
-    const day = String(body.day || "");
-    if (!/^[A-Za-z0-9-]{16,80}$/.test(visitorId) || !validDay(day)) {
+    if (!/^[A-Za-z0-9-]{16,80}$/.test(visitorId)) {
       return json({ error: "Invalid visit data." }, 400);
     }
+    const day = cairoDay();
     try {
       await env.VISITS_DB.prepare(
         "INSERT OR IGNORE INTO site_visits (visitor_id, visit_day, created_at) VALUES (?, ?, ?)"
