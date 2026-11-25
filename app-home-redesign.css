@@ -85,3 +85,51 @@
 @media(prefers-reduced-motion:reduce){
  .dawly-app-dock{transition:none!important}
 }
+
+
+/* Final mobile polish for the live offers cards and persistent navigation. */
+@media(max-width:700px){
+  html body #homeOffers .home-offers-hero{
+    display:flex!important;align-items:center!important;justify-content:space-between!important;
+    gap:12px!important;padding:19px 17px!important;min-height:142px!important;
+    border:1px solid #f0dfe1!important;border-right:6px solid var(--app-red)!important;
+    border-radius:18px!important;background:linear-gradient(135deg,#fff 0%,#fff7f7 100%)!important;
+    box-shadow:0 5px 18px rgba(25,30,35,.045)!important;
+  }
+  html body #homeOffers .home-offers-hero h2{font-size:24px!important;line-height:1.4!important;color:#15191e!important}
+  html body #homeOffers .home-offers-hero p{font-size:13px!important;color:#6b737c!important;line-height:1.8!important}
+  html body #homeOffers .home-offers-mark{width:58px!important;height:58px!important;display:grid!important;place-items:center!important;border:2px solid var(--app-red)!important;border-radius:15px!important;color:var(--app-red)!important;font-size:30px!important;transform:rotate(-8deg)}
+  html body #homeOffers .home-offers-grid{display:grid!important;grid-template-columns:minmax(0,1fr)!important;gap:14px!important}
+  html body #homeOffers .home-offers-grid .product-card{
+    display:flex!important;flex-direction:column!important;overflow:hidden!important;
+    width:100%!important;max-width:none!important;min-width:0!important;
+    border:1px solid #e5e8ec!important;border-radius:19px!important;
+    background:#fff!important;box-shadow:0 7px 24px rgba(20,30,40,.075)!important;
+  }
+  html body #homeOffers .home-offers-grid .product-card .product-image,
+  html body #homeOffers .home-offers-grid .product-card .product-visual{
+    width:100%!important;height:210px!important;min-height:210px!important;
+    padding:12px!important;background:#f5f7f9!important;object-fit:contain!important;
+  }
+  html body #homeOffers .home-offers-grid .product-card img{
+    max-width:100%!important;max-height:100%!important;object-fit:contain!important;
+  }
+  html body #homeOffers .home-offers-grid .product-card .product-info{
+    display:flex!important;flex-direction:column!important;gap:10px!important;
+    padding:15px!important;background:#fff!important;
+  }
+  html body #homeOffers .home-offers-grid .product-card .product-name{
+    font-size:17px!important;line-height:1.6!important;font-weight:800!important;
+    color:#20262d!important;min-height:0!important;max-height:3.2em!important;
+  }
+  html body #homeOffers .home-offers-grid .product-card .product-price{
+    color:var(--app-red)!important;font-size:23px!important;font-weight:900!important;
+  }
+  html body .dawly-app-dock{
+    position:fixed!important;display:grid!important;visibility:visible!important;opacity:1!important;
+    transform:none!important;pointer-events:auto!important;bottom:0!important;z-index:10055!important;
+    background:#fff!important;box-shadow:0 -5px 20px rgba(15,25,35,.09)!important;
+  }
+  html body .dawly-app-dock.dawly-dock-hidden{transform:none!important;opacity:1!important;visibility:visible!important;pointer-events:auto!important}
+  body{padding-bottom:calc(78px + env(safe-area-inset-bottom,0px))!important}
+}
