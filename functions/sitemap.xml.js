@@ -6,6 +6,14 @@ function xml(value) {
   return htmlEscape(value).replace(/&#39;/g, "&apos;");
 }
 
+function isPublicProduct(product) {
+  if (!product || product.id == null || String(product.id).trim() === "") return false;
+  if (product.isActive === false || product.hidden === true || product.deleted === true) return false;
+  // Respect publication flags when present, while keeping legacy products visible.
+  if (product.published === false || product.isPublished === false) return false;
+  return true;
+}
+
 export async function onRequest() {
   try {
     const products = await listProducts();
@@ -15,8 +23,7 @@ export async function onRequest() {
       { loc: ORIGIN + "/advisor.html", changefreq: "monthly", priority: "0.6" }
     ];
 
-    products.forEach(product => {
-      if (!product || product.id == null || product.isActive === false || product.hidden === true || product.deleted === true) return;
+    products.filter(isPublicProduct).forEach(product => {
       urls.push({
         loc: ORIGIN + "/product?id=" + encodeURIComponent(String(product.id)),
         changefreq: "weekly",
@@ -33,7 +40,7 @@ export async function onRequest() {
         "    <priority>" + item.priority + "</priority>",
         "  </url>"
       ].join("\n")).join("\n") +
-      "\n</urlset>";
+      "\n</urlset>\n";
 
     return new Response(body, {
       status: 200,
