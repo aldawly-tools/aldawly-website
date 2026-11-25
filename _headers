@@ -6,19 +6,19 @@
   Permissions-Policy: camera=(self), microphone=(self), geolocation=()
 
 /*.html
-  Cache-Control: no-store, no-cache, must-revalidate, max-age=0
+  Cache-Control: no-cache, no-store, must-revalidate, max-age=0
 
 /*.js
-  Cache-Control: no-cache, no-store, must-revalidate, max-age=0
+  Cache-Control: public, max-age=3600, stale-while-revalidate=86400
 
 /*.css
-  Cache-Control: no-cache, no-store, must-revalidate, max-age=0
+  Cache-Control: public, max-age=3600, stale-while-revalidate=86400
 
 /assets/*
   Cache-Control: public, max-age=2592000, stale-while-revalidate=604800
 
 /manifest.webmanifest
-  Cache-Control: no-store, no-cache, must-revalidate, max-age=0
+  Cache-Control: no-cache, no-store, must-revalidate, max-age=0
 
 /service-worker.js
-  Cache-Control: no-store, no-cache, must-revalidate, max-age=0
+  Cache-Control: no-cache, no-store, must-revalidate, max-age=0
