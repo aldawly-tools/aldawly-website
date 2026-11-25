@@ -105,3 +105,18 @@ footer.footer a:hover{color:#ff8b92!important}
 @media(prefers-reduced-motion:reduce){
  *,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
 }
+
+/* Mobile preview fixes: reserve room for the fixed bottom navigation. */
+@media(max-width:700px){
+  html body main#mainContent{
+    padding-bottom:calc(96px + env(safe-area-inset-bottom))!important;
+  }
+  html body .search-form{
+    min-width:0;
+    overflow:hidden;
+  }
+  html body .search-form input{
+    min-width:0;
+    font-size:13px;
+  }
+}
