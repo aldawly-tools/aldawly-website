@@ -22,12 +22,6 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400..900&display=optional" rel="stylesheet">
 <link rel="stylesheet" href="dawly-unified.css?v=20261125-2">
-
-
- 
-
-
-
 <noscript></noscript>
 
 
@@ -464,7 +458,7 @@ main > #about{order:7!important}
 /* Ensure the offers destination is directly reachable from the mobile drawer */
 .mobile-menu-main-links .mobile-offers-link{color:#c8101e!important;font-weight:900}
 .mobile-menu-main-links .mobile-offers-link .red-mark{color:#c8101e!important;margin-left:7px}
-</style>\n
+</style>
 
 
 
@@ -533,7 +527,10 @@ html body .dawly-showcase-content > p {
 }
 </style>
 
- \n</head>
+ <link rel="stylesheet" href="modern-storefront.css?v=20261125-3">
+<link rel="stylesheet" href="app-home-redesign.css?v=20261125-3">
+<link rel="stylesheet" href="dawly-complete-redesign.css?v=20261125-1">
+</head>
 
 <body>
 <script id="remove-top-gap">
@@ -695,6 +692,7 @@ html body .dawly-showcase-content > p {
   <a class="hero-cta" href="#products"><svg viewBox="0 0 24 24"><path d="M3 4h2l2.2 11.2a2 2 0 0 0 2 1.6h8.6a2 2 0 0 0 2-1.6L21 8H6M10 21a1 1 0 1 0 0-2 1 1 0 0 0 0 2ZM18 21a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z"/></svg>تسوق الآن</a>
   <a class="hero-cta whatsapp-catalog-cta" href="https://wa.me/c/201024787222" target="_blank" rel="noopener">تصفح كتالوج واتساب <span aria-hidden="true">↗</span></a>
  </div>
+ <div class="hero-photo" aria-label="مجموعة من العدد والأدوات الاحترافية"><img src="assets/store-hero.png" alt="مجموعة العدد والأدوات الأصلية والمستوردة" fetchpriority="high"></div>
 
 </div></section>
 
@@ -886,7 +884,7 @@ html body .dawly-showcase-content > p {
   if(business)lines.push("الشركة/الورشة: "+business);
   if(notes)lines.push("تفاصيل إضافية: "+notes);
   lines.push("برجاء إفادتي بالسعر والتوفر والمواصفات.");
-  window.open("https://wa.me/201024787222?text="+encodeURIComponent(lines.join("\n")),"_blank","noopener");
+  window.open("https://wa.me/201024787222?text="+encodeURIComponent(lines.join("")),"_blank","noopener");
  });
 })();
 </script>
@@ -1142,7 +1140,7 @@ html body .dawly-showcase-content > p {
 <script id="dawly-app-dock-actions">
 (function(){
 if(!window.matchMedia('(max-width: 700px)').matches)return;
-var dock=document.querySelector('.dawly-app-dock');if(dock){var lastY=window.scrollY||0;var ticking=false;function updateDock(){var y=window.scrollY||0;var delta=y-lastY;if(y<45){dock.classList.remove('dawly-dock-hidden');}else if(delta>7){dock.classList.add('dawly-dock-hidden');}else if(delta< -7){dock.classList.remove('dawly-dock-hidden');}lastY=y;ticking=false;}window.addEventListener('scroll',function(){if(!ticking){ticking=true;window.requestAnimationFrame(updateDock);}},{passive:true});}
+var dock=document.querySelector('.dawly-app-dock');if(dock)dock.classList.remove('dawly-dock-hidden');
 var categories=document.getElementById('dawlyDockCategories');if(categories)categories.addEventListener('click',function(){var opener=document.getElementById('openMobileMenu');if(opener)opener.click();});var dockCart=document.getElementById('dawlyDockCart');if(dockCart)dockCart.addEventListener('click',function(){var opener=document.getElementById('openCart');if(opener)opener.click();});function syncDockCart(){var source=document.getElementById('cartCount'),target=document.getElementById('dawlyDockCartCount');if(source&&target)target.textContent=source.textContent||'0';}syncDockCart();var count=document.getElementById('cartCount');if(count&&window.MutationObserver)new MutationObserver(syncDockCart).observe(count,{childList:true,characterData:true,subtree:true});})();
 
 /* dawly-dock-scroll-behavior */
@@ -1218,5 +1216,8 @@ html body .home-products-shelf .home-products-track > .home-shelf-card > .produc
   background:transparent!important;
 }
 </style>
+
+
+
 
 </body></html>
