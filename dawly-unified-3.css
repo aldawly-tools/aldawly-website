@@ -1,0 +1,746 @@
+/* DAWLY unified stylesheet — chunk 3/4; source order preserved. */
+/* ===== mobile-menu-final.css ===== */
+/* Mobile navigation drawer: isolated override stylesheet */
+@media (max-width:700px){
+  html body #mobileMenuOverlay.mobile-menu-overlay{
+    position:fixed!important;inset:0!important;z-index:2147483000!important;
+    background:rgba(18,25,34,.46)!important;opacity:0;visibility:hidden;
+  }
+  html body #mobileMenuOverlay.mobile-menu-overlay.open{opacity:1!important;visibility:visible!important}
+  html body aside#mobileMenuDrawer.mobile-menu-drawer{
+    position:fixed!important;top:0!important;right:0!important;bottom:0!important;left:auto!important;
+    width: min(86vw,390px)!important;max-width:390px!important;min-width:0!important;
+    height:100vh!important;height:100dvh!important;max-height:100dvh!important;
+    margin:0!important;padding:0 0 max(22px,env(safe-area-inset-bottom))!important;
+    border-radius:18px 0 0 18px!important;overflow-y:auto!important;
+    background:#fff!important;color:#202832!important;
+    box-shadow:-14px 0 42px rgba(18,27,38,.2)!important;
+    transform:translate3d(105%,0,0)!important;transition:transform .28s ease!important;
+    z-index:2147483001!important;direction:rtl!important;
+  }
+  html body aside#mobileMenuDrawer.mobile-menu-drawer.open{transform:translate3d(0,0,0)!important}
+  html body #mobileMenuDrawer .mobile-menu-close{
+    position:absolute!important;top:18px!important;right:16px!important;
+    width:42px!important;height:42px!important;display:grid!important;place-items:center!important;
+    border:1px solid #e8ebef!important;border-radius:12px!important;
+    background:#f5f6f8!important;color:#202832!important;font-size:30px!important;
+    line-height:1!important;padding:0!important;
+  }
+  html body #mobileMenuDrawer .mobile-menu-home-label{
+    display:block!important;margin:78px 0 0!important;padding:0 20px 16px!important;
+    color:#202832!important;font:900 17px/1.5 Cairo,Tahoma,sans-serif!important;
+  }
+  html body #mobileMenuDrawer .mobile-menu-home-label:after{
+    content:""!important;display:block!important;width:42px!important;height:4px!important;
+    margin-top:9px!important;border-radius:8px!important;background:#c8101e!important;
+  }
+  html body #mobileMenuDrawer nav.mobile-menu-main-links{
+    display:flex!important;flex-direction:column!important;gap:8px!important;
+    margin:8px 12px 0!important;padding:0!important;
+  }
+  html body #mobileMenuDrawer nav.mobile-menu-main-links>a{
+    box-sizing:border-box!important;display:flex!important;align-items:center!important;
+    gap:12px!important;width:100%!important;min-height:54px!important;
+    margin:0!important;padding:8px 12px!important;
+    border:1px solid #e9edf1!important;border-radius:12px!important;
+    background:#fff!important;color:#202832!important;
+    font:900 15px/1.5 Cairo,Tahoma,sans-serif!important;text-decoration:none!important;
+  }
+  html body #mobileMenuDrawer nav.mobile-menu-main-links>a:before{
+    content:""!important;display:grid!important;place-items:center!important;flex:0 0 34px!important;
+    width:34px!important;height:34px!important;border-radius:10px!important;
+    background:#fff0f1!important;color:#c8101e!important;font:900 18px/1 Arial,sans-serif!important;
+  }
+  html body #mobileMenuDrawer nav.mobile-menu-main-links>a:nth-child(1):before{content:"⌂"!important}
+  html body #mobileMenuDrawer nav.mobile-menu-main-links>a:nth-child(2):before{content:"▦"!important}
+  html body #mobileMenuDrawer nav.mobile-menu-main-links>a:nth-child(3):before{content:"⚙"!important}
+  html body #mobileMenuDrawer nav.mobile-menu-main-links>a:nth-child(4):before{content:"☎"!important}
+  html body #mobileMenuDrawer nav.mobile-menu-main-links>a:nth-child(5):before{content:"ⓘ"!important}
+  html body #mobileMenuDrawer nav.mobile-menu-main-links>a:after{
+    content:"‹"!important;margin-right:auto!important;color:#9aa2ab!important;font-size:22px!important;
+  }
+  html body.mobile-category-menu-open #openMobileMenu,
+  html body.mobile-category-menu-open #dawlyQuickMenu,
+  html body.mobile-category-menu-open #dawlyBotLauncher,
+  html body.mobile-category-menu-open .floating-home-cart,
+  html body.mobile-category-menu-open .floating-contact-widget{
+    opacity:0!important;visibility:hidden!important;pointer-events:none!important;
+  }
+}
+@media(max-width:380px){
+ html body aside#mobileMenuDrawer.mobile-menu-drawer{width:90vw!important}
+ html body #mobileMenuDrawer nav.mobile-menu-main-links>a{min-height:51px!important;font-size:14px!important}
+}
+
+
+/* ===== app-home-redesign.css ===== */
+/* App-inspired mobile storefront refresh — presentation only; keeps catalog, cart and Firebase behavior intact. */
+:root{--app-red:#c8101e;--app-ink:#15191e;--app-muted:#626b75}
+@media(max-width:700px){
+  body{background:#fff}
+  .masthead{position:relative;background:#fff;border-bottom:1px solid #eceff2;box-shadow:0 2px 10px rgba(18,28,38,.04)}
+  .masthead-grid{display:grid!important;grid-template-columns:1fr!important;gap:11px!important;padding:13px 0 12px!important}
+  .brand{grid-column:1!important;grid-row:1!important;justify-content:flex-start;min-height:42px}
+  .brand-mark,.brand-mark svg{width:43px!important;height:43px!important;flex-basis:43px!important}
+  .brand-name{font-size:20px!important}
+  .brand-tag{font-size:14px!important;white-space:nowrap!important}
+  .head-actions{display:none!important}
+  .search-form{grid-column:1!important;grid-row:2!important;height:54px!important;border:1px solid #e1e4e8!important;border-radius:12px!important;box-shadow:0 2px 7px rgba(0,0,0,.05)!important}
+  .search-form input{font-size:16px!important;padding-inline:15px!important;color:#20252b!important}
+  .search-form input::placeholder{color:#737b84!important}
+  .search-form button{width:54px!important;flex-basis:54px!important;background:#fff!important;color:var(--app-red)!important;border-inline-start:1px solid #edf0f2!important}
+  .search-form button svg{width:25px!important;height:25px!important}
+  .main-nav{display:none!important}
+  .hero-shell{padding:8px 0 0!important}
+  .hero-shell .container{width:100%!important}
+  .hero-grid{display:grid!important;grid-template-columns:minmax(0,1fr)!important;grid-template-areas:"photo" "copy" "services"!important;gap:0!important;border-radius:0!important}
+  .hero-photo{display:block!important;grid-area:photo!important;height:clamp(150px,42vw,205px)!important;min-height:0!important;border-radius:0!important}
+  .hero-photo img{object-position:center!important}
+  .hero-copy{grid-area:copy!important;min-height:0!important;padding:17px 19px 19px!important;background:#fff!important;text-align:right!important;border-bottom:1px solid #eceff2}
+  .hero-copy .eyebrow{font-size:11px!important;margin-bottom:2px!important}
+  .hero-copy h1{font-size:29px!important;line-height:1.25!important;margin:0!important;color:#101418!important}
+  .hero-copy h2{font-size:17px!important;margin:1px 0 5px!important}
+  .hero-copy p{font-size:12px!important;line-height:1.75!important;color:#626b75!important}
+  .hero-copy .hero-cta{min-height:42px!important;margin:10px 0 0!important;align-self:stretch!important;width:100%!important;border-radius:9px!important}
+  .hero-copy .whatsapp-catalog-cta{display:none!important}
+  .hero-services{grid-area:services!important;display:flex!important;flex-wrap:nowrap!important;overflow-x:auto!important;gap:8px!important;padding:12px 3%!important;background:#f5f6f7!important;scrollbar-width:none!important}
+  .hero-services::-webkit-scrollbar{display:none}
+  .hero-services-track{display:contents!important}
+  .hero-services .service-card{display:flex!important;flex:0 0 auto!important;min-height:42px!important;padding:8px 11px!important;flex-direction:row!important;gap:7px!important;border:1px solid #e2e5e9!important;border-radius:9px!important;background:#fff!important;font-size:11px!important;color:#29313a!important}
+  .hero-services .service-icon{width:21px!important;height:21px!important;flex:0 0 21px!important}
+  .hero-services .service-icon svg{width:20px!important;height:20px!important}
+  .section{padding:17px 0 5px!important}
+  .section-heading{align-items:center!important;margin-bottom:11px!important}
+  .section-title{font-size:19px!important;line-height:1.35!important;color:#15191e!important}
+  .section-subtitle{font-size:11px!important;line-height:1.6!important;color:#6a737d!important}
+  .section-title:before{width:5px!important;height:23px!important}
+  #categories .categories-grid{display:flex!important;overflow-x:auto!important;gap:9px!important;padding:2px 2px 12px!important;scrollbar-width:none!important;scroll-snap-type:x mandatory}
+  #categories .categories-grid::-webkit-scrollbar{display:none}
+  #categories .category-tile{flex:0 0 132px!important;min-height:112px!important;scroll-snap-align:start!important;border:1px solid #e3e6e9!important;border-radius:12px!important;background:#fff!important;box-shadow:0 3px 10px rgba(15,25,35,.05)!important}
+  #brands.brands-marquee-section{margin-top:10px!important;background:#f5f6f7!important}
+  #brands.brands-marquee-section .container{width:94%!important}
+  #brands.brands-marquee-section .section-heading{align-items:flex-start!important}
+  #brands.brands-marquee-section .brands-marquee{padding:5px 0 15px!important}
+  #products .home-products-shelf{padding:0!important}
+  #products .home-shelf-heading{align-items:center!important;gap:8px!important}
+  #products .home-shelf-actions{flex-direction:row!important;align-items:center!important}
+  #products .latest-view-all{font-size:11px!important;padding:7px 9px!important}
+  #products .home-products-viewport{padding:2px 2px 12px!important}
+  #products .home-products-track{gap:10px!important}
+  #products .home-shelf-card{flex:0 0 72vw!important;max-width:270px!important;background:#fff!important}
+  #products .home-shelf-card .product-visual{height:175px!important;min-height:175px!important;background:#fff!important}
+  #productGrid.product-grid,#featuredProductsGrid.product-grid{gap:9px!important}
+  .dawly-app-dock{position:fixed!important;left:0!important;right:0!important;bottom:0!important;z-index:10055!important;display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;min-height:68px!important;padding:6px 5px calc(6px + env(safe-area-inset-bottom,0px))!important;background:rgba(255,255,255,.98)!important;border-top:1px solid #e5e8eb!important;box-shadow:0 -4px 16px rgba(15,25,35,.07)!important}
+  .dawly-app-dock a,.dawly-app-dock button{display:flex!important;min-width:0!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:3px!important;padding:3px!important;border:0!important;background:transparent!important;color:#858c94!important;text-decoration:none!important;font:700 10px/1.3 Cairo,Tahoma,sans-serif!important}
+  .dawly-app-dock svg{width:24px!important;height:24px!important;stroke:currentColor!important;fill:none!important;stroke-width:1.8!important;stroke-linecap:round!important;stroke-linejoin:round!important}
+  .dawly-app-dock .is-active{color:var(--app-red)!important}
+  .dawly-app-dock .dock-cart-icon{position:relative}
+  .dawly-app-dock .dock-count{position:absolute;top:-5px;right:-9px;min-width:16px;height:16px;padding:0 4px;border-radius:99px;background:var(--app-red);color:#fff;font:800 9px/16px Arial,sans-serif}
+  body{padding-bottom:calc(76px + env(safe-area-inset-bottom,0px))!important}
+  .footer{padding-bottom:88px!important}
+  .floating-home-cart{display:none!important}
+  .floating-contact-widget{bottom:calc(83px + env(safe-area-inset-bottom,0px))!important}
+  #dawlyBotLauncher{bottom:calc(83px + env(safe-area-inset-bottom,0px))!important}
+  #dawlyQuickMenu{bottom:calc(143px + env(safe-area-inset-bottom,0px))!important}
+  #dawlyBotPanel{bottom:calc(145px + env(safe-area-inset-bottom,0px))!important}
+}
+@media(min-width:701px){.dawly-app-dock{display:none!important}}
+
+/* Final mobile navigation cleanup: one five-item dock, no duplicate floating controls. */
+@media(max-width:700px){
+ .dawly-app-dock{grid-template-columns:repeat(5,minmax(0,1fr))!important}
+ #dawlyQuickMenu,#dawlyBotLauncher,.floating-contact-widget,.floating-home-cart,.dawly-mini-cart-launcher,.mobile-menu-trigger{display:none!important;opacity:0!important;visibility:hidden!important;pointer-events:none!important}
+ .dawly-app-dock button{cursor:pointer!important}
+}
+
+/* Auto-hide bottom navigation while scrolling down; reveal on upward scroll. */
+@media(max-width:700px){
+ .dawly-app-dock{transition:transform .28s ease,opacity .22s ease!important;will-change:transform}
+ .dawly-app-dock.dawly-dock-hidden{transform:translate3d(0,120%,0)!important;opacity:0!important;pointer-events:none!important}
+}
+@media(prefers-reduced-motion:reduce){
+ .dawly-app-dock{transition:none!important}
+}
+
+
+/* ===== homepage-compact.css ===== */
+/* Compact the home product preview; full product details stay on product pages. */
+main[data-page="home"] #productGrid .product-visual {
+  height: 180px !important;
+  min-height: 180px !important;
+}
+
+@media (max-width: 820px) {
+  main[data-page="home"] #productGrid .product-visual {
+    height: clamp(138px, 36vw, 170px) !important;
+    min-height: 0 !important;
+  }
+}
+
+
+/* ===== dawly-all-tools-showcase.css ===== */
+/* Unified Dawly hero: workshop photo + dark copy panel in one banner */
+.hero-shell{display:none!important}
+.dawly-all-tools{padding:14px 0 24px!important}
+.dawly-all-tools .container{width:min(96%,1240px)!important}
+.dawly-all-tools .dawly-showcase{
+  position:relative!important;isolation:isolate!important;overflow:hidden!important;
+  display:flex!important;align-items:center!important;justify-content:flex-start!important;
+  width:100%!important;min-height:350px!important;height:auto!important;aspect-ratio:16/7!important;
+  border:1px solid #303b46!important;border-radius:22px!important;
+  background:linear-gradient(135deg,#17212b 0%,#080d13 100%)!important;
+  box-shadow:0 16px 38px rgba(16,24,32,.18)!important;
+}
+.dawly-all-tools .dawly-showcase:before{
+  content:""!important;display:block!important;position:absolute!important;inset:0!important;z-index:0!important;
+  background:radial-gradient(ellipse at 15% 15%,rgba(195,16,35,.12),transparent 48%)!important;
+}
+.dawly-all-tools .dawly-showcase-content{
+  display:block!important;position:relative!important;z-index:1!important;
+  width:48%!important;max-width:560px!important;margin-inline-start:auto!important;
+  padding:28px 34px!important;text-align:right!important;color:#fff!important;
+}
+.dawly-showcase-kicker{display:inline-flex;align-items:center;gap:8px;color:#ff6973;font-weight:900;font-size:12px;margin-bottom:9px}
+.dawly-showcase-kicker:before{content:"";width:24px;height:3px;border-radius:5px;background:#e31828}
+.dawly-showcase-content h2{font-size:clamp(27px,3.5vw,44px);line-height:1.25;font-weight:1000;margin:0 0 10px;color:#fff}
+.dawly-showcase-content h2 span{display:inline-block;color:#fff;background:#c8101e;padding:2px 12px 6px;transform:skew(-4deg);border-radius:5px}
+.dawly-showcase-content p{font-size:14px;line-height:1.8;color:#e3e7eb;margin:0 0 14px;font-weight:700}
+.dawly-showcase-brands{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 16px}
+.dawly-showcase-brands span{background:#fff;color:#171c22;border-radius:8px;padding:6px 12px;font:900 13px Arial,sans-serif}
+.dawly-showcase-brands span:nth-child(2){color:#078c68}.dawly-showcase-brands span:nth-child(3){color:#c8101e}
+.dawly-showcase-cta{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:48px;padding:0 22px;border-radius:11px;background:linear-gradient(180deg,#f32938,#bd0717);border:1px solid #ff6670;color:#fff!important;text-decoration:none!important;font-size:15px;font-weight:1000;box-shadow:0 8px 22px #c8101e55}
+.dawly-showcase-note{display:block;margin-top:9px;color:#cbd1d8;font-size:10px;font-weight:700}
+@media(max-width:700px){
+ .dawly-all-tools{padding:10px 0 18px!important}
+ .dawly-all-tools .container{width:94%!important}
+ .dawly-all-tools .dawly-showcase{
+   min-height:0!important;aspect-ratio:1.55/1!important;height:auto!important;
+   align-items:center!important;border-radius:17px!important;
+   background-position:37% center!important;background-size:cover!important;
+ }
+ .dawly-all-tools .dawly-showcase:before{
+   background:radial-gradient(ellipse at 10% 15%,rgba(195,16,35,.12),transparent 48%)!important;
+ }
+ .dawly-all-tools .dawly-showcase-content{
+   width:56%!important;max-width:none!important;margin-inline-start:auto!important;
+   padding:18px 12px 18px 9px!important;text-align:right!important;
+ }
+ .dawly-showcase-kicker{font-size:8px!important;gap:4px!important;margin-bottom:5px!important}
+ .dawly-showcase-kicker:before{width:12px!important}
+ .dawly-showcase-content h2{font-size:clamp(18px,5vw,26px)!important;line-height:1.28!important;margin-bottom:6px!important}
+ .dawly-showcase-content h2 span{padding:1px 6px 4px!important}
+ .dawly-showcase-content p{font-size:10px!important;line-height:1.65!important;margin-bottom:8px!important}
+ .dawly-showcase-brands{gap:4px!important;margin-bottom:9px!important}
+ .dawly-showcase-brands span{font-size:9px!important;padding:4px 6px!important;border-radius:6px!important}
+ .dawly-showcase-cta{min-height:36px!important;padding:0 10px!important;font-size:10px!important;gap:5px!important;border-radius:8px!important}
+ .dawly-showcase-note{font-size:7px!important;margin-top:5px!important}
+}
+
+
+/* Let all banner copy use the full dark banner width */
+.dawly-all-tools .dawly-showcase{justify-content:center!important;aspect-ratio:auto!important;min-height:300px!important}
+.dawly-all-tools .dawly-showcase-content{
+  width:100%!important;max-width:none!important;margin:0!important;
+  padding:34px 5%!important;text-align:center!important;
+}
+.dawly-showcase-kicker{justify-content:center!important}
+.dawly-showcase-brands{justify-content:center!important}
+.dawly-showcase-content h2{max-width:100%!important}
+.dawly-showcase-content p{max-width:100%!important;margin-inline:auto!important}
+.dawly-showcase-cta{margin-inline:auto!important}
+.dawly-showcase-note{text-align:center!important}
+@media(max-width:700px){
+ .dawly-all-tools .dawly-showcase{min-height:300px!important;aspect-ratio:auto!important}
+ .dawly-all-tools .dawly-showcase-content{
+   width:100%!important;max-width:none!important;margin:0!important;
+   padding:28px 16px!important;text-align:center!important;
+ }
+ .dawly-showcase-kicker{font-size:9px!important;justify-content:center!important}
+ .dawly-showcase-content h2{font-size:clamp(23px,7vw,32px)!important;line-height:1.3!important;margin-bottom:10px!important}
+ .dawly-showcase-content p{font-size:13px!important;line-height:1.8!important;margin:0 auto 12px!important}
+ .dawly-showcase-brands{justify-content:center!important;gap:6px!important;margin-bottom:12px!important}
+ .dawly-showcase-brands span{font-size:11px!important;padding:5px 9px!important}
+ .dawly-showcase-cta{min-height:42px!important;padding:0 16px!important;font-size:13px!important}
+ .dawly-showcase-note{font-size:9px!important;margin-top:8px!important}
+}
+
+
+/* Spread banner copy across the entire dark panel */
+.dawly-all-tools .dawly-showcase-content{
+  box-sizing:border-box!important;width:100%!important;max-width:none!important;
+  padding-inline:clamp(14px,3vw,38px)!important;
+}
+.dawly-showcase-content h2{
+  display:block!important;width:100%!important;max-width:none!important;
+  text-align:center!important;letter-spacing:0!important;
+}
+.dawly-showcase-content p{
+  display:block!important;width:100%!important;max-width:none!important;
+  text-align:justify!important;text-align-last:center!important;
+  line-height:1.9!important;
+}
+.dawly-showcase-brands{width:100%!important;justify-content:center!important}
+.dawly-showcase-cta{display:flex!important;width:max-content!important;max-width:100%!important}
+.dawly-showcase-note{width:100%!important;text-align:center!important}
+@media(max-width:700px){
+ .dawly-all-tools .dawly-showcase-content{
+   width:100%!important;padding:26px 14px!important;
+ }
+ .dawly-showcase-content h2{font-size:clamp(24px,7.2vw,34px)!important}
+ .dawly-showcase-content p{
+   font-size:clamp(13px,3.8vw,16px)!important;
+   text-align:justify!important;text-align-last:center!important;
+ }
+}
+
+
+/* DAWLY GLASS HERO — approved transparent frosted-glass treatment */
+.dawly-all-tools{
+  position:relative!important;
+  isolation:isolate!important;
+  overflow:hidden!important;
+  background:
+    radial-gradient(ellipse at 8% 12%,rgba(190,12,32,.28),transparent 38%),
+    radial-gradient(ellipse at 92% 88%,rgba(190,12,32,.24),transparent 34%),
+    linear-gradient(135deg,#090e15 0%,#171d29 48%,#080d13 100%)!important;
+}
+.dawly-all-tools .dawly-showcase{
+  position:relative!important;
+  isolation:isolate!important;
+  overflow:hidden!important;
+  background:
+    linear-gradient(135deg,rgba(255,255,255,.16) 0%,rgba(255,255,255,.055) 38%,rgba(255,255,255,.10) 100%)!important;
+  border:1px solid rgba(225,238,255,.62)!important;
+  border-radius:30px!important;
+  box-shadow:
+    0 24px 60px rgba(0,0,0,.38),
+    inset 0 1px 0 rgba(255,255,255,.72),
+    inset 0 -1px 0 rgba(255,255,255,.18),
+    0 0 24px rgba(180,205,235,.12)!important;
+  -webkit-backdrop-filter:blur(22px) saturate(155%)!important;
+  backdrop-filter:blur(22px) saturate(155%)!important;
+}
+.dawly-all-tools .dawly-showcase:before{
+  content:""!important;
+  position:absolute!important;inset:0!important;z-index:0!important;
+  pointer-events:none!important;
+  background:
+    radial-gradient(ellipse at 8% 10%,rgba(255,92,112,.25),transparent 34%),
+    radial-gradient(ellipse at 96% 16%,rgba(190,218,255,.22),transparent 30%),
+    radial-gradient(ellipse at 88% 92%,rgba(255,78,102,.20),transparent 32%),
+    linear-gradient(125deg,rgba(255,255,255,.14),transparent 34%,rgba(255,255,255,.035) 70%,rgba(255,255,255,.12))!important;
+}
+.dawly-all-tools .dawly-showcase:after{
+  content:""!important;
+  position:absolute!important;inset:1px!important;z-index:0!important;
+  border:1px solid rgba(255,255,255,.22)!important;
+  border-radius:29px!important;
+  pointer-events:none!important;
+  box-shadow:inset 0 0 28px rgba(255,255,255,.075)!important;
+  background:linear-gradient(115deg,rgba(255,255,255,.11),transparent 22%,transparent 76%,rgba(255,255,255,.08))!important;
+}
+.dawly-all-tools .dawly-showcase-content{position:relative!important;z-index:1!important}
+.dawly-showcase-kicker{ text-shadow:0 1px 12px rgba(255,60,80,.22)!important }
+.dawly-showcase-brands span{
+  box-shadow:0 5px 16px rgba(0,0,0,.16),inset 0 1px 0 rgba(255,255,255,.9)!important;
+}
+.dawly-showcase-cta{
+  box-shadow:0 10px 26px rgba(200,16,30,.34),inset 0 1px 0 rgba(255,255,255,.28)!important;
+}
+@media(max-width:700px){
+ .dawly-all-tools .dawly-showcase{
+  border-radius:21px!important;
+  -webkit-backdrop-filter:blur(16px) saturate(150%)!important;
+  backdrop-filter:blur(16px) saturate(150%)!important;
+ }
+ .dawly-all-tools .dawly-showcase:after{border-radius:20px!important}
+}
+@media(prefers-reduced-transparency:reduce){
+ .dawly-all-tools .dawly-showcase{
+  background:linear-gradient(135deg,#222b37,#111821)!important;
+  -webkit-backdrop-filter:none!important;backdrop-filter:none!important;
+ }
+}
+
+/* Reference-match: smoky silver glass hero with red edge glow */
+.dawly-all-tools{padding:22px 0 30px!important;background:radial-gradient(ellipse at 0% 18%,rgba(224,12,35,.38),transparent 31%),radial-gradient(ellipse at 100% 82%,rgba(220,12,35,.34),transparent 30%),linear-gradient(135deg,#090d14 0%,#111a27 52%,#080d14 100%)!important}
+.dawly-all-tools .dawly-showcase{min-height:0!important;aspect-ratio:1.12/1!important;max-width:1240px!important;margin-inline:auto!important;border:2px solid rgba(225,238,255,.82)!important;border-radius:clamp(22px,4vw,48px)!important;background:radial-gradient(ellipse at 8% 12%,rgba(255,105,126,.38),transparent 30%),radial-gradient(ellipse at 94% 14%,rgba(180,215,255,.28),transparent 26%),radial-gradient(ellipse at 90% 88%,rgba(255,76,103,.30),transparent 30%),linear-gradient(135deg,rgba(80,87,105,.78),rgba(24,33,48,.86) 48%,rgba(54,65,82,.78))!important;box-shadow:0 0 0 1px rgba(255,255,255,.34),0 18px 58px rgba(0,0,0,.48),0 0 34px rgba(199,218,244,.20),0 0 48px rgba(207,16,40,.16),inset 0 2px 3px rgba(255,255,255,.82),inset 0 -3px 8px rgba(255,255,255,.20)!important;-webkit-backdrop-filter:blur(26px) saturate(145%)!important;backdrop-filter:blur(26px) saturate(145%)!important}
+.dawly-all-tools .dawly-showcase:before{z-index:0!important;background:radial-gradient(ellipse at 5% 10%,rgba(255,111,132,.36),transparent 27%),radial-gradient(ellipse at 98% 8%,rgba(216,235,255,.32),transparent 24%),radial-gradient(ellipse at 100% 96%,rgba(255,95,120,.32),transparent 27%),radial-gradient(ellipse at 0% 100%,rgba(180,208,240,.20),transparent 23%),linear-gradient(125deg,rgba(255,255,255,.19),transparent 28%,rgba(255,255,255,.025) 68%,rgba(255,255,255,.16))!important}
+.dawly-all-tools .dawly-showcase:after{z-index:0!important;inset:3px!important;border:1px solid rgba(255,255,255,.42)!important;border-radius:calc(clamp(22px,4vw,48px) - 4px)!important;box-shadow:inset 0 0 20px rgba(255,255,255,.13),0 0 12px rgba(226,239,255,.22)!important;background:linear-gradient(110deg,rgba(255,255,255,.13),transparent 22%,transparent 76%,rgba(255,255,255,.12))!important}
+.dawly-showcase-content h2{text-shadow:0 3px 20px rgba(0,0,0,.28)!important}
+.dawly-showcase-content h2 span{border-radius:16px!important;box-shadow:0 10px 28px rgba(207,12,35,.30),inset 0 1px 0 rgba(255,255,255,.25)!important;transform:none!important}
+.dawly-showcase-cta{border-radius:22px!important;min-height:clamp(54px,7vw,82px)!important;box-shadow:0 10px 30px rgba(218,15,39,.42),inset 0 2px 0 rgba(255,255,255,.36)!important}
+@media(max-width:700px){.dawly-all-tools{padding:12px 0 20px!important}.dawly-all-tools .dawly-showcase{aspect-ratio:.82/1!important;border-radius:25px!important}.dawly-all-tools .dawly-showcase:after{border-radius:21px!important}.dawly-all-tools .dawly-showcase-content{padding:25px 14px!important}.dawly-showcase-content h2{font-size:clamp(27px,8vw,39px)!important}.dawly-showcase-content p{font-size:clamp(13px,3.9vw,17px)!important}.dawly-showcase-cta{border-radius:17px!important;min-height:54px!important}}
+
+
+/* FINAL HERO LAYOUT CORRECTION: centered composition matching supplied reference */
+.dawly-all-tools{
+  background:
+    radial-gradient(ellipse at 0% 42%,rgba(210,12,35,.48),transparent 33%),
+    radial-gradient(ellipse at 100% 55%,rgba(205,12,35,.38),transparent 30%),
+    linear-gradient(135deg,#080d14 0%,#182333 52%,#090e15 100%)!important;
+  padding:28px 0 34px!important;
+}
+.dawly-all-tools .container{width:min(96%,1240px)!important}
+.dawly-all-tools .dawly-showcase{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  width:100%!important;
+  max-width:1240px!important;
+  min-height:0!important;
+  height:auto!important;
+  aspect-ratio:1.11/1!important;
+  margin:0 auto!important;
+  padding:0!important;
+  overflow:hidden!important;
+  border:2px solid rgba(235,244,255,.88)!important;
+  border-radius:clamp(24px,4vw,48px)!important;
+  background:
+    radial-gradient(ellipse at 5% 8%,rgba(255,112,135,.42),transparent 31%),
+    radial-gradient(ellipse at 98% 12%,rgba(194,222,255,.30),transparent 28%),
+    radial-gradient(ellipse at 95% 96%,rgba(255,82,112,.36),transparent 30%),
+    radial-gradient(ellipse at 4% 100%,rgba(185,213,246,.24),transparent 26%),
+    linear-gradient(135deg,rgba(80,86,105,.84),rgba(28,38,54,.91) 50%,rgba(59,69,87,.84))!important;
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,.45),
+    0 22px 64px rgba(0,0,0,.48),
+    0 0 34px rgba(220,235,255,.28),
+    0 0 50px rgba(210,14,42,.24),
+    inset 0 2px 4px rgba(255,255,255,.9),
+    inset 0 -3px 10px rgba(255,255,255,.22)!important;
+  -webkit-backdrop-filter:blur(28px) saturate(150%)!important;
+  backdrop-filter:blur(28px) saturate(150%)!important;
+}
+.dawly-all-tools .dawly-showcase:before{
+  content:""!important;display:block!important;position:absolute!important;
+  inset:0!important;z-index:0!important;pointer-events:none!important;
+  background:
+    linear-gradient(125deg,rgba(255,255,255,.24),transparent 25%,transparent 70%,rgba(255,255,255,.14)),
+    radial-gradient(ellipse at 0% 0%,rgba(255,255,255,.16),transparent 24%),
+    radial-gradient(ellipse at 100% 100%,rgba(255,255,255,.12),transparent 24%)!important;
+}
+.dawly-all-tools .dawly-showcase:after{
+  content:""!important;display:block!important;position:absolute!important;
+  inset:4px!important;z-index:0!important;pointer-events:none!important;
+  border:1px solid rgba(255,255,255,.52)!important;
+  border-radius:calc(clamp(24px,4vw,48px) - 5px)!important;
+  box-shadow:inset 0 0 24px rgba(255,255,255,.16),0 0 15px rgba(218,235,255,.28)!important;
+  background:linear-gradient(115deg,rgba(255,255,255,.10),transparent 20%,transparent 78%,rgba(255,255,255,.10))!important;
+}
+.dawly-all-tools .dawly-showcase-content{
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  justify-content:center!important;
+  position:relative!important;
+  z-index:1!important;
+  width:100%!important;
+  max-width:1100px!important;
+  margin:0 auto!important;
+  padding:clamp(24px,4vw,58px)!important;
+  text-align:center!important;
+  color:#fff!important;
+}
+.dawly-showcase-kicker{justify-content:center!important;font-size:clamp(12px,1.6vw,22px)!important;margin-bottom:16px!important}
+.dawly-showcase-kicker:before{width:38px!important;height:7px!important}
+.dawly-showcase-content h2{font-size:clamp(34px,6.3vw,82px)!important;line-height:1.25!important;margin:0 0 18px!important;text-align:center!important}
+.dawly-showcase-content h2 span{padding:2px 22px 8px!important;border-radius:14px!important}
+.dawly-showcase-content p{max-width:1050px!important;font-size:clamp(17px,3vw,36px)!important;line-height:1.8!important;margin:0 auto 26px!important;text-align:center!important}
+.dawly-showcase-brands{justify-content:center!important;gap:18px!important;margin:0 auto 24px!important}
+.dawly-showcase-brands span{font-size:clamp(17px,2.7vw,32px)!important;padding:10px 22px!important;border-radius:17px!important}
+.dawly-showcase-cta{min-height:clamp(60px,8vw,104px)!important;padding:0 clamp(24px,5vw,64px)!important;font-size:clamp(20px,3.5vw,42px)!important;border-radius:24px!important}
+.dawly-showcase-note{font-size:clamp(14px,2.5vw,30px)!important;margin-top:22px!important;text-align:center!important}
+@media(max-width:700px){
+ .dawly-all-tools{padding:14px 0 20px!important}
+ .dawly-all-tools .container{width:94%!important}
+ .dawly-all-tools .dawly-showcase{aspect-ratio:.88/1!important;border-radius:25px!important}
+ .dawly-all-tools .dawly-showcase:after{border-radius:20px!important}
+ .dawly-all-tools .dawly-showcase-content{padding:24px 14px!important}
+ .dawly-showcase-kicker{font-size:11px!important;margin-bottom:12px!important}
+ .dawly-showcase-content h2{font-size:clamp(29px,8.3vw,44px)!important;line-height:1.35!important;margin-bottom:14px!important}
+ .dawly-showcase-content h2 span{padding:1px 13px 5px!important;border-radius:10px!important}
+ .dawly-showcase-content p{font-size:clamp(14px,4vw,19px)!important;line-height:1.8!important;margin-bottom:18px!important}
+ .dawly-showcase-brands{gap:8px!important;margin-bottom:18px!important}
+ .dawly-showcase-brands span{font-size:clamp(14px,4vw,19px)!important;padding:7px 12px!important;border-radius:12px!important}
+ .dawly-showcase-cta{font-size:clamp(17px,4.7vw,22px)!important;min-height:58px!important;padding:0 20px!important;border-radius:17px!important}
+ .dawly-showcase-note{font-size:clamp(12px,3.3vw,16px)!important;margin-top:15px!important}
+}
+
+
+/* Mobile finishing pass: brighter silver rim, balanced spacing, slightly shorter panel */
+@media(max-width:700px){
+ .dawly-all-tools .dawly-showcase{
+  aspect-ratio:.94/1!important;
+  border:2px solid rgba(248,251,255,.96)!important;
+  box-shadow:
+   0 0 0 1px rgba(255,255,255,.62),
+   0 18px 48px rgba(0,0,0,.44),
+   0 0 24px rgba(224,239,255,.38),
+   0 0 42px rgba(213,18,45,.22),
+   inset 0 2px 5px rgba(255,255,255,.98),
+   inset 0 -3px 11px rgba(255,255,255,.28)!important;
+ }
+ .dawly-all-tools .dawly-showcase:after{
+  border-color:rgba(255,255,255,.70)!important;
+  box-shadow:
+   inset 0 0 27px rgba(255,255,255,.20),
+   0 0 18px rgba(225,239,255,.38)!important;
+ }
+ .dawly-showcase-content h2{
+  margin-bottom:18px!important;
+  line-height:1.30!important;
+ }
+ .dawly-showcase-content p{
+  margin-top:0!important;
+  margin-bottom:17px!important;
+  line-height:1.72!important;
+ }
+}
+@media(min-width:701px){
+ .dawly-all-tools .dawly-showcase{
+  border-color:rgba(245,250,255,.94)!important;
+  box-shadow:
+   0 0 0 1px rgba(255,255,255,.52),
+   0 22px 64px rgba(0,0,0,.48),
+   0 0 38px rgba(220,235,255,.32),
+   0 0 50px rgba(210,14,42,.24),
+   inset 0 2px 5px rgba(255,255,255,.96),
+   inset 0 -3px 10px rgba(255,255,255,.24)!important;
+ }
+ .dawly-all-tools .dawly-showcase:after{
+  border-color:rgba(255,255,255,.62)!important;
+  box-shadow:inset 0 0 26px rgba(255,255,255,.18),0 0 17px rgba(218,235,255,.32)!important;
+ }
+}
+
+
+/* FIX: prevent the silver inner rim from crossing the final note on mobile */
+@media(max-width:700px){
+ .dawly-all-tools .dawly-showcase{
+  aspect-ratio:auto!important;
+  height:auto!important;
+  min-height:0!important;
+  overflow:hidden!important;
+ }
+ .dawly-all-tools .dawly-showcase-content{
+  box-sizing:border-box!important;
+  height:auto!important;
+  min-height:0!important;
+  padding:24px 14px 42px!important;
+ }
+ .dawly-showcase-note{
+  display:block!important;
+  position:relative!important;
+  z-index:2!important;
+  margin-top:15px!important;
+  padding-bottom:2px!important;
+  line-height:1.6!important;
+ }
+}
+
+
+/* REMOVE THE DARK OUTER FRAME AROUND THE GLASS BANNER */
+.dawly-all-tools{
+  background:transparent!important;
+}
+.dawly-all-tools .dawly-showcase{
+  box-shadow:
+    inset 0 2px 5px rgba(255,255,255,.96),
+    inset 0 -3px 10px rgba(255,255,255,.24)!important;
+}
+@media(max-width:700px){
+ .dawly-all-tools .dawly-showcase{
+  box-shadow:
+    inset 0 2px 5px rgba(255,255,255,.98),
+    inset 0 -3px 11px rgba(255,255,255,.28)!important;
+ }
+}
+
+
+/* 2026-11-24: slightly more compact all-tools banner */
+@media(min-width:701px){
+ .dawly-all-tools{padding:18px 0 24px!important}
+ .dawly-all-tools .dawly-showcase{aspect-ratio:1.28/1!important}
+ .dawly-all-tools .dawly-showcase-content{padding:clamp(20px,3vw,42px)!important}
+ .dawly-showcase-kicker{font-size:clamp(11px,1.3vw,18px)!important;margin-bottom:11px!important}
+ .dawly-showcase-content h2{font-size:clamp(30px,5.2vw,66px)!important;margin-bottom:12px!important}
+ .dawly-showcase-content p{font-size:clamp(15px,2.3vw,28px)!important;margin-bottom:18px!important}
+ .dawly-showcase-brands{gap:12px!important;margin-bottom:17px!important}
+ .dawly-showcase-brands span{font-size:clamp(15px,2.2vw,26px)!important;padding:8px 17px!important}
+ .dawly-showcase-cta{min-height:clamp(50px,6vw,76px)!important;font-size:clamp(17px,2.8vw,32px)!important}
+ .dawly-showcase-note{font-size:clamp(12px,1.9vw,23px)!important;margin-top:14px!important}
+}
+@media(max-width:700px){
+ .dawly-all-tools{padding:9px 0 14px!important}
+ .dawly-all-tools .dawly-showcase-content{padding:17px 12px 27px!important}
+ .dawly-showcase-kicker{font-size:9px!important;margin-bottom:8px!important}
+ .dawly-showcase-content h2{font-size:clamp(25px,7.2vw,36px)!important;line-height:1.25!important;margin-bottom:11px!important}
+ .dawly-showcase-content h2 span{padding:1px 10px 4px!important}
+ .dawly-showcase-content p{font-size:clamp(12px,3.6vw,16px)!important;line-height:1.65!important;margin-bottom:12px!important}
+ .dawly-showcase-brands{gap:6px!important;margin-bottom:12px!important}
+ .dawly-showcase-brands span{font-size:clamp(12px,3.5vw,16px)!important;padding:5px 9px!important}
+ .dawly-showcase-cta{min-height:48px!important;padding:0 16px!important;font-size:clamp(15px,4.2vw,19px)!important}
+ .dawly-showcase-note{font-size:11px!important;margin-top:10px!important}
+}
+
+
+/* 2026-11-24: compact the ENTIRE all-tools hero on desktop and mobile */
+.dawly-all-tools{padding:8px 0 12px!important}
+.dawly-all-tools .dawly-showcase{min-height:0!important;height:auto!important;aspect-ratio:2.15/1!important;border-radius:20px!important}
+.dawly-all-tools .dawly-showcase-content{box-sizing:border-box!important;padding:16px 18px!important;gap:0!important}
+.dawly-showcase-kicker{font-size:10px!important;margin:0 0 7px!important;gap:5px!important}
+.dawly-showcase-kicker:before{width:20px!important;height:3px!important}
+.dawly-showcase-content h2{font-size:clamp(25px,4vw,46px)!important;line-height:1.18!important;margin:0 0 8px!important}
+.dawly-showcase-content h2 span{padding:1px 10px 4px!important;border-radius:8px!important}
+.dawly-showcase-content p{font-size:clamp(13px,1.7vw,19px)!important;line-height:1.55!important;margin:0 auto 10px!important}
+.dawly-showcase-brands{gap:7px!important;margin:0 auto 10px!important}
+.dawly-showcase-brands span{font-size:clamp(12px,1.5vw,17px)!important;padding:5px 10px!important;border-radius:8px!important}
+.dawly-showcase-cta{min-height:42px!important;padding:0 17px!important;font-size:clamp(14px,1.8vw,19px)!important;border-radius:12px!important}
+.dawly-showcase-note{font-size:11px!important;margin-top:7px!important;line-height:1.4!important}
+@media(max-width:700px){
+ .dawly-all-tools{padding:5px 0 8px!important}
+ .dawly-all-tools .container{width:94%!important}
+ .dawly-all-tools .dawly-showcase{aspect-ratio:auto!important;min-height:0!important;height:auto!important;border-radius:16px!important}
+ .dawly-all-tools .dawly-showcase-content{width:100%!important;min-height:0!important;height:auto!important;padding:13px 11px 16px!important}
+ .dawly-showcase-kicker{font-size:8px!important;margin:0 0 5px!important}
+ .dawly-showcase-kicker:before{width:13px!important;height:2px!important}
+ .dawly-showcase-content h2{font-size:clamp(21px,6vw,29px)!important;line-height:1.2!important;margin:0 0 7px!important}
+ .dawly-showcase-content h2 span{padding:1px 7px 3px!important;border-radius:6px!important}
+ .dawly-showcase-content p{font-size:clamp(11px,3.2vw,14px)!important;line-height:1.5!important;margin:0 auto 8px!important}
+ .dawly-showcase-brands{gap:5px!important;margin:0 auto 8px!important}
+ .dawly-showcase-brands span{font-size:10px!important;padding:4px 7px!important;border-radius:6px!important}
+ .dawly-showcase-cta{min-height:38px!important;padding:0 13px!important;font-size:12px!important;border-radius:9px!important}
+ .dawly-showcase-note{font-size:9px!important;margin-top:6px!important;line-height:1.35!important}
+}
+
+
+/* 2026-11-24: reduce the complete homepage showcase block */
+.dawly-all-tools{padding:5px 0 8px!important}
+.dawly-all-tools .dawly-showcase{aspect-ratio:2.65/1!important;border-radius:16px!important}
+.dawly-all-tools .dawly-showcase-content{padding:12px 16px!important}
+.dawly-showcase-kicker{font-size:9px!important;margin-bottom:5px!important}
+.dawly-showcase-content h2{font-size:clamp(23px,3.5vw,40px)!important;line-height:1.16!important;margin-bottom:6px!important}
+.dawly-showcase-content p{font-size:clamp(12px,1.45vw,16px)!important;line-height:1.45!important;margin-bottom:7px!important}
+.dawly-showcase-brands{gap:5px!important;margin-bottom:7px!important}
+.dawly-showcase-brands span{font-size:clamp(10px,1.2vw,14px)!important;padding:3px 7px!important}
+.dawly-showcase-cta{min-height:35px!important;padding:0 13px!important;font-size:13px!important}
+.dawly-showcase-note{font-size:9px!important;margin-top:5px!important}
+@media(max-width:700px){
+ .dawly-all-tools{padding:4px 0 6px!important}
+ .dawly-all-tools .dawly-showcase{aspect-ratio:auto!important;border-radius:13px!important}
+ .dawly-all-tools .dawly-showcase-content{padding:10px 9px 12px!important}
+ .dawly-showcase-kicker{font-size:7px!important;margin-bottom:4px!important}
+ .dawly-showcase-content h2{font-size:clamp(19px,5.5vw,25px)!important;line-height:1.15!important;margin-bottom:5px!important}
+ .dawly-showcase-content p{font-size:11px!important;line-height:1.4!important;margin-bottom:6px!important}
+ .dawly-showcase-brands{gap:4px!important;margin-bottom:6px!important}
+ .dawly-showcase-brands span{font-size:9px!important;padding:3px 6px!important}
+ .dawly-showcase-cta{min-height:32px!important;padding:0 11px!important;font-size:11px!important}
+ .dawly-showcase-note{font-size:8px!important;margin-top:4px!important}
+}
+
+
+/* 2026-11-24: make the full hero headline and description white */
+.dawly-showcase-content h2,
+.dawly-showcase-content h2 span,
+.dawly-showcase-content p{
+  color:#fff!important;
+}
+.dawly-showcase-content h2 span{
+  background:transparent!important;
+  box-shadow:none!important;
+}
+
+
+/* ===== dawly-offers-mobile-fix.css ===== */
+/* Dawly offers: full-width mobile card and visible product photography. */
+@media (max-width:700px){
+  html body #homeOffers .home-offers-grid{
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr)!important;
+    gap:14px!important;
+    width:100%!important;
+  }
+  html body #homeOffers .home-offers-grid > .product-card{
+    width:100%!important;
+    min-width:0!important;
+    max-width:none!important;
+    grid-column:1 / -1!important;
+    justify-self:stretch!important;
+  }
+  html body #homeOffers .home-offer-card .product-visual{
+    display:grid!important;
+    place-items:center!important;
+    height:clamp(250px,68vw,340px)!important;
+    min-height:250px!important;
+    padding:12px!important;
+    background:linear-gradient(145deg,#f7f9fb 0%,#e9edf2 100%)!important;
+    overflow:hidden!important;
+  }
+  html body #homeOffers .home-offer-card .product-visual img{
+    display:block!important;
+    width:100%!important;
+    height:100%!important;
+    max-width:100%!important;
+    max-height:100%!important;
+    object-fit:contain!important;
+    object-position:center!important;
+    padding:8px!important;
+    position:relative!important;
+    z-index:1!important;
+  }
+  html body #homeOffers .home-offer-card .product-info{
+    padding:16px!important;
+    gap:9px!important;
+  }
+  html body #homeOffers .home-offer-card .product-name{
+    font-size:17px!important;
+    line-height:1.55!important;
+  }
+  html body #homeOffers .home-offer-card .product-price{
+    align-items:baseline!important;
+    gap:10px!important;
+  }
+  html body #homeOffers .home-offer-card .product-price strong{
+    font-size:21px!important;
+  }
+  html body #homeOffers .home-offer-card .home-offer-countdown{
+    margin:10px 0!important;
+    padding:10px!important;
+  }
+  html body #homeOffers .home-offer-card .home-offer-cta{
+    min-height:54px!important;
+    display:flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+    font-size:16px!important;
+  }
+}
+
+
+/* ===== dawly-product-silver-surface.css ===== */
+/* Dawly unified silver product-card surface */
+.product-grid .product-card,
+#featuredProductsGrid .product-card,
+#newArrivalsGrid .product-card,
+.home-products-shelf .product-card,
+.recently-viewed-grid .product-card {
+  background: linear-gradient(145deg,#f7f9fb 0%,#edf1f5 52%,#e4e9ef 100%) !important;
+  border: 1px solid #d9e0e7 !important;
+  box-shadow: 0 8px 22px rgba(35,48,62,.09), inset 0 1px 0 rgba(255,255,255,.9) !important;
+}
+.product-grid .product-card .product-visual,
+#featuredProductsGrid .product-card .product-visual,
+#newArrivalsGrid .product-card .product-visual,
+.home-products-shelf .product-card .product-visual,
+.recently-viewed-grid .product-card .product-visual {
+  background: linear-gradient(145deg,#fbfcfd 0%,#eef2f6 100%) !important;
+  border-bottom: 1px solid rgba(205,214,223,.8) !important;
+}
+.product-grid .product-card .product-info,
+#featuredProductsGrid .product-card .product-info,
+#newArrivalsGrid .product-card .product-info,
+.home-products-shelf .product-card .product-info,
+.recently-viewed-grid .product-card .product-info {
+  background: linear-gradient(145deg,rgba(247,249,251,.94),rgba(228,234,240,.96)) !important;
+}
