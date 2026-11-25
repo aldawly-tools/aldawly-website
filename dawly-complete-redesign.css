@@ -148,3 +148,41 @@ body:has(#finder)>footer a{color:#fff!important}
  html body .dawly-app-dock .is-active{color:var(--dw-red)!important}
 }
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
+
+
+/* 2026-11-25: consistent mobile header, product detail and advisor layout */
+@media(max-width:700px){
+  html,body{width:100%!important;max-width:100%!important;overflow-x:hidden!important}
+  body{padding-bottom:calc(84px + env(safe-area-inset-bottom,0px))!important}
+  body>.masthead{width:100%!important;max-width:100%!important;overflow:visible!important}
+  body>.masthead .container.masthead-grid,
+  body>.masthead .container.product-detail-header{
+    box-sizing:border-box!important;width:calc(100% - 28px)!important;
+    max-width:560px!important;margin-inline:auto!important;
+  }
+  body>.masthead .brand{min-width:0!important;max-width:100%!important;gap:9px!important}
+  body>.masthead .brand-mark{flex:0 0 44px!important;width:44px!important;height:44px!important}
+  body>.masthead .brand-mark svg{width:38px!important;height:38px!important}
+  body>.masthead .brand-name{font-size:23px!important;line-height:1.15!important}
+  body>.masthead .brand-tag{font-size:12px!important;line-height:1.5!important;white-space:nowrap!important}
+  body>.masthead .search-form{
+    display:flex!important;flex-direction:row!important;direction:rtl!important;
+    width:100%!important;max-width:100%!important;min-width:0!important;
+    height:46px!important;overflow:hidden!important;border-radius:13px!important;
+  }
+  body>.masthead .search-form input{flex:1 1 auto!important;width:1px!important;min-width:0!important;direction:rtl!important;text-align:right!important;font-size:13px!important}
+  body>.masthead .search-form>button[type="submit"]{flex:0 0 46px!important;width:46px!important;min-width:46px!important}
+  body>.masthead .search-form>button[type="submit"] svg{stroke:#fff!important;fill:none!important}
+  body>.masthead .search-form .dawly-voice-search{flex:0 0 42px!important;width:42px!important;min-width:42px!important}
+  .product-detail-shell{padding:12px 0 32px!important}
+  .product-detail-shell>.container{width:calc(100% - 24px)!important}
+  .product-detail-crumb{display:flex!important;flex-wrap:wrap!important;gap:6px!important;font-size:12px!important}
+  #productDetail{width:100%!important;max-width:100%!important;overflow:hidden!important;border-radius:15px!important}
+  #productDetail .product-detail-layout{display:grid!important;grid-template-columns:minmax(0,1fr)!important;gap:14px!important;padding:12px!important}
+  #productDetail .product-detail-image,#productDetail .product-gallery{width:100%!important;min-width:0!important;max-width:100%!important;aspect-ratio:1/1!important}
+  #productDetail .product-detail-image img,#productDetail .product-gallery img{width:100%!important;height:100%!important;max-width:100%!important;max-height:100%!important;object-fit:contain!important}
+  #productDetail input,#productDetail select,#productDetail textarea{max-width:100%!important}
+  body:has(#finder)>main.wrap{width:calc(100% - 24px)!important;max-width:720px!important}
+  body:has(#finder) .layout{display:grid!important;grid-template-columns:minmax(0,1fr)!important}
+  body:has(#finder) .card{min-width:0!important;overflow-wrap:anywhere!important}
+}
