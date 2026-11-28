@@ -5,6 +5,7 @@
 ## المتطلبات
 
 - تطبيق Meta مضاف إليه منتج WhatsApp Business Platform، ورقم متجر مفعّل لاستقبال وإرسال الرسائل عبر Cloud API.
+- رقم المتجر المختار للربط هو `01024787222`.
 - Firebase CLI مسجّل الدخول على مشروع المتجر `wurth-29a1b`.
 - مستودع الموقع منشور عبر Firebase Cloud Functions كما هو محدد في `firebase.json`.
 
@@ -23,7 +24,7 @@ firebase functions:secrets:set WHATSAPP_APP_SECRET
 القيم:
 
 - `WHATSAPP_ACCESS_TOKEN`: رمز وصول دائم للتطبيق مع صلاحية إرسال رسائل WhatsApp Business.
-- `WHATSAPP_PHONE_NUMBER_ID`: معرّف رقم الهاتف الظاهر في إعدادات WhatsApp داخل Meta، وليس رقم الهاتف نفسه.
+- `WHATSAPP_PHONE_NUMBER_ID`: معرّف رقم الهاتف `01024787222` الظاهر في إعدادات WhatsApp داخل Meta، وليس رقم الهاتف نفسه.
 - `WHATSAPP_VERIFY_TOKEN`: قيمة عشوائية تختارها أنت. أدخل القيمة نفسها لاحقًا في إعداد Webhook لدى Meta.
 - `WHATSAPP_APP_SECRET`: App Secret الخاص بتطبيق Meta، للتحقق من توقيع كل إشعار Webhook.
 
