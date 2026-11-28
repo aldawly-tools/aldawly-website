@@ -1,13 +1,4 @@
-const { createHash, createHmac, timingSafeEqual } = require("node:crypto");
-const { FieldValue, Timestamp, getFirestore } = require("firebase-admin/firestore");
-const { logger } = require("firebase-functions");
-const { onRequest } = require("firebase-functions/v2/https");
-const { defineSecret } = require("firebase-functions/params");
-
-const whatsappAccessToken = defineSecret("WHATSAPP_ACCESS_TOKEN");
-const whatsappPhoneNumberId = defineSecret("WHATSAPP_PHONE_NUMBER_ID");
-const whatsappVerifyToken = defineSecret("WHATSAPP_VERIFY_TOKEN");
-const whatsappAppSecret = defineSecret("WHATSAPP_APP_SECRET");
+import { listProducts } from "../_lib/product-og.js";
 
 const GRAPH_API_VERSION = "v27.0";
 const PRODUCT_SITE_ORIGIN = "https://aldawly-website.pages.dev";
@@ -32,6 +23,20 @@ const aliases = {
   "بنط": ["بنطة", "بنطه", "ريشة", "ريشه", "hss", "خرسانة", "خرسانه"],
   "قص": ["قطعية", "قطعيه", "منشار", "صاروخ", "شفرة", "شفره"]
 };
+
+function json(data, status = 200) {
+  return new Response(JSON.stringify(data), {
+    status,
+    headers: { "content-type": "application/json; charset=utf-8", "cache-control": "no-store" }
+  });
+}
+
+function text(body, status = 200) {
+  return new Response(body, {
+    status,
+    headers: { "content-type": "text/plain; charset=utf-8", "cache-control": "no-store" }
+  });
+}
 
 function normalize(value) {
   return String(value == null ? "" : value)
@@ -110,12 +115,7 @@ function findProducts(products, query) {
 
 async function loadProducts() {
   if (Date.now() - catalogCache.loadedAt < CATALOG_CACHE_MS) return catalogCache.products;
-  const snapshot = await getFirestore().collection("products").get();
-  const products = snapshot.docs.map(document => {
-    const data = document.data() || {};
-    const id = data.id == null || String(data.id).trim() === "" ? document.id : data.id;
-    return { ...data, id, _docId: document.id };
-  });
+  const products = await listProducts();
   catalogCache = { loadedAt: Date.now(), products };
   return products;
 }
@@ -145,7 +145,6 @@ function formatAvailability(product) {
 function productSummary(product) {
   const description = plainText(product.description || product.desc, 240);
   if (description) return description;
-
   const raw = product.specs;
   let rows = [];
   if (Array.isArray(raw)) {
@@ -172,12 +171,10 @@ function buildReply(query, products) {
   if (/^(السلام عليكم|سلام|اهلا|اهلين|مرحبا|صباح الخير|مساء الخير)$/.test(normalized)) {
     return "وعليكم السلام 👋 أهلاً بيك في الدولي. ابعت اسم المنتج أو الماركة أو رقم الموديل، وهبحث لك في الكتالوج.";
   }
-
   const matches = findProducts(products, query);
   if (!matches.length) {
     return "أهلاً بيك في الدولي 👋 مش لاقي تطابق موثوق لطلبك في الكتالوج. ابعت اسم المنتج أو الماركة أو رقم الموديل، أو وضّح استخدامه والخامة اللي هتشتغل عليها.";
   }
-
   const blocks = matches.map((product, index) => {
     const name = plainText(product.name || "منتج من الدولي");
     const brand = plainText(product.brand || product.brandName || product.manufacturer, 80);
@@ -190,7 +187,6 @@ function buildReply(query, products) {
       productLink(product)
     ].join("\n");
   });
-
   return [
     "أهلاً بيك في الدولي 👋 لقيت المنتجات الأقرب لطلبك:",
     "",
@@ -215,62 +211,63 @@ function messageText(message) {
 }
 
 function constantTimeEqual(left, right) {
-  const a = Buffer.from(String(left == null ? "" : left));
-  const b = Buffer.from(String(right == null ? "" : right));
-  return a.length === b.length && timingSafeEqual(a, b);
+  const a = new TextEncoder().encode(String(left == null ? "" : left));
+  const b = new TextEncoder().encode(String(right == null ? "" : right));
+  if (a.length !== b.length) return false;
+  let difference = 0;
+  for (let i = 0; i < a.length; i++) difference |= a[i] ^ b[i];
+  return difference === 0;
 }
 
-function validSignature(rawBody, signatureHeader, appSecret) {
+function toHex(bytes) {
+  return Array.from(new Uint8Array(bytes), byte => byte.toString(16).padStart(2, "0")).join("");
+}
+
+async function validSignature(rawBody, signatureHeader, appSecret) {
   const match = /^sha256=([a-f0-9]{64})$/i.exec(String(signatureHeader || ""));
   if (!match) return false;
-  const expected = createHmac("sha256", appSecret).update(rawBody).digest();
-  const received = Buffer.from(match[1], "hex");
-  return expected.length === received.length && timingSafeEqual(expected, received);
+  const key = await crypto.subtle.importKey(
+    "raw", new TextEncoder().encode(appSecret), { name: "HMAC", hash: "SHA-256" }, false, ["sign"]
+  );
+  const expected = toHex(await crypto.subtle.sign("HMAC", key, rawBody));
+  return constantTimeEqual(expected, match[1].toLowerCase());
 }
 
-async function claimWebhookEvent(eventRef) {
-  return getFirestore().runTransaction(async transaction => {
-    const snapshot = await transaction.get(eventRef);
-    const event = snapshot.exists ? snapshot.data() || {} : {};
-    const ageMs = Date.now() - Number(event.claimedAtMs || 0);
-    if (event.status === "sent") return false;
-    if (event.status === "processing" && ageMs < PROCESSING_LEASE_MS) return false;
-    transaction.set(eventRef, {
-      status: "processing",
-      claimedAtMs: Date.now(),
-      expiresAt: Timestamp.fromMillis(Date.now() + EVENT_RETENTION_MS),
-      attemptCount: FieldValue.increment(1)
-    }, { merge: true });
-    return true;
-  });
+async function claimWebhookEvent(db, messageId) {
+  const now = Date.now();
+  await db.prepare("DELETE FROM whatsapp_webhook_events WHERE expires_at <= ?").bind(now).run();
+  const result = await db.prepare(
+    "INSERT INTO whatsapp_webhook_events (message_id, status, claimed_at, expires_at, attempts) " +
+    "VALUES (?, 'processing', ?, ?, 1) " +
+    "ON CONFLICT(message_id) DO UPDATE SET status = 'processing', claimed_at = excluded.claimed_at, " +
+    "expires_at = excluded.expires_at, attempts = whatsapp_webhook_events.attempts + 1 " +
+    "WHERE whatsapp_webhook_events.status <> 'sent' AND " +
+    "(whatsapp_webhook_events.status <> 'processing' OR whatsapp_webhook_events.claimed_at < ?)"
+  ).bind(messageId, now, now + EVENT_RETENTION_MS, now - PROCESSING_LEASE_MS).run();
+  return Number(result && result.meta && result.meta.changes) > 0;
 }
 
-async function sendWhatsAppText(to, body) {
-  const phoneNumberId = whatsappPhoneNumberId.value();
-  const accessToken = whatsappAccessToken.value();
+async function sendWhatsAppText(env, to, body) {
+  const phoneNumberId = String(env.WHATSAPP_PHONE_NUMBER_ID || "");
+  const accessToken = String(env.WHATSAPP_ACCESS_TOKEN || "");
   if (!phoneNumberId || !accessToken) throw new Error("whatsapp-credentials-not-configured");
-
   const response = await fetch(
     "https://graph.facebook.com/" + GRAPH_API_VERSION + "/" + encodeURIComponent(phoneNumberId) + "/messages",
     {
       method: "POST",
-      headers: {
-        "Authorization": "Bearer " + accessToken,
-        "Content-Type": "application/json"
-      },
+      headers: { "Authorization": "Bearer " + accessToken, "Content-Type": "application/json" },
       body: JSON.stringify({
         messaging_product: "whatsapp",
         recipient_type: "individual",
         to,
         type: "text",
         text: { preview_url: true, body }
-      }),
-      signal: AbortSignal.timeout(15000)
+      })
     }
   );
   const result = await response.json().catch(() => ({}));
   if (!response.ok) {
-    logger.error("WhatsApp rejected an automated product reply.", {
+    console.error("WhatsApp rejected an automated product reply.", {
       httpStatus: response.status,
       errorCode: result.error && result.error.code || null
     });
@@ -279,106 +276,85 @@ async function sendWhatsAppText(to, body) {
   return result.messages && result.messages[0] && result.messages[0].id || "";
 }
 
-async function handleIncomingMessage(message) {
+async function handleIncomingMessage(env, message) {
   const messageId = String(message && message.id || "");
   const sender = String(message && message.from || "").replace(/[^0-9]/g, "");
-  if (!messageId || !/^\d{6,20}$/.test(sender)) return;
-
-  const eventId = createHash("sha256").update(messageId).digest("hex");
-  const eventRef = getFirestore().collection("whatsappWebhookEvents").doc(eventId);
-  if (!await claimWebhookEvent(eventRef)) return;
-
+  if (!messageId || messageId.length > 200 || !/^\d{6,20}$/.test(sender)) return;
+  if (!await claimWebhookEvent(env.DB, messageId)) return;
   try {
-    const text = messageText(message);
+    const incomingText = messageText(message);
     let reply;
-    if (!text) {
+    if (!incomingText) {
       reply = "أهلاً بيك في الدولي 👋 ابعت اسم المنتج أو الماركة أو رقم الموديل في رسالة نصية، وهبحث لك في الكتالوج.";
     } else {
       try {
-        reply = buildReply(text, await loadProducts());
+        reply = buildReply(incomingText, await loadProducts());
       } catch (error) {
-        logger.error("WhatsApp product catalog lookup failed.", {
-          error: plainText(error && error.message || "catalog-read-failed", 120)
-        });
+        console.error("WhatsApp product catalog lookup failed:", error && error.message || "catalog-read-failed");
         reply = "الكتالوج مش متاح دلوقتي. جرّب تبعت اسم المنتج بعد شوية، أو ابعت رقم الموديل عشان فريقنا يساعدك.";
       }
     }
-
-    const outboundMessageId = await sendWhatsAppText(sender, reply);
-    await eventRef.set({
-      status: "sent",
-      outboundMessageId,
-      completedAt: FieldValue.serverTimestamp(),
-      expiresAt: Timestamp.fromMillis(Date.now() + EVENT_RETENTION_MS)
-    }, { merge: true });
+    const outboundMessageId = await sendWhatsAppText(env, sender, reply);
+    await env.DB.prepare(
+      "UPDATE whatsapp_webhook_events SET status = 'sent', outbound_message_id = ?, completed_at = ? WHERE message_id = ?"
+    ).bind(outboundMessageId, Date.now(), messageId).run();
   } catch (error) {
-    await eventRef.set({
-      status: "failed",
-      failedAt: FieldValue.serverTimestamp(),
-      failure: plainText(error && error.message || "send-failed", 120),
-      expiresAt: Timestamp.fromMillis(Date.now() + EVENT_RETENTION_MS)
-    }, { merge: true }).catch(() => {});
+    await env.DB.prepare(
+      "UPDATE whatsapp_webhook_events SET status = 'failed', completed_at = ? WHERE message_id = ?"
+    ).bind(Date.now(), messageId).run().catch(() => {});
     throw error;
   }
 }
 
-exports.whatsappProductAutoReply = onRequest(
-  {
-    region: "me-central1",
-    timeoutSeconds: 60,
-    memory: "256MiB",
-    maxInstances: 10,
-    invoker: "public",
-    secrets: [whatsappAccessToken, whatsappPhoneNumberId, whatsappVerifyToken, whatsappAppSecret]
-  },
-  async (req, res) => {
-    if (req.method === "GET") {
-      const mode = req.query["hub.mode"];
-      const token = req.query["hub.verify_token"];
-      const challenge = req.query["hub.challenge"];
-      const expectedToken = whatsappVerifyToken.value();
-      if (!expectedToken) return res.status(503).send("Webhook is not configured.");
-      if (mode === "subscribe" && challenge && constantTimeEqual(token, expectedToken)) {
-        return res.status(200).send(String(challenge));
-      }
-      return res.status(403).send("Forbidden.");
+export async function onRequest(context) {
+  const { request, env } = context;
+  const url = new URL(request.url);
+  if (request.method === "GET") {
+    const expectedToken = String(env.WHATSAPP_VERIFY_TOKEN || "");
+    if (!expectedToken) return text("Webhook is not configured.", 503);
+    if (url.searchParams.get("hub.mode") === "subscribe" &&
+        url.searchParams.has("hub.challenge") &&
+        constantTimeEqual(url.searchParams.get("hub.verify_token"), expectedToken)) {
+      return text(url.searchParams.get("hub.challenge"));
     }
-
-    if (req.method !== "POST") {
-      res.set("Allow", "GET, POST");
-      return res.status(405).send("Method not allowed.");
-    }
-
-    const appSecret = whatsappAppSecret.value();
-    if (!appSecret) return res.status(503).send("Webhook is not configured.");
-    if (!Buffer.isBuffer(req.rawBody) || !validSignature(
-      req.rawBody,
-      req.get("x-hub-signature-256"),
-      appSecret
-    )) return res.status(401).send("Invalid webhook signature.");
-
-    const payload = req.body || {};
-    if (payload.object !== "whatsapp_business_account") return res.status(200).send("EVENT_RECEIVED");
-
-    const incoming = [];
-    for (const entry of payload.entry || []) {
-      for (const change of entry.changes || []) {
-        if (change.field !== "messages") continue;
-        const value = change.value || {};
-        const receivedPhoneNumberId = String(value.metadata && value.metadata.phone_number_id || "");
-        if (receivedPhoneNumberId && receivedPhoneNumberId !== whatsappPhoneNumberId.value()) continue;
-        incoming.push(...(value.messages || []));
-      }
-    }
-
-    try {
-      await Promise.all(incoming.map(handleIncomingMessage));
-      return res.status(200).send("EVENT_RECEIVED");
-    } catch (error) {
-      logger.error("WhatsApp webhook message processing failed.", {
-        error: plainText(error && error.message || "processing-failed", 120)
-      });
-      return res.status(500).send("Temporary processing error.");
+    return text("Forbidden.", 403);
+  }
+  if (request.method !== "POST") return text("Method not allowed.", 405);
+  if (!env.DB || !env.WHATSAPP_PHONE_NUMBER_ID || !env.WHATSAPP_APP_SECRET) {
+    return text("Webhook is not configured.", 503);
+  }
+  let rawBody;
+  try {
+    rawBody = await request.arrayBuffer();
+  } catch (_) {
+    return text("Invalid request body.", 400);
+  }
+  if (rawBody.byteLength > 1_000_000) return text("Request body is too large.", 413);
+  if (!await validSignature(rawBody, request.headers.get("x-hub-signature-256"), String(env.WHATSAPP_APP_SECRET))) {
+    return text("Invalid webhook signature.", 401);
+  }
+  let payload;
+  try {
+    payload = JSON.parse(new TextDecoder().decode(rawBody));
+  } catch (_) {
+    return text("Invalid JSON.", 400);
+  }
+  if (payload.object !== "whatsapp_business_account") return text("EVENT_RECEIVED");
+  const incoming = [];
+  for (const entry of payload.entry || []) {
+    for (const change of entry.changes || []) {
+      if (change.field !== "messages") continue;
+      const value = change.value || {};
+      const receivedPhoneNumberId = String(value.metadata && value.metadata.phone_number_id || "");
+      if (receivedPhoneNumberId && receivedPhoneNumberId !== String(env.WHATSAPP_PHONE_NUMBER_ID)) continue;
+      incoming.push(...(value.messages || []));
     }
   }
-);
+  try {
+    await Promise.all(incoming.map(message => handleIncomingMessage(env, message)));
+    return text("EVENT_RECEIVED");
+  } catch (error) {
+    console.error("WhatsApp webhook message processing failed:", error && error.message || "processing-failed");
+    return text("Temporary processing error.", 500);
+  }
+}

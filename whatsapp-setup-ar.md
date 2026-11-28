@@ -1,51 +1,43 @@
-# إعداد الرد التلقائي لمنتجات المتجر على واتساب
+# تفعيل الرد التلقائي لمنتجات المتجر على واتساب
 
-الرد التلقائي يستقبل رسالة العميل على رقم واتساب المتجر، يبحث عن أقرب المنتجات في مجموعة `products` في Firestore، ثم يرسل أسماء المنتجات والأسعار والتوفر المسجل وروابط صفحاتها. لا يخمّن المنتج عند عدم وجود تطابق. السعر والتوفر النهائيان يظلّان بحاجة إلى تأكيد المتجر.
+يستقبل الموقع رسائل WhatsApp Cloud API على المسار `/api/whatsapp-webhook`، ويبحث عن المنتجات في كتالوج Firestore، ثم يرسل أسماء أقرب النتائج وأسعارها والتوفر المسجل وروابطها. يعتمد المسار على Cloudflare Pages Functions وقاعدة D1 المرتبطة حاليًا باسم `DB`.
 
-## المتطلبات
+رقم المتجر المطلوب ربطه: `01024787222`. يلزم استخدام حساب WhatsApp Business Platform مفعّل لهذا الرقم؛ رقم الهاتف وحده لا يكفي لإنشاء اتصال API.
 
-- تطبيق Meta مضاف إليه منتج WhatsApp Business Platform، ورقم متجر مفعّل لاستقبال وإرسال الرسائل عبر Cloud API.
-- رقم المتجر المختار للربط هو `01024787222`.
-- Firebase CLI مسجّل الدخول على مشروع المتجر `wurth-29a1b`.
-- مستودع الموقع منشور عبر Firebase Cloud Functions كما هو محدد في `firebase.json`.
+## 1. تجهيز قاعدة منع التكرار
 
-## إعداد أسرار Firebase
+من لوحة Cloudflare، افتح قاعدة D1 المربوطة بمشروع Pages باسم `DB`، ثم نفّذ محتوى الملف:
 
-من مجلد المشروع، نفّذ الأوامر التالية. سيطلب Firebase CLI قيمة كل سر؛ أدخلها في الطرفية ولا تحفظها في ملفات الموقع أو GitHub:
-
-```sh
-firebase use wurth-29a1b
-firebase functions:secrets:set WHATSAPP_ACCESS_TOKEN
-firebase functions:secrets:set WHATSAPP_PHONE_NUMBER_ID
-firebase functions:secrets:set WHATSAPP_VERIFY_TOKEN
-firebase functions:secrets:set WHATSAPP_APP_SECRET
+```text
+migrations/0002_create_whatsapp_webhook_events.sql
 ```
 
-القيم:
+يسجل الجدول معرّفات الرسائل الواردة حتى لا يرسل الموقع الرد مرتين عند إعادة Meta إرسال الإشعار.
 
-- `WHATSAPP_ACCESS_TOKEN`: رمز وصول دائم للتطبيق مع صلاحية إرسال رسائل WhatsApp Business.
-- `WHATSAPP_PHONE_NUMBER_ID`: معرّف رقم الهاتف `01024787222` الظاهر في إعدادات WhatsApp داخل Meta، وليس رقم الهاتف نفسه.
-- `WHATSAPP_VERIFY_TOKEN`: قيمة عشوائية تختارها أنت. أدخل القيمة نفسها لاحقًا في إعداد Webhook لدى Meta.
-- `WHATSAPP_APP_SECRET`: App Secret الخاص بتطبيق Meta، للتحقق من توقيع كل إشعار Webhook.
+## 2. إضافة الأسرار إلى Cloudflare Pages
 
-## نشر الدالة وربط Webhook
+افتح مشروع Pages المسمى `aldawly-website` ثم **Settings → Variables and Secrets**. أضف الأسرار التالية لبيئتي **Production** و**Preview**، ثم أعد نشر الموقع بعد حفظها:
 
-انشر الدالة:
+| الاسم | القيمة المطلوبة |
+| --- | --- |
+| `WHATSAPP_ACCESS_TOKEN` | رمز وصول WhatsApp Cloud API بصلاحية إرسال الرسائل |
+| `WHATSAPP_PHONE_NUMBER_ID` | معرّف رقم الهاتف داخل Meta، وليس `01024787222` نفسه |
+| `WHATSAPP_VERIFY_TOKEN` | عبارة عشوائية تختارها وتستخدمها نفسها في إعداد Webhook لدى Meta |
+| `WHATSAPP_APP_SECRET` | App Secret لتطبيق Meta، للتحقق من توقيع الإشعارات |
 
-```sh
-firebase deploy --only functions:whatsappProductAutoReply
-```
+احفظ القيم كـ **Encrypted secrets**، ولا تضفها إلى ملفات الموقع أو GitHub أو المحادثة.
 
-انسخ عنوان الدالة الذي يظهر في نتيجة النشر. في لوحة تطبيق Meta، افتح إعداد WhatsApp Webhooks، وضع عنوان الدالة في `Callback URL`، واستخدم قيمة `WHATSAPP_VERIFY_TOKEN` نفسها في `Verify token`. بعد نجاح التحقق، اشترك في حقل `messages`.
+## 3. ربط Webhook لدى Meta
 
-بعد ربط Webhook، أرسل من رقم اختبار مسجّل في تطبيق Meta سؤالًا مثل «محتاج بنطة خرسانة ٨ مم». الدالة تبحث في كتالوج Firestore وترد بأفضل ثلاثة تطابقات وروابطها. الرسائل النصية هي المدعومة للبحث؛ الرسائل الصوتية والصور تتلقى توجيهًا لإرسال اسم المنتج أو الماركة أو رقم الموديل كتابةً.
+في تطبيق Meta الذي يحتوي على منتج WhatsApp، افتح إعدادات Webhooks وأدخل:
 
-## تنظيف سجل منع التكرار
+- **Callback URL:** `https://aldawly-website.pages.dev/api/whatsapp-webhook`
+- **Verify token:** القيمة نفسها المخزنة في `WHATSAPP_VERIFY_TOKEN`
 
-تكتب الدالة معرّفًا مجزّأً لكل رسالة واردة في مجموعة `whatsappWebhookEvents` لمنع تكرار الرد عند إعادة Meta إرسال Webhook. يضيف كل مستند حقل `expiresAt` بعد سبعة أيام. من إعدادات قاعدة Firestore، فعّل **Time to Live** على الحقل `expiresAt` لمجموعة المستندات `whatsappWebhookEvents` كي تُحذف سجلات منع التكرار تلقائيًا.
+تحقق من عنوان Webhook، ثم اشترك في حقل `messages` لحساب WhatsApp Business المرتبط بالرقم. يجب أن يكون هذا الرقم مضافًا ومفعّلًا في WhatsApp Cloud API، وأن يطابق `WHATSAPP_PHONE_NUMBER_ID` معرّف الرقم الظاهر في Meta.
 
-## ملاحظات تشغيل
+## 4. تجربة الرد
 
-- لا تضع Access Token أو App Secret في `firebase-config.js` أو أي ملف واجهة أمامية.
-- إذا كانت الأسعار أو المخزونات غير محدّثة في Firestore، سيعكس الرد البيانات المسجلة هناك؛ راجعها من لوحة إدارة المنتجات.
-- Cloud API وWebhook يشترطان إعدادًا صحيحًا في Meta. رفع التغييرات إلى الموقع وحده لا يفعّل الربط قبل إكمال إعداد الأسرار والاشتراك في حقل `messages`.
+بعد نشر الأسرار وتفعيل Webhook، أرسل من هاتف آخر رسالة مثل «محتاج بنطة خرسانة ٨ مم» إلى رقم المتجر. يرد الموقع بأفضل ثلاثة تطابقات من الكتالوج، ويطلب وصفًا إضافيًا إذا لم يجد تطابقًا موثوقًا. الرسائل النصية مدعومة للبحث؛ الرسائل الصوتية والصور تتلقى توجيهًا لإرسال اسم المنتج كتابةً.
+
+يؤكد الرد أن السعر والتوفر النهائيين لدى المتجر حتى لا يعرض بيانات Firestore كضمان للبيع. يلزم اختبار الرسالة بعد تفعيل حساب WhatsApp API فعليًا؛ معاينة الموقع وحدها لا ترسل رسائل واتساب.

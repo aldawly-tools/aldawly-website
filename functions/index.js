@@ -63,7 +63,6 @@ exports.notifyNewProductOnOneSignal = onDocumentCreated(
     );
   }
 );
-
 exports.notifyConfirmedOrderOnOneSignal = onDocumentUpdated(
   {
     document: "orders/{orderId}",
@@ -307,6 +306,3 @@ exports.getPublicVisitCounts = onRequest(
     }
   }
 );
-
-// WhatsApp Cloud API webhook and catalog-backed product auto-replies.
-exports.whatsappProductAutoReply = require("./whatsapp").whatsappProductAutoReply;
