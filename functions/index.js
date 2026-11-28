@@ -63,7 +63,6 @@ exports.notifyNewProductOnOneSignal = onDocumentCreated(
     );
   }
 );
-
 exports.notifyConfirmedOrderOnOneSignal = onDocumentUpdated(
   {
     document: "orders/{orderId}",
